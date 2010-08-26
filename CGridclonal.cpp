@@ -1,0 +1,555 @@
+/**  \file
+   \brief functions of class CclonalGrid
+*/
+//---------------------------------------------------------------------------
+#pragma hdrstop
+
+#include "CGridclonal.h"
+#include "environment.h"
+#include <iostream>
+//---------------------------------------------------------------------------
+
+#pragma package(smart_init)
+
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+CGridclonal::CGridclonal() : CGrid(){
+   SclonalTraits::ReadclonalTraits();
+}  // Constructor
+//----------------------------------------------------------
+void CGridclonal::resetGrid()
+{
+   CGrid::resetGrid();
+   for(unsigned int i=0;i<GenetList.size();i++) delete GenetList[i];
+   GenetList.clear();CGenet::staticID=0;
+}
+//---------------------------------------------------------------------------
+CGridclonal::~CGridclonal(){
+   for(unsigned int i=0;i<GenetList.size();i++) delete GenetList[i];
+   GenetList.clear();CGenet::staticID=0;
+}   // Destructor
+//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+/**
+  Set a number of randomly distributed clonal Plants (CclonalPlant)
+  of a specific trait-combination on the grid.
+
+  \param traits   CPftTraits of the plants to be set
+  \param cltraits SclonalTraits of the plants to be set
+  \param n        number of Individuals to be set
+*/
+void CGridclonal::InitClonalPlants(
+  SPftTraits* traits,SclonalTraits* cltraits,const int n)
+{
+   using CEnvir::nrand;using SRunPara::RunPara;
+   int  x, y;
+   int SideCells=RunPara.CellNum;
+   CCell* cell;
+
+   for (int h=0; h<n; h++)
+   {
+      do{
+        x=nrand(SideCells);
+        y=nrand(SideCells);
+        cell = CellList[x*SideCells+y];
+      }while (cell->occupied);
+      if (!cell->occupied)
+      {
+         CclonalPlant *myplant = new CclonalPlant(
+              traits,cltraits,cell);
+
+         CGenet *Genet= new CGenet();
+//         Genet->number=GenetList.size();
+         GenetList.push_back(Genet);
+         myplant->setGenet(Genet);
+
+         myplant->mshoot=myplant->Traits->MaxMass/2.0;
+         myplant->mroot=myplant->Traits->MaxMass/2.0;
+
+         PlantList.push_back(myplant);
+      } //if cell not occupied
+   } //for all n
+}//end CGridclonal::clonalPlantsInit()
+//-----------------------------------------------------------------------------
+/**
+  Set a number of randomly distributed clonal Seeds (CclonalSeed) of a specific
+  trait-combination on the grid.
+
+  \param traits   SPftTraits of the seeds to be set
+  \param cltraits SclonalTraits of the seeds to be set
+  \param n        number of seeds to be set
+*/
+void CGridclonal::InitClonalSeeds(
+  SPftTraits* traits,SclonalTraits* cltraits,const int n)
+{ //init clonal seeds in random cells
+   using CEnvir::nrand;using SRunPara::RunPara;
+   int x,y;
+   int SideCells=RunPara.CellNum;
+
+   for (int i=0; i<n; ++i){
+        x=nrand(SideCells);
+        y=nrand(SideCells);
+
+        CCell* cell = CellList[x*SideCells+y];
+        new CclonalSeed(1.0,traits,cltraits,cell);
+   }
+} //end CGridclonal::clonalSeedsInit()
+//-----------------------------------------------------------------------------
+/**
+  The clonal version of PlantLoop additionally to the CGrid-version
+  disperses and grows the clonal ramets
+*/
+void CGridclonal::PlantLoop()
+{
+   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+   {
+      CPlant* plant = *iplant;
+      if (!plant->dead)
+      {
+         plant->Grow2();
+         if ((plant->type() == "CclonalPlant"))//only if its a clonal plant
+         {
+            //ramet dispersal in every week
+            DispersRamets((CclonalPlant*) plant);
+            //if the plant has a growing spacer - grow it
+            ((CclonalPlant*) plant)->SpacerGrow();
+         }
+         //seed dispersal (clonal and non-clonal seeds)
+         if (CEnvir::week>plant->Traits->DispWeek) DispersSeeds(plant);
+         plant->Kill();
+      }
+      plant->DecomposeDead();
+   }
+}
+//-----------------------------------------------------------------------------
+void CGridclonal::DispersSeeds(CPlant* plant)
+{
+   using CEnvir::Round;using SRunPara::RunPara;
+   int NSeeds=0;
+   double dist, direction;
+   double rnumber;
+   int SideCells=RunPara.CellNum;
+   double CellScale=RunPara.CellScale();
+   double CmToCell=1.0/CellScale;
+
+   double mean, sd, mu, sigma; //parameters for lognormal dispersal kernel
+
+   NSeeds=plant->GetNSeeds();
+
+   for (int j=0; j<NSeeds; ++j)
+   {
+         //negative exponential dispersal kernel
+         //dist=RandNumGen->exponential(1/(plant->DispDist*100));   //m -> cm
+
+         //lognormal dispersal kernel
+         //expected value = standard deviation = plant->DispDist
+         mean=plant->Traits->Dist*100;   //m -> cm
+         sd=plant->Traits->Dist*100;     //mean = std (simple assumption)
+
+         sigma=sqrt(log((sd/mean)*(sd/mean)+1));              //sigma = sqrt(log(1+(sd/mean)^2))
+         mu=log(mean)-0.5*sigma;                              //mu = log(mean)-0.5*log(1+(sd/mean)^2)
+         dist=exp(CEnvir::RandNumGen.normal(mu,sigma));
+
+         //direction uniformly distributed
+         rnumber=CEnvir::rand01();//RandNumGen.rand_halfclosed01();
+         direction=2*Pi*rnumber;
+         int x=Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
+         int y=Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
+         Boundary(x,y);   //periodic boundary condition
+
+         CCell* cell = CellList[x*SideCells+y];
+         if (plant->type()=="CPlant")  // for non-clonal seeds
+         {
+            new CSeed(plant,cell);
+         }
+
+         if (plant->type()=="CclonalPlant")  //for clonal seeds
+         {
+            new CclonalSeed((CclonalPlant*) plant,cell);
+         }
+   }//for NSeeds
+}//end DispersSeeds
+//-----------------------------------------------------------------------------
+///
+/**
+
+*/
+void CGridclonal::DispersRamets(CclonalPlant* plant)
+{
+   double CmToCell=1.0/SRunPara::RunPara.CellScale();
+   using CEnvir::Round;
+
+   if (plant->type() == "CclonalPlant")//only if its a clonal plant
+   {
+        //dispersal
+        for (int j=0; j<plant->GetNRamets(); ++j)
+        {
+         double dist=0, direction;//, rdist;
+         double mean, sd, mu, sigma; //parameters for lognormal dispersal kernel
+
+         //normal distribution for spacer length
+         mean=plant->clonalTraits->meanSpacerlength;   //cm
+         sd  =plant->clonalTraits->sdSpacerlength;     //mean = std (simple assumption)
+
+         while (dist<=0) dist=CEnvir::RandNumGen.normal(mean,sd);
+         //direction uniformly distributed
+         direction=2*Pi*CEnvir::rand01();
+         int x=Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
+         int y=Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
+
+         Boundary(x,y);   //periodic boundary condition
+
+         // save dist and direction in the plant
+         CclonalPlant *Spacer=new CclonalPlant(x/CmToCell,y/CmToCell,plant);
+         Spacer->SpacerlengthToGrow=dist;
+         Spacer->Spacerlength=dist;
+         Spacer->Spacerdirection=direction;
+         plant->growingSpacerList.push_back(Spacer);
+      }//end for NRamets
+  }  //end for if it a clonal plant
+}//end CGridclonal::DispersRamets()
+//--------------------------------------------------------------------------
+/**
+  For each plant ramets establish and
+  for each grid cell seeds from seed bank germinate and establish.
+  Seedlings that do not establish will die.
+
+  -# ramets establish if goal is reached (RametEstab())
+  -# seeds establish from the seed bank during
+    germination time (weeks 1-3, 22-25).
+  -# seedlings that fail to establish will die
+
+  \par revision
+  I tried to make function faster skipping the seed-pft-collecting
+  cumulative lists, but that possibly leads to pseudo-endless loops if
+  seedling-number per cell is too high
+
+  \note this function \b completely reimplements CGrid::EstabLottery()
+  because of different code for clonal and non-clonal seedlings
+  \todo find a faster algorithm for choosing the winning seedling
+
+*/
+void CGridclonal::EstabLottery()
+{
+  //Ramet establishment for all Plants
+   int PlantListsize=PlantList.size();
+   for (int z=0; z<PlantListsize;z++)  //for all Plants (befor Rametestab)
+   {
+      CPlant* plant=PlantList[z];
+      if ((plant->type() == "CclonalPlant")&&(!plant->dead))
+      {//only if its a clonal plant
+         RametEstab((CclonalPlant*)plant);
+      }
+   }
+
+//for Seeds (for clonal and non-klonal plants)
+   double* PftCumEstabProb= new double[SRunPara::RunPara.NPft];
+//   map<string,double> PftCumEstabProb;
+   int* PftCumNSeedling   = new int[SRunPara::RunPara.NPft];
+//   map<string,int> PftCumNSeedling;
+   int gweek=CEnvir::week;
+   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))
+   { //establishment only between week 1-4 and 21-25
+      double sum=0;
+      int index=0;
+
+      for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i)
+      {  //loop for all cells
+         CCell* cell = CellList[i];
+         if ((cell->AbovePlantList.empty())
+             && (!cell->SeedBankList.empty())
+             && (!cell->occupied))
+         {  //germination if cell is uncovered
+           sum=cell->Germinate();
+
+           //relative probability for establishment for all Pfts (cumulated)
+           if (sum>0){
+//             typedef map<string,int>::const_iterator CI;
+//             for (CI p=cell->PftNSeedling.begin();p!=cell->PftNSeedling.end();++p)
+             for (int pft=0; pft<SRunPara::RunPara.NPft; ++pft)
+             {
+                PftCumEstabProb[pft]=
+                  (double) cell->PftNSeedling[pft]
+//                PftCumEstabProb[p->first]=
+//                  (double) p->second//cell->PftNSeedling[pft]
+                  *SPftTraits::PftList[pft]->SeedMass;// /sum;
+                PftCumNSeedling[pft]=(cell->PftNSeedling[pft]);
+                if (pft>=1)
+                {
+                  PftCumEstabProb[pft]+=PftCumEstabProb[pft-1];
+                  PftCumNSeedling[pft]+=PftCumNSeedling[pft-1];
+                }
+              }
+
+            if (!cell->SeedlingList.empty())
+            {
+              int pft=0;
+              double rnum=CEnvir::rand01()*sum;
+            //chose seedling that establishes at random
+              while ((!cell->occupied) && (pft<SRunPara::RunPara.NPft))
+              {
+                if (rnum<PftCumEstabProb[pft])
+                {
+                  //Sort after TypeID
+                  cell->SortTypeID();
+
+                  index=CEnvir::nrand(cell->PftNSeedling[pft])
+                                  +PftCumNSeedling[pft]
+                                  -cell->PftNSeedling[pft];
+                  CSeed* seed = cell->SeedlingList[index];
+                  CPlant* plant;
+                  if (seed->type()=="CSeed")
+                  {
+                     plant = new CPlant(seed);
+                  }
+
+                  if (seed->type()=="CclonalSeed")
+                  {
+                     CclonalPlant* tempPlant = new CclonalPlant((CclonalSeed*)seed);
+
+                     CGenet *Genet= new CGenet();
+                     GenetList.push_back(Genet);
+
+                     tempPlant->setGenet(Genet);
+                     plant=tempPlant;
+                  }
+                  PlantList.push_back(plant);
+
+                  cell->PftNSeedling[seed->Traits->TypeID-1]--;
+                 }//if rnum<
+               ++pft;
+              }//while pft<max_pft
+            }//if seedlings
+            cell->RemoveSeedlings();
+         }//if seedlings in cell
+      }//seeds in cell
+    }//for all cells
+  }//if between week 1-4 and 21-25
+  delete[] PftCumEstabProb;
+  delete[] PftCumNSeedling;
+}//end CGridclonal::EstabLottery()
+//--------------------------------------------------------------------------
+/**
+  Establishment of ramets. If spacer is readily grown tries to settle on
+  current cell.
+  If it is already occupied it finds a new goal nearby.
+  If the cell is empty, the ramet establishes:
+  cell information is set and the ramet is added to the global plant list,
+  the genet's ramet list as well as erased
+  from the spacer list of the mother plant.
+*/
+void CGridclonal::RametEstab(CclonalPlant* plant)
+{
+   using CEnvir::rand01;
+   int RametListSize=plant->growingSpacerList.size();
+
+   if (RametListSize==0)return;
+   for (int f=0; f<(RametListSize);f++)    //loop for all Ramets of one plant
+   {
+      CclonalPlant* Ramet = plant->growingSpacerList[f];
+      if (Ramet->SpacerlengthToGrow<=0){//return;
+        int x=CEnvir::Round(Ramet->xcoord/SRunPara::RunPara.CellScale());
+        int y=CEnvir::Round(Ramet->ycoord/SRunPara::RunPara.CellScale());
+
+        //find the number of the cell in the List with x,y
+        CCell* cell=CellList[x*SRunPara::RunPara.CellNum+y];
+
+        if ((!cell->occupied))
+        {  //establish if cell is not central point of another plant
+           Ramet->getGenet()->AllRametList.push_back(Ramet);
+           Ramet->setCell(cell);
+
+           PlantList.push_back(Ramet);
+           //delete from list but not the element itself
+           plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f);
+        }//if cell ist not occupied
+        else //find another random cell in the area around
+        {
+           if (CEnvir::week<CEnvir::WeeksPerYear)
+           {
+             int factorx;int factory;
+             do{
+             factorx=CEnvir::nrand(5)-2;
+             factory=CEnvir::nrand(5)-2;
+             }while(factorx==0&&factory==0);
+
+             double dist=Distance(factorx,factory);
+             double direction=acos(factorx/dist);
+             double cellscale=SRunPara::RunPara.CellScale();
+             int x=CEnvir::Round((Ramet->xcoord+factorx)/cellscale);
+             int y=CEnvir::Round((Ramet->ycoord+factory)/cellscale);
+             Boundary(x,y);
+
+             //new position, dist and direction
+             Ramet->xcoord=x*cellscale; Ramet->ycoord=y*cellscale;
+             Ramet->SpacerlengthToGrow=dist;
+             Ramet->Spacerlength=dist;
+             Ramet->Spacerdirection=direction;
+           }
+           if (CEnvir::week==CEnvir::WeeksPerYear)
+           {
+             //delete element - ramet dies unestablished
+             delete Ramet;
+             plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f); //delete
+           }
+        }//else
+      }//end if pos reached
+   }//loop for all Ramets
+}//end CGridclonal::RametEstab()
+//-----------------------------------------------------------------------------
+/**
+  Distributes local resources according to local competition
+  and shares them between connected ramets of clonal genets.
+*/
+void CGridclonal::DistribResource()
+{
+   CGrid::DistribResource();
+   Resshare();  // resource sharing betwen connected ramets
+} //end CGridclonal::DistribResource()
+//----------------------------------------------------------------------------
+/**
+  Resource sharing between connected ramets on grid.
+*/
+void CGridclonal::Resshare() // resource sharing
+{
+      for (unsigned int i=0; i<GenetList.size();i++)
+      {
+         CGenet* Genet = GenetList[i];
+         if (Genet->AllRametList.size()>1)//!Genet->AllRametList.empty())
+         {
+            CclonalPlant* plant=Genet->AllRametList.front();
+            if (plant->type()=="CclonalPlant"
+                 &&plant->clonalTraits->Resshare==true)
+            {//only betwen connected ramets
+               Genet->ResshareA();  //above ground
+               Genet->ResshareB();  // below ground
+            } //if Resshare true
+         }//if genet>0
+      }//for...
+}//end CGridclonal::Resshare()
+//-----------------------------------------------------------------------------
+/**
+  Delete a plant from the grid and it's references in genet list and grid cell.
+*/
+void CGridclonal::DeletePlant(CPlant* plant1)
+{
+   if (plant1->type()=="CclonalPlant")
+   {
+      CGenet *Genet=((CclonalPlant*)plant1)->getGenet();
+      //suche Ramet aus Liste und entferne ihn
+      for (unsigned int j=0;j<Genet->AllRametList.size();j++)
+      {
+        CclonalPlant* Ramet;
+        Ramet=Genet->AllRametList[j];
+        if (plant1==Ramet)
+          Genet->AllRametList.erase(Genet->AllRametList.begin()+j);
+      }//for all ramets
+   }//if clonalplant
+   CGrid::DeletePlant(plant1);
+} //end CGridclonal::DeletePlant
+//-----------------------------------------------------------------------------
+/**
+  \return number of clonal plants on grid
+*/
+int CGridclonal::GetNclonalPlants() //count clonal plants
+{
+  int NClonalPlants=0;
+  for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+  {
+    CPlant* plant = *iplant;
+    //only if its a clonal plant
+    if ((plant->type() == "CclonalPlant")&&(!plant->dead)) NClonalPlants++;
+  }
+  return NClonalPlants;
+}//end CGridclonal::GetNclonalPlants()
+//-----------------------------------------------------------------------------
+/**
+  \return number of non-clonal plants on grid
+*/
+int CGridclonal::GetNPlants() //count non-clonal plants
+{
+  int NPlants=0;
+  for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+  {
+    CPlant* plant = *iplant;
+    //only if its a non-clonal plant
+    if ((plant->type() == "CPlant")&&(!plant->dead)) NPlants++;
+  }
+  return NPlants;
+}//end CGridclonal::GetNPlants()
+//-----------------------------------------------------------------------------
+/**
+  \return the number of genets with at least one ramet still alive
+*/
+int CGridclonal::GetNMotherPlants() //count genets
+{
+   int NMotherPlants=0;
+   if (GenetList.size()>0)
+   {
+      for (unsigned int i=0; i<GenetList.size();i++)
+      {
+         CGenet* Genet = GenetList[i];
+         if ((Genet->AllRametList.size()>0))
+         {
+            unsigned int g=0;
+            do {g++;} while (
+              (Genet->AllRametList[g-1]->dead)&&(g<Genet->AllRametList.size()));
+            if (!Genet->AllRametList[g-1]->dead) NMotherPlants++;
+         }//for all ramets
+      }//for all genets
+   }//if there are genets
+return NMotherPlants;
+}//end CGridclonal::GetNMotherPlants()
+//------------------------------------------------------------------------------
+/**
+  Counts a cell covered if the list of aboveground ZOIs has length >0.
+
+  \note Call the function after updating weekly ZOIs
+  in function CGrid::CoverCells()
+
+  \return the number of covered cells on grid
+*/
+int CGridclonal::GetCoveredCells()//count covered cells
+{
+   int NCellsAcover=0;
+   const int sumcells=SRunPara::RunPara.GetSumCells(); //hopefully faster
+   for (int i=0; i<sumcells; ++i)
+   {
+      if (CellList[i]->AbovePlantList.size()>0) NCellsAcover++;
+   }//for all cells
+   return NCellsAcover;
+}//end CGridclonal::GetCoveredCells()
+//------------------------------------------------------------------------------
+double CGridclonal::GetNGeneration() //calculate the mean generations per genet
+{
+   double SumGeneration=0;
+   double Sum=0;
+   double highestGeneration;
+   double MeanGeneration=0;
+
+   if (GenetList.size()>0)
+   {
+      for (unsigned int i=0; i<GenetList.size();i++)
+      {
+         CGenet* Genet;
+         Genet = GenetList[i];
+         if ((Genet->AllRametList.size()>0))
+         {
+            highestGeneration=0;
+            for (unsigned int j=0;j<Genet->AllRametList.size();j++)
+            {
+               CclonalPlant* Ramet;
+               Ramet=Genet->AllRametList[j];
+               highestGeneration=max(highestGeneration,Ramet->Generation);
+            }
+            SumGeneration+=highestGeneration;
+            Sum++;
+         }//if genet has ramets
+      }//for all ramets
+      if (Sum>0) MeanGeneration=(SumGeneration/Sum);
+      //else MeanGeneration=0;
+   }
+   return MeanGeneration;
+}//end CGridclonal::GetNGeneration()
+//-eof-----------------------------------------------------------------------------
+

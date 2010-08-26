@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="PGMIclonesRebuildGUI.exe"/>
+    <OBJFILES value="PGMIclonesRebuildGUI.obj GrassGui.obj TimeUtils.obj CclonalSeed.obj 
+      Cell.obj CGenet.obj CGridclonal.obj clonalPlant.obj clonalTraits.obj 
+      CObject.obj CSeed.obj environment.obj GridBase.obj OutStructs.obj 
+      Plant.obj rng.obj RunPara.obj"/>
+    <RESFILES value="PGMIclonesRebuildGUI.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) GrassGui.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="MMVisToolsRuntime.lib tee.lib rtl.lib vcl.lib"/>
+    <SPARELIBS value="vcl.lib rtl.lib tee.lib MMVisToolsRuntime.lib"/>
+    <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi bcbsmp.bpi dbrtl.bpi adortl.bpi vcldb.bpi 
+      qrpt.bpi bdertl.bpi vcldbx.bpi dsnap.bpi cds.bpi bdecds.bpi teeui.bpi 
+      teedb.bpi tee.bpi teeqr.bpi ibxpress.bpi visualclx.bpi visualdbclx.bpi 
+      vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi inetdb.bpi 
+      nmfast.bpi bcbie.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi dbxcds.bpi 
+      indy.bpi bcb2kaxserver.bpi MMVisToolsRuntime.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="PGMIclonesRebuildGUI.cpp"/>
+    <INCLUDEPATH value="&quot;..\model ines\ArbeitskopieKatrin&quot;;..\..\ClonalVersion;&quot;c:\program files\borland\cbuilder6\include\stl&quot;;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;C:\Programme\Borland\CBuilder6\Projects;&quot;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant&quot;;$(BCB)\include;$(BCB)\include\vcl;&quot;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\Mai\GrassModel2105&quot;"/>
+    <LIBPATH value="&quot;..\model ines\ArbeitskopieKatrin&quot;;..\..\ClonalVersion;&quot;c:\program files\borland\cbuilder6\include\stl&quot;;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;..\Wiese1;C:\Programme\Borland\CBuilder6\Projects;&quot;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -Vx -Ve -X- -r- -a8 -6 -b- -k -y -v -vi- -c -tW -tWM"/>
+    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="PGMIclonesRebuildGUI.res" FORMNAME="" UNITNAME="PGMIclonesRebuildGUI.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="PGMIclonesRebuildGUI.cpp" FORMNAME="" UNITNAME="PGMIclonesRebuildGUI" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GrassGui.cpp" FORMNAME="Form1" UNITNAME="GrassGui" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TimeUtils.cpp" FORMNAME="" UNITNAME="TimeUtils.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CclonalSeed.cpp" FORMNAME="" UNITNAME="CclonalSeed.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Cell.cpp" FORMNAME="" UNITNAME="Cell.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CGenet.cpp" FORMNAME="" UNITNAME="CGenet.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CGridclonal.cpp" FORMNAME="" UNITNAME="CGridclonal.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="clonalPlant.cpp" FORMNAME="" UNITNAME="clonalPlant.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="clonalTraits.cpp" FORMNAME="" UNITNAME="clonalTraits.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CObject.cpp" FORMNAME="" UNITNAME="CObject.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CSeed.cpp" FORMNAME="" UNITNAME="CSeed.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="environment.cpp" FORMNAME="" UNITNAME="environment.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GridBase.cpp" FORMNAME="" UNITNAME="GridBase.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="OutStructs.cpp" FORMNAME="" UNITNAME="OutStructs.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Plant.cpp" FORMNAME="" UNITNAME="Plant.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rng.cpp" FORMNAME="" UNITNAME="rng.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="RunPara.cpp" FORMNAME="" UNITNAME="RunPara.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1031
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=5
+Item0=..\model ines\ArbeitskopieKatrin;..\..\ClonalVersion;c:\program files\borland\cbuilder6\include\stl;C:\Program Files\Borland\CBuilder6\Projects;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\include;$(BCB)\include\vcl;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\Mai\GrassModel2105
+Item1=c:\program files\borland\cbuilder6\include\stl;C:\Program Files\Borland\CBuilder6\Projects;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\include;$(BCB)\include\vcl;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\Mai\GrassModel2105
+Item2=C:\Program Files\Borland\CBuilder6\Projects;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\include;$(BCB)\include\vcl;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\Mai\GrassModel2105
+Item3=C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\include;$(BCB)\include\vcl;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\Mai\GrassModel2105
+Item4=..\Wiese1;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=4
+Item0=..\model ines\ArbeitskopieKatrin;..\..\ClonalVersion;c:\program files\borland\cbuilder6\include\stl;C:\Program Files\Borland\CBuilder6\Projects;..\Wiese1;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\lib\obj;$(BCB)\lib
+Item1=c:\program files\borland\cbuilder6\include\stl;C:\Program Files\Borland\CBuilder6\Projects;..\Wiese1;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\lib\obj;$(BCB)\lib
+Item2=C:\Program Files\Borland\CBuilder6\Projects;..\Wiese1;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\lib\obj;$(BCB)\lib
+Item3=..\Wiese1;C:\Programme\Borland\CBuilder6\Projects;C:\Dokumente und Einstellungen\Felix\Eigene Dateien\GrassModel\FirstPlant;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

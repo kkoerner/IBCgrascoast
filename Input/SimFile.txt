@@ -1,0 +1,4 @@
+SimNrMax	NRep	OutFile														
+18	5	Output\SimOut_all.txt														
+SimNr	Version	Tmax	GrazPrb	ARes	BRes	PFT	ClType
+1000	1	8	0	50	50	0	0
