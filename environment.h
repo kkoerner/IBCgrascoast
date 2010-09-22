@@ -33,7 +33,7 @@
 class CEnvir{
 protected:
    map<string,int> PftSurvTime;    //!< array for survival times of PFTs [years];
-   map<string,int> PftInitList;  //!< list of Pfts used
+   static map<string,long> PftInitList;  //!< list of Pfts used
 
 public:
    //Input Files
@@ -45,6 +45,7 @@ public:
    static string NamePftOutFile;   ///< Filename of Pft-Output
    static string NameGridOutFile;  ///< Filename of Grid-Output
    static char* NameSurvOutFile;   ///< Filename of Survival-Output
+   static string NameLogFile;      ///< Filename of Log-Entries
 
 //   static int NumPft;              ///<Number of Plant functional Types
    static vector<double> AResMuster;     //!< mean above-ground resource availability [resource units per cm^2]
@@ -118,6 +119,10 @@ public:
    void WriteGridComplete();
    //! writes detailed data for each PFT to output file
    void WritePftComplete();
+   ///add string1 to file - for logging
+   void AddLogEntry(string,string);
+   ///add string1 to file - for logging
+   void AddLogEntry(float,string);
    /// get mean shannon diversity over several years
    double GetMeanShannon(int years);
 };
@@ -129,6 +134,8 @@ public:
    result-variables added.
 */
 class CClonalGridEnvir: public CEnvir, public CGridclonal{
+   static map<string,SPftTraits*> PftLinkList;  //!< links of Pfts(SPftTrais) used
+   static map<string,SclonalTraits*> ClLinkList;  //!< links of Pfts(SclonalTraits) used
 protected:
 public:
   static char* NameClonalPftFile; ///< Filename of clonal Pft-File
@@ -144,6 +151,12 @@ public:
   //annual Results variables -clonal
   vector<SClonOut*>  ClonOutData; ///< Vector of clonal Output data
 
+   ///get basic type according to string
+   static SPftTraits* getPftLink(string type);//{return PftLinkList.find(type)->second;};
+   static void addPftLink(string type,SPftTraits* link){PftLinkList[type]=link;};
+   ///get clonal type according to string
+   static SclonalTraits* getClLink(string type){return ClLinkList.find(type)->second;};
+   static void addClLink(string type,SclonalTraits* link){ClLinkList[type]=link;};
   ///\name reimplemented Functions from CEnvir
   //@{
   void InitRun();   ///< from CEnvir
@@ -160,6 +173,7 @@ public:
   int GetSim(const int pos=0,string file=NameSimFile);
   void InitInds();///<Initialization of individuals on grid
   void InitInds(string file);///<initialization of inds based on file data
+  void InitSeeds(string, int);
   void clonalOutput();   ///< write clonal results collected last
   int exitConditions(); ///< get exit conditions //first implemented by Ines
    ///\name Functions to get Acover and Bcover of cells.

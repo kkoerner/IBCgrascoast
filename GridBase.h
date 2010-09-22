@@ -25,6 +25,8 @@ typedef vector<CPlant*>::size_type plant_size;
 */
 class CGrid
 {
+   map<string,long>* LDDSeeds; ///< list of seeds to dispers per LDD; has to be managed manually
+
 protected:
    double mort_seeds;    //!< annual seed mortality  (constant)
    //! assigns grid cells to plants - which cell is covered by which plant
@@ -39,7 +41,8 @@ protected:
    //! distributes resource to each plant --> calls competition functions
    virtual void DistribResource();
 
-   virtual void DispersSeeds(CPlant* plant);        //!<  seed dispersal
+//   virtual void DispersSeeds(CPlant* plant);        //!<  seed dispersal
+   virtual int DispersSeeds(CPlant* plant);        //!<  seed dispersal
    //!  lottery competition for seedling establishment
    virtual void EstabLottery();
    //! calls seed mortality and mass removal of plants
@@ -72,8 +75,11 @@ public:
    //! initalization of plants
    virtual void InitPlants(SPftTraits* traits,const int n);
    //! initalization of seeds
-   virtual void InitSeeds(SPftTraits* traits,const int n);
-
+   virtual void InitSeeds(SPftTraits* traits,const int n,double estab=1.0);
+   ///add seeds to ldd-pool of grid
+   void addLDDSeeds(string pft,int nb){(*LDDSeeds)[pft]+=nb;};
+   ///get ldd-pool of grid and clear buffer
+   map<string,long>* getLDDSeeds(){map<string,long>*ldd=LDDSeeds;LDDSeeds=new map<string,long>;return ldd;};
    void GetPftNInd(vector<int>&);
    void GetPftNSeed(vector<int>&);
 
@@ -81,9 +87,13 @@ public:
    double GetTotalBelowMass();
 };
    ///vector of cell indices increasing in distance to grid center
-vector<int> ZOIBase;
+static vector<int> ZOIBase;
    //! periodic boundary conditions
 void Boundary(int& xx,int& yy);
+   /// test for emmigration
+bool Emmigrates(int& xx,int& yy);
+   ///dispersal kernel for seeds
+void getTargetCell(int& xx,int& yy,const float mean,const float sd,double cellscale=0);
    //! distance between two points using Pythagoras
 double Distance(const double& xx, const double& yy,
                     const double& x=0, const double& y=0);

@@ -78,9 +78,12 @@ void CGridclonal::InitClonalPlants(
   \param traits   SPftTraits of the seeds to be set
   \param cltraits SclonalTraits of the seeds to be set
   \param n        number of seeds to be set
+  \param estab    seed establishment (CSeed) - default is 1
+  \since 2010-09-10 estab rate for seeds can be modified (default is 1.0)
+
 */
 void CGridclonal::InitClonalSeeds(
-  SPftTraits* traits,SclonalTraits* cltraits,const int n)
+  SPftTraits* traits,SclonalTraits* cltraits,const int n,double estab)
 { //init clonal seeds in random cells
    using CEnvir::nrand;using SRunPara::RunPara;
    int x,y;
@@ -91,7 +94,7 @@ void CGridclonal::InitClonalSeeds(
         y=nrand(SideCells);
 
         CCell* cell = CellList[x*SideCells+y];
-        new CclonalSeed(1.0,traits,cltraits,cell);
+        new CclonalSeed(estab,traits,cltraits,cell);
    }
 } //end CGridclonal::clonalSeedsInit()
 //-----------------------------------------------------------------------------
@@ -115,24 +118,24 @@ void CGridclonal::PlantLoop()
             ((CclonalPlant*) plant)->SpacerGrow();
          }
          //seed dispersal (clonal and non-clonal seeds)
-         if (CEnvir::week>plant->Traits->DispWeek) DispersSeeds(plant);
+         if (CEnvir::week>plant->Traits->DispWeek)
+//           (*LDDSeeds)[plant->pft()]+=DispersSeeds(plant);
+              addLDDSeeds(plant->pft(),DispersSeeds(plant));
          plant->Kill();
       }
       plant->DecomposeDead();
    }
-}
+}//plant loop
 //-----------------------------------------------------------------------------
-void CGridclonal::DispersSeeds(CPlant* plant)
+int CGridclonal::DispersSeeds(CPlant* plant)
 {
    using CEnvir::Round;using SRunPara::RunPara;
+   int x=plant->getCell()->x, y=plant->getCell()->y;
    int NSeeds=0;
    double dist, direction;
    double rnumber;
+   int nb_LDDseeds=0;
    int SideCells=RunPara.CellNum;
-   double CellScale=RunPara.CellScale();
-   double CmToCell=1.0/CellScale;
-
-   double mean, sd, mu, sigma; //parameters for lognormal dispersal kernel
 
    NSeeds=plant->GetNSeeds();
 
@@ -141,21 +144,15 @@ void CGridclonal::DispersSeeds(CPlant* plant)
          //negative exponential dispersal kernel
          //dist=RandNumGen->exponential(1/(plant->DispDist*100));   //m -> cm
 
+         //negative exponential dispersal kernel
+         //dist=RandNumGen->exponential(1/(plant->DispDist*100));   //m -> cm
+
          //lognormal dispersal kernel
-         //expected value = standard deviation = plant->DispDist
-         mean=plant->Traits->Dist*100;   //m -> cm
-         sd=plant->Traits->Dist*100;     //mean = std (simple assumption)
-
-         sigma=sqrt(log((sd/mean)*(sd/mean)+1));              //sigma = sqrt(log(1+(sd/mean)^2))
-         mu=log(mean)-0.5*sigma;                              //mu = log(mean)-0.5*log(1+(sd/mean)^2)
-         dist=exp(CEnvir::RandNumGen.normal(mu,sigma));
-
-         //direction uniformly distributed
-         rnumber=CEnvir::rand01();//RandNumGen.rand_halfclosed01();
-         direction=2*Pi*rnumber;
-         int x=Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
-         int y=Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
-         Boundary(x,y);   //periodic boundary condition
+         getTargetCell(x,y,
+           plant->Traits->Dist*100,        //m -> cm
+           plant->Traits->Dist*100);       //mean = std (simple assumption)
+         //export LDD-seeds
+         if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
 
          CCell* cell = CellList[x*SideCells+y];
          if (plant->type()=="CPlant")  // for non-clonal seeds
@@ -168,6 +165,7 @@ void CGridclonal::DispersSeeds(CPlant* plant)
             new CclonalSeed((CclonalPlant*) plant,cell);
          }
    }//for NSeeds
+   return nb_LDDseeds;
 }//end DispersSeeds
 //-----------------------------------------------------------------------------
 ///

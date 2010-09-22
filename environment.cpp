@@ -33,6 +33,7 @@ using namespace std;
    string CEnvir::NamePftOutFile= "Output\\PftOut.txt";
    string CEnvir::NameGridOutFile= "Output\\GridOut.txt";
    char* CEnvir::NameSurvOutFile= "Output\\SurvOutGraz.txt";
+   string CEnvir::NameLogFile="Output\\LogUpSc.log";
 
    int CEnvir::NRep=1;        //!> number of replications -> read from SimFile;
    int CEnvir::SimNr=0;
@@ -40,6 +41,7 @@ using namespace std;
    KW_RNG::RNG CEnvir::RandNumGen;   //!< random number generator object pointer
    vector<double> CEnvir::AResMuster;
    vector<double> CEnvir::BResMuster;
+   map<string,long> CEnvir::PftInitList;  //!< list of Pfts used
 
 //---------------------------------------------------------------------------
 CEnvir::CEnvir():NdeadPlants(0),NPlants(0),CoveredCells(0),//MeanShannon(0),
@@ -154,7 +156,7 @@ void CEnvir::clearResults(){
 void CEnvir::InitRun(){
    for (unsigned int i=0;i<GridOutData.size();i++) delete GridOutData[i];
    for (unsigned int i=0;i<PftOutData.size();i++)  delete PftOutData[i];
-   PftInitList.clear();
+//   PftInitList.clear();
    PftSurvTime.clear();
 //   PftWeek=NULL;GridWeek=NULL;
    PftOutData.clear();
@@ -205,7 +207,7 @@ void CEnvir::WriteGridComplete()
 */
 int CClonalGridEnvir::PftSurvival()
 {
-    typedef map<string,int> mapType;
+    typedef map<string,long> mapType;
     for(mapType::const_iterator it = PftInitList.begin();
           it != PftInitList.end(); ++it)
     {
@@ -272,7 +274,7 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
    ofstream SurvOutFile(CEnvir::NameSurvOutFile,ios_base::app);
    if (!SurvOutFile.good()) {cerr<<("Fehler beim Öffnen SurvFile");exit(3); }
    SurvOutFile.seekp(0, ios::end);
-   long size=SurvOutFile.tellp();
+//   long size=SurvOutFile.tellp();
    //mean shannon index for the
    //last 25 years of the simulation time.
    double MeanShannon=GetMeanShannon(25);
@@ -303,6 +305,23 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
 //   SurvOutFile<<"\t"<<MeanShannon<<"\t"<<NumPft;
 //   SurvOutFile<<"\n";
 }//end writeSurvival
+//----------------------------------
+void CEnvir::AddLogEntry(string text,string filename)
+{
+   ofstream LogFile(filename.c_str(),ios_base::app);
+   if (!LogFile.good()) {cerr<<("Fehler beim Öffnen LogFile");exit(3);}
+
+   LogFile<<text;
+}
+//----------------------------------
+void CEnvir::AddLogEntry(float nb,string filename)
+{
+   ofstream LogFile(filename.c_str(),ios_base::app);
+   if (!LogFile.good()) {cerr<<("Fehler beim Öffnen LogFile");exit(3);}
+
+   LogFile<<" "<<nb;
+}
+
 //---------------------------------------------------------------------------
 double CEnvir::GetMeanShannon(int years)
 {
@@ -329,13 +348,30 @@ double CEnvir::GetMeanShannon(int years)
    char* CClonalGridEnvir::NameClonalOutFile="Output\\clonalOut.txt";
    int CClonalGridEnvir::clonaltype=0;
    int CClonalGridEnvir::Pfttype=40;//?default  41th PFT with average parameters
-//   int CClonalGridEnvir::sim=0;
+
+   map<string,SPftTraits*> CClonalGridEnvir::PftLinkList=
+//   map<string,SPftTraits*> CSiteScaleEnvir::PftLinkList=
+     map<string,SPftTraits*>();
+   map<string,SclonalTraits*> CClonalGridEnvir::ClLinkList=
+//   map<string,SclonalTraits*> CSiteScaleEnvir::ClLinkList=
+     map<string,SclonalTraits*>();
+   //   int CClonalGridEnvir::sim=0;
 //------------------------------------------------------------------------------
 CClonalGridEnvir::CClonalGridEnvir():CGridclonal(),CEnvir()
 {
    ReadLandscape();
 }
 //------------------------------------------------------------------------------
+SPftTraits* CClonalGridEnvir::getPftLink(string type)
+{
+  SPftTraits* traits=NULL;
+  map<string,SPftTraits*>::iterator pos = PftLinkList.find(type);
+  if (pos==(PftLinkList.end())) cerr<<"type not found\n";
+  else traits=pos->second;
+  if (traits==NULL) cerr<<"NULL-pointer error\n";
+  return traits;
+
+}
 //------------------------------------------------------------------------------
 CClonalGridEnvir::~CClonalGridEnvir()
 {
@@ -350,9 +386,6 @@ void CClonalGridEnvir::InitRun(){
 
   //set initial plants on grid...
 //  InitInds();
-  //new: read from File
-  string mfile("");mfile="Input\\InitPFTdat.txt";
-  InitInds(mfile);
   init=1; //start new
 }
 //------------------------------------------------------------------------------
@@ -370,22 +403,22 @@ void CClonalGridEnvir::InitInds(){
   SclonalTraits* cltraits=SclonalTraits::clonalTraits[clonaltype];
      SPftTraits* traits=SPftTraits::PftList[Pfttype];
   //non-clonal plants
-//   int Pfttypebegin=0;//(StrToInt(Form1->Edit13->Text))-1;
-//   int Pfttypeend=80; //(StrToInt(Form1->Edit14->Text))-1;
-//   for(int Pfttype=Pfttypebegin;Pfttype<=Pfttypeend;Pfttype++)
-//   {
-//     // cout<<"plant type .. "<<Pfttype+1<<endl;
-//     SPftTraits* traits=SPftTraits::PftList[Pfttype];
-//      CGrid::InitPlants(traits,10);
-//      PftInitList[traits->name]+=10;
-//   }
+   int Pfttypebegin=0;//(StrToInt(Form1->Edit13->Text))-1;
+   int Pfttypeend=80; //(StrToInt(Form1->Edit14->Text))-1;
+   for(int Pfttype=Pfttypebegin;Pfttype<=Pfttypeend;Pfttype++)
+   {
+     // cout<<"plant type .. "<<Pfttype+1<<endl;
+     SPftTraits* traits=SPftTraits::PftList[Pfttype];
+      CGrid::InitPlants(traits,10);
+      PftInitList[traits->name]+=10;
+   }
   //non-clonal seeds
 //  CGrid::InitSeeds(traits,100);
 //  PftInitList[traits->name]+=100;
 //  CGridclonal::InitClonalPlants(traits,cltraits,0);
 //  PftInitList[traits->name+cltraits->name]+=0;  //clonal seeds
-  CGridclonal::InitClonalSeeds(traits,cltraits,100);
-  PftInitList[traits->name+cltraits->name]+=100;
+//  CGridclonal::InitClonalSeeds(traits,cltraits,100);
+//  PftInitList[traits->name+cltraits->name]+=100;
 }//Initialization of individuals on grid
 //------------------------------------------------------------------------------
 /**
@@ -394,6 +427,7 @@ void CClonalGridEnvir::InitInds(){
 
   (each PFT on file gets 10 seeds randomly set on grid)
   \since 2010-07-07
+  \todo put search for pft-links in SclonalTraits and SPftTraits
 */
 void CClonalGridEnvir::InitInds(string file){
   const int no_init_seeds=10;
@@ -419,7 +453,7 @@ void CClonalGridEnvir::InitInds(string file){
     // initialization
        CGrid::InitSeeds(traits,no_init_seeds);
        PftInitList[traits->name]+=no_init_seeds;
-       cout<<"\n init "<<no_init_seeds<<" seeds of Pft"<<PFTtype<<Cltype;
+//       cout<<"\n init "<<no_init_seeds<<" seeds of Pft"<<PFTtype<<Cltype;
     }
     else{
        SclonalTraits* cltraits=NULL;//=SclonalTraits::clonalTraits[Cltype];
@@ -435,14 +469,36 @@ void CClonalGridEnvir::InitInds(string file){
        }
        CGridclonal::InitClonalSeeds(traits,cltraits,no_init_seeds);
        PftInitList[traits->name+Cltype]+=no_init_seeds;
-       cout<<"\n init "<<no_init_seeds<<" seeds of Pft"<<PFTtype<<Cltype;
+       PftLinkList[traits->name+Cltype]=traits;
+       ClLinkList[traits->name+Cltype]=cltraits;
+//       cout<<"\n init "<<no_init_seeds<<" seeds of Pft"<<PFTtype<<Cltype;
     }
 
   }while(!InitFile.eof());
 }//initialization based on file
 //------------------------------------------------------------------------------
+/**
+ This function initiates a number of seeds of the specified type on the grid.
+
+ \param type string naming the type to be set
+ \param number number of seeds to set
+*/
+void CClonalGridEnvir::InitSeeds(string type, int number)
+{
+   //searching the type
+   SclonalTraits *cltraits=getClLink(type);//=SclonalTraits::clonalTraits[Cltype];
+   SPftTraits *pfttraits=getPftLink(type);//=SclonalTraits::clonalTraits[Cltype];
+   bool clonal= (cltraits!=NULL);//(cltraits->name=="default");
+
+   //set seeds...
+   if (clonal)
+       CGridclonal::InitClonalSeeds(pfttraits,cltraits,number,pfttraits->pEstab);
+   else
+       CGrid::InitSeeds(pfttraits,number,pfttraits->pEstab);
+}//InitSeeds
+//------------------------------------------------------------------------------
 void CClonalGridEnvir::OneRun(){
-   double teval=0.2;  //fraction of Tmax that is used for evaluation
+//   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
    init=1; //for init the second plant (for the invasion experiments)
 
@@ -453,10 +509,10 @@ void CClonalGridEnvir::OneRun(){
       if (endofrun)break;
    }//years
    //file-write output
-   clonalOutput();
-   WriteGridComplete();
-   WriteSurvival();
-   WritePftComplete();
+//   clonalOutput();
+//   WriteGridComplete();
+//   WriteSurvival();
+//   WritePftComplete();
 
 }  // end OneSim
 //------------------------------------------------------------------------------
@@ -481,7 +537,7 @@ void CClonalGridEnvir::OneWeek(){
    SetCellResource();      //variability between weeks
 
    CoverCells();           //plant loop
-   setCover();             //set ACover und BCover lists
+   setCover();             //set ACover und BCover lists, as well as type cover
    DistribResource();      //cell loop, resource uptake and competition
 
    PlantLoop();            //Growth, Dispersal, Mortality
@@ -502,19 +558,9 @@ void CClonalGridEnvir::OneWeek(){
    if (week==20){        //general output
       GetOutput();   //calculate output variables
    }
-   if (week==30){        //clonal output
-      GetClonOutput();   //calculate output variables
-   }
-   //conditions for the invasion (not a good choice, see thesis)
-//   if ((GetCoveredCells()>=(SRunPara::RunPara.GetSumCells()*0.95))&&(init==1))
-//   {
-//     //randomly set one non-clonal plant with given functional type
-//      InitPlants(SPftTraits::PftList[Pfttype],1);
-// //     //randomly set one clonal plant with given functional type
-// //      InitClonalPlants(SPftTraits::PftList[Pfttype],
-// //         SclonalTraits::clonalTraits[clonaltype],1);
-//      init=2;
-//    }
+//   if (week==30){        //clonal output
+//      GetClonOutput();   //calculate output variables
+//   }
 }//end CClonalGridEnvir::OneWeek()
 //---------------------------------------------------------------------------
 /**
@@ -531,11 +577,6 @@ int CClonalGridEnvir::exitConditions()
      int NPlants=GetNPlants();//+GetNclonalPlants();
      int NClPlants=GetNclonalPlants();
 
-//     //invasion of clonal plants in non-clonal community:
-//     if (((NClPlants>=50)||(NClPlants==0))&&(init==2))
-
-//     //invasion of non-clonal plants in clonal community:
-//     if (((NPlants>=50)||(NPlants==0))&&(init==2))
 //    if no more individuals existing
      if ((NPlants + NClPlants)==0)
      {
@@ -566,20 +607,27 @@ double CClonalGridEnvir::getTypeCover(const int i, const string type)const{
    -- Funktion z.Zt. auskommentiert
 
   \bug double PftCover muss mit 0 initialisiert werden
+  \warning PftCover is very time consuming
 */
 void CClonalGridEnvir::setCover(){
+  typedef map<string, int> mapType;
   const int sum=SRunPara::RunPara.GetSumCells();
   for(int i=0;i<sum;i++){
     ACover.at(i)=getGridACover(i);
     BCover[i]   =getGridBCover(i);
-//    typedef map<string, int> mapType;
-//    for(mapType::const_iterator it = PftInitList.begin();
-//          it != PftInitList.end(); ++it)
-//    {
-//       //addiere den type-cover der aktuellen Zelle
-//       PftCover[it->first]+=getTypeCover(i,it->first);
-//    }
   }
+//  if (week==WeeksPerYear){
+//    PftCover.clear(); //new year
+//    for(int i=0;i<sum;i++){
+//      for(mapType::const_iterator it = PftInitList.begin();
+//          it != PftInitList.end(); ++it)
+//      {
+//         //addiere den type-cover der aktuellen Zelle
+//         PftCover[it->first]+=getTypeCover(i,it->first);
+//      }
+
+//    }
+//  }//end if at end of year
 }
 
 //---------------------------------------------------------------------------
@@ -617,6 +665,7 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
    double mean, prop_PFT;
 
    SPftOut*  PftWeek =new SPftOut();
+
    SGridOut* GridWeek=new SGridOut();
    //calculate sums
    for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
@@ -627,10 +676,12 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
       if (!plant->dead){
 //following lines adapted from Internet
 // http://stackoverflow.com/questions/936999/what-is-the-default-constructor-for-c-pointer
-        SPftOut::SPftSingle* &mi = PftWeek->PFT[pft_name];
-        if (!mi)
-           mi = new SPftOut::SPftSingle();
-
+//CHANGED BY ME
+        map<string,SPftOut::SPftSingle*>::const_iterator pos = PftWeek->PFT.find(pft_name);
+        SPftOut::SPftSingle* mi;
+        if (pos==PftWeek->PFT.end())
+           PftWeek->PFT[pft_name] = new SPftOut::SPftSingle();
+        mi =PftWeek->PFT.find(pft_name)->second;
         mi->totmass+=plant->GetMass();
         ++mi->Nind;
         mi->shootmass+=plant->mshoot;

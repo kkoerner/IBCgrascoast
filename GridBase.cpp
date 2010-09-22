@@ -7,12 +7,13 @@
 #include "GridBase.h"
 #include "environment.h"
 #include <iostream>
-
+#include <map>
 //---------------------------------------------------------------------------
 CGrid::CGrid()
 {
    SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
+   LDDSeeds = new map<string,long>;
    //generate ZOIBase...
    ZOIBase.assign(SRunPara::RunPara.GetSumCells(),0);
    for (unsigned int i=0;i<ZOIBase.size();i++) ZOIBase[i]=i;
@@ -87,12 +88,9 @@ void CGrid::PlantLoop()
       plant->DecomposeDead();
    }
 }
-
 //-----------------------------------------------------------------------------
 /**
-  Function disperses the seeds produced by a plant when seeds are to be
-  released (at dispersal time - SclonalTraits::DispWeek).
-
+  lognormal dispersal kernel
   Each Seed is dispersed after an log-normal dispersal kernel with mean and sd
   given by plant traits. The dispersal direction has no prevalence.
 
@@ -107,16 +105,41 @@ void CGrid::PlantLoop()
          double direction=2*Pi*CEnvir::rand01();
          int x=CEnvir::Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
          int y=CEnvir::Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
-         Boundary(x,y);
   \endcode
 */
-void CGrid::DispersSeeds(CPlant* plant)
+void getTargetCell(int& xx,int& yy,const float mean,const float sd,double cellscale)
 {
-   int x, y, NSeeds;
+   double sigma=sqrt(log((sd/mean)*(sd/mean)+1));
+   double mu=log(mean)-0.5*sigma;
+   double dist=exp(CEnvir::RandNumGen.normal(mu,sigma));
+   if (cellscale==0)cellscale= SRunPara::RunPara.CellScale();
+//   double CellScale=SRunPara::RunPara.CellScale();
+   double CmToCell=1.0/cellscale;
+
+   //direction uniformly distributed
+   double direction=2*Pi*CEnvir::rand01();//rnumber;
+   xx=CEnvir::Round(xx+cos(direction)*dist*CmToCell);
+   yy=CEnvir::Round(yy+sin(direction)*dist*CmToCell);
+}
+//-----------------------------------------------------------------------------
+//bool Emmigrates(int& xx, int& yy);
+/**
+  Function disperses the seeds produced by a plant when seeds are to be
+  released (at dispersal time - SclonalTraits::DispWeek).
+
+  Each Seed is dispersed after an log-normal dispersal kernel
+  in function getTargetCell().
+
+\date 2010-08-30 periodic boundary conditions are transformed
+      to dispers seeds for LDD
+
+\return list of seeds to dispers per LDD
+  */
+int CGrid::DispersSeeds(CPlant* plant)
+{
+   int x=plant->getCell()->x, y=plant->getCell()->y, NSeeds;
    double dist, direction;
-   double mean, sd, mu, sigma; //parameters for lognormal dispersal kernel
-   double CellScale=SRunPara::RunPara.CellScale();
-   double CmToCell=1.0/CellScale;
+   int nb_LDDseeds=0;
 
    NSeeds=plant->GetNSeeds();
    for (int j=0; j<NSeeds; ++j){
@@ -124,24 +147,16 @@ void CGrid::DispersSeeds(CPlant* plant)
          //dist=RandNumGen->exponential(1/(plant->DispDist*100));   //m -> cm
 
          //lognormal dispersal kernel
-         //expected value = standard deviation = plant->DispDist
-         mean=plant->Traits->Dist*100;   //m -> cm
-         sd=plant->Traits->Dist*100;     //mean = std (simple assumption)
-
-         sigma=sqrt(log((sd/mean)*(sd/mean)+1));
-         mu=log(mean)-0.5*sigma;
-         dist=exp(CEnvir::RandNumGen.normal(mu,sigma));
-
-         //direction uniformly distributed
-         direction=2*Pi*CEnvir::rand01();//rnumber;
-         x=CEnvir::Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
-         y=CEnvir::Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
-         Boundary(x,y);   //periodic boundary condition
+         getTargetCell(x,y,
+           plant->Traits->Dist*100,        //m -> cm
+           plant->Traits->Dist*100);       //mean = std (simple assumption)
+         //export LDD-seeds
+         if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
 
          CCell* cell = CellList[x*SRunPara::RunPara.CellNum+y];
          new CSeed(plant,cell);
       }//for NSeeds
-   //}//for plants
+      return nb_LDDseeds;
 }//end DispersSeeds
 //---------------------------------------------------------------------------
 /**
@@ -696,8 +711,10 @@ void CGrid::InitPlants(SPftTraits* traits,const int n)
 
   \param traits   SPftTraits of the seeds to be set
   \param n        number of seeds to be set
+  \param estab    seed establishment (CSeed) - default is 1
+  \since 2010-09-10 estab rate for seeds can be modified (default is 1.0)
 */
-void CGrid::InitSeeds(SPftTraits* traits, int n)
+void CGrid::InitSeeds(SPftTraits* traits, int n,double estab)
 {
    using CEnvir::nrand;using SRunPara::RunPara;
    int x,y;
@@ -708,7 +725,7 @@ void CGrid::InitSeeds(SPftTraits* traits, int n)
         x=nrand(SideCells);
         y=nrand(SideCells);
         CCell* cell = CellList[x*SideCells+y];
-        new CSeed(1.0,traits,cell);
+        new CSeed(estab,traits,cell);
      }
 }//end CGrid::SeedsInit()
 //---------------------------------------------------------------------------
@@ -777,6 +794,13 @@ void Boundary(int& xx, int& yy)
    if(xx<0)xx+=SRunPara::RunPara.CellNum;
    yy%=SRunPara::RunPara.CellNum;
    if(yy<0)yy+=SRunPara::RunPara.CellNum;
+}
+//---------------------------------------------------------------------------
+bool Emmigrates(int& xx, int& yy)
+{
+   if(xx<0||xx>=SRunPara::RunPara.CellNum)return true;
+   if(yy<0||yy>=SRunPara::RunPara.CellNum)return true;
+   return false;
 }
 //---------------------------------------------------------------------------
 ///manipulates vector with individual numbers of each PFT

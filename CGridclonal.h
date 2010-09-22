@@ -26,7 +26,7 @@ protected:
    //overload...
    void DistribResource();              ///<clonal version
    void PlantLoop();                    ///<clonal version
-   void DispersSeeds(CPlant* plant);    ///<clonal version
+   int DispersSeeds(CPlant* plant);    ///<clonal version
    void EstabLottery();                 ///<clonal version
    void DeletePlant(CPlant* plant1);    ///<clonal version
 
@@ -37,9 +37,11 @@ public:
 
    //new...
    //! initalization of clonal plants
-   virtual void InitClonalPlants(SPftTraits* traits,SclonalTraits* cltraits,const int n);
+   virtual void InitClonalPlants(SPftTraits* traits,SclonalTraits* cltraits,
+     const int n);
    //! initalization of clonal seeds
-   virtual void InitClonalSeeds(SPftTraits* traits,SclonalTraits* cltraits,const int n);
+   virtual void InitClonalSeeds(SPftTraits* traits,SclonalTraits* cltraits,
+     const int n,double estab=1.0);
    void DispersRamets(CclonalPlant* plant); ///<initiate new ramets
    //service functions...
    int GetNclonalPlants();   ///< number of living clonal plants

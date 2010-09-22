@@ -76,15 +76,10 @@ see additional page for solved and unsolved bugs
 #pragma argsused
 int main(int argc, char* argv[])
 {
-//init...
-//für alle Zellen
-  //Berechne Wochen 1-x
-  //trage LDD-Seeds in globales Raster
-//Verteile LDD-Seeds auf globales Seed-Rain Raster
-//für alle Zellen
-  //seed migration
-  //Berechne Wochen x-end_of_year
-//Auswertung
-        return 0;
+//set and initiate environment
+//onerun
+//write files
+//clear up
+   return 0;
 }
 //---------------------------------------------------------------------------

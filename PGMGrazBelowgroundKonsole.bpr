@@ -7,7 +7,7 @@
     <OBJFILES value="TimeUtils.obj CclonalSeed.obj Cell.obj CGenet.obj CGridclonal.obj 
       clonalPlant.obj clonalTraits.obj CObject.obj CSeed.obj environment.obj 
       GridBase.obj OutStructs.obj Plant.obj rng.obj RunPara.obj 
-      GMIclonesRebuiltKonsole.obj"/>
+      ..\..\belowground_herbivory\belowground_grazing\GMGrazBGKonsole.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -20,7 +20,7 @@
       vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi inetdb.bpi 
       nmfast.bpi bcbie.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi dbxcds.bpi 
       indy.bpi bcb2kaxserver.bpi MMVisToolsRuntime.bpi"/>
-    <PATHCPP value=".;"/>
+    <PATHCPP value=".;..\..\belowground_herbivory\belowground_grazing"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -30,8 +30,8 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="PGMGrazBelowgroundKonsole.bpf"/>
-    <INCLUDEPATH value="&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -66,7 +66,7 @@
       <FILE FILENAME="Plant.cpp" FORMNAME="" UNITNAME="Plant.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rng.cpp" FORMNAME="" UNITNAME="rng.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="RunPara.cpp" FORMNAME="" UNITNAME="RunPara.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="GMIclonesRebuiltKonsole.cpp" FORMNAME="" UNITNAME="GMIclonesRebuiltKonsole" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\belowground_herbivory\belowground_grazing\GMGrazBGKonsole.cpp" FORMNAME="" UNITNAME="GMGrazBGKonsole" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
