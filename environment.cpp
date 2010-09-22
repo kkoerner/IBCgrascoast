@@ -105,27 +105,23 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       SimFile>>SimNr
        //      >>dummi     //RunPara.Layer
              >>version   //>>RunPara.Version - enum types cannot be read with >>
-       //      >>acomp     //>>RunPara.AboveCompMode
-       //      >>bcomp    //>>RunPara.BelowCompMode
-       //      >>RunPara.BelGrazMode   //mode of belowground grazing
+             >>acomp     //>>RunPara.AboveCompMode
+             >>bcomp    //>>RunPara.BelowCompMode
+             >>RunPara.BelGrazMode   //mode of belowground grazing
         //     >>RunPara.GridSize
         //     >>RunPara.CellNum
              >>RunPara.Tmax
-        //     >>RunPara.NPft            //obsolete
+        //     >>RunPara.NPft
              >>RunPara.GrazProb
-        //     >>RunPara.PropRemove
-        //     >>RunPara.BelGrazProb     //for belowground simulations
-        //     >>RunPara.BelPropRemove   //for belowground simulations
-       //     >>RunPara.CutMass          //for cutting scenarios
-       //      >>RunPara.NCut            //for cutting scenarios
-        //     >>RunPara.DistAreaYear     //for trampling scenarios
-        //     >>RunPara.AreaEvent       //for trampling scenarios
+             >>RunPara.PropRemove
+             >>RunPara.BelGrazProb     //for belowground simulations
+             >>RunPara.BelPropRemove   //for belowground simulations
+        //     >>RunPara.DistAreaYear
+        //     >>RunPara.AreaEvent
         //     >>RunPara.mort_seeds
              >>RunPara.meanARes
              >>RunPara.meanBRes
      //        >>RunPara.PftFile
-             >> Pfttype             //for ines' experiments
-             >> clonaltype          //for ines' experiments
              ;
 
       //---------standard parameter:
@@ -200,10 +196,10 @@ void CEnvir::WriteGridComplete()
 }//WriteGridComplete
 //------------------------------------------------------------------------------
 /**
-   saves Pft survival times and returns number of surviving PFTs
+   Saves Pft survival times and returns number of surviving PFTs
 
    changed in version 100716 for type-flexible Output
-
+   \return number of surviving PFTs
 */
 int CClonalGridEnvir::PftSurvival()
 {
@@ -236,23 +232,19 @@ void CEnvir::WritePftComplete()
    if (size==0){
      PftOutFile<<"Sim\tRun\tTime";
      PftOutFile<<"\tInds\tseeds\tshootmass\tPFT";
-
-     //     for (int pft=1; pft<=SRunPara::RunPara.NPft; pft++) PftOutFile<<"\tN"<<pft;
      PftOutFile<<"\n";
    }
 
    for (vector<PftOut>::size_type i=0; i<PftOutData.size();++i){
-//      PftOutFile<<SimNr<<'\t'<<i;//<<'\t'<<PftOutData[i]->week;
-    typedef map<string, SPftOut::SPftSingle*> mapType;
+   typedef map<string, SPftOut::SPftSingle*> mapType;
 
-    for(mapType::const_iterator it = PftOutData[i]->PFT.begin();
+     for(mapType::const_iterator it = PftOutData[i]->PFT.begin();
           it != PftOutData[i]->PFT.end(); ++it)
-    {
+     {
 //        cout << "Who(key = first): " << it->first;
 //        cout << " Score(value = second): " << it->second << '\n';
 //    }
 
-//      for (int pft=0; pft<PftOutData[i]->PFT.size(); ++pft){
          PftOutFile<<SimNr<<'\t'<<RunNr<<'\t'<<i;
          PftOutFile<<'\t'<<it->second->Nind;
          PftOutFile<<'\t'<<it->second->Nseeds;
@@ -261,49 +253,32 @@ void CEnvir::WritePftComplete()
          //add cover here
 
          PftOutFile<<"\n";
-      }
+     }
    }
    PftOutFile.close();
-}
+}//end WritePftComplete()
 //------------------------------------------------------------------------------
 void CEnvir::WriteSurvival(){
   WriteSurvival(RunNr,SimNr);
 }
+/**
+  File-Documentation of type-specific survival statistics.
+*/
 void CEnvir::WriteSurvival(int runnr, int simnr)
 {
    ofstream SurvOutFile(CEnvir::NameSurvOutFile,ios_base::app);
    if (!SurvOutFile.good()) {cerr<<("Fehler beim Öffnen SurvFile");exit(3); }
    SurvOutFile.seekp(0, ios::end);
 //   long size=SurvOutFile.tellp();
-   //mean shannon index for the
-   //last 25 years of the simulation time.
-   double MeanShannon=GetMeanShannon(25);
-//   //last fifth of the simulation time.
-//   MeanShannon=GetMeanShannon(floor(SRunPara::RunPara.Tmax*teval));
-   //number of surviving PFTs
-   int NumPft=GridOutData.back()->PftCount;
 
-//fkt nicht; sondern schreibt Überschrift über jede Zeile
-//   if (size==0){
-     SurvOutFile<<"RunNr\t"<<runnr<<endl;
-     SurvOutFile<<"SimNr\t"<<simnr<<endl;
-//     for (int pft=1; pft<=SRunPara::RunPara.NPft; pft++)
-//        SurvOutFile<<"\tPft"<<pft;
-     SurvOutFile<<"Mean_Shannon\t"<<MeanShannon<<endl;
-     SurvOutFile<<"NPft\t"<<NumPft<<endl;
-//   }
-
-//   SurvOutFile<<runnr<<"\t"<<simnr;
     typedef map<string,int> mapType;
     for(mapType::const_iterator it = PftSurvTime.begin();
           it != PftSurvTime.end(); ++it)
-
-
-//   for (int pft=0; pft<SRunPara::RunPara.NPft; ++pft)
-      SurvOutFile<<it->second<<'\t'<<it->first<<endl;
+    {
+     SurvOutFile<<simnr<<'\t'<<runnr<<"\t";
+     SurvOutFile<<it->second<<'\t'<<it->first<<endl;
+    }
      SurvOutFile<<"\n";
-//   SurvOutFile<<"\t"<<MeanShannon<<"\t"<<NumPft;
-//   SurvOutFile<<"\n";
 }//end writeSurvival
 //----------------------------------
 void CEnvir::AddLogEntry(string text,string filename)
@@ -385,7 +360,7 @@ void CClonalGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-//  InitInds();
+  InitInds();
   init=1; //start new
 }
 //------------------------------------------------------------------------------
@@ -508,11 +483,6 @@ void CClonalGridEnvir::OneRun(){
       OneYear();
       if (endofrun)break;
    }//years
-   //file-write output
-//   clonalOutput();
-//   WriteGridComplete();
-//   WriteSurvival();
-//   WritePftComplete();
 
 }  // end OneSim
 //------------------------------------------------------------------------------
@@ -532,7 +502,7 @@ void CClonalGridEnvir::OneYear(){
   \since 2010-07-07 no invasion version
 */
 void CClonalGridEnvir::OneWeek(){
-  // cout<<"week "<<week<<endl;
+//   cout<<"week "<<week<<endl;
    ResetWeeklyVariables(); //cell loop, removes data from cells
    SetCellResource();      //variability between weeks
 

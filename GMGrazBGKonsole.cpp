@@ -131,11 +131,11 @@ void Run(){
    Envir->OneRun();
    exitcond=Envir->GetT();
    double end=HRTimeInSec();
-
+   //file-write output
+//   clonalOutput();
+   Envir->WriteGridComplete();
    Envir->WriteSurvival();
-//   Envir->WriteSurvival(CClonalGridEnvir::clonaltype,CClonalGridEnvir::sim);
-//   writeBenchmark(CClonalGridEnvir::Pfttype,CClonalGridEnvir::clonaltype,
-//               CClonalGridEnvir::sim,exitcond,end-start);
+   Envir->WritePftComplete();
 }
 //---------------------------------------------------------------------------
 //eof---------------------------------------------------------------------------
