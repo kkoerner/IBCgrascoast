@@ -103,7 +103,9 @@ bool GetSeedRemove(const CSeed*& seed1)
 }
 
 //-----------------------------------------------------------------------------
-//sort plants ascending after TypeID
+///sort plants ascending after TypeID
+///\warning  compiler complains about temporal state of seed1 and seed2
+///
 int CompareTypeID(const CSeed*& seed1, const CSeed*& seed2)
 {
   return (seed1->Traits->TypeID < seed2->Traits->TypeID);

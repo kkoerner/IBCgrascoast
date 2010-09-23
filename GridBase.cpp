@@ -571,7 +571,8 @@ void CGrid::GrazingBelGr(const int mode)
       }
       // .. to prevent endless loops...
       if(mass_remove_start>=MassRemoved){
-        cout<<"err_"<<(1-MassRemoved/MaxMassRemove)<<" ";
+        cout<<" no more roots found - diff: "
+            <<(1-MassRemoved/MaxMassRemove)<<" - ";
         break;
       }
     }

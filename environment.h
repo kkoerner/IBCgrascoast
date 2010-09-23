@@ -44,7 +44,8 @@ public:
    //Output Files
    static string NamePftOutFile;   ///< Filename of Pft-Output
    static string NameGridOutFile;  ///< Filename of Grid-Output
-   static char* NameSurvOutFile;   ///< Filename of Survival-Output
+//   static char* NameSurvOutFile;   ///< Filename of Survival-Output
+   static string NameSurvOutFile;   ///< Filename of Survival-Output
    static string NameLogFile;      ///< Filename of Log-Entries
 
 //   static int NumPft;              ///<Number of Plant functional Types

@@ -32,7 +32,8 @@ using namespace std;
    //Output Files
    string CEnvir::NamePftOutFile= "Output\\PftOut.txt";
    string CEnvir::NameGridOutFile= "Output\\GridOut.txt";
-   char* CEnvir::NameSurvOutFile= "Output\\SurvOutGraz.txt";
+//   char* CEnvir::NameSurvOutFile= "Output\\SurvOutGraz.txt";
+   string CEnvir::NameSurvOutFile= "Output\\SurvOutGraz.txt";
    string CEnvir::NameLogFile="Output\\LogUpSc.log";
 
    int CEnvir::NRep=1;        //!> number of replications -> read from SimFile;
@@ -85,10 +86,16 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   cout<<"SimFile: "<<NameSimFile<<endl;
   int lpos=pos;
   if (pos==0){  //read header
-    string line;
+    string line,file_id;
     getline(SimFile,line);
     int SimNrMax;//dummi
-    SimFile>>SimNrMax>>NRep>>NameClonalOutFile;//NameSurvOutFile;
+    SimFile>>SimNrMax>>NRep>>file_id;
+    //set file names
+    NamePftOutFile= (string)"Output\\Pft-"+file_id+".txt";
+    NameGridOutFile=(string)"Output\\Grd-"+file_id+".txt";
+    NameSurvOutFile=(string)"Output\\Srv-"+file_id+".txt";
+    NameLogFile=    (string)"Output\\Log-"+file_id+".log";
+
     getline(SimFile,line);
     getline(SimFile,line);
     lpos=SimFile.tellg();
@@ -170,7 +177,7 @@ void CEnvir::WriteGridComplete()
    GridOutFile.seekp(0, ios::end);
    long size=GridOutFile.tellp();
    if (size==0){
-     GridOutFile<<"Sim\tTime\t"
+     GridOutFile<<"Sim\tRun\tTime\t"
               <<"totMass\tNInd\t"
               <<"abovemass\tbelowmass\t"
               <<"mean_ares\tmean_bres\t"
@@ -181,7 +188,7 @@ void CEnvir::WriteGridComplete()
    }
 
    for (vector<SGridOut>::size_type i=0; i<GridOutData.size(); ++i){
-      GridOutFile<<SimNr<<'\t'<<i //<<'\t'<<GridOutData[i]->week
+      GridOutFile<<SimNr<<'\t'<<RunNr<<'\t'<<i //<<'\t'<<GridOutData[i]->week
                  <<'\t'<<GridOutData[i]->totmass
                  <<'\t'<<GridOutData[i]->Nind
                  <<'\t'<<GridOutData[i]->above_mass
@@ -266,7 +273,7 @@ void CEnvir::WriteSurvival(){
 */
 void CEnvir::WriteSurvival(int runnr, int simnr)
 {
-   ofstream SurvOutFile(CEnvir::NameSurvOutFile,ios_base::app);
+   ofstream SurvOutFile(NameSurvOutFile.c_str(),ios_base::app);
    if (!SurvOutFile.good()) {cerr<<("Fehler beim Öffnen SurvFile");exit(3); }
    SurvOutFile.seekp(0, ios::end);
 //   long size=SurvOutFile.tellp();
@@ -278,7 +285,7 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
      SurvOutFile<<simnr<<'\t'<<runnr<<"\t";
      SurvOutFile<<it->second<<'\t'<<it->first<<endl;
     }
-     SurvOutFile<<"\n";
+//     SurvOutFile<<"\n";
 }//end writeSurvival
 //----------------------------------
 void CEnvir::AddLogEntry(string text,string filename)
