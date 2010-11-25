@@ -45,8 +45,10 @@ using namespace std;
    map<string,long> CEnvir::PftInitList;  //!< list of Pfts used
 
 //---------------------------------------------------------------------------
-CEnvir::CEnvir():NdeadPlants(0),NPlants(0),CoveredCells(0),//MeanShannon(0),
-  NCellsAcover(0),Mortalitaetsrate(0),init(1),endofrun(false)
+CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
+  CoveredCells(0),//MeanShannon(0),
+  NCellsAcover(0),//Mortalitaetsrate(0),
+  init(1),endofrun(false)
 {
    ReadLandscape();
    ACover.assign(SRunPara::RunPara.GetSumCells(),0);
@@ -143,6 +145,8 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       RunPara.Version=version;
       RunPara.AboveCompMode=acomp;
       RunPara.BelowCompMode=bcomp;
+//      //Größenänderung des Grids auf 3qm
+//      RunPara.GridSize=RunPara.CellNum=173;
 
   return SimFile.tellg();
 }//end  CEnvir::GetSim
@@ -152,14 +156,15 @@ void CEnvir::clearResults(){
    ACover.assign(SRunPara::RunPara.GetSumCells(),0);
    BCover.assign(SRunPara::RunPara.GetSumCells(),0);
    //MeanShannon=0;
-   Mortalitaetsrate=0; NCellsAcover=0;
-   NdeadPlants=0; NPlants=0;
+   //Mortalitaetsrate=0;
+   NCellsAcover=0;
+   //NdeadPlants=0; NPlants=0;
 }
 //------------------------------------------------------------------------------
 void CEnvir::InitRun(){
    for (unsigned int i=0;i<GridOutData.size();i++) delete GridOutData[i];
    for (unsigned int i=0;i<PftOutData.size();i++)  delete PftOutData[i];
-//   PftInitList.clear();
+   PftInitList.clear();
    PftSurvTime.clear();
 //   PftWeek=NULL;GridWeek=NULL;
    PftOutData.clear();
@@ -169,7 +174,7 @@ void CEnvir::InitRun(){
   ReadLandscape();
 }
 //------------------------------------------------------------------------------
-void CEnvir::WriteGridComplete()
+void CEnvir::WriteGridComplete(bool allYears)
 {
    //Open GridFile, write header
    ofstream GridOutFile(NameGridOutFile.c_str(),ios::app);
@@ -182,12 +187,14 @@ void CEnvir::WriteGridComplete()
               <<"abovemass\tbelowmass\t"
               <<"mean_ares\tmean_bres\t"
               <<"shannon\t"
-              <<"NPFT"
+              <<"NPFT\tCutted"
               ;
      GridOutFile<<"\n";
    }
 
-   for (vector<SGridOut>::size_type i=0; i<GridOutData.size(); ++i){
+   vector<SGridOut>::size_type i=0;
+   if (!allYears)i= GridOutData.size()-1;
+   for (i; i<GridOutData.size(); ++i){
       GridOutFile<<SimNr<<'\t'<<RunNr<<'\t'<<i //<<'\t'<<GridOutData[i]->week
                  <<'\t'<<GridOutData[i]->totmass
                  <<'\t'<<GridOutData[i]->Nind
@@ -196,7 +203,10 @@ void CEnvir::WriteGridComplete()
                  <<'\t'<<GridOutData[i]->aresmean
                  <<'\t'<<GridOutData[i]->bresmean
                  <<'\t'<<GridOutData[i]->shannon
+                 <<'\t'<<GetMeanShannon(25)
+
                  <<'\t'<<GridOutData[i]->PftCount
+                 <<'\t'<<GridOutData[i]->cutted
                  <<"\n";
    }
    GridOutFile.close();
@@ -276,14 +286,21 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
    ofstream SurvOutFile(NameSurvOutFile.c_str(),ios_base::app);
    if (!SurvOutFile.good()) {cerr<<("Fehler beim Öffnen SurvFile");exit(3); }
    SurvOutFile.seekp(0, ios::end);
-//   long size=SurvOutFile.tellp();
+   long size=SurvOutFile.tellp();
+   if (size==0){
+     SurvOutFile<<"Sim\tRun\t";
+     SurvOutFile<<"mPop\tcPop\tTE\tPFT";
+     SurvOutFile<<"\n";
+   }
 
     typedef map<string,int> mapType;
     for(mapType::const_iterator it = PftSurvTime.begin();
           it != PftSurvTime.end(); ++it)
     {
-     SurvOutFile<<simnr<<'\t'<<runnr<<"\t";
-     SurvOutFile<<it->second<<'\t'<<it->first<<endl;
+     SurvOutFile<<simnr<<'\t'<<runnr;
+     SurvOutFile<<'\t'<<GetMeanPopSize(it->first,25);
+     SurvOutFile<<'\t'<<GetCurrPopSize(it->first);
+     SurvOutFile<<'\t'<<it->second<<'\t'<<it->first<<endl;
     }
 //     SurvOutFile<<"\n";
 }//end writeSurvival
@@ -317,6 +334,28 @@ double CEnvir::GetMeanShannon(int years)
       count++;
    }
    return sum/count;
+}
+//---------------------------------------------------------------------------
+double CEnvir::GetCurrPopSize(string pft){
+   if (PftOutData.back()->PFT.find(pft)== PftOutData.back()->PFT.end())
+     return 0;
+   SPftOut::SPftSingle* entry
+      =PftOutData.back()->PFT.find(pft)->second;
+   return entry->Nind;
+}
+//-------------------------------------------------------
+double CEnvir::GetMeanPopSize(string pft,int x){
+      //only if output once a year
+   if(PftOutData.size()<x) return -1;
+   double sum=0;
+   for (int i= (PftOutData.size()-x);i<PftOutData.size();i++)
+    if (PftOutData[i]->PFT.find(pft)!=PftOutData[i]->PFT.end())
+    {
+     SPftOut::SPftSingle* entry
+       =PftOutData[i]->PFT.find(pft)->second;
+     sum+= entry->Nind;
+     }
+    return (sum/x);
 }
 //---------------------------------------------------------------------------
 
@@ -490,6 +529,11 @@ void CClonalGridEnvir::OneRun(){
       OneYear();
       if (endofrun)break;
    }//years
+      //file-write output     -now in main.cpp
+//   clonalOutput();
+//   WriteGridComplete();
+//   WriteSurvival();
+//   WritePftComplete();
 
 }  // end OneSim
 //------------------------------------------------------------------------------
@@ -535,9 +579,12 @@ void CClonalGridEnvir::OneWeek(){
    if (week==20){        //general output
       GetOutput();   //calculate output variables
    }
-//   if (week==30){        //clonal output
-//      GetClonOutput();   //calculate output variables
-//   }
+   if (week==30){
+      //get cutted biomass
+      GetOutputCutted();
+      //clonal output
+      GetClonOutput();   //calculate output variables
+   }
 }//end CClonalGridEnvir::OneWeek()
 //---------------------------------------------------------------------------
 /**
@@ -717,10 +764,9 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
    double sum_above=0, sum_below=0;
    for (int i=0; i<sumcells; ++i){
       CCell* cell = CellList[i];
-      sum_above+=cell->AResConc;
+      sum_above+=cell- >AResConc;
       sum_below+=cell->BResConc;
    }
-
    GridWeek->aresmean=sum_above/sumcells;
    GridWeek->bresmean=sum_below/sumcells;
 
@@ -734,6 +780,14 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
 
    GridOutData.push_back(GridWeek);
 }//end CClonalGridEnvir::GetOutput(
+
+//---------------------------------------------------------------------------
+void CClonalGridEnvir::GetOutputCutted(){
+   SGridOut* GridWeek=GridOutData.back();
+   //store cutted biomass and reset value for next mowing
+   GridWeek->cutted=this->getCuttedBM();this->resetCuttedBM();
+
+}
 //---------------------------------------------------------------------------
 void CClonalGridEnvir::GetClonOutput()//PftOut& PftData, SGridOut& GridData)
 {

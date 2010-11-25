@@ -152,7 +152,8 @@ int CGridclonal::DispersSeeds(CPlant* plant)
            plant->Traits->Dist*100,        //m -> cm
            plant->Traits->Dist*100);       //mean = std (simple assumption)
          //export LDD-seeds
-         if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
+         if (SRunPara::RunPara.torus){Boundary(x,y);}
+         else if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
 
          CCell* cell = CellList[x*SideCells+y];
          if (plant->type()=="CPlant")  // for non-clonal seeds
@@ -195,6 +196,7 @@ void CGridclonal::DispersRamets(CclonalPlant* plant)
          int x=Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
          int y=Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
 
+         /// \todo change boundary conditions
          Boundary(x,y);   //periodic boundary condition
 
          // save dist and direction in the plant
@@ -346,6 +348,8 @@ void CGridclonal::RametEstab(CclonalPlant* plant)
    {
       CclonalPlant* Ramet = plant->growingSpacerList[f];
       if (Ramet->SpacerlengthToGrow<=0){//return;
+/// \todo hier boundary-Kontrolle einfügen 
+
         int x=CEnvir::Round(Ramet->xcoord/SRunPara::RunPara.CellScale());
         int y=CEnvir::Round(Ramet->ycoord/SRunPara::RunPara.CellScale());
 
@@ -376,6 +380,8 @@ void CGridclonal::RametEstab(CclonalPlant* plant)
              double cellscale=SRunPara::RunPara.CellScale();
              int x=CEnvir::Round((Ramet->xcoord+factorx)/cellscale);
              int y=CEnvir::Round((Ramet->ycoord+factory)/cellscale);
+
+             /// \todo change boundary conditions
              Boundary(x,y);
 
              //new position, dist and direction

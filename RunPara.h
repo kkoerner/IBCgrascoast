@@ -30,11 +30,12 @@ struct SRunPara
       2 = lower resource availability for intraspecific competition
    */
    CompVersion Version;
-   int BelGrazMode; ///<mode of belowground grazing \sa CGrid::GrazingBelGr
+   int BelGrazMode; ///< mode of belowground grazing \sa CGrid::GrazingBelGr
    int GridSize;   //!< side length in cm
    int CellNum; //!< side length in cells
+   bool torus; //!< boundary behavior
    int	Tmax;  //!< simulation time
-   int	NPft;   ///<number of plant functional types
+   int	NPft;   ///< number of plant functional types
    double GrazProb;        //!< grazing probability per week
    double PropRemove;     //!< proportion of above ground mass removed by grazing
    ///belowground grazing probability per week

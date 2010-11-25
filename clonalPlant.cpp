@@ -193,6 +193,7 @@ void CclonalPlant::SpacerGrow()
              int x2=CEnvir::Round(this->cell->x+cos(direction)*dist*CmToCell);
              int y2=CEnvir::Round(this->cell->y+sin(direction)*dist*CmToCell);
 
+             /// \todo change boundary conditions
              //Boundary conditions (types MUST match exactly)
              Boundary(x2,y2);
 //             CGrid::Boundary(x2,y2);

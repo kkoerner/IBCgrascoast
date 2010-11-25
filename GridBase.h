@@ -26,6 +26,7 @@ typedef vector<CPlant*>::size_type plant_size;
 class CGrid
 {
    map<string,long>* LDDSeeds; ///< list of seeds to dispers per LDD; has to be managed manually
+   double cutted_BM;  ///< biomass removed by mowing
 
 protected:
    double mort_seeds;    //!< annual seed mortality  (constant)
@@ -82,6 +83,8 @@ public:
    map<string,long>* getLDDSeeds(){map<string,long>*ldd=LDDSeeds;LDDSeeds=new map<string,long>;return ldd;};
    void GetPftNInd(vector<int>&);
    void GetPftNSeed(vector<int>&);
+   void resetCuttedBM(){cutted_BM=0;};
+   double getCuttedBM(){return cutted_BM;};
 
    double GetTotalAboveMass();
    double GetTotalBelowMass();

@@ -69,12 +69,12 @@ public:
    vector<int> ACover;     //!< mean above-ground resource availability [resource units per cm^2]
    vector<int> BCover;     //!< mean below-ground resource availability [resource units per cm^2]
    map<string,double> PftCover;  //!< current Grid-cover of Pfts used
-   int NPlants;            ///< Number of Plants on Grid
-   int NdeadPlants;        ///< Number of dead Plants on Grid
+//   int NPlants;            ///< Number of Plants on Grid
+//   int NdeadPlants;        ///< Number of dead Plants on Grid
    int CoveredCells;       ///< Number of Cells covered by plants on Grid
    double NCellsAcover;    ///< Number of Cells shaded by plants on ground
 //   double MeanShannon;     ///< mean Shannon Diversity
-   double Mortalitaetsrate;///< mortality rate
+//   double Mortalitaetsrate;///< mortality rate
 
    //Functions
    CEnvir();
@@ -117,7 +117,7 @@ public:
    void WriteSurvival();
    void WriteSurvival(int runnr, int simnr);
    //! writes detailed data for the modelled community to output file
-   void WriteGridComplete();
+   void WriteGridComplete(bool allYears=true);
    //! writes detailed data for each PFT to output file
    void WritePftComplete();
    ///add string1 to file - for logging
@@ -126,6 +126,11 @@ public:
    void AddLogEntry(float,string);
    /// get mean shannon diversity over several years
    double GetMeanShannon(int years);
+          /// get mean Pop size of type (last x years)
+   double GetMeanPopSize(string pft,int x);
+      ///get current PopSize of type pft
+   double GetCurrPopSize(string pft);
+
 };
 //---------------------------------------------------------------------------
 /// simulation service class including grid-, result- and environmental information
@@ -175,6 +180,7 @@ public:
   void InitInds();///<Initialization of individuals on grid
   void InitInds(string file);///<initialization of inds based on file data
   void InitSeeds(string, int);
+  void GetOutputCutted(); ///<get anually cutted biomass (after week 22)
   void clonalOutput();   ///< write clonal results collected last
   int exitConditions(); ///< get exit conditions //first implemented by Ines
    ///\name Functions to get Acover and Bcover of cells.

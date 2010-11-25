@@ -9,7 +9,7 @@
 #include <iostream>
 #include <map>
 //---------------------------------------------------------------------------
-CGrid::CGrid()
+CGrid::CGrid():cutted_BM(0)
 {
    SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
@@ -151,7 +151,8 @@ int CGrid::DispersSeeds(CPlant* plant)
            plant->Traits->Dist*100,        //m -> cm
            plant->Traits->Dist*100);       //mean = std (simple assumption)
          //export LDD-seeds
-         if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
+         if (SRunPara::RunPara.torus){Boundary(x,y);}
+         else if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
 
          CCell* cell = CellList[x*SRunPara::RunPara.CellNum+y];
          new CSeed(plant,cell);
@@ -194,6 +195,7 @@ void CGrid::CoverCells()
               +ZOIBase[a]/RunPara.CellNum-RunPara.CellNum/2;//x;
         yhelp=plant->getCell()->y
               +ZOIBase[a]%RunPara.CellNum-RunPara.CellNum/2;//y;
+        /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
         index = xhelp*RunPara.CellNum+yhelp;
         CCell* cell = CellList[index];
@@ -251,6 +253,7 @@ void CGrid::CalcRootInteraction(CPlant * plant){
               +ZOIBase[a]/RunPara.CellNum-RunPara.CellNum/2;//x;
         int yhelp=plant->getCell()->y
               +ZOIBase[a]%RunPara.CellNum-RunPara.CellNum/2;//y;
+        /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
         int index = xhelp*RunPara.CellNum+yhelp;
         CCell* cell = CellList[index];
@@ -466,22 +469,27 @@ void CGrid::Grazing()
   Cutting of all plants on the patch
 
   \author Felix May (Jan2010)
+  \change 28-10-2010 lw: quadriere LMR    #
+  \change 18-11-2010 kk: gebe entfernte BM an Klassenvariable
   */
 void CGrid::Cutting()
 {
    CPlant* pPlant;
 
    double mass_cut = SRunPara::RunPara.CutMass;
+   double mass_removed=0;
 
    for (plant_size i=0; i<PlantList.size();i++){
          pPlant = PlantList[i];
-//         double mass=pPlant->mshoot/pPlant->Traits->LMR;
-//         if (mass > mass_cut){
-         if (pPlant->mshoot/pPlant->Traits->LMR > mass_cut){
-            pPlant->mshoot = mass_cut*pPlant->Traits->LMR;
+         if (pPlant->mshoot/(pPlant->Traits->LMR*pPlant->Traits->LMR) > mass_cut){
+            double to_leave= mass_cut*(pPlant->Traits->LMR*pPlant->Traits->LMR);
+            //doc biomass removed
+            mass_removed+= pPlant->mshoot-to_leave+pPlant->mRepro;
+            pPlant->mshoot = to_leave;
             pPlant->mRepro = 0.0;
          }
    }
+   cutted_BM+= mass_removed;
 } //end cutting
 
 //-----------------------------------------------------------------------------
@@ -615,6 +623,7 @@ void CGrid::Trampling()
               +ZOIBase[a]/RunPara.CellNum-RunPara.CellNum/2;
         yhelp=ycell
               +ZOIBase[a]%RunPara.CellNum-RunPara.CellNum/2;
+        /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
         index = xhelp*RunPara.CellNum+yhelp;
         CCell* cell = CellList[index];

@@ -60,6 +60,7 @@ struct SGridOut
    double below_mass;       //!< total below-ground mass
    double aresmean;         //!< mean above-ground resource availability
    double bresmean;         //!< mean below-ground resource availability
+   double cutted;           ///< cutted biomass
    SGridOut();
 };
 
