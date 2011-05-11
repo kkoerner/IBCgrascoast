@@ -115,6 +115,8 @@ public:
      quarter of the simulation is saved to the file.
    */
    void WriteSurvival();
+   ///write survival data while adding an index to the file name
+   void WriteSurvival(string str);
    void WriteSurvival(int runnr, int simnr);
    //! writes detailed data for the modelled community to output file
    void WriteGridComplete(bool allYears=true);
@@ -126,6 +128,8 @@ public:
    void AddLogEntry(float,string);
    /// get mean shannon diversity over several years
    double GetMeanShannon(int years);
+   /// get mean number of types
+   double GetMeanNPFT(int years);
           /// get mean Pop size of type (last x years)
    double GetMeanPopSize(string pft,int x);
       ///get current PopSize of type pft

@@ -1,3 +1,17 @@
+11:53 08.03.2011
+-dokumentation nach 10, 30 jahren und am Ende
+-zusätzliche Mortalität durch BG möglich BGThres=1 - ohne
+-Output: mean Shannon ist mean der letzten 25a
+
+11:44 09.12.2010
+Belowground Grazing -Version GMBG22.exe
+verkürzte Dokumentation
+
+10:34 25.11.2010
+Belowground Grazing -Version GMBG21.exe
+eingearbeitet: Linas Veränderungen in LinaStd und neue Features durchs UpScaling
+
+----------------------------------------
 Die Version vom 12.8. entspricht der vorigen mit dem Unterschied, dass die Option der Mahd (Felix May Feb2010) zugefügt wurde. Mahd wird berechnet, wenn die entsprechenden Parameter gesetzt werden.
 
 Die Version vom 19.7. simuliert Vegetationsentwicklung mit realistischen PFTs (aus Datei: "InitPFTdat.txt")

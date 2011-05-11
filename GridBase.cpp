@@ -494,6 +494,19 @@ void CGrid::Cutting()
 
 //-----------------------------------------------------------------------------
 /**
+\brief get additional mortality
+
+obsolete
+*/
+
+double getMortBelGraz(double fraction, double thresh)
+{
+  if (thresh==1.0) return 0.0;
+//  if (fraction<thresh) return 0.0;
+  return  max(0.0,(fraction-thresh)/(1.0-thresh));
+}
+//-----------------------------------------------------------------------------
+/**
   The plants on the whole grid are grazed according to the mode given
   A given percentage of RootMass is grazed.
   \param mode mode of belowground grazing
@@ -504,7 +517,7 @@ void CGrid::Cutting()
   \arg \c mode=2 as '1' but proportional to root mass
   \arg \c mode=3 as '1' but prop. to root mass and taste
     (SPftTraits::palat)
-  \arg \c mode=4 as '1' but prop. to root mass and 1/taste
+  \arg \c mode=4 as '1' but prop. to root taste (old:mass and 1/taste )
   \arg \c mode=5 as '1' but prop. to root density
   \arg \c mode=6 as '1' but prop. to type-specific root density
   \warning grazing priorities don't change for mode5 and mode6
@@ -516,6 +529,9 @@ void CGrid::Cutting()
 
   \since belowground herbivory simulations
   \bug möglicher Absturz wenn Traits->palat==0 oder rootmass==0
+
+  Additional mortality is assumed if root grazing of a  plant exceeds
+  a threshold (only if mode>0).
 */
 void CGrid::GrazingBelGr(const int mode)
 {
@@ -526,6 +542,21 @@ void CGrid::GrazingBelGr(const int mode)
     }
   }
   else {//if (mode<=4){
+//   map<CPlant*,double> oldMroot;
+//    for (plant_size i=0;i<PlantList.size();i++)
+//      oldMroot[PlantList[i]]=PlantList[i]->mroot;
+//partition of Plants left and right of grid
+    plant_iter LeftPlants=
+    partition(PlantList.begin(),PlantList.end(),is_left);
+    vector<CPlant*> leftPlantList(LeftPlants,PlantList.end());
+    //get ranking list of aboveground types after aboveground biomass
+    map<string,double> aboveDom;
+
+    vector<CPlant*> PlantsToGraze=PlantList;
+    if (true) PlantsToGraze=leftPlantList; //!should only one half of grid be grazed?
+    for (plant_size i=0;i<PlantsToGraze.size();i++)
+      if (!PlantsToGraze[i]->dead) aboveDom[PlantsToGraze[i]->pft()]+=PlantsToGraze[i]->mshoot;
+
     double TotalBelowMass=GetTotalBelowMass();
     //see Grazing(), but no information for belowground grazing
     double ResidualMass=0;
@@ -536,15 +567,19 @@ void CGrid::GrazingBelGr(const int mode)
     while(MassRemoved<MaxMassRemove){
       double max_value=0;
       double mass_remove_start=MassRemoved;//remember value started
-      for (plant_size i=0;i<PlantList.size();i++){
-          CPlant* lplant=PlantList[i];
+      for (plant_size i=0;i<PlantsToGraze.size();i++){
+          CPlant* lplant=PlantsToGraze[i];
+          if (lplant->dead) continue;
           //if (mode==1) max_value=0;
           if (mode==2)
             max_value=max(max_value,lplant->mroot);
           else if (mode==3)
             max_value=max(max_value,lplant->mroot*lplant->Traits->palat);
           else if (mode==4)
-            max_value=max(max_value,lplant->mroot/lplant->Traits->palat);
+//            max_value=max(max_value,lplant->mroot/lplant->Traits->palat);
+            max_value=max(max_value,lplant->Traits->palat);
+          else if (mode==7)
+            max_value=max(max_value,aboveDom.find(lplant->pft())->second);  ///\warning what if find fails?
           else {
             CalcRootInteraction(lplant);
             if (mode==5){
@@ -556,25 +591,33 @@ void CGrid::GrazingBelGr(const int mode)
       }
 //      cout<<"max."<<max_value<<"|";
       //stochastic removal of 50% root mass each plant
-      random_shuffle(PlantList.begin(),PlantList.end());
+      random_shuffle(PlantsToGraze.begin(),PlantsToGraze.end());
       plant_size i=0;
-      while((i<PlantList.size())&&(MassRemoved<MaxMassRemove)){
-         CPlant* lplant=PlantList[i];
+      while((i<PlantsToGraze.size())&&(MassRemoved<MaxMassRemove)){
+         CPlant* lplant=PlantsToGraze[i];
+         if (lplant->dead) {++i;continue;}
          double grazprob=1;
          switch (mode){
            case 1:grazprob= 1;break;
            case 2:grazprob= (lplant->mroot)/max_value;break;
            case 3:grazprob= (lplant->mroot*lplant->Traits->palat)/max_value;
              break;
-           case 4:grazprob= (lplant->mroot/lplant->Traits->palat)/max_value;
+//           case 4:grazprob= (lplant->mroot/lplant->Traits->palat)/max_value;
+           case 4:grazprob= (lplant->Traits->palat)/max_value;
              break;
            case 5:grazprob= lplant->Aroots_all/lplant->Art_disc/max_value;
              break;
            case 6:grazprob= lplant->Aroots_type/lplant->Art_disc/max_value;
              break;
+           case 7:grazprob= aboveDom.find(lplant->pft())->second/max_value;
+             break;
            default:grazprob= 0; break;    //fehler
          }
-         if (CEnvir::rand01()<grazprob) MassRemoved+=lplant->RemoveRootMass();
+         if (CEnvir::rand01()<grazprob){
+           MassRemoved+=lplant->RemoveRootMass();
+             //grazing induced additional mortality
+           if (CEnvir::rand01()<SRunPara::RunPara.BGThres) lplant->dead=true;
+         }
          ++i;
       }
       // .. to prevent endless loops...
@@ -583,8 +626,21 @@ void CGrid::GrazingBelGr(const int mode)
             <<(1-MassRemoved/MaxMassRemove)<<" - ";
         break;
       }
-    }
-  }
+    }//end mass-to-remove reached?
+
+//    //grazing induced additional mortality
+//    //compare origional mroot with current
+//    for(map<CPlant*,double>::const_iterator it = oldMroot.begin();
+//       it != oldMroot.end(); ++it)
+//    {
+//
+//    //depending on loss - calculate mortality
+//      double loss=1- (it->first->mroot/it->second);
+//      double val=getMortBelGraz(loss,SRunPara::RunPara.BGThres);
+//      if (CEnvir::rand01()<val) it->first->dead=true;
+
+//    }
+  }//if mode>0
 }//end CGrid::GrazingBelGr()
 //-----------------------------------------------------------------------------
 /**

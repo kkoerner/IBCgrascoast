@@ -131,6 +131,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
              >>RunPara.meanARes
              >>RunPara.meanBRes
      //        >>RunPara.PftFile
+             >>RunPara.BGThres
              ;
 
       //---------standard parameter:
@@ -186,8 +187,8 @@ void CEnvir::WriteGridComplete(bool allYears)
               <<"totMass\tNInd\t"
               <<"abovemass\tbelowmass\t"
               <<"mean_ares\tmean_bres\t"
-              <<"shannon\t"
-              <<"NPFT\tCutted"
+              <<"shannon\tmeanShannon\t"
+              <<"NPFT\tmeanNPFT\tCutted"
               ;
      GridOutFile<<"\n";
    }
@@ -203,9 +204,9 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->aresmean
                  <<'\t'<<GridOutData[i]->bresmean
                  <<'\t'<<GridOutData[i]->shannon
-                 <<'\t'<<GetMeanShannon(25)
-
+                 <<'\t'<<GetMeanShannon(10)//25 nach 100J
                  <<'\t'<<GridOutData[i]->PftCount
+                 <<'\t'<<GetMeanNPFT(10)
                  <<'\t'<<GridOutData[i]->cutted
                  <<"\n";
    }
@@ -278,6 +279,11 @@ void CEnvir::WritePftComplete()
 void CEnvir::WriteSurvival(){
   WriteSurvival(RunNr,SimNr);
 }
+void CEnvir::WriteSurvival(string str){
+  string dummi=NameSurvOutFile.substr(0,NameSurvOutFile.length()-4);
+  NameSurvOutFile=dummi+str+".txt";
+  WriteSurvival();
+}
 /**
   File-Documentation of type-specific survival statistics.
 */
@@ -288,7 +294,7 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
    SurvOutFile.seekp(0, ios::end);
    long size=SurvOutFile.tellp();
    if (size==0){
-     SurvOutFile<<"Sim\tRun\t";
+     SurvOutFile<<"Sim\tRun\tT\t";
      SurvOutFile<<"mPop\tcPop\tTE\tPFT";
      SurvOutFile<<"\n";
    }
@@ -297,8 +303,8 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
     for(mapType::const_iterator it = PftSurvTime.begin();
           it != PftSurvTime.end(); ++it)
     {
-     SurvOutFile<<simnr<<'\t'<<runnr;
-     SurvOutFile<<'\t'<<GetMeanPopSize(it->first,25);
+     SurvOutFile<<simnr<<'\t'<<runnr<<'\t'<<year;
+     SurvOutFile<<'\t'<<GetMeanPopSize(it->first,10);//mean of 10years
      SurvOutFile<<'\t'<<GetCurrPopSize(it->first);
      SurvOutFile<<'\t'<<it->second<<'\t'<<it->first<<endl;
     }
@@ -331,6 +337,20 @@ double CEnvir::GetMeanShannon(int years)
 
    for (vector<SGridOut>::size_type i=start+1; i<GridOutData.size(); ++i){
       sum+=GridOutData[i]->shannon;
+      count++;
+   }
+   return sum/count;
+}
+//---------------------------------------------------------------------------
+double CEnvir::GetMeanNPFT(int years)
+{
+   double sum=0, count=0;
+
+   //int start=(GridOutData.size()-1)-years*32;
+   int start=(GridOutData.size()-1)-years;
+
+   for (vector<SGridOut>::size_type i=start+1; i<GridOutData.size(); ++i){
+      sum+=GridOutData[i]->PftCount;
       count++;
    }
    return sum/count;
@@ -527,6 +547,10 @@ void CClonalGridEnvir::OneRun(){
    for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       cout<<" y"<<year;
       OneYear();
+      if (year%10==1){//(year==11||year==31){ modulo
+        WriteSurvival();
+        WriteGridComplete(false);//report 10th, 30th and last year
+      }
       if (endofrun)break;
    }//years
       //file-write output     -now in main.cpp
@@ -764,7 +788,7 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
    double sum_above=0, sum_below=0;
    for (int i=0; i<sumcells; ++i){
       CCell* cell = CellList[i];
-      sum_above+=cell- >AResConc;
+      sum_above+=cell->AResConc;
       sum_below+=cell->BResConc;
    }
    GridWeek->aresmean=sum_above/sumcells;

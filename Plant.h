@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include "CObject.h"
+#include "RunPara.h"
 //#include "Seed.h"
 #include <vector>
 using namespace std;
@@ -161,6 +162,11 @@ bool CompareRoot(const CPlant*& plant1, const CPlant*& plant2)
 bool GetPlantRemove(const CPlant*& plant1)
 {
    return (!plant1->remove);
+}
+//---------------------------------------------------------------------------
+bool is_left(const CPlant*& plant1)
+{
+   return (plant1->xcoord < SRunPara::RunPara.CellNum/2);
 }
 //---------------------------------------------------------------------------
 #endif

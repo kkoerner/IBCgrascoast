@@ -133,9 +133,9 @@ void Run(){
    double end=HRTimeInSec();
    //file-write output
 //   clonalOutput();
-   Envir->WriteGridComplete();
-   Envir->WriteSurvival();
-   Envir->WritePftComplete();
+   Envir->WriteGridComplete(false);//report only last year
+   Envir->WriteSurvival();//plus last and mean last 25 years PopSizes
+//   Envir->WritePftComplete();
 }
 //---------------------------------------------------------------------------
 //eof---------------------------------------------------------------------------
