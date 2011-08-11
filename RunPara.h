@@ -46,6 +46,7 @@ struct SRunPara
    double BelPropRemove;
    ///threshold for additional below_herbivory-mortality  (default is one)
    double BGThres;
+   bool HetBG;         //!< flag for heterogenous belowground grazing
    double CutMass;       //!< plant aboveground biomass for plants with LMR = 1.0
    int    NCut;          //!< number cuts per year
    double DistAreaYear;   //!< fraction of grid area disturbed per year;
@@ -57,6 +58,7 @@ struct SRunPara
    double Aampl;      //!< within year above-ground resource amplitude (not used)
    double Bampl;      //!<  within year above-ground resource amplitude (not used)
    char* PftFile;     //!< File with PFT trait parameter in Folder "Input"
+
 
    SRunPara();
    inline double DistProb(){return DistAreaYear/AreaEvent/30.0;};

@@ -1,3 +1,10 @@
+/**
+\brief coordinating main.cpp of the GrasslandModell for belowground herbivory
+experiments
+
+This file contains the main() function to start and coordinate the designed
+experiments.
+*/
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #include <iostream>
@@ -5,7 +12,7 @@
 
 #pragma hdrstop
 
-///the only information the GUI needs from the model
+//the only information the GUI needs from the model
 #include "environment.h"
 //------------------------------------------------------------------------------
 /**\mainpage Grassland Model (for console) - documentation
@@ -15,20 +22,23 @@ Felix May (basic model, ZOI) and Ines Steinhauer (clonal option),
 Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 
 
-\date 2008-02-13 (model)
+\date 2008-02-13 (original model)
 \date 2009-05 (revision)
 \date 2010-01 (Felix' grazing rebuilt)
+\date 2010-11 - 2011-03 (Belowground Herbivory)
+
 
 \par Verbal description of what the code does:
-this code rebuilds the grazing experiments descibed in May et al. (2009).
+This code simulates belowground herbivory additionally to 'normal'
+grassland dynamics
 
 See also: publications of May(2008) and Steinhauer(2008)
 
 \par Type (function, class, unit, form, ...):
 application with some classes
 
-\par Flow chart (for complex code):
-\image html flow.jpg "FlowChart of the clonal ModelVersion. In: Steinhauer(2008)"
+\par Flow chart
+\image html SteinhFlow1.png "FlowChart of the clonal ModelVersion. In: Steinhauer(2008)"
 Flussdiagramm des Graslandmodells inklusive Wachstumsprozessen klonaler Pflanzen.
 Prozesse mit abgerundeten Ecken sind Prozesse der Zelle.
 Die anderen Prozesse werden fuer alle Pflanze/Samen ausgefuehrt.

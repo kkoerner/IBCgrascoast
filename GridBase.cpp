@@ -384,6 +384,18 @@ void CGrid::SeedMortAge()
    }// for all cells
 }//end SeedMortAge
 //-----------------------------------------------------------------------------
+/*! \page disturb Disturbances
+  The following modes of disturbances are implemented in the model:
+     - \link CGrid::Grazing() Aboveground Grazing\endlink (orig. by F.May)
+     - \link CGrid::Trampling() Trampling\endlink           (orig. by F.May)
+     - \link CGrid::GrazingBelGr() Belowground Grazing\endlink (2010  by K.Koerner)
+     - \link CGrid::Cutting() Cutting\endlink             (02/10 by F.May)
+
+  The function CGrid::Disturb() coordinates sequence and occurence
+  of events.
+
+*/
+
 /**
    Calculate the effects of Grazing() and Trampling() according to
    the probabilities \ref SRunPara::GrazProb "GrazProb" and
@@ -531,10 +543,15 @@ double getMortBelGraz(double fraction, double thresh)
   \bug möglicher Absturz wenn Traits->palat==0 oder rootmass==0
 
   Additional mortality is assumed if root grazing of a  plant exceeds
-  a threshold (only if mode>0).
+  a threshold (only if mode>0).  -- obsolete
+
+  \date Mar2011
+  Spatial Heterogeneity is introduced. Only Plants of the left grid part
+  are grazed belowground if Heterogeneity-flag is set. (only if mode>0)
 */
 void CGrid::GrazingBelGr(const int mode)
 {
+  bool HetFlag=SRunPara::RunPara.HetBG;  //!< true for heterogenous belowground herbivory
   if (mode==0){
     for (plant_size i=0;i<PlantList.size();i++){
          CPlant* lplant=PlantList[i];
@@ -553,7 +570,8 @@ void CGrid::GrazingBelGr(const int mode)
     map<string,double> aboveDom;
 
     vector<CPlant*> PlantsToGraze=PlantList;
-    if (true) PlantsToGraze=leftPlantList; //!should only one half of grid be grazed?
+///!
+    if (HetFlag) PlantsToGraze=leftPlantList; //!should only one half of grid be grazed?
     for (plant_size i=0;i<PlantsToGraze.size();i++)
       if (!PlantsToGraze[i]->dead) aboveDom[PlantsToGraze[i]->pft()]+=PlantsToGraze[i]->mshoot;
 
