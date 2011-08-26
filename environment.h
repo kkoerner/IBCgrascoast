@@ -7,6 +7,7 @@
 
 #include "GridBase.h"
 #include "CGridclonal.h"
+//#include "CWaterGrid.h"
 
 #include "rng.h"
 #include "OutStructs.h"
@@ -206,5 +207,7 @@ private:
    void setCover();
    //@}
 };
+
+
 //---------------------------------------------------------------------------
 #endif

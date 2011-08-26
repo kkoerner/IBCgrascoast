@@ -23,7 +23,7 @@ public:
 
    double AResConc;  //!< above-ground resource availability
    double BResConc;  //!< below-ground resource availability
-
+//   double WaterLevel;
 //   int Acover;    //!< above-ground cell state used for plotting the grid -> no ecological meaning
 //   int Bcover;   //!< below-ground cell state used for plotting the grid -> no ecological meaning
    /// returns cell-cover (int-coded)
@@ -88,6 +88,26 @@ public:
    void SortTypeID();  //!< sort individuals after PFT ID
    void print_map(map<string,int> &mymap);  //!< print map content for debugging - can be deleted
 };
+
+/**\brief Water-Cell class inherits from CCell
+
+   \since COMTESS version
+*/
+class CWaterCell : public CCell
+{
+ double WaterLevel;
+public:
+    CWaterCell(const unsigned int xx,const unsigned int yy);
+    CWaterCell(const unsigned int xx,const unsigned int yy, double ares, double bres); //!< Konstruktor
+    CWaterCell(const unsigned int xx,const unsigned int yy, double ares, double bres, double wl); //!< Konstruktor
+//    CCell(xx,yy);
+//    CCell(xx,yy,ares,bres); //!< Konstruktor
+
+ CWaterCell();
+ ~CWaterCell(){};
+ double GetWaterLevel(){return WaterLevel;};
+ void SetWaterLevel(double val){WaterLevel=val;};
+};//end CWaterCell
 
 //---------------------------------------------------------------------------
 #endif

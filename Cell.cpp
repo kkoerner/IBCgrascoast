@@ -314,6 +314,22 @@ void CCell::print_map(map<string,int> &mymap){
    }
 }
 
+//! Konstruktor
+CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy):
+  CCell(xx,yy),WaterLevel(0){
+  //std::cout<<"CWaterCell; ";
+  }
+//! Konstruktor
+CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy,
+  double ares,double bres):CCell(xx,yy,ares,bres),WaterLevel(0)
+  {//cout<<"CWaterCell; ";
+  }
+//! Konstruktor
+CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy,
+  double ares,double bres, double wl):CCell(xx,yy,ares,bres),WaterLevel(wl)
+  {//cout<<"CWaterCell; ";
+  }
+
 //-eof--------------------------------------------------------------------------
 
 

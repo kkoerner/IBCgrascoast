@@ -8,6 +8,13 @@
    Version for Linas exploratoria experiments - no invasion; realistic PFTs
    \date 07/2010
 */
+/** \page changes Changes for the COMTESS-version
+  \section Water stress option
+  \par Extend class CCell with WaterLevel. A makro swiches in CGrid
+  between an array of CCell and CWaterCell.
+  \par Write derived class CWaterGridEnvir
+
+*/
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -148,7 +155,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       RunPara.BelowCompMode=bcomp;
 //      //Größenänderung des Grids auf 3qm
 //      RunPara.GridSize=RunPara.CellNum=173;
-
+  RunPara.print();
   return SimFile.tellg();
 }//end  CEnvir::GetSim
 //------------------------------------------------------------------------------

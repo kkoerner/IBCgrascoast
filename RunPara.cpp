@@ -5,6 +5,7 @@
 #pragma hdrstop
 
 #include "RunPara.h"
+#include <iostream>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -16,4 +17,18 @@ SRunPara::SRunPara():Version(version1),AboveCompMode(sym),BelowCompMode(sym),
   CutMass(5000),NCut(0),torus(true),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/PftTraits2304.txt"){}
-//eof  ---------------------------------------------------------------------
+void SRunPara::print(){
+  std::cout<<"\n  Parameter setting:\n";
+  std::cout<<"Version: "<<Version<<"\tAcomp:"<<AboveCompMode
+      <<"\tBcomp:"<<BelowCompMode
+      <<"\nGridSize:"<<GridSize<<"\tTmax:"<<Tmax<<"Torus:"<<torus
+      <<"\nAGraz:"<<GrazProb<<"\tRemoval:"<<PropRemove
+      <<"\nBGraz:"<<BelGrazProb<<"\tRemoval:"<<BelPropRemove
+      <<"\tMode:"<<BelGrazMode<<"\tThresh:"<<BGThres<<"\tHetGraz:"<<HetBG
+      <<"\nNCut:"<<NCut<<"\tCutMass:"<<CutMass
+      <<"\nARes:"<<meanARes<<"\tBres:"<<meanBRes
+      <<"\nTramplingArea:"<<DistAreaYear<<"\tTrampl_Prob:"<<AreaEvent
+      <<"\nMort_Seeds:"<<mort_seeds<<"\tPFTFile:"<<PftFile
+      <<std::endl;
+}//end print
+  //eof  ---------------------------------------------------------------------

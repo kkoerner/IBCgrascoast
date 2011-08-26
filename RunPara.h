@@ -61,6 +61,7 @@ struct SRunPara
 
 
    SRunPara();
+   void print();
    inline double DistProb(){return DistAreaYear/AreaEvent/30.0;};
    inline double CellScale(){return GridSize/(double)CellNum;};
    inline int GetGridSize() const {return CellNum;};

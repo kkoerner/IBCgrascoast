@@ -8,6 +8,7 @@
 #include "Cell.h"
 #include "Plant.h"
 #include "RunPara.h"
+#define CCELL CWaterCell //CCell for old version
 
 struct PftOut;
 struct GridOut;
@@ -67,7 +68,8 @@ protected:
 public:
 
    vector<CPlant*> PlantList;    //!< List of plant individuals
-   CCell** CellList;    //!<array of pointers to CCell
+   CCELL** CellList;    //!<array of pointers to CCell
+//  CWaterCell** CellList;    //!<array of pointers to CCell
 
    CGrid(); //!< Konstruktor
    virtual ~CGrid();                 //!< Destruktor

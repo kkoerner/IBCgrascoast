@@ -3,7 +3,7 @@
 */
 #pragma package(smart_init)
 #pragma hdrstop
-
+#define CCELL CWaterCell //CCell for old version
 #include "GridBase.h"
 #include "environment.h"
 #include <iostream>
@@ -30,12 +30,14 @@ void CGrid::CellsInit()
 {
    using SRunPara::RunPara;
    int index;int SideCells=RunPara.CellNum;
-   CellList = new (CCell* [SideCells*SideCells]);
+   CellList = new (CCELL* [SideCells*SideCells]);
+//     CellList = new (CWaterCell* [SideCells*SideCells]);
 
    for (int x=0; x<SideCells; x++){
       for (int y=0; y<SideCells; y++){
          index=x*SideCells+y;
-         CCell* cell = new CCell(x,y,
+         CCELL* cell = new CCELL(x,y,
+//         CWaterCell* cell = new CWaterCell(x,y,
                  CEnvir::AResMuster[index],CEnvir::BResMuster[index]);
          CellList[index]=cell;
      }
@@ -48,7 +50,7 @@ void CGrid::CellsInit()
 void CGrid::resetGrid(){
 //cells...
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
       cell->clear();
    }
 //plants...
@@ -66,7 +68,8 @@ CGrid::~CGrid()
    }; PlantList.clear();
 
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
+//      CWaterCell* cell = CellList[i];
       delete cell;
    }
    delete[] CellList;
@@ -154,7 +157,7 @@ int CGrid::DispersSeeds(CPlant* plant)
          if (SRunPara::RunPara.torus){Boundary(x,y);}
          else if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
 
-         CCell* cell = CellList[x*SRunPara::RunPara.CellNum+y];
+         CCELL* cell = CellList[x*SRunPara::RunPara.CellNum+y];
          new CSeed(plant,cell);
       }//for NSeeds
       return nb_LDDseeds;
@@ -198,7 +201,7 @@ void CGrid::CoverCells()
         /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
         index = xhelp*RunPara.CellNum+yhelp;
-        CCell* cell = CellList[index];
+        CCELL* cell = CellList[index];
 
         //Aboveground****************************************************
         if (a<Ashoot){
@@ -256,7 +259,7 @@ void CGrid::CalcRootInteraction(CPlant * plant){
         /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
         int index = xhelp*RunPara.CellNum+yhelp;
-        CCell* cell = CellList[index];
+        CCELL* cell = CellList[index];
         //-----------------------
         plant->Aroots_all  += cell->BelowPlantList.size();
         plant->Aroots_type += cell->PftNIndB[plant->pft()];
@@ -273,7 +276,7 @@ void CGrid::ResetWeeklyVariables()
 {
    //loop for all cells
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
       cell->AbovePlantList.clear();
       cell->BelowPlantList.clear();
       cell->RemoveSeedlings(); //remove seedlings and pft-counter
@@ -296,7 +299,7 @@ void CGrid::ResetWeeklyVariables()
 void CGrid::DistribResource()
 {
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
       cell->GetNPft();
 
       cell->AboveComp();
@@ -325,7 +328,7 @@ void CGrid::EstabLottery()
    int* PftCumNSeedling   = new int[RunPara.NPft];
 
       for (int i=0; i<RunPara.GetSumCells(); ++i){  //loop for all cells
-         CCell* cell = CellList[i];
+         CCELL* cell = CellList[i];
          if ((cell->getCover(1)==0) && (!cell->SeedBankList.empty())){  //germination if cell is uncovered
 
             sum=cell->Germinate();
@@ -374,7 +377,7 @@ void CGrid::EstabLottery()
 void CGrid::SeedMortAge()
 {
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
       for (seed_iter iter=cell->SeedBankList.begin();
          iter!=cell->SeedBankList.end(); ++iter){
          CSeed* seed = *iter;
@@ -700,7 +703,7 @@ void CGrid::Trampling()
         /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
         index = xhelp*RunPara.CellNum+yhelp;
-        CCell* cell = CellList[index];
+        CCELL* cell = CellList[index];
         if (cell->occupied){
            CPlant* plant = (CPlant*) cell->PlantInCell;
            plant->remove=true;
@@ -747,7 +750,7 @@ void CGrid::SeedMortWinter()
 {
 //   double rnumber;
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
       for (seed_iter iter=cell->SeedBankList.begin(); iter!=cell->SeedBankList.end(); ++iter){
          CSeed* seed = *iter;
          if ((CEnvir::rand01()<mort_seeds)){
@@ -778,7 +781,7 @@ void CGrid::InitPlants(SPftTraits* traits,const int n)
          x=nrand(SideCells);
          y=nrand(SideCells);
 
-         CCell* cell = CellList[x*SideCells+y];
+         CCELL* cell = CellList[x*SideCells+y];
          if (!cell->occupied){
             CPlant* plant = new CPlant(traits,cell);
             PlantList.push_back(plant);
@@ -808,7 +811,7 @@ void CGrid::InitSeeds(SPftTraits* traits, int n,double estab)
      for (int i=0; i<n; ++i){
         x=nrand(SideCells);
         y=nrand(SideCells);
-        CCell* cell = CellList[x*SideCells+y];
+        CCELL* cell = CellList[x*SideCells+y];
         new CSeed(estab,traits,cell);
      }
 }//end CGrid::SeedsInit()
@@ -827,7 +830,7 @@ void CGrid::SetCellResource()
    using SRunPara::RunPara;
 
    for (int i=0; i<RunPara.GetSumCells(); ++i){
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
       cell->AResConc=max(0.0,
          (-1.0)*RunPara.Aampl*cos(2.0*Pi*gweek/(double)CEnvir::WeeksPerYear)
          +CEnvir::AResMuster[i]);
@@ -900,7 +903,7 @@ void CGrid::GetPftNInd(vector<int>& PftData)
 void CGrid::GetPftNSeed(vector<int>& PftData)
 {
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCell* cell = CellList[i];
+      CCELL* cell = CellList[i];
       for (seed_iter iter=cell->SeedBankList.begin(); iter!=cell->SeedBankList.end(); ++iter){
          CSeed* seed = *iter;
          ++PftData[seed->Traits->TypeID-1];
