@@ -90,8 +90,8 @@ see additional page for solved and unsolved bugs
 - Weiﬂ, Lina et al. (in prep): clonal growth
 */
 //---------------------------------------------------------------------------
-//CWaterGridEnvir* Envir;   ///<environment in which simulations are run
-CClonalGridEnvir* Envir;   ///<environment in which simulations are run
+CWaterGridEnvir* Envir;   ///<environment in which simulations are run
+//CClonalGridEnvir* Envir;   ///<environment in which simulations are run
 using namespace std;
 #pragma argsused
 
@@ -110,8 +110,8 @@ int main(int argc, char* argv[])
    }
    cout<<"new Environment...\n";
 
-//   Envir=new CWaterGridEnvir();
-   Envir=new CClonalGridEnvir();
+   Envir=new CWaterGridEnvir();
+//   Envir=new CClonalGridEnvir();
    using CClonalGridEnvir::Pfttype;
    using CClonalGridEnvir::clonaltype;
    using CClonalGridEnvir::RunNr;

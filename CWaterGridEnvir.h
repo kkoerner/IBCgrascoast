@@ -6,20 +6,26 @@
 #include "environment.h"
 
 //---------------------------------------------------------------------------
+/**
+ This class is an Envir-class, i.e. weekly functions are scheduled here and
+ in- and output is coordinated.
+ 
+*/
 class CWaterGridEnvir: public CClonalGridEnvir{
 //public CEnvir, public CWaterGrid{
+ /// water flow intensity categories
+ enum ETide {no,easy,tide,turbulent};
+ /// flow intensity variable
+ ETide WaterFlow;
 public:
   CWaterGridEnvir():WaterFlow(no){CellsInit();
  cout<<"\nCWaterGrid() ";};
   ~CWaterGridEnvir();
-///\todo  überlade grid mit **CWaterCell
- CWaterCell** CellList;    //!<array of pointers to CWaterCell
  void CellsInit();
- /// water flow intensity categories
- enum ETide {no,easy,tide,turbulent};
- ETide WaterFlow;
-// /// returns grid's mean water level
-// double GetMeanWaterLevel();
+ /// returns grid's mean water level
+ double GetMeanWaterLevel();
+ /// lowers or rises mean water level
+ void SetMeanWaterLevel(double val);
   ///\name reimplemented Functions from CEnvir
   //@{
 //  void InitRun();   ///< from CEnvir

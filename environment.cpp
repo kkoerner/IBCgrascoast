@@ -12,7 +12,7 @@
   \section Water stress option
   \par Extend class CCell with WaterLevel. A makro swiches in CGrid
   between an array of CCell and CWaterCell.
-  \par Write derived class CWaterGridEnvir
+  \par Write derived class CWaterGridEnvir. 
 
 */
 //---------------------------------------------------------------------------
@@ -120,25 +120,27 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
 
       SimFile>>SimNr
        //      >>dummi     //RunPara.Layer
-             >>version   //>>RunPara.Version - enum types cannot be read with >>
-             >>acomp     //>>RunPara.AboveCompMode
-             >>bcomp    //>>RunPara.BelowCompMode
-             >>RunPara.BelGrazMode   //mode of belowground grazing
+       //      >>version   //>>RunPara.Version - enum types cannot be read with >>
+       //      >>acomp     //>>RunPara.AboveCompMode
+       //      >>bcomp    //>>RunPara.BelowCompMode
+       //      >>RunPara.BelGrazMode   //mode of belowground grazing
         //     >>RunPara.GridSize
         //     >>RunPara.CellNum
              >>RunPara.Tmax
         //     >>RunPara.NPft
              >>RunPara.GrazProb
-             >>RunPara.PropRemove
-             >>RunPara.BelGrazProb     //for belowground simulations
-             >>RunPara.BelPropRemove   //for belowground simulations
+         //    >>RunPara.PropRemove
+         //    >>RunPara.BelGrazProb     //for belowground simulations
+         //    >>RunPara.BelPropRemove   //for belowground simulations
+             >>RunPara.NCut
+             >>RunPara.CutMass
         //     >>RunPara.DistAreaYear
         //     >>RunPara.AreaEvent
         //     >>RunPara.mort_seeds
              >>RunPara.meanARes
              >>RunPara.meanBRes
      //        >>RunPara.PftFile
-             >>RunPara.BGThres
+         //    >>RunPara.BGThres
              ;
 
       //---------standard parameter:
@@ -150,9 +152,9 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       acomp=1;bcomp=0;
       //--------------------------------
       // set version and competition  modes - in this way because of enum types!
-      RunPara.Version=version;
-      RunPara.AboveCompMode=acomp;
-      RunPara.BelowCompMode=bcomp;
+//      RunPara.Version=version;
+//      RunPara.AboveCompMode=acomp;
+//      RunPara.BelowCompMode=bcomp;
 //      //Größenänderung des Grids auf 3qm
 //      RunPara.GridSize=RunPara.CellNum=173;
   RunPara.print();
