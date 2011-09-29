@@ -6,7 +6,8 @@
 #include "environment.h"
 
 //---------------------------------------------------------------------------
-/**
+///  Envir-Class for Water-stresds scenarios
+/** 
  This class is an Envir-class, i.e. weekly functions are scheduled here and
  in- and output is coordinated.
  

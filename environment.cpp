@@ -10,9 +10,16 @@
 */
 /** \page changes Changes for the COMTESS-version
   \section Water stress option
-  \par Extend class CCell with WaterLevel. A makro swiches in CGrid
-  between an array of CCell and CWaterCell.
-  \par Write derived class CWaterGridEnvir. 
+  \par Extend class CCell with WaterLevel.
+  A makro swiches in CGrid between an array of CCell and CWaterCell.
+  \par Write derived class CWaterGridEnvir.
+  This class is derrived from CClonalGridEnvir. At the moment it has a new
+  variable WaterFlow, that has information on the weekly frequency/ intensity
+  of water flow (enum CWaterGridEnvir::ETide).
+  It has an own init-function and get/set functions for mean water level
+  on grid.
+  GridCells of the basic lattice have to be of type CWaterCell.
+  \sa CWaterGridEnvir, CWaterCell
 
 */
 //---------------------------------------------------------------------------
