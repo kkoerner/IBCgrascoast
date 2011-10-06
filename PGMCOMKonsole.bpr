@@ -6,8 +6,8 @@
     <PROJECT value="PGMCOMKonsole.exe"/>
     <OBJFILES value="TimeUtils.obj CclonalSeed.obj Cell.obj CGenet.obj CGridclonal.obj 
       clonalPlant.obj clonalTraits.obj CObject.obj CSeed.obj environment.obj 
-      GridBase.obj OutStructs.obj Plant.obj rng.obj RunPara.obj GMCOMKonsole.obj 
-      CWaterGridEnvir.obj"/>
+      GridBase.obj OutStructs.obj Plant.obj rng.obj RunPara.obj 
+      GMCOMKonsole_tests.obj CWaterGridEnvir.obj CWaterPlant.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -30,8 +30,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="PGMCOMKonsole.bpf"/>
-    <INCLUDEPATH value="..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="C:\Programme\Borland\CBuilder6\Projects;..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="C:\Programme\Borland\CBuilder6\Projects;..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -67,8 +67,9 @@
       <FILE FILENAME="Plant.cpp" FORMNAME="" UNITNAME="Plant.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rng.cpp" FORMNAME="" UNITNAME="rng.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="RunPara.cpp" FORMNAME="" UNITNAME="RunPara.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="GMCOMKonsole.cpp" FORMNAME="" UNITNAME="GMCOMKonsole" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GMCOMKonsole_tests.cpp" FORMNAME="" UNITNAME="GMCOMKonsole_tests" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CWaterGridEnvir.cpp" FORMNAME="" UNITNAME="CWaterGridEnvir" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CWaterPlant.cpp" FORMNAME="" UNITNAME="CWaterPlant" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

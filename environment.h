@@ -182,9 +182,9 @@ public:
   //new...
   ///reads simulation environment from file
   int GetSim(const int pos=0,string file=NameSimFile);
-  void InitInds();///<Initialization of individuals on grid
-  void InitInds(string file);///<initialization of inds based on file data
-  void InitSeeds(string, int);
+  virtual void InitInds();///<Initialization of individuals on grid
+  virtual void InitInds(string file);///<initialization of inds based on file data
+  virtual void InitSeeds(string, int);
   void GetOutputCutted(); ///<get anually cutted biomass (after week 22)
   void clonalOutput();   ///< write clonal results collected last
   int exitConditions(); ///< get exit conditions //first implemented by Ines
