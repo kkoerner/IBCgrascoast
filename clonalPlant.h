@@ -47,6 +47,9 @@ public:
    CGenet* getGenet(){return genet;};
    void SpacerGrow();                  ///<spacer growth
    virtual int GetNRamets();           ///<return number of ramets
+   virtual double GetBMSpacer();  ///<returns clonal mass
+   ///returns BM of ramet+spacer
+   virtual double GetMass(){return CPlant::GetMass()+GetBMSpacer();};
 };
 #endif
 //--------------------------------------------------------------------------

@@ -164,6 +164,17 @@ int CclonalPlant::GetNRamets()
    return 0;
 }
 //-----------------------------------------------------------------------------
+double CclonalPlant::GetBMSpacer(){
+   int SpacerListSize=this->growingSpacerList.size();
+  if (SpacerListSize==0)return 0.0;
+  double mSpacer=0;
+  for (int g=0; g<(SpacerListSize); g++)
+    {  //loop for all growing Spacer of one plant
+       CclonalPlant* Spacer = this->growingSpacerList[g];
+       mSpacer+=(Spacer->Spacerlength-Spacer->SpacerlengthToGrow)* clonalTraits->mSpacer;
+  }
+  return this->mReproRamets+ mSpacer;
+}
 void CclonalPlant::SpacerGrow()
 {
    double mGrowSpacer=0;

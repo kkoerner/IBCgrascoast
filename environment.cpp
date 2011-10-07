@@ -563,10 +563,10 @@ void CClonalGridEnvir::OneRun(){
    for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       cout<<" y"<<year;
       OneYear();
-      if (year%10==1){//(year==11||year==31){ modulo
+//      if (year%10==1){//(year==11||year==31){ modulo
         WriteSurvival();
         WriteGridComplete(false);//report 10th, 30th and last year
-      }
+//      }
       if (endofrun)break;
    }//years
       //file-write output     -now in main.cpp

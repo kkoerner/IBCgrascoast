@@ -110,7 +110,8 @@ void CGridclonal::PlantLoop()
       if (!plant->dead)
       {
          plant->Grow2();
-         if ((plant->type() == "CclonalPlant"))//only if its a clonal plant
+         if ((plant->type() == "CclonalPlant")||
+         (plant->type() == "CWaterPlant"))//only if its a clonal plant
          {
             //ramet dispersal in every week
             DispersRamets((CclonalPlant*) plant);
@@ -156,6 +157,12 @@ int CGridclonal::DispersSeeds(CPlant* plant)
          else if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
 
          CCell* cell = CellList[x*SideCells+y];
+         DispSeeds_help(plant,cell);
+   }//for NSeeds
+   return nb_LDDseeds;
+}//end DispersSeeds
+void CGridclonal::DispSeeds_help(CPlant* plant,CCell* cell)
+{
          if (plant->type()=="CPlant")  // for non-clonal seeds
          {
             new CSeed(plant,cell);
@@ -165,9 +172,9 @@ int CGridclonal::DispersSeeds(CPlant* plant)
          {
             new CclonalSeed((CclonalPlant*) plant,cell);
          }
-   }//for NSeeds
-   return nb_LDDseeds;
-}//end DispersSeeds
+
+}    //
+
 //-----------------------------------------------------------------------------
 ///
 /**
@@ -178,7 +185,8 @@ void CGridclonal::DispersRamets(CclonalPlant* plant)
    double CmToCell=1.0/SRunPara::RunPara.CellScale();
    using CEnvir::Round;
 
-   if (plant->type() == "CclonalPlant")//only if its a clonal plant
+//   if (plant->type() == "CclonalPlant" ||
+//       plant->type() == "CWaterPlant")//only if its a clonal plant
    {
         //dispersal
         for (int j=0; j<plant->GetNRamets(); ++j)
@@ -200,7 +208,7 @@ void CGridclonal::DispersRamets(CclonalPlant* plant)
          Boundary(x,y);   //periodic boundary condition
 
          // save dist and direction in the plant
-         CclonalPlant *Spacer=new CclonalPlant(x/CmToCell,y/CmToCell,plant);
+         CclonalPlant *Spacer=newSpacer(x/CmToCell,y/CmToCell,plant);
          Spacer->SpacerlengthToGrow=dist;
          Spacer->Spacerlength=dist;
          Spacer->Spacerdirection=direction;
@@ -236,7 +244,7 @@ void CGridclonal::EstabLottery()
    for (int z=0; z<PlantListsize;z++)  //for all Plants (befor Rametestab)
    {
       CPlant* plant=PlantList[z];
-      if ((plant->type() == "CclonalPlant")&&(!plant->dead))
+      if ((plant->type() != "CPlant")&&(!plant->dead))
       {//only if its a clonal plant
          RametEstab((CclonalPlant*)plant);
       }
@@ -297,6 +305,23 @@ void CGridclonal::EstabLottery()
                                   +PftCumNSeedling[pft]
                                   -cell->PftNSeedling[pft];
                   CSeed* seed = cell->SeedlingList[index];
+                  //establish seedlings
+                  EstabLott_help(seed);
+                  cell->PftNSeedling[seed->Traits->TypeID-1]--;
+                 }//if rnum<
+               ++pft;
+              }//while pft<max_pft
+            }//if seedlings
+            cell->RemoveSeedlings();
+         }//if seedlings in cell
+      }//seeds in cell
+    }//for all cells
+  }//if between week 1-4 and 21-25
+  delete[] PftCumEstabProb;
+  delete[] PftCumNSeedling;
+}//end CGridclonal::EstabLottery()
+void CGridclonal::EstabLott_help(CSeed* seed){
+cout<<"estabLott_help - CGridClonal";
                   CPlant* plant;
                   if (seed->type()=="CSeed")
                   {
@@ -315,19 +340,9 @@ void CGridclonal::EstabLottery()
                   }
                   PlantList.push_back(plant);
 
-                  cell->PftNSeedling[seed->Traits->TypeID-1]--;
-                 }//if rnum<
-               ++pft;
-              }//while pft<max_pft
-            }//if seedlings
-            cell->RemoveSeedlings();
-         }//if seedlings in cell
-      }//seeds in cell
-    }//for all cells
-  }//if between week 1-4 and 21-25
-  delete[] PftCumEstabProb;
-  delete[] PftCumNSeedling;
-}//end CGridclonal::EstabLottery()
+
+}
+
 //--------------------------------------------------------------------------
 /**
   Establishment of ramets. If spacer is readily grown tries to settle on
@@ -348,7 +363,7 @@ void CGridclonal::RametEstab(CclonalPlant* plant)
    {
       CclonalPlant* Ramet = plant->growingSpacerList[f];
       if (Ramet->SpacerlengthToGrow<=0){//return;
-/// \todo hier boundary-Kontrolle einfügen 
+/// \todo hier boundary-Kontrolle einfügen
 
         int x=CEnvir::Round(Ramet->xcoord/SRunPara::RunPara.CellScale());
         int y=CEnvir::Round(Ramet->ycoord/SRunPara::RunPara.CellScale());

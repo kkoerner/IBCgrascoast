@@ -20,6 +20,7 @@ public:
 
    CGenet():number(++staticID){};
    ~CGenet(){};
+   virtual double GetMass();///< return BM of Genet
    void ResshareA();     ///< share above-ground resources
    void ResshareB();     ///< share below-ground resources
 };

@@ -187,7 +187,7 @@ public:
   virtual void InitSeeds(string, int);
   void GetOutputCutted(); ///<get anually cutted biomass (after week 22)
   void clonalOutput();   ///< write clonal results collected last
-  int exitConditions(); ///< get exit conditions //first implemented by Ines
+  virtual int exitConditions(); ///< get exit conditions //first implemented by Ines
    ///\name Functions to get Acover and Bcover of cells.
    /** It is assumed that coordinates/indices match grid size.
        Functions have to be called after function CGrid::CoverCells and before

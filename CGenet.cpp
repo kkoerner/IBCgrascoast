@@ -70,6 +70,19 @@ void CGenet::ResshareB()
      for (unsigned int m=0; m<AllRametList.size();m++)
        AllRametList[m]->Buptake+=MeanBuptake;
 }//end CGridclonal::ResshareB
+
+/**
+returns BM of the entire Ramet
+\author KK
+\date 11/10/7
+*/
+double CGenet::GetMass(){
+  double mGenet=0;
+  for (unsigned int m=0; m<AllRametList.size();m++)
+     mGenet+=AllRametList[m]->GetMass();
+  return mGenet;
+}// return BM of Genet
+
 //eof---------------------------------------------------------------------
 
 

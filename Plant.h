@@ -128,7 +128,7 @@ public:
 
    void setCell(CCell* cell); ///<define cell for plant
    inline CCell* getCell(){return cell;};///<returns central cell
-   inline double GetMass(){return mshoot+mroot+mRepro;};//!< returns plant mass
+   virtual double GetMass(){return mshoot+mroot+mRepro;};//!< returns plant mass
    virtual int GetNSeeds();     //!< returns number of seeds of one plant individual
 };
 

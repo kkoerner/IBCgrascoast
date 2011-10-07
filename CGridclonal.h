@@ -17,12 +17,16 @@
 class CGridclonal : public CGrid
 {
 private:
-   ///List of Genets on Grid
-   vector<CGenet*> GenetList;
    //new...
    void RametEstab(CclonalPlant* plant);///< establish ramets
    void Resshare();                     ///< share ressources among connected ramets
+   virtual void EstabLott_help(CSeed* seed);
+   virtual void DispSeeds_help(CPlant* plant,CCell* cell);    ///<clonal version
+   virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant){
+     return new CclonalPlant(x,y,plant);};
 protected:
+   ///List of Genets on Grid
+   vector<CGenet*> GenetList;
    //overload...
    void DistribResource();              ///<clonal version
    void PlantLoop();                    ///<clonal version

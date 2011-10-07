@@ -223,6 +223,7 @@ void CPlant::Grow2()         //grow plant one timestep
    if ((Auptake<Traits->mThres*Ash_disc*Traits->Gmax*2)
        || (Buptake<Traits->mThres*Art_disc*Traits->Gmax*2))++stress;
    else if (stress>0) --stress;
+   cout<<"\n"<<this->xcoord<<";"<<this->ycoord<<"\tBM "<<this->GetMass();
 //   if (stress>Traits->memory) stress=Traits->memory;
 //   Auptake=0;
 //   Buptake=0;
