@@ -87,7 +87,7 @@ void CWaterPlant::DistrRes_help(){
  // get plant's height
     double const cheight = 10;///< cm height per mg vegetative plant mass
     double height= ///<plant height
-      mshoot/(Traits->LMR*Traits->LMR)/cheight;
+      mshoot/(Traits->LMR)/cheight;
  // submersed plant parts dont assimilate
     this->Auptake*=min(1.0,max(0.0,1-(wl )/height));
  }
