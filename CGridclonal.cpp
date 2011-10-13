@@ -107,11 +107,12 @@ void CGridclonal::PlantLoop()
    for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
    {
       CPlant* plant = *iplant;
+//         cout<<"\nW"<<CEnvir::week<<" "<<plant->xcoord<<";"<<plant->ycoord;
+
       if (!plant->dead)
       {
          plant->Grow2();
-         if ((plant->type() == "CclonalPlant")||
-         (plant->type() == "CWaterPlant"))//only if its a clonal plant
+         if ((plant->type() != "CPlant"))//only if its a clonal plant
          {
             //ramet dispersal in every week
             DispersRamets((CclonalPlant*) plant);
@@ -123,8 +124,9 @@ void CGridclonal::PlantLoop()
 //           (*LDDSeeds)[plant->pft()]+=DispersSeeds(plant);
               addLDDSeeds(plant->pft(),DispersSeeds(plant));
          plant->Kill();
-      }
+      }//else cout<<"\tplant dead";
       plant->DecomposeDead();
+
    }
 }//plant loop
 //-----------------------------------------------------------------------------
@@ -437,7 +439,7 @@ void CGridclonal::Resshare() // resource sharing
          if (Genet->AllRametList.size()>1)//!Genet->AllRametList.empty())
          {
             CclonalPlant* plant=Genet->AllRametList.front();
-            if (plant->type()=="CclonalPlant"
+            if (plant->type()!="CPlant"
                  &&plant->clonalTraits->Resshare==true)
             {//only betwen connected ramets
                Genet->ResshareA();  //above ground
@@ -452,7 +454,7 @@ void CGridclonal::Resshare() // resource sharing
 */
 void CGridclonal::DeletePlant(CPlant* plant1)
 {
-   if (plant1->type()=="CclonalPlant")
+   if (plant1->type()!="CPlant")
    {
       CGenet *Genet=((CclonalPlant*)plant1)->getGenet();
       //suche Ramet aus Liste und entferne ihn
@@ -477,7 +479,7 @@ int CGridclonal::GetNclonalPlants() //count clonal plants
   {
     CPlant* plant = *iplant;
     //only if its a clonal plant
-    if ((plant->type() == "CclonalPlant")&&(!plant->dead)) NClonalPlants++;
+    if ((plant->type() != "CPlant")&&(!plant->dead)) NClonalPlants++;
   }
   return NClonalPlants;
 }//end CGridclonal::GetNclonalPlants()

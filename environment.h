@@ -124,9 +124,9 @@ public:
    //! writes detailed data for each PFT to output file
    void WritePftComplete();
    ///add string1 to file - for logging
-   void AddLogEntry(string,string);
+   static void AddLogEntry(string,string);
    ///add string1 to file - for logging
-   void AddLogEntry(float,string);
+   static void AddLogEntry(float,string);
    /// get mean shannon diversity over several years
    double GetMeanShannon(int years);
    /// get mean number of types

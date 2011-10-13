@@ -13,6 +13,8 @@ class SWaterTraits; class CWaterSeed;
 */
 class CWaterPlant:public CclonalPlant
 {
+//protected:
+  virtual void Grow2();
 public:
    SWaterTraits* waterTraits;                ///<traits of water preferences
    //Constructors
@@ -20,9 +22,14 @@ public:
    CWaterPlant(CWaterSeed* seed);
    ///clonal growth
    CWaterPlant(double x, double y, CWaterPlant* plant);
+   CWaterPlant(double mass, SPftTraits* traits,
+      SclonalTraits* clonalTraits,
+      SWaterTraits* waterTraits, CCell* cell);
    virtual ~CWaterPlant(){};  //!<destructor
 
 
+///add water impact on ressource allocation
+  virtual void DistrRes_help();
    virtual string type();  ///<say what you are
    virtual string pft();   ///<say what a pft you are
 

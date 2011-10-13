@@ -63,7 +63,7 @@ protected:
    void Cutting();             //!< cutting of all plants to equal aboveground mass
    void CellsInit();           //!< initalization of cells
 
-   void SetCellResource();     ///< set amount of resources the cells serve
+   virtual void SetCellResource();     ///< set amount of resources the cells serve
 
 public:
 

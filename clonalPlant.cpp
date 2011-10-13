@@ -140,6 +140,7 @@ double CclonalPlant::ReproGrow(double uptake){
          mReproRamets+=dm_seeds;
       }
    }else VegRes=uptake;
+//   cout<<"\tVeg "<<VegRes<<"\tSpacer "<<mReproRamets<<"\tSeed"<<mRepro;
    return VegRes;
 }//end reprogrow
 //-----------------------------------------------------------------------------
@@ -192,7 +193,7 @@ void CclonalPlant::SpacerGrow()
          double lengthtogrow=Spacer->SpacerlengthToGrow;
          lengthtogrow-=(mGrowSpacer/clonalTraits->mSpacer); //spacer growth
          Spacer->SpacerlengthToGrow=max(0.0,lengthtogrow);
-
+//cout<<"\n <<Spacer: "<<Spacer->SpacerlengthToGrow<<"cm left";
          //Estab for all growing Spacers in the last week of the year
          if ((CEnvir::week==CEnvir::WeeksPerYear)
            && (Spacer->SpacerlengthToGrow>0))

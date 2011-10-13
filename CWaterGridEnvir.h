@@ -26,9 +26,11 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  ///helping function for EstabLottery()
  void EstabLott_help(CSeed* seed);
  void DispSeeds_help(CPlant* plant,CCell* cell);    ///<clonal version
- virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant){
-     return new CWaterPlant(x,y,(CWaterPlant*)plant);};
-
+ virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant);
+// virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant);
+protected:
+ void DistribResource();    ///<water impact on ressource allocation
+ void SetCellResource();     ///< set amount of resources the cells serve
 public:
   CWaterGridEnvir():WaterFlow(no){CellsInit();
  cout<<"\nCWaterGrid() ";};
@@ -41,6 +43,8 @@ public:
  //! initalization of clonal seeds
  virtual void InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double estab=1.0);
+ virtual void InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
+   SWaterTraits* wtraits,const int n,double mass);
 //-----
 
   virtual int exitConditions(); ///< get exit conditions
@@ -88,7 +92,7 @@ struct SWaterTraits   //plant functional traits
    string name;   ///< name of functional type
    double WL_Optimun; ///< optimal mean water level (positive is flooded)
    double WL_Tolerance; ///< SD of optimal water level
-
+   bool assimBelWL;///<plant can assimilate light below WaterLevel
 
    void SetDefault();   ///< set default trait values (eq. 'PFT1')
    SWaterTraits();

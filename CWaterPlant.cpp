@@ -32,6 +32,75 @@ CWaterPlant::CWaterPlant(double x, double y, CWaterPlant* plant)
 {
 }
 //---------------------------------------------------------------------------
+/**
+initialization of adult plants
+\param mass initial biomass of Plant (above- + belowground)
+*/
+CWaterPlant::CWaterPlant(double mass, SPftTraits* traits,
+      SclonalTraits* clonalTraits,
+      SWaterTraits* waterTraits, CCell* cell):
+      CclonalPlant(traits,clonalTraits,cell),waterTraits(waterTraits)
+{
+  this->mshoot=mass/2.0;
+  this->mroot=mass/2.0;
+}
+//---------------------------------------------------------------------------
+/**
+Overload CPlant::Grow2() for additional Effect of WaterLevel.
+ *aboveground no ressources are allocated if plant is below water level.
+ (algorithm is analog to \ref CGrid::Cutting() 'cutting biomass')
+ *belowground ressources are lost relative to plant's properties.
+ \author KK
+\date 11/10/10
+\todo check cheight-value [10mg per 1cm plant height]
+*/
+void CWaterPlant::Grow2()
+{
+
+ //standard growth
+ CPlant::Grow2();
+ //output
+ CEnvir::AddLogEntry(CEnvir::year,"C-reed-out.txt");
+ CEnvir::AddLogEntry(CEnvir::week,"C-reed-out.txt");
+ CEnvir::AddLogEntry(xcoord,"C-reed-out.txt");
+ CEnvir::AddLogEntry(ycoord,"C-reed-out.txt");
+ CEnvir::AddLogEntry(GetMass(),"C-reed-out.txt");
+ CEnvir::AddLogEntry((int)dead,"C-reed-out.txt");
+ CEnvir::AddLogEntry(this->growingSpacerList.size(),"C-reed-out.txt");
+// CEnvir::AddLogEntry(height,"C-reed-out.txt");
+ CEnvir::AddLogEntry("\n","C-reed-out.txt");
+
+}//end Grow2
+/**
+Helping function for CWaterGridEnvir::DistribRessource
+
+Corrects plant's resource uptake for current Water conditions.
+\author KK
+\date 11/10/11
+*/
+void CWaterPlant::DistrRes_help(){
+ //add water-effect
+ double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
+
+ //.. aboveground
+ if (!this->waterTraits->assimBelWL){
+ // get plant's height
+    double const cheight = 10;///< cm height per mg vegetative plant mass
+    double height= ///<plant height
+      mshoot/(Traits->LMR*Traits->LMR)/cheight;
+ // submersed plant parts dont assimilate
+    this->Auptake*=min(1.0,max(0.0,1-(wl )/height));
+ }
+
+ //.. belowground
+ double diff=wl-this->waterTraits->WL_Optimun;
+ double sigma=this->waterTraits->WL_Tolerance;
+ //Ressourcennutzung nach Normalverteilung
+ double factor= min(1,max(0,CEnvir::RandNumGen.normal(diff,sigma)));
+ this->Buptake*=factor;
+
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 /***/
 CWaterSeed::CWaterSeed(double estab, SPftTraits* traits,

@@ -34,15 +34,17 @@ void CWaterGridEnvir::InitInds()
 
   int no_init_seeds=10;
   //reed
-  SPftTraits*    traits  =SPftTraits::PftList[18];
-  SclonalTraits* cltraits=SclonalTraits::clonalTraits[2];
+  SPftTraits*    traits  =SPftTraits::PftList[15];
+  SclonalTraits* cltraits=SclonalTraits::clonalTraits[6];
   SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[0];
   PftInitList["reed"]+=no_init_seeds;
   addPftLink("reed",traits);//?noch mal genauer gucken
   addClLink("reed",cltraits);
   WLinkList["reed"]=wtraits;
-  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+//  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+  InitWaterInds(traits,cltraits,wtraits,1,4000);
 
+   this->SetMeanWaterLevel(30);
 
 }//end InitInds
 /**
@@ -71,17 +73,59 @@ void CWaterGridEnvir::InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
           <<" at "<<cell->x<<";"<<cell->y<<endl;
    }
 }//end distribute seed rain
+void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
+   SWaterTraits* wtraits,const int n,double mass)
+{
+   using CEnvir::nrand;using SRunPara::RunPara;
+   int x,y;
+   int SideCells=RunPara.CellNum;
+
+   for (int i=0; i<n; ++i){
+        x=nrand(SideCells);
+        y=nrand(SideCells);
+
+        CCell* cell = CellList[x*SideCells+y];
+        //set Plant
+        CWaterPlant* plant= new CWaterPlant(mass,traits,cltraits,wtraits,cell);
+        PlantList.push_back(plant);
+
+        //set Genet
+        CGenet *Genet= new CGenet();
+        GenetList.push_back(Genet);
+        plant->setGenet(Genet);
+
+      cout<<"disp "<<plant->pft()
+          <<" at "<<cell->x<<";"<<cell->y<<endl;
+   }
+
+}
+
+/**
+  weekly change grid water level
+  \author KK
+  \date 11/10/10
+*/
+void CWaterGridEnvir::SetCellResource(){
+  CGrid::SetCellResource();
+//  ChangeMeanWaterLevel(5);
+}
+
+//-------------------------------------------------------------
+CclonalPlant* CWaterGridEnvir::newSpacer(int x,int y, CclonalPlant* plant){
+     return new CWaterPlant(x,y,(CWaterPlant*)plant);
+}
 //-------------------------------------------------------------
 int CWaterGridEnvir::exitConditions()
 {
      int currTime=GetT();
 //    if no more individuals existing
-     if (this->GenetList.size()==0)
+     if (this->PlantList.size()==0)
      {
         endofrun=true;
         cout<<"no more inds";
         return currTime; //extinction time
      }
+     cout<<"\n  << "<<this->PlantList.size()<<"plants left";
      return 0;
 }//end CClonalGridEnvir::exitConditions()
 //---------------------------------------------------------
@@ -107,6 +151,23 @@ void CWaterGridEnvir::DispSeeds_help(CPlant* plant,CCell* cell)
   new CWaterSeed((CWaterPlant*) plant,cell);
 }    //
 
+//---------------------------------------------------------------------------
+/**
+Each plant's ressource uptake is corrected for it's water conditions.
+Ressources are lost, if current water conditions doesn't suit the plant's
+requirements.
+\author KK
+\date 11/10/10
+*/
+void CWaterGridEnvir::DistribResource(){
+   //collect resouces according to local competition
+   CGrid::DistribResource();
+   //for each cell: coorect for water conditions
+   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+      if (!(*iplant)->dead)((CWaterPlant*) (*iplant))->DistrRes_help();
+
+   Resshare();  // resource sharing betwen connected ramets
+}
 //---------------------------------------------------------------------------
 /**
   \todo make fkt constant
@@ -167,7 +228,7 @@ std::vector<SWaterTraits*> SWaterTraits::PFTWaterList;//(8,new SclonalTraits());
 
 
 SWaterTraits::SWaterTraits():name("default"),
-  WL_Optimun(0),WL_Tolerance(0)
+  WL_Optimun(0),WL_Tolerance(0),assimBelWL(false)
 {}//end constructor
 
 //---------------------------------------------------------------------------
@@ -177,25 +238,25 @@ void SWaterTraits::ReadWaterStrategy(char* file)
 
       //read plant parameter from here
       name="swamp";
-      temp->WL_Optimun=-30;temp->WL_Tolerance= 15;
+      temp->WL_Optimun=30;temp->WL_Tolerance= 30;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="wet";
-      temp->WL_Optimun=10;temp->WL_Tolerance= 15;
+      temp->WL_Optimun=-10;temp->WL_Tolerance= 15;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="moist";
-      temp->WL_Optimun=30;temp->WL_Tolerance= 15;
+      temp->WL_Optimun=-30;temp->WL_Tolerance= 15;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="dry";
-      temp->WL_Optimun=50;temp->WL_Tolerance= 15;
+      temp->WL_Optimun=-50;temp->WL_Tolerance= 15;
       temp->name=name;
       PFTWaterList.push_back(temp);
 

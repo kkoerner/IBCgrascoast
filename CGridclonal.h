@@ -16,10 +16,12 @@
 */
 class CGridclonal : public CGrid
 {
+protected:
+   void Resshare();                     ///< share ressources among connected ramets
+
 private:
    //new...
    void RametEstab(CclonalPlant* plant);///< establish ramets
-   void Resshare();                     ///< share ressources among connected ramets
    virtual void EstabLott_help(CSeed* seed);
    virtual void DispSeeds_help(CPlant* plant,CCell* cell);    ///<clonal version
    virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant){
