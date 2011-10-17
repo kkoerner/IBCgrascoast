@@ -35,6 +35,7 @@ void CWaterGridEnvir::InitInds()
   int no_init_seeds=10;
   //reed
   SPftTraits*    traits  =SPftTraits::PftList[15];
+  traits->pEstab=0.01;
   SclonalTraits* cltraits=SclonalTraits::clonalTraits[6];
   SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[0];
   PftInitList["reed"]+=no_init_seeds;
@@ -107,7 +108,8 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 */
 void CWaterGridEnvir::SetCellResource(){
   CGrid::SetCellResource();
-//  ChangeMeanWaterLevel(5);
+  this->SetMeanWaterLevel(0);
+  //  ChangeMeanWaterLevel(5);
 }
 
 //-------------------------------------------------------------
@@ -119,7 +121,7 @@ int CWaterGridEnvir::exitConditions()
 {
      int currTime=GetT();
 //    if no more individuals existing
-     if (this->PlantList.size()==0)
+     if (this->PlantList.size()==0||currTime>(30*20))
      {
         endofrun=true;
         cout<<"no more inds";
@@ -238,19 +240,19 @@ void SWaterTraits::ReadWaterStrategy(char* file)
 
       //read plant parameter from here
       name="swamp";
-      temp->WL_Optimun=30;temp->WL_Tolerance= 30;
+      temp->WL_Optimun=30;temp->WL_Tolerance= 15;//30;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="wet";
-      temp->WL_Optimun=-10;temp->WL_Tolerance= 15;
+      temp->WL_Optimun=10;temp->WL_Tolerance= 15;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="moist";
-      temp->WL_Optimun=-30;temp->WL_Tolerance= 15;
+      temp->WL_Optimun=-10;temp->WL_Tolerance= 15;
       temp->name=name;
       PFTWaterList.push_back(temp);
 

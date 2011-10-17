@@ -566,11 +566,11 @@ void CClonalGridEnvir::OneRun(){
 //      if (year%10==1){//(year==11||year==31){ modulo
         WriteSurvival();
         WriteGridComplete(false);//report 10th, 30th and last year
+        clonalOutput();
 //      }
       if (endofrun)break;
    }//years
       //file-write output     -now in main.cpp
-//   clonalOutput();
 //   WriteGridComplete();
 //   WriteSurvival();
 //   WritePftComplete();
@@ -703,15 +703,21 @@ void CClonalGridEnvir::clonalOutput(){
 //funktioniert nicht!?:
     clonOut.seekp(0, ios::end);
     long size=clonOut.tellp();
-    if (size==0) clonOut<<"SimNr\tPFT\tclType\tRun\tweek\tnon-ClPlants\tClPlants\tclones\n";
-    clonOut<<SimNr<<"\t"
-        <<Pfttype+1<<"\t"
-        <<clonaltype+1<<"\t"
+    if (size==0) clonOut<<"SimNr"
+    //<<"\tPFT\tclType"
+    <<"\tRun\tweek"
+    //<<"\tnon-ClPlants"
+    <<"\tramets\tBM\tgenets\n";
+    SClonOut* ClonWeek=ClonOutData.back();
+    clonOut<<"\n"<<SimNr<<"\t"
+//        <<Pfttype+1<<"\t"
+//        <<clonaltype+1<<"\t"
         <<RunNr+1<<"\t"
         <<GetT()<<"\t"
-        <<GetNPlants()<<"\t"
-        <<GetNclonalPlants()<<"\t"
-        <<GetNMotherPlants()
+//        <<GetNPlants()<<"\t"
+        <<ClonWeek->NclonalPlants<<"\t"   //GetNclonalPlants()
+        <<ClonWeek->MclonalPlants<<"\t"
+        <<ClonWeek->NGenets              //GetNMotherPlants()
         <<endl;    //schreibt z.b: 1 4
 //    }
     clonOut.close();

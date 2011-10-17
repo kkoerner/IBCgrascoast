@@ -124,8 +124,12 @@ int main(int argc, char* argv[])
    return 0;
 }
 //---------------------------------------------------------------------------
+/**
+      high belowground ressources
+*/
 void Init(){
       Envir->InitRun();
+//      SRunPara::RunPara.meanBRes=200;
 }
 //------------------------------------------------
 void Run(){

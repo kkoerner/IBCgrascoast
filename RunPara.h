@@ -58,7 +58,7 @@ struct SRunPara
    double Aampl;      //!< within year above-ground resource amplitude (not used)
    double Bampl;      //!<  within year above-ground resource amplitude (not used)
    char* PftFile;     //!< File with PFT trait parameter in Folder "Input"
-
+   double WaterLevel; ///<standard mean grid water level
 
    SRunPara();
    void print();

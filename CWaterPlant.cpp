@@ -59,7 +59,9 @@ void CWaterPlant::Grow2()
 
  //standard growth
  CPlant::Grow2();
- //output
+ //detailed output - for grid plots
+if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
+{
  CEnvir::AddLogEntry(CEnvir::year,"C-reed-out.txt");
  CEnvir::AddLogEntry(CEnvir::week,"C-reed-out.txt");
  CEnvir::AddLogEntry(xcoord,"C-reed-out.txt");
@@ -67,9 +69,11 @@ void CWaterPlant::Grow2()
  CEnvir::AddLogEntry(GetMass(),"C-reed-out.txt");
  CEnvir::AddLogEntry((int)dead,"C-reed-out.txt");
  CEnvir::AddLogEntry(this->growingSpacerList.size(),"C-reed-out.txt");
+ CEnvir::AddLogEntry(this->getGenet()->number,"C-reed-out.txt");
+
 // CEnvir::AddLogEntry(height,"C-reed-out.txt");
  CEnvir::AddLogEntry("\n","C-reed-out.txt");
-
+}
 }//end Grow2
 /**
 Helping function for CWaterGridEnvir::DistribRessource

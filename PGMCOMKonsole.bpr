@@ -12,7 +12,7 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value=""/>
+    <LIBRARIES value="rtl.lib"/>
     <SPARELIBS value="rtl.lib"/>
     <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi bcbsmp.bpi dbrtl.bpi adortl.bpi vcldb.bpi 
       qrpt.bpi bdertl.bpi vcldbx.bpi dsnap.bpi cds.bpi bdecds.bpi teeui.bpi 
@@ -27,8 +27,8 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="PGMCOMKonsole.bpf"/>
     <INCLUDEPATH value="C:\Programme\Borland\CBuilder6\Projects;..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="C:\Programme\Borland\CBuilder6\Projects;..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
@@ -36,18 +36,17 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k 
-      -y -v -vi- -tWC -tWM -c"/>
-    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -tWC -tWM -c"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-D&quot;&quot; -ap -Tpe -x -Gn -v"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -ap -Tpe -x -Gn"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0x32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="c0x32.obj sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="cg32.lib $(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
@@ -120,7 +119,7 @@ RemoteDebug=0
 [Compiler]
 ShowInfoMsgs=0
 LinkDebugVcl=0
-LinkCGLIB=1
+LinkCGLIB=0
 
 [Language]
 ActiveLang=
