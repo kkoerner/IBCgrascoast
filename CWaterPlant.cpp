@@ -62,17 +62,18 @@ void CWaterPlant::Grow2()
  //detailed output - for grid plots
 if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
 {
- CEnvir::AddLogEntry(CEnvir::year,"C-reed-out.txt");
- CEnvir::AddLogEntry(CEnvir::week,"C-reed-out.txt");
- CEnvir::AddLogEntry(xcoord,"C-reed-out.txt");
- CEnvir::AddLogEntry(ycoord,"C-reed-out.txt");
- CEnvir::AddLogEntry(GetMass(),"C-reed-out.txt");
- CEnvir::AddLogEntry((int)dead,"C-reed-out.txt");
- CEnvir::AddLogEntry(this->growingSpacerList.size(),"C-reed-out.txt");
- CEnvir::AddLogEntry(this->getGenet()->number,"C-reed-out.txt");
+ string filename=CEnvir::NameLogFile;
+ CEnvir::AddLogEntry(CEnvir::year,filename);
+ CEnvir::AddLogEntry(CEnvir::week,filename);
+ CEnvir::AddLogEntry(xcoord,filename);
+ CEnvir::AddLogEntry(ycoord,filename);
+ CEnvir::AddLogEntry(GetMass(),filename);
+ CEnvir::AddLogEntry((int)dead,filename);
+ CEnvir::AddLogEntry(this->growingSpacerList.size(),filename);
+ CEnvir::AddLogEntry(this->getGenet()->number,filename);
 
 // CEnvir::AddLogEntry(height,"C-reed-out.txt");
- CEnvir::AddLogEntry("\n","C-reed-out.txt");
+ CEnvir::AddLogEntry("\n",filename);
 }
 }//end Grow2
 /**

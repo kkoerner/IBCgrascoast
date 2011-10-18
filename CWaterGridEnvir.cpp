@@ -45,7 +45,7 @@ void CWaterGridEnvir::InitInds()
 //  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
   InitWaterInds(traits,cltraits,wtraits,1,4000);
 
-   this->SetMeanWaterLevel(30);
+//   this->SetMeanWaterLevel(30);
 
 }//end InitInds
 /**
@@ -108,7 +108,7 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 */
 void CWaterGridEnvir::SetCellResource(){
   CGrid::SetCellResource();
-  this->SetMeanWaterLevel(0);
+  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   //  ChangeMeanWaterLevel(5);
 }
 

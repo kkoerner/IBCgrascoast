@@ -99,16 +99,18 @@ void Run();
 
 /**
   the new water ressource environment can be tested here
-
+  \todo baue eine automatische Abfolge je 20 Jahre für WL 0..30[5er schritte]
+  ein. !ändere SimNr und LogFileName
   \author KK
-  \date 11/9/6
+  \date 11/10/6
   */
 int main(int argc, char* argv[])
 {
    cout<<"new Environment...\n";
 
    Envir=new CWaterGridEnvir();
-
+   SRunPara::RunPara.WaterLevel=30;
+   CEnvir::NameLogFile="C-reed-out.txt";
      cout<<"\n test water types ";
      Init();
      Run();
@@ -119,8 +121,8 @@ int main(int argc, char* argv[])
     delete SPftTraits::PftList[i];
    for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
     delete SclonalTraits::clonalTraits[j];
-   string dummi;
-   cin>>dummi;
+//   string dummi;
+//   cin>>dummi;
    return 0;
 }
 //---------------------------------------------------------------------------
@@ -133,12 +135,12 @@ void Init(){
 }
 //------------------------------------------------
 void Run(){
-   int exitcond=0;
-   double start=HRTimeInSec();
+//   int exitcond=0;
+//   double start=HRTimeInSec();
    //do one run
    Envir->OneRun();
-   exitcond=Envir->GetT();
-   double end=HRTimeInSec();
+//   exitcond=Envir->GetT();
+//   double end=HRTimeInSec();
 }
 //---------------------------------------------------------------------------
 //eof---------------------------------------------------------------------------
