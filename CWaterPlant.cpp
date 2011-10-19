@@ -63,6 +63,8 @@ void CWaterPlant::Grow2()
 if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
 {
  string filename=CEnvir::NameLogFile;
+ CEnvir::AddLogEntry(CEnvir::SimNr,filename);
+ CEnvir::AddLogEntry(CEnvir::RunNr,filename);
  CEnvir::AddLogEntry(CEnvir::year,filename);
  CEnvir::AddLogEntry(CEnvir::week,filename);
  CEnvir::AddLogEntry(xcoord,filename);

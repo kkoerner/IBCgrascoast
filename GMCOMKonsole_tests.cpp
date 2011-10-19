@@ -106,25 +106,40 @@ void Run();
   */
 int main(int argc, char* argv[])
 {
-   cout<<"new Environment...\n";
+  bool endsim=false;
+  SRunPara::RunPara.WaterLevel=100; //start-WL
+  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
+  //sim-loop
+  do{
+    //simNr
+    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
+    //filenames
+    Envir->NameLogFile=((AnsiString)"Reed_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
+    //Run-loop
+    for(Envir->RunNr=1;Envir->RunNr<=10;Envir->RunNr++){ //10Runs per Sim
+      cout<<"new Environment...\n";
+      Envir=new CWaterGridEnvir();
 
-   Envir=new CWaterGridEnvir();
-   SRunPara::RunPara.WaterLevel=30;
-   CEnvir::NameLogFile="C-reed-out.txt";
-     cout<<"\n test water types ";
-     Init();
-     Run();
+      SRunPara::RunPara.WaterLevel=30;
+      //CEnvir::NameLogFile="C-reed-out.txt";
+      cout<<"\n test water types ";
+      Init();
+      Run();
 
-   delete Envir;
+      delete Envir;
+    }//end run
+    SRunPara::RunPara.WaterLevel-=10;//10cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel< -60)endsim=true;
+  }while(!endsim);//end sim
    //delete static pointer vectors
-   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)
+  for (unsigned int i=0;i<SPftTraits::PftList.size();i++)
     delete SPftTraits::PftList[i];
-   for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
+  for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
     delete SclonalTraits::clonalTraits[j];
 //   string dummi;
 //   cin>>dummi;
-   return 0;
-}
+  return 0;
+}//end main
 //---------------------------------------------------------------------------
 /**
       high belowground ressources

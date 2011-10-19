@@ -43,7 +43,7 @@ void CWaterGridEnvir::InitInds()
   addClLink("reed",cltraits);
   WLinkList["reed"]=wtraits;
 //  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
-  InitWaterInds(traits,cltraits,wtraits,1,4000);
+  InitWaterInds(traits,cltraits,wtraits,no_init_seeds,4000);
 
 //   this->SetMeanWaterLevel(30);
 

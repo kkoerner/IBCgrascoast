@@ -564,7 +564,7 @@ void CClonalGridEnvir::OneRun(){
       cout<<" y"<<year;
       OneYear();
 //      if (year%10==1){//(year==11||year==31){ modulo
-        WriteSurvival();
+//        WriteSurvival();
         WriteGridComplete(false);//report 10th, 30th and last year
         clonalOutput();
 //      }
@@ -699,6 +699,7 @@ void CClonalGridEnvir::clonalOutput(){
     //write data in the clonalOut file
     ofstream clonOut(NameClonalOutFile,ios_base::app);
 //    {
+   if (ClonOutData.size()==0) {cerr<<("no data found in ClonalOutData");return; }
     if (!clonOut.good()) {cerr<<("Fehler beim Öffnen ClonalOutFile");exit(3); }
 //funktioniert nicht!?:
     clonOut.seekp(0, ios::end);
@@ -708,11 +709,11 @@ void CClonalGridEnvir::clonalOutput(){
     <<"\tRun\tweek"
     //<<"\tnon-ClPlants"
     <<"\tramets\tBM\tgenets\n";
-    SClonOut* ClonWeek=ClonOutData.back();
-    clonOut<<"\n"<<SimNr<<"\t"
+   SClonOut* ClonWeek=ClonOutData.back();
+    clonOut<<SimNr<<"\t"
 //        <<Pfttype+1<<"\t"
 //        <<clonaltype+1<<"\t"
-        <<RunNr+1<<"\t"
+        <<RunNr<<"\t"
         <<GetT()<<"\t"
 //        <<GetNPlants()<<"\t"
         <<ClonWeek->NclonalPlants<<"\t"   //GetNclonalPlants()
