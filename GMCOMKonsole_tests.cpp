@@ -116,11 +116,11 @@ int main(int argc, char* argv[])
     //filenames
     Envir->NameLogFile=((AnsiString)"Reed_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
     //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=10;Envir->RunNr++){ //10Runs per Sim
+    for(Envir->RunNr=1;Envir->RunNr<=5;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
 
-      SRunPara::RunPara.WaterLevel=30;
+      //SRunPara::RunPara.WaterLevel=30;
       //CEnvir::NameLogFile="C-reed-out.txt";
       cout<<"\n test water types ";
       Init();
@@ -129,7 +129,8 @@ int main(int argc, char* argv[])
       delete Envir;
     }//end run
     SRunPara::RunPara.WaterLevel-=10;//10cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -60)endsim=true;
+    if(SRunPara::RunPara.WaterLevel< -60)
+    endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)

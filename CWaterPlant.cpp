@@ -82,6 +82,7 @@ if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
 Helping function for CWaterGridEnvir::DistribRessource
 
 Corrects plant's resource uptake for current Water conditions.
+\not not stochasticity
 \author KK
 \date 11/10/11
 */
@@ -103,8 +104,11 @@ void CWaterPlant::DistrRes_help(){
  double diff=wl-this->waterTraits->WL_Optimun;
  double sigma=this->waterTraits->WL_Tolerance;
  //Ressourcennutzung nach Normalverteilung
- double factor= min(1,max(0,CEnvir::RandNumGen.normal(diff,sigma)));
- this->Buptake*=factor;
+// double cfac=CEnvir::RandNumGen.normal(diff,sigma);
+// double cfac=exp(-0.5*(diff/sigma)*(diff/sigma));
+// double factor= min(1.0,max(0.0,CEnvir::RandNumGen.normal(diff,sigma)));
+// double factor= min(1.0,max(0.0,cfac));
+ this->Buptake*=min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
 
 }
 //---------------------------------------------------------------------------
