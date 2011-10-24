@@ -93,7 +93,7 @@ void CWaterPlant::DistrRes_help(){
  //.. aboveground
  if (!this->waterTraits->assimBelWL){
  // get plant's height
-    double const cheight = 10;///< cm height per mg vegetative plant mass
+    double const cheight = 500;///< mg vegetative plant mass per cm height
     double height= ///<plant height
       mshoot/(Traits->LMR)/cheight;
  // submersed plant parts dont assimilate
