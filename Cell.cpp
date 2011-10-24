@@ -147,8 +147,9 @@ void CCell::GetNPft()
 
   \param type name of PFT to look for
 
-  \bug achtung: arbeitet nur correkt, wenn die Typen pro zelle
+  \note achtung: arbeitet nur correkt, wenn die Typen pro zelle
   gleichberechtigt sind
+  \todo finde die höchste Pflanze in der AbovePlantList und nehme deren Typ
 
   \warning zeitraubend!!
 */

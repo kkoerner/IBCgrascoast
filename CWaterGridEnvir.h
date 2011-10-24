@@ -15,6 +15,9 @@ class CWaterPlant;
 
  \author KK
  \date 2011/09/15 COMTESS version
+
+ \todo Weitere Funktion einfügen, die ausgibt, in wie vielen Zellen(\%)
+   ein Typ in der AbovePlantList auftaucht
 */
 class CWaterGridEnvir: public CClonalGridEnvir{
 //public CEnvir, public CWaterGrid{

@@ -34,9 +34,10 @@ void CWaterGridEnvir::InitInds()
 
   int no_init_seeds=10;
   //reed
-  SPftTraits*    traits  =SPftTraits::PftList[15];
+  SPftTraits*    traits  =SPftTraits::PftList[15]; //15
   traits->pEstab=0.01;   //geringe Etablierung
   traits->MaxMass=200000;//hohe Individualmasse (100gAG+100gBG)
+  traits->LMR=0.25;       //reed growth form
   SclonalTraits* cltraits=SclonalTraits::clonalTraits[6];
   cltraits->mSpacer=500; //analog zu cheight mehr ressourcen pro cm rhizom
   SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[0];
@@ -44,10 +45,19 @@ void CWaterGridEnvir::InitInds()
   addPftLink("reed",traits);//?noch mal genauer gucken
   addClLink("reed",cltraits);
   WLinkList["reed"]=wtraits;
-//  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
   InitWaterInds(traits,cltraits,wtraits,no_init_seeds,80000);
 
-//   this->SetMeanWaterLevel(30);
+//further types
+  traits  =SPftTraits::PftList[42]; //PFT43
+  cltraits=SclonalTraits::clonalTraits[1];
+  cltraits->mSpacer=70; //standard value
+  wtraits =SWaterTraits::PFTWaterList[2];
+  PftInitList["grass"]+=no_init_seeds;
+  addPftLink("grass",traits);//?noch mal genauer gucken
+  addClLink("grass",cltraits);
+  WLinkList["grass"]=wtraits;
+  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+
 
 }//end InitInds
 /**
@@ -254,7 +264,7 @@ void SWaterTraits::ReadWaterStrategy(char* file)
 
       temp=new SWaterTraits;
       name="moist";
-      temp->WL_Optimun=-10;temp->WL_Tolerance= 15;
+      temp->WL_Optimun=-10;temp->WL_Tolerance= 30;
       temp->name=name;
       PFTWaterList.push_back(temp);
 

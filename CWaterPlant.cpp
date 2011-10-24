@@ -73,6 +73,8 @@ if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
  CEnvir::AddLogEntry((int)dead,filename);
  CEnvir::AddLogEntry(this->growingSpacerList.size(),filename);
  CEnvir::AddLogEntry(this->getGenet()->number,filename);
+ CEnvir::AddLogEntry(" ",filename);
+ CEnvir::AddLogEntry(this->pft(),filename);
 
 // CEnvir::AddLogEntry(height,"C-reed-out.txt");
  CEnvir::AddLogEntry("\n",filename);
@@ -92,12 +94,8 @@ void CWaterPlant::DistrRes_help(){
 
  //.. aboveground
  if (!this->waterTraits->assimBelWL){
- // get plant's height
-    double const cheight = 500;///< mg vegetative plant mass per cm height
-    double height= ///<plant height
-      mshoot/(Traits->LMR)/cheight;
  // submersed plant parts dont assimilate
-    this->Auptake*=min(1.0,max(0.0,1-(wl )/height));
+    this->Auptake*=min(1.0,max(0.0,1-(wl )/getHeight()));
  }
 
  //.. belowground
@@ -110,6 +108,22 @@ void CWaterPlant::DistrRes_help(){
 // double factor= min(1.0,max(0.0,cfac));
  this->Buptake*=min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
 
+}
+/**
+  CWater - version of competion strength of a plant.
+  Belowground strength varies with distance to WL-Optimum of plant type.
+*/
+double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
+  double cplantval=CPlant::comp_coef(layer,symmetry);
+  if (layer==1) //comment out to disable changed competitive power
+    return cplantval;
+  //korrekturwert durch WaterLevel
+  else {
+    double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
+    double diff=wl-this->waterTraits->WL_Optimun;
+    double sigma=this->waterTraits->WL_Tolerance;
+    return cplantval* min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
+  }
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -113,7 +113,7 @@ public:
    double Radius_shoot();
    double Radius_root();
    ///competition coefficient for a plant -needed for AboveComp and BelowComp
-   double comp_coef(const int layer,const int symmetry)const;
+   virtual double comp_coef(const int layer,const int symmetry)const;
    //! shoot-root resource allocation and plant growth in two layers (one-layer option obsolete now)
    virtual void Grow2(); //!< shoot-root resource allocation and plant growth in two layers
    void DecomposeDead();     //!< calculate mass shrinkage of dead plants

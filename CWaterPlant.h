@@ -15,6 +15,9 @@ class CWaterPlant:public CclonalPlant
 {
 //protected:
   virtual void Grow2();
+     ///competition coefficient for a plant -needed for AboveComp and BelowComp
+   virtual double comp_coef(const int layer,const int symmetry)const;
+
 public:
    SWaterTraits* waterTraits;                ///<traits of water preferences
    //Constructors
@@ -30,6 +33,13 @@ public:
 
 ///add water impact on ressource allocation
   virtual void DistrRes_help();
+  
+/// \brief get plant's height
+/// \param cheight mg vegetative plant mass per cm height
+/// \note fkt meight be transfered to CPlant
+///
+  virtual double getHeight(double const cheight = 500){
+    return mshoot/(Traits->LMR)/cheight;};
    virtual string type();  ///<say what you are
    virtual string pft();   ///<say what a pft you are
 

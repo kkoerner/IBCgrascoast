@@ -107,14 +107,14 @@ void Run();
 int main(int argc, char* argv[])
 {
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=30; //start-WL
+  SRunPara::RunPara.WaterLevel=100; //start-WL
   SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
   //sim-loop
   do{
     //simNr
     Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
-    Envir->NameLogFile=((AnsiString)"Reed_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
+    Envir->NameLogFile=((AnsiString)"Mix_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=3;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
       delete Envir;
     }//end run
     SRunPara::RunPara.WaterLevel-=10;//10cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -30)
+    if(SRunPara::RunPara.WaterLevel< -60)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
