@@ -305,24 +305,36 @@ void CEnvir::WriteSurvival(string str){
 */
 void CEnvir::WriteSurvival(int runnr, int simnr)
 {
+   if(PftOutData.size()==0)return;  //no output if no list element exists
+
    ofstream SurvOutFile(NameSurvOutFile.c_str(),ios_base::app);
    if (!SurvOutFile.good()) {cerr<<("Fehler beim Öffnen SurvFile");exit(3); }
    SurvOutFile.seekp(0, ios::end);
    long size=SurvOutFile.tellp();
    if (size==0){
      SurvOutFile<<"Sim\tRun\tT\t";
-     SurvOutFile<<"mPop\tcPop\tTE\tPFT";
+     SurvOutFile<<"BM\tcPop\tcover\tPFT";
      SurvOutFile<<"\n";
    }
-
-    typedef map<string,int> mapType;
-    for(mapType::const_iterator it = PftSurvTime.begin();
-          it != PftSurvTime.end(); ++it)
+     SPftOut*  PftWeek=PftOutData.back();
+    typedef map<string,SPftOut::SPftSingle*> mapType;
+//    typedef map<string,int> mapType;
+//    for(mapType::const_iterator it = PftSurvTime.begin();
+//          it != PftSurvTime.end(); ++it)
+    for(mapType::const_iterator it = PftWeek->PFT .begin();
+          it != PftWeek->PFT.end(); ++it)
     {
+     SPftOut::SPftSingle*  Pft =it->second;
+
      SurvOutFile<<simnr<<'\t'<<runnr<<'\t'<<year;
-     SurvOutFile<<'\t'<<GetMeanPopSize(it->first,10);//mean of 10years
-     SurvOutFile<<'\t'<<GetCurrPopSize(it->first);
-     SurvOutFile<<'\t'<<it->second<<'\t'<<it->first<<endl;
+     SurvOutFile<<'\t'<<Pft->shootmass;//type's AGbiomass
+     SurvOutFile<<'\t'<<Pft->Nind;//number ramets
+     SurvOutFile<<'\t'<<Pft->cover;//cover of type
+
+//     SurvOutFile<<'\t'<<GetMeanPopSize(it->first,10);//mean of 10years
+//     SurvOutFile<<'\t'<<GetCurrPopSize(it->first);
+//     SurvOutFile<<'\t'<<it->second
+      SurvOutFile<<'\t'<<it->first<<endl;
     }
 //     SurvOutFile<<"\n";
 }//end writeSurvival
@@ -567,6 +579,7 @@ void CClonalGridEnvir::OneRun(){
 //        WriteSurvival();
         WriteGridComplete(false);//report 10th, 30th and last year
         clonalOutput();
+        WriteSurvival();
 //      }
       if (endofrun)break;
    }//years
@@ -664,6 +677,18 @@ int CClonalGridEnvir::getGridBCover(int i){return CellList[i]->getCover(2);}
 double CClonalGridEnvir::getTypeCover(const int i, const string type)const{
   return CellList[i]->getCover(type);}
 
+///returns grid cover of a given type
+double CClonalGridEnvir::getTypeCover(const string type)const{
+  //for each cell
+  double number=0;
+  const long int sumcells=SRunPara::RunPara.GetSumCells();
+  for (long int i=0; i<sumcells; ++i){
+         number+=getTypeCover(i,type);
+
+  }
+  return number/sumcells;
+}
+
 /**
   \todo ermittle cover für alle typen auf dem Grid
   (dazu evtl neue klassenvariable deklarieren)
@@ -680,7 +705,21 @@ void CClonalGridEnvir::setCover(){
     ACover.at(i)=getGridACover(i);
     BCover[i]   =getGridBCover(i);
   }
-//  if (week==WeeksPerYear){
+//  if(this->PftOutData.size()>0){
+//    typedef map<string, SPftOut::SPftSingle*> mapType;
+//    for(mapType::const_iterator it = PftWeek->PFT.begin();
+//          it != PftWeek->PFT.end(); ++it)
+  if (week==20){
+    typedef map<string, long> mapType;
+    for(mapType::const_iterator it = this->PftInitList.begin();
+          it != this->PftInitList.end(); ++it)
+    {
+    //in folgender Zeile der Fehler?
+          this->PftCover[it->first]=getTypeCover(it->first);
+    }
+   }//end if week=20
+    //  }//end if output size >0
+  //  if (week==WeeksPerYear){
 //    PftCover.clear(); //new year
 //    for(int i=0;i<sum;i++){
 //      for(mapType::const_iterator it = PftInitList.begin();
@@ -765,6 +804,11 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
    for(mapType::const_iterator it = PftWeek->PFT.begin();
           it != PftWeek->PFT.end(); ++it)
     {
+    //in folgender Zeile der Fehler?
+    //      it->second->cover=getTypeCover(it->first);
+         string type=it->first;
+         double cover=this->PftCover.find(it->first)->second ;
+          it->second->cover=cover;
 
 //   for (int i=0; i<SRunPara::RunPara.NPft; ++i){
       if (it->second->Nind>=1){
@@ -790,8 +834,12 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
          for (seed_iter iter=cell->SeedBankList.begin();
               iter<cell->SeedBankList.end(); ++iter){
             string pft=(*iter)->pft();
-        if (!PftWeek->PFT[pft])
-           PftWeek->PFT[pft] = new SPftOut::SPftSingle();
+            map<string,SPftOut::SPftSingle*>::const_iterator
+              pos = PftWeek->PFT.find(pft);
+            if (pos==PftWeek->PFT.end())
+            PftWeek->PFT[pft] = new SPftOut::SPftSingle();
+//         if (!PftWeek->PFT[pft])
+//           PftWeek->PFT[pft] = new SPftOut::SPftSingle();
             ++PftWeek->PFT[pft]->Nseeds;
          }
       }

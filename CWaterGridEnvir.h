@@ -51,6 +51,7 @@ public:
 //-----
 
   virtual int exitConditions(); ///< get exit conditions
+  void WriteWaterOutput();   ///< write water-experiment result output
 
  /// returns grid's mean water level
  double GetMeanWaterLevel();

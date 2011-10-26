@@ -41,22 +41,25 @@ void CWaterGridEnvir::InitInds()
   SclonalTraits* cltraits=SclonalTraits::clonalTraits[6];
   cltraits->mSpacer=500; //analog zu cheight mehr ressourcen pro cm rhizom
   SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[0];
-  PftInitList["reed"]+=no_init_seeds;
-  addPftLink("reed",traits);//?noch mal genauer gucken
-  addClLink("reed",cltraits);
-  WLinkList["reed"]=wtraits;
   InitWaterInds(traits,cltraits,wtraits,no_init_seeds,80000);
+  string spft=this->PlantList.back()->pft();
+  PftInitList[spft]+=no_init_seeds;
+  addPftLink(spft,traits);//?noch mal genauer gucken
+  addClLink(spft,cltraits);
+  WLinkList[spft]=wtraits;
 
 //further types
   traits  =SPftTraits::PftList[42]; //PFT43
   cltraits=SclonalTraits::clonalTraits[1];
   cltraits->mSpacer=70; //standard value
   wtraits =SWaterTraits::PFTWaterList[2];
-  PftInitList["grass"]+=no_init_seeds;
-  addPftLink("grass",traits);//?noch mal genauer gucken
-  addClLink("grass",cltraits);
-  WLinkList["grass"]=wtraits;
-  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+//  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+ InitWaterInds(traits,cltraits,wtraits,no_init_seeds,4000);
+  spft=this->PlantList.back()->pft();
+  PftInitList[spft]+=no_init_seeds;
+  addPftLink(spft,traits);//?noch mal genauer gucken
+  addClLink(spft,cltraits);
+  WLinkList[spft]=wtraits;
 
 
 }//end InitInds
@@ -133,7 +136,7 @@ int CWaterGridEnvir::exitConditions()
 {
      int currTime=GetT();
 //    if no more individuals existing
-     if (this->PlantList.size()==0||currTime>(30*20))
+     if (this->PlantList.size()==0)//||currTime>(30*20))
      {
         endofrun=true;
         cout<<"no more inds";
@@ -142,6 +145,19 @@ int CWaterGridEnvir::exitConditions()
      cout<<"\n  << "<<this->PlantList.size()<<"plants left";
      return 0;
 }//end CClonalGridEnvir::exitConditions()
+//---------------------------------------------------------
+/**
+   anually output of type-status
+
+   two types and bare ground
+   \author KK
+   \date 11/10/25
+*/
+  void WriteWaterOutput(){
+
+
+  }   // end write results
+
 //---------------------------------------------------------
 /**
   CWaterGridEnvir version of this function. Only CWaterPlant and

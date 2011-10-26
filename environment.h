@@ -199,6 +199,7 @@ public:
    //@{
    int getACover(int x, int y);
    int getBCover(int x, int y);
+   double getTypeCover(const string type)const;
    double getTypeCover(const int i, const string type)const;
 private:
    int getGridACover(int i);

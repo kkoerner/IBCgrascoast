@@ -107,7 +107,7 @@ void Run();
 int main(int argc, char* argv[])
 {
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=100; //start-WL
+  SRunPara::RunPara.WaterLevel=10; //start-WL   100
   SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
   //sim-loop
   do{
@@ -128,8 +128,8 @@ int main(int argc, char* argv[])
 
       delete Envir;
     }//end run
-    SRunPara::RunPara.WaterLevel-=10;//10cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -60)
+    SRunPara::RunPara.WaterLevel-=1;//10cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel< -10)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors

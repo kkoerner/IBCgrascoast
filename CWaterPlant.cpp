@@ -70,7 +70,7 @@ if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
  CEnvir::AddLogEntry(GetMass(),filename);
- CEnvir::AddLogEntry((int)dead,filename);
+ CEnvir::AddLogEntry(this->getHeight(),filename);
  CEnvir::AddLogEntry(this->growingSpacerList.size(),filename);
  CEnvir::AddLogEntry(this->getGenet()->number,filename);
  CEnvir::AddLogEntry(" ",filename);
@@ -112,18 +112,20 @@ void CWaterPlant::DistrRes_help(){
 /**
   CWater - version of competion strength of a plant.
   Belowground strength varies with distance to WL-Optimum of plant type.
+
+  \todo this function line3 to comment out for (not)using rule 3
 */
 double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
   double cplantval=CPlant::comp_coef(layer,symmetry);
-  if (layer==1) //comment out to disable changed competitive power
+//  if (layer==1) //comment out to disable changed competitive power
     return cplantval;
   //korrekturwert durch WaterLevel
-  else {
+//  else {   //comment out here too
     double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
     double diff=wl-this->waterTraits->WL_Optimun;
     double sigma=this->waterTraits->WL_Tolerance;
     return cplantval* min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
-  }
+//  }        //comment out here too
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
