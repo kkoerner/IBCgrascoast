@@ -94,7 +94,7 @@ struct SWaterTraits   //plant functional traits
    static void ReadWaterStrategy(char* file="");    //!> read PFT parameters from the input file
 
    string name;   ///< name of functional type
-   double WL_Optimun; ///< optimal mean water level (positive is flooded)
+   double WL_Optimum; ///< optimal mean water level (positive is flooded)
    double WL_Tolerance; ///< SD of optimal water level
    bool assimBelWL;///<plant can assimilate light below WaterLevel
 

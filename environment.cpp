@@ -20,8 +20,20 @@
   on grid.
   GridCells of the basic lattice have to be of type CWaterCell.
   \sa CWaterGridEnvir, CWaterCell
+  \par Implement WaterLevel-related rules
+   -# aboveground plant parts don't assimilate if they are submersed
+   (but plant type may be adapted to assim below WL)
+   -# belowground resources collected by a plant, are used lesser the farther
+   the plant is from their WL-Optimum (SWaterTraits::WL_Optimum and
+   SWaterTraits::WL_Tolerance)
+   -# belowground competition is altered by WaterLevel too.
+   The competitive power of a plant is reduced the same way the resources
+   gained are used
 
-*/
+   \sa CWaterPlant::DistrRes_help and  CWaterPlant::comp_coef
+
+
+   */
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)

@@ -1,6 +1,7 @@
 /**\file
    \brief functions of class CGrid
 */
+
 #pragma package(smart_init)
 #pragma hdrstop
 #define CCELL CWaterCell //CCell for old version
@@ -938,5 +939,450 @@ double CGrid::GetTotalBelowMass()
    }
    return below_mass;
 }
+
+
+
+//--documentation Felix' peper version-------------------------------------------------------------------------
+/**
+\page ODDbase ODD-Description of the basic model
+
+The model description follows the ODD protocol (overview,
+design concepts, details) for describing individualbased
+models (Grimm et al. 2006).
+
+\section Purpose
+The model is designed to evaluate the response of plant
+functional type (PFT) diversity towards grazing under
+different local environmental conditions and differentiated
+assumptions about plant-plant competition.
+
+\section variables State variables and scales
+The model includes the entities seeds, individual plants
+and grid cells (Table 1). Seeds are described by the state
+variables position, age, and mass. Plant individuals are
+characterized by their position, the mass of three plant
+compartments (shoot, root and reproductive mass), the
+duration of resource stress exposure, and they are classified
+as a certain PFT with specific trait attribute parameters
+(Table 3). In a simplified model version only two plant
+compartments, vegetative and reproductive mass, are taken
+into consideration. Spatially, plants are described by their
+‘zone-of-influence’ (ZOI), i.e. a circular area around
+their location (Schwinning and Weiner 1998, Weiner et
+al. 2001). Within this area the individual can acquire
+resources and if the ZOIs of neighbouring plants overlap,
+the individuals will only compete for resources in the
+overlapping area. For the three compartment model
+version we consider two independent ZOIs for a plant’s
+shoot and root, representing above- and below-ground
+resource uptake and competition. The ZOIs radii are
+determined from the biomass of the corresponding plant
+compartment.
+
+In order to simplify spatial calculations of resource
+competition, ZOIs are projected onto a grid of discrete
+cells. Grid cells represent 1 cm2. The state of a grid cell is
+defined by two resource availabilities, above and below
+ground (in the simplified model version, only one resource
+is considered). The size of the modelled arena was
+128 by 128 cm. To avoid edge effects, periodic boundary
+conditions were used, i.e. the grid essentially was a torus.
+A model’s time step corresponds to one week; a vegetation
+period consisted of 30 weeks per year, and simulations
+were run for 100 years.
+
+\section sced Process overview and scheduling
+The processes resource competition, plant growth and
+plant mortality are considered within each week of the
+vegetation period. Seed dispersal and seedling establishment
+are limited to certain weeks of the year (Table 2).
+Grazing events occur randomly with a fixed probability
+which is constant for all weeks. Two processes, winter
+dieback of above-ground biomass and mortality of seeds
+are only considered once a year, at the end of the
+vegetation period (Fig. A1 in Supplementary material
+Appendix 1). Plant's state variables are synchronously
+updated within the subroutines for growth, mortality,
+grazing and winter dieback, i.e. changes to state variables
+are updated only after all model entities have been
+processed (Grimm and Railsback 2005).
+
+\section emergence Design concepts: emergence
+All features observed at the community level, such as
+community composition and diversity, emerged from
+individual plant-plant interactions, grazing effects at the
+individual scale, and resource availabilities.
+
+\section adapt Design concepts: adaptation
+In the submodel representing plant growth, aboveand
+below-ground competition, plants adaptively allocate
+resources to shoot and root growth in order to balance
+the uptake of above- and below-ground resources (see
+\ref growth "Submodel: plant growth and mortality").
+
+\section interact Design concepts: interactions
+Competitive interactions between plant individuals were
+described using the ZOI approach.
+
+\section stoch Design concepts: stochasticity
+Seed dispersal and establishment, as well as mortality of
+seeds and plants are modelled stochastically to include
+demographic noise. Grazing events occur randomly during
+the vegetation period and the affected plants are chosen
+randomly, but the individual’s probability of being grazed
+depends on plant traits (see Submodel: grazing).
+
+\section obs Design concepts: observation
+See section 'Design and analysis of simulation experiments'.[not in doc here]
+
+\section init Initialization
+Initially, ten seedlings of all 81 PFTs (see section Plant traits
+and PFT parameterisation) with their respective seedling
+mass were randomly distributed over the grid. Their
+germination probability was set to 1.0 to assure equal
+initial population sizes of all PFTs. A spatially and
+temporally homogenous distribution of resources (both
+above- and below-ground) was used in all simulation
+experiments.
+
+\section Input
+The model does not include any external input of driving
+environmental variables.
+
+\section comp Submodel: competition
+Following the ZOI approach, plants compete for resources
+in a circular area around their central location point. To
+relate plant mass to the area covered (Ashoot), we extended
+the allometric relation used by (Weiner et al. 2001)
+
+ \f{eqnarray*}{
+        A_shoot &=& c_shoot \times (f_leaf \times m_shoot)^{2/3} (1)\\
+   \f}
+
+where cshoot is a constant ratio between leaf mass and ZOI
+area and mshoot is vegetative shoot mass (Tables 1, 2). The
+factor fleaf is introduced to describe different shoot
+geometries and is defined as the ratio between photosynthetically
+active (leaf) and inactive (stem) tissue (Fig. 1).
+
+Only the former is considered for the calculation of the
+ZOI size. These circular areas are projected onto a grid of
+discrete cells. Grid cells thus contain the information by
+which plants they are covered, so that resource competition
+can be calculated cell by cell. The resources within a cell are
+shared among plants according to their relative competitive
+effects (bi). The resource uptake (Dres) of plant i from a cell
+with resource availability (Rescell) covered by n plants is thus
+calculated as
+
+Dresi
+bi
+Xn
+j1
+bj
+Rescell (2)
+
+Calculating bi in different ways allows including different
+modes of competition (Weiner et al. 2001). We assume
+that the relative competitive ability of a plant is correlated
+with its maximum growth rate in the absence of resource
+competition. Therefore bi is proportional to maximum
+resource utilization per unit area covered (rumax, see
+Submodel: plant growth and mortality and Table 2). In
+the case of size-symmetric competition, bi simply equals
+rumax:
+
+birumax (3a)
+
+In the case of partially size-asymmetric competition bi is a
+function of plant mass and shoot geometry:
+
+birumaxmshootf1
+leaf : (3b)
+
+The inverse of fleaf is used, because plants with a lower
+fraction of leaf tissue are considered to be higher and thus
+show a higher competitive ability by overtopping other
+plants (Fig. 1). In this way, plants with equal rumax receive
+equal amounts of resources from one unit of area
+irrespective of their mass or height in the case of sizesymmetric
+competition, while larger and higher plants
+receive a higher share of resources in proportion to their
+shoot geometry traits in the case of partially asymmetric
+competition (Schwinning and Weiner 1998, Weiner et al.
+2001). The resource uptake of one plant within one week
+Figure 1. Illustration of the 'zone-of-influence' (ZOI) approach
+including above- and below-ground competition and different
+shoot geometries. Above- and below-ground 'zones-of-influence'
+are shown as light and dark grey circles, respectively. Stems and
+support tissue are represented as grey cylinders. Plant individuals
+compete for resources in the areas of overlap only (arrows indicate
+the area of above-ground competition). The plant to the left has a
+lower ratio of leaf mass to shoot mass (fleaf) and thus a smaller
+above-ground ZOI. In return its competitive ability for aboveground
+resources (light) is higher as it is able to shade the plant to
+the right.
+
+To include differences between intra- and interspecific
+competition, individuals of the same PFT are considered
+as conspecifics and those of different PFTs as heterospecifics.
+The relative competitive ability bi of one plant is
+then determined as a decreasing function of the number
+of plants belonging to the same PFT (nPFT) and covering
+the same cell:
+
+birumax 1
+ffinffiffiffiffiffiffiffiffi PFT
+p (3c)
+
+Equation 3c is used for size-symmetric competition
+instead of Eq. 3a. In the case of size asymmetry, plant
+mass and geometry are taken into consideration according
+to Eq. 3b. This approach represents a situation where
+intraspecific competition is increased relatively to interspecific
+competition and therefore implicitly includes niche
+differentiation of resource competition at the cell scale,
+which has been known as an important factor for species
+coexistence (Chesson 2000). In the model analysis,
+versions with and without niche differentiation were
+compared in order to test if this assumption for competition
+at the cell scale translates into a different behaviour at
+the community scale.
+
+\section growth Submodel: plant growth and mortality
+Plant growth only depends on the resources that the plant
+acquired during the current time step (Dres). In the absence
+of competition, plants show sigmoidal growth. Therefore
+we adapted the growth equation used by Weiner et al.
+(2001) to the description of plant geometry used here:
+
+Dmg
+
+Drescshootf leafrumaxm2
+shoot
+m4=3
+max
+
+(4)
+
+where g is a constant conversion rate between resource
+units and plant biomass and mmax is the maximum mass
+of shoot or root, respectively. In addition, the maximum
+amount of resources that is allocated to growth each week
+is limited by a maximum resource utilization rate given by
+rumax (resource units/cm2/week) multiplied by ZOI area
+(cm2). If Eq. 4 yields a negative result, Dm is set to zero
+and thus negative growth is prohibited.
+
+Growth of reproductive mass is restricted to the time
+between weeks 16 to 20. In this period, a constant fraction of
+the resources (5% for all PFTs) is allocated to growth of
+reproductive mass (Schippers et al. 2001), and reproductive
+mass is limited to 5% of shoot mass in total. The same
+resource conversion rate (g) is used for reproductive and
+vegetative biomass.
+
+For the two layer model version, Eq. 1.4 are applied to
+shoot and root ZOIs independently, with the difference
+that for root growth the factor fleaf is always one. We assume
+that the minimum uptake of above- and below-ground
+resources limits plant growth (Lehsten and Kleyer 2007),
+and introduced adaptive shoot/root allocation in a way that
+more resources are allocated to the growth of the plant
+compartment that harvests the limiting resource (Weiner
+2004). For resource partitioning, we adopt the model of
+Johnson (1985) and the fraction of resources allocated to
+shoot growth is calculated as
+
+ashoot
+DresB
+DresB DresA
+(5)
+
+where DresA is above-ground and DresB is below-ground
+resource uptake. To assure comparability between the one
+and two layer versions, the ‘value’ of resource units has to be
+doubled in the two layer version, as resources are shared
+between two plant compartments.
+
+Plants suffer resource stress if their resource uptake (in
+any layer) is below a fixed threshold fraction (thrmort) of
+their optimal uptake, which is calculated as maximum
+resource utilization (rumax) times ZOI area. That means
+each week the condition DresBthrmortrumaxAshoot/root
+is evaluated and if it is true either for shoot or root the plant
+is considered as stress-exposed during this week. Consecutive
+weeks of resource stress exposure (wstress) linearly
+increase the probability of death
+
+pmortpbase wstress
+survmax
+(6)
+
+where survmax is the maximum number of weeks a plant
+can survive under stress exposure and pbase is the
+stress independent background mortality of 0.7% per
+week corresponding to an annual mortality rate of 20%
+(Schippers et al. 2001).
+
+Dead plants do not grow and reproduce anymore, but
+they still can shade others and are therefore still considered
+for competition in the one layer model and for at least
+above-ground competition in the two layer model. Each
+week the mass of all dead plants is reduced by 50% and they
+are removed from the grid completely as soon as their total
+mass decreases below 10 mg.
+
+\section sprod Submodel: seed production, dispersal and establishment
+All plants disperse their seeds in week 21 each year. Seed
+number is determined by dividing reproductive mass by the
+mass of one seed (Schippers et al. 2001, Lehsten and Kleyer
+2007). For each seed, dispersal distance is drawn from a lognormal
+and direction from a uniform distribution (Stoyan
+and Wagner 2001). To avoid edge effects on the small scale
+investigated, periodic boundary conditions are used.
+
+Germination and seedling establishment are limited to
+four weeks in autumn directly after dispersal and four weeks
+in spring of the next year for all PFTs. In between, a winter
+mortality of 50% of seeds is assumed and all seeds which
+did not germinate in these two seasons are removed.
+
+Seedling recruitment is separated in two consecutive
+processes: (1) seed germination and (2) seedling competition.
+Germination is only allowed in grid cells that are not
+covered by any plant or not covered in the above-ground
+layer, respectively. In uncovered cells, seeds germinate with
+a fixed probability (pgerm) and are converted to seedlings. In
+each cell only a single plant is allowed to establish. Seedling
+competition is modelled as a weighted lottery, using seed
+mass as a measure of competitive ability between seedlings
+(Chesson and Warner 1981, Schippers et al. 2001). The
+seedling that is chosen for establishment is converted into a
+plant with a shoot (and root) mass equal to seed mass. All
+the other seedlings that germinated within the cell die and
+are removed from the grid.
+
+\section graz Submodel: grazing
+Grazing is modelled as partial removal of an individual’s
+above-ground biomass. The frequency of grazing is specified
+by a constant weekly probability (pgraz) of a grazing
+event. Grazing is a process that acts selectively towards
+trait attributes such as shoot size and tissue properties.
+Therefore, for each plant the susceptibility to grazing
+(sgraz) is calculated as a function of shoot size, geometry
+and PFT-specific palatability (palat).
+
+sgrazmshootf1
+leafpalat (7)
+
+The probability for each plant to be grazed within one week
+is derived by dividing individual susceptibilities by the
+current maximum individual susceptibility of all plants. All
+plants are checked for grazing in random order. In case a
+plant is grazed, 50% of its shoot mass and its complete
+reproductive mass are removed. The random choice of
+plants is repeated without replacement, until 50% of the
+total (above-ground) biomass on the whole grid has been
+removed. When all plants have been checked for grazing
+once, but less than 50% of the total above-ground biomass
+has been removed, grazing probabilities for all individuals
+are calculated once more based on Eq. 7 and the whole
+procedure is repeated until 50% of the total above-ground
+biomass has been removed or until a residual biomass is
+reached which is considered ungrazable. This fraction is set
+to 15 g m2 following (Schwinning and Parsons 1999).
+This allows a plant individual to be grazed never or several
+times during one week with a grazing event.
+
+In addition to stochastic grazing, each year at the end of
+the vegetation period 50% of the above-ground mass of all
+plant individuals is removed to mimic vegetation dieback in
+winter.
+
+\section traits Plant traits and PFT parameterisation
+The PFTs that are used in the model differ in their
+attributes for nine plant functional traits (Table 2). These
+are grouped into four trait syndromes based on well
+documented tradeoffs and trait correlations. The traits we
+chose comprise a subset of the 'common core list of plant
+traits', proposed by Weiher et al. (1999).
+
+The growth form of a plant is characterized by the ratio
+between leaf mass and total shoot mass (fleaf). Plants with a
+low fleaf use more biomass to build up support tissue (e.g.
+stems) instead of leave mass. Therefore this trait implicitly
+includes a tradeoff between plant height and leaf area or
+between competitive ability for light versus relative growth
+rate without competition, respectively (Fig. 1; Eq. 1, 3b).
+
+Maximum plant mass is the second trait that describes
+plant geometry and is positively related to actual plant
+mass, according to the sigmoidal growth equation (Eq. 4).
+In the two-layer version equal maximal masses for shoot
+and root are assumed. Individual susceptibility to grazing
+is modelled as a function of fleaf and mshoot (Eq. 7) as
+higher and larger plants tend to be more affected by
+grazing (Diaz et al. 2001).
+
+Maximum plant mass and individual seed mass are
+assumed to be positively correlated and combined within a
+trait syndrome (Eriksson and Jakobsson 1998). The welldocumented
+seed size versus seed number tradeoff emerges
+in our model, because PFTs with higher seed mass produce
+less seeds from the same amount of reproductive mass
+(Leishman 2001, Schippers et al. 2001, Westoby et al.
+2002). The disadvantage of a low seed number is balanced
+by the higher recruitment success of large seedlings, due to
+the weighted lottery of seedling competition and the higher
+initial mass of plants that germinated from large seeds
+(Jakobsson and Eriksson 2000). A negative correlation
+between seed mass and dispersal distance was assumed
+here, which is supported at least for wind-dispersed seeds
+(Jongejans and Schippers 1999). For simplicity, equal
+values are used for mean and standard deviation of the
+dispersal kernel assuming a higher variance for the dispersal
+distances of smaller seeds.
+
+The response of plants to different resource conditions is
+distinguished into categories reflecting the tradeoff between
+competitive ability and stress tolerance (Grime 2001).
+
+Maximum growth rate in resource-rich environments is
+given as the maximum resource utilization per shoot/root
+area (rumax), while stress resistance is specified by the
+maximal number of weeks a plant can survive under
+resource stress exposure (survmax). Accordingly, PFTs with
+high rumax feature a low stress resistance and vice versa.
+
+We distinguished two strategies of response to grazing:
+(1) grazing tolerance by fast re-growth of removed biomass
+and (2) grazing avoidance by low palatability through
+defence structures or secondary compounds (Bullock et al.
+2001). In our model, the relationship between leaf mass and
+leaf area is given by the parameter cshoot (Eq. 1). This
+parameter is functionally analogous to the specific leaf area
+(SLA), which was proposed by Westoby et al. (2002) as a
+key trait to characterize plant strategies. High SLA is related
+to high efficiency of light interception and fast growth,
+while leaves with low SLA show higher longevity, structural
+strength or high allocation to defensive compounds
+(Westoby et al. 2002). Accordingly, a high cshoot value for
+grazing tolerance versus a low value for grazing avoidance is
+used here. The positive effect of defence compounds is
+expressed as a low palatability (palat) and thus, a low
+susceptibility towards grazing (Eq. 7).
+
+For each of the four functional traits three attributes
+were distinguished. The parameter values used should
+represent the range of contrasting plant strategies with
+respect to resource response, competitive ability and
+grazing response that could potentially occur in grassland
+ecosystems. Combining all three attributes of all four
+functional traits allowed us to define 34 by 81 PFTs in total
+(Table 3).
+
+source: \ref bib "May et al. (2009)"
+*/
 //-eof--------------------------------------------------------------------------
 

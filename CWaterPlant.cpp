@@ -99,7 +99,7 @@ void CWaterPlant::DistrRes_help(){
  }
 
  //.. belowground
- double diff=wl-this->waterTraits->WL_Optimun;
+ double diff=wl-this->waterTraits->WL_Optimum;
  double sigma=this->waterTraits->WL_Tolerance;
  //Ressourcennutzung nach Normalverteilung
 // double cfac=CEnvir::RandNumGen.normal(diff,sigma);
@@ -122,7 +122,7 @@ double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
   //korrekturwert durch WaterLevel
 //  else {   //comment out here too
     double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
-    double diff=wl-this->waterTraits->WL_Optimun;
+    double diff=wl-this->waterTraits->WL_Optimum;
     double sigma=this->waterTraits->WL_Tolerance;
     return cplantval* min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
 //  }        //comment out here too
