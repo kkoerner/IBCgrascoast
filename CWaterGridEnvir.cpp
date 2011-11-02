@@ -31,39 +31,42 @@ CWaterGridEnvir::~CWaterGridEnvir(){
 void CWaterGridEnvir::InitInds()
 {
   SWaterTraits::ReadWaterStrategy();
-
   int no_init_seeds=10;
+
+  if(true){   //true
   //reed
-  SPftTraits*    traits  =SPftTraits::PftList[15]; //15
-  traits->pEstab=0.01;   //geringe Etablierung
-  traits->MaxMass=200000;//hohe Individualmasse (100gAG+100gBG)
-  traits->LMR=0.25;       //reed growth form
-  SclonalTraits* cltraits=SclonalTraits::clonalTraits[6];
-  cltraits->mSpacer=500; //analog zu cheight mehr ressourcen pro cm rhizom
-  SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[0];
-//  InitWaterInds(traits,cltraits,wtraits,no_init_seeds,80000);
-  string spft="null";
-//  string spft=this->PlantList.back()->pft();
-  PftInitList[spft]+=no_init_seeds;
-  addPftLink(spft,traits);//?noch mal genauer gucken
-  addClLink(spft,cltraits);
-  WLinkList[spft]=wtraits;
+    SPftTraits*    traits  =SPftTraits::PftList[15]; //15
+    traits->pEstab=0.01;   //geringe Etablierung
+    traits->MaxMass=200000;//hohe Individualmasse (100gAG+100gBG)
+    traits->LMR=0.25;       //reed growth form
+    SclonalTraits* cltraits=SclonalTraits::clonalTraits[6];
+    cltraits->mSpacer=500; //analog zu cheight mehr ressourcen pro cm rhizom
+    SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[0];
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,80000); //com out
+    string spft="null";
+    spft=this->PlantList.back()->pft();                         //com out
+    PftInitList[spft]+=no_init_seeds;                           //com out
+    addPftLink(spft,traits);//?noch mal genauer gucken
+    addClLink(spft,cltraits);
+    WLinkList[spft]=wtraits;
+  }//end reed type
 
-//further types
-  traits  =SPftTraits::PftList[42]; //PFT43
+  if(false){ //true
+  //further types
+    SPftTraits*   traits  =SPftTraits::PftList[42]; //PFT43
 //  cltraits=SclonalTraits::clonalTraits[1]; //clonal2 Resshare0
-  cltraits=SclonalTraits::clonalTraits[0]; //clonal1 Resshare1
-  cltraits->mSpacer=70; //standard value
-  wtraits =SWaterTraits::PFTWaterList[2];
+    SclonalTraits* cltraits=SclonalTraits::clonalTraits[0]; //clonal1 Resshare1
+    cltraits->mSpacer=70; //standard value
+    SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[2];
 //  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
-// InitWaterInds(traits,cltraits,wtraits,no_init_seeds,4000);
-  spft="null";
-//  spft=this->PlantList.back()->pft();
-  PftInitList[spft]+=no_init_seeds;
-  addPftLink(spft,traits);//?noch mal genauer gucken
-  addClLink(spft,cltraits);
-  WLinkList[spft]=wtraits;
-
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,4000);    //com out
+//  spft="null";
+    string spft=this->PlantList.back()->pft();                          //com out
+    PftInitList[spft]+=no_init_seeds;                            //com out
+    addPftLink(spft,traits);//?noch mal genauer gucken
+    addClLink(spft,cltraits);
+    WLinkList[spft]=wtraits;
+  }//grass type
 
 }//end InitInds
 /**

@@ -116,16 +116,17 @@ void CWaterPlant::DistrRes_help(){
   \todo this function line3 to comment out for (not)using rule 3
 */
 double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
+  bool rule3=false;  //true
   double cplantval=CPlant::comp_coef(layer,symmetry);
-//  if (layer==1) //comment out to disable changed competitive power
+  if (!rule3 || layer==1) //comment out to disable changed competitive power
     return cplantval;
   //korrekturwert durch WaterLevel
-//  else {   //comment out here too
+  else {   //comment out here too
     double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
     double diff=wl-this->waterTraits->WL_Optimum;
     double sigma=this->waterTraits->WL_Tolerance;
     return cplantval* min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
-//  }        //comment out here too
+  }        //comment out here too
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
