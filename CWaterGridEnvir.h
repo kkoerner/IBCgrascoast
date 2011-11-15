@@ -31,6 +31,17 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  void DispSeeds_help(CPlant* plant,CCell* cell);    ///<clonal version
  virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant);
 // virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant);
+ ///weekly water levels
+ /**2^5 for generating autocorellation
+ \sa genAutokorrWL()
+ */
+ double weeklyWL[32];
+ /// generate autocorrelated Wl-series
+ void genAutokorrWL(double hurst);
+ /// generate seasonal Wl-series
+ void genSeasonWL();
+ /// generate const Wl-series
+ void genConstWL();
 protected:
  void DistribResource();    ///<water impact on ressource allocation
  void SetCellResource();     ///< set amount of resources the cells serve

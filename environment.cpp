@@ -426,7 +426,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
    ///
    char* CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.explodat.txt";
 //   char* CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.txt";
-   char* CClonalGridEnvir::NameClonalOutFile="Output\\clonalOut.txt";
+   string CClonalGridEnvir::NameClonalOutFile="Output\\clonalOut.txt";
    int CClonalGridEnvir::clonaltype=0;
    int CClonalGridEnvir::Pfttype=40;//?default  41th PFT with average parameters
 
@@ -589,7 +589,7 @@ void CClonalGridEnvir::OneRun(){
       OneYear();
 //      if (year%10==1){//(year==11||year==31){ modulo
 //        WriteSurvival();
-        WriteGridComplete(false);//report 10th, 30th and last year
+        WriteGridComplete(false);//report last year
         clonalOutput();
         WriteSurvival();
 //      }
@@ -748,7 +748,7 @@ void CClonalGridEnvir::setCover(){
 //---------------------------------------------------------------------------
 void CClonalGridEnvir::clonalOutput(){
     //write data in the clonalOut file
-    ofstream clonOut(NameClonalOutFile,ios_base::app);
+    ofstream clonOut(NameClonalOutFile.c_str(),ios_base::app);
 //    {
    if (ClonOutData.size()==0) {cerr<<("no data found in ClonalOutData");return; }
     if (!clonOut.good()) {cerr<<("Fehler beim Öffnen ClonalOutFile");exit(3); }

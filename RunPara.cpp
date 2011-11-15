@@ -6,6 +6,7 @@
 
 #include "RunPara.h"
 #include <iostream>
+#include <sstream>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -16,7 +17,8 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutMass(5000),NCut(0),torus(true),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
-  PftFile("Input/PftTraits2304.txt"){}
+  PftFile("Input/PftTraits2304.txt"),
+  species("M"),WaterLevel(0),WLseason("const"){}
 void SRunPara::print(){
   std::cout<<"\n  Parameter setting:\n";
   std::cout<<"Version: "<<Version<<"\tAcomp:"<<AboveCompMode
@@ -28,7 +30,19 @@ void SRunPara::print(){
       <<"\nNCut:"<<NCut<<"\tCutMass:"<<CutMass
       <<"\nARes:"<<meanARes<<"\tBres:"<<meanBRes
       <<"\nTramplingArea:"<<DistAreaYear<<"\tTrampl_Prob:"<<AreaEvent
-      <<"\nMort_Seeds:"<<mort_seeds<<"\tPFTFile:"<<PftFile
-      <<std::endl;
+      <<"\nMort_Seeds:"<<mort_seeds
+      <<"\nSpecInit: "<<species<<"\tWLmean: "<<WaterLevel<<"\tWL mode: "<<WLseason
+      <<"\tPFTFile:"<<PftFile<<std::endl;
 }//end print
+///
+/// currently for Reed-Mix experiments
+/// \date 2011/11/14
+///
+string SRunPara::getRunID(){
+      stringstream dummi;
+      dummi<<"_R"<<this->meanBRes<<"_"<<species
+           <<"_WL"<<this->WaterLevel<<"_"<<this->WLseason;
+      return dummi.str();
+}// string for file name generation
+
   //eof  ---------------------------------------------------------------------

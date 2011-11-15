@@ -60,7 +60,8 @@ void CWaterPlant::Grow2()
  //standard growth
  CPlant::Grow2();
  //detailed output - for grid plots
-if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
+//if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
+if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);
@@ -116,7 +117,7 @@ void CWaterPlant::DistrRes_help(){
   \todo this function line3 to comment out for (not)using rule 3
 */
 double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
-  bool rule3=false;  //true
+  bool rule3=true;  //true
   double cplantval=CPlant::comp_coef(layer,symmetry);
   if (!rule3 || layer==1) //comment out to disable changed competitive power
     return cplantval;

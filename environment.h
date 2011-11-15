@@ -150,7 +150,7 @@ class CClonalGridEnvir: public CEnvir, public CGridclonal{
 protected:
 public:
   static char* NameClonalPftFile; ///< Filename of clonal Pft-File
-  static char* NameClonalOutFile; ///< Filename of clonal Output-File
+  static string NameClonalOutFile; ///< Filename of clonal Output-File
   static int clonaltype;          ///< current clonal type (number in List)
   static int Pfttype;             ///< current Pft-Type (number in List)
 //  static int sim;                 ///< current number of  repititions

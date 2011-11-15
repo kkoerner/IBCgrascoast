@@ -33,7 +33,7 @@ void CWaterGridEnvir::InitInds()
   SWaterTraits::ReadWaterStrategy();
   int no_init_seeds=10;
 
-  if(true){   //true
+  if(SRunPara::RunPara.species=="R" ||SRunPara::RunPara.species=="M"){   //true
   //reed
     SPftTraits*    traits  =SPftTraits::PftList[15]; //15
     traits->pEstab=0.01;   //geringe Etablierung
@@ -51,7 +51,7 @@ void CWaterGridEnvir::InitInds()
     WLinkList[spft]=wtraits;
   }//end reed type
 
-  if(false){ //true
+  if(SRunPara::RunPara.species=="G"||SRunPara::RunPara.species=="M"){ //true
   //further types
     SPftTraits*   traits  =SPftTraits::PftList[42]; //PFT43
 //  cltraits=SclonalTraits::clonalTraits[1]; //clonal2 Resshare0
@@ -121,6 +121,45 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    }
 
 }
+/**
+  \warning this work only with 30 weeks a year
+*/
+void CWaterGridEnvir::genAutokorrWL(double hurst)
+{
+  double mean=SRunPara::RunPara.WaterLevel;
+  double sigma=5;//SRunPara::RunPara.
+  int D=32,N=32, d=D/2;
+  //first values
+  weeklyWL[0]=CEnvir::rand01()*sigma+(mean-sigma);
+  weeklyWL[31]=CEnvir::rand01()*sigma+(mean-sigma);
+  double delta=sigma;
+  //generate between
+  for (int step=1;step<=5;step++){
+    delta*= pow(0.5,0.5*hurst);
+    for(int x=d;x<=N-d;x+=D){
+      weeklyWL[x]=(weeklyWL[x-d]+weeklyWL[x+d])/2.0
+                  +delta*(2.0*rand01()-1);
+    }
+    D/=2;d/=2;
+  }
+}
+/**
+  \warning this work only with 30 weeks a year
+*/
+void CWaterGridEnvir::genSeasonWL()
+{
+  double mean=SRunPara::RunPara.WaterLevel;
+  double sigma=5;//SRunPara::RunPara.
+  for (unsigned int i=0; i<30; i++)
+    weeklyWL[i]=mean+sigma*cos(i/2.0/Pi);
+}
+/**
+  \warning this work only with 30 weeks a year
+*/
+void CWaterGridEnvir::genConstWL()
+{
+  for (unsigned int i=0; i<30; i++) weeklyWL[i]=SRunPara::RunPara.WaterLevel;
+}
 
 /**
   weekly change grid water level
@@ -129,8 +168,23 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 */
 void CWaterGridEnvir::SetCellResource(){
   CGrid::SetCellResource();
-  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   //  ChangeMeanWaterLevel(5);
+  if (week==1)//generate new year's WaterLevels
+  {
+    if(SRunPara::RunPara.WLseason=="random")
+    // generate autocorrelated Wl-series
+    genAutokorrWL(0.5);
+    else if(SRunPara::RunPara.WLseason=="season")
+    // generate seasonal Wl-series
+    genSeasonWL();
+    else
+//if(SRunPara::RunPara.WLseason=="const")
+    // generate const Wl-series
+    genConstWL(); //default
+  }
+//  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
+  this->SetMeanWaterLevel(weeklyWL[week-1]);
+
 }
 
 //-------------------------------------------------------------

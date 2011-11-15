@@ -5,6 +5,9 @@
 
 #ifndef RunParaH
 #define RunParaH
+#include <string>
+using namespace std;
+
 //---------------------------------------------------------------------------
 //! Enumeration type to specify size asymmetry/symmetry of competition
 enum CompMode {sym, asympart, asymtot, clonal1, clonal2, clonal3};
@@ -58,10 +61,14 @@ struct SRunPara
    double Aampl;      //!< within year above-ground resource amplitude (not used)
    double Bampl;      //!<  within year above-ground resource amplitude (not used)
    char* PftFile;     //!< File with PFT trait parameter in Folder "Input"
+   //reed mix exps
    double WaterLevel; ///<standard mean grid water level
+   string species;   ///<which species should be initialized [G M R]
+   string WLseason;  ///<modus of seasonal WL change [const season random comb]
 
    SRunPara();
-   void print();
+   void print();    ///<print RunPara - parameters
+   string getRunID();///< string for file name generation
    inline double DistProb(){return DistAreaYear/AreaEvent/30.0;};
    inline double CellScale(){return GridSize/(double)CellNum;};
    inline int GetGridSize() const {return CellNum;};

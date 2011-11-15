@@ -8,6 +8,7 @@ experiments.
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #include <iostream>
+#include <sstream>
 #include "TimeUtils.h"
 
 #pragma hdrstop
@@ -106,15 +107,32 @@ void Run();
   */
 int main(int argc, char* argv[])
 {
+  if (argc>1){
+    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
+    SRunPara::RunPara.species=argv[2];  //init types
+    SRunPara::RunPara.WLseason=argv[3]; //schwankungen //not yet implemented
+  }
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=15; //start-WL   100
+  SRunPara::RunPara.WaterLevel=20; //start-WL   100
   SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
   //sim-loop
   do{
     //simNr
     Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
-    Envir->NameLogFile=((AnsiString)"Mix_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
+//    Envir->NameLogFile=((AnsiString)"Mix_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
+    string idstr= SRunPara::RunPara.getRunID();
+    stringstream strd;
+    strd<<"Output\\Mix_Grid_log_"<<idstr<<".txt";
+    Envir->NameLogFile=strd.str();     // clear stream
+    strd.str("");
+    strd<<"Output\\Mix_clonO_"<<idstr<<".txt";
+    Envir->NameClonalOutFile=strd.str();
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<".txt";
+    Envir->NameGridOutFile=strd.str();
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<".txt";
+    Envir->NameSurvOutFile= strd.str();
+    SRunPara::RunPara.print();
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=3;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
@@ -128,8 +146,8 @@ int main(int argc, char* argv[])
 
       delete Envir;
     }//end run
-    SRunPara::RunPara.WaterLevel-=1;//10cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -5)
+    SRunPara::RunPara.WaterLevel-=5;//10cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel< -20)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
