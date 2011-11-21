@@ -41,7 +41,7 @@ void SRunPara::print(){
 string SRunPara::getRunID(){
       stringstream dummi;
       dummi<<"_R"<<this->meanBRes<<"_"<<species
-           <<"_WL"<<this->WaterLevel<<"_"<<this->WLseason;
+           <<"_"<<this->WLseason<<"_WL"<<this->WaterLevel;
       return dummi.str();
 }// string for file name generation
 

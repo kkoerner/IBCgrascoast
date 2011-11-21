@@ -62,6 +62,7 @@ public:
 //-----
 
   virtual int exitConditions(); ///< get exit conditions
+  virtual void GetOutput();    //run in 20th week of year
   void WriteWaterOutput();   ///< write water-experiment result output
 
  /// returns grid's mean water level

@@ -214,7 +214,7 @@ void CEnvir::WriteGridComplete(bool allYears)
      GridOutFile<<"Sim\tRun\tTime\t"
               <<"totMass\tNInd\t"
               <<"abovemass\tbelowmass\t"
-              <<"mean_ares\tmean_bres\t"
+              <<"mean_WL\tmean_bres\t"
               <<"shannon\tmeanShannon\t"
               <<"NPFT\tmeanNPFT\tCutted"
               ;
@@ -229,7 +229,8 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->Nind
                  <<'\t'<<GridOutData[i]->above_mass
                  <<'\t'<<GridOutData[i]->below_mass
-                 <<'\t'<<GridOutData[i]->aresmean
+//                 <<'\t'<<GridOutData[i]->aresmean
+                 <<'\t'<<GridOutData[i]->WaterLevel
                  <<'\t'<<GridOutData[i]->bresmean
                  <<'\t'<<GridOutData[i]->shannon
                  <<'\t'<<GetMeanShannon(10)//25 nach 100J
@@ -648,7 +649,8 @@ void CClonalGridEnvir::OneWeek(){
       //get cutted biomass
       GetOutputCutted();
       //clonal output
-      GetClonOutput();   //calculate output variables
+      // comment out since 11/11/17
+      //      GetClonOutput();   //calculate output variables
    }
 }//end CClonalGridEnvir::OneWeek()
 //---------------------------------------------------------------------------

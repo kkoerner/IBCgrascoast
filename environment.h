@@ -176,7 +176,7 @@ public:
   void OneWeek();   //!< calls all weekly processes
   int PftSurvival();    ///< from CEnvir
   /// from CEnvir: collect and write general results
-  void GetOutput();    //run in 20th week of year
+  virtual void GetOutput();    //run in 20th week of year
   void GetClonOutput(); //run in 30th week of year
   //@}
   //new...

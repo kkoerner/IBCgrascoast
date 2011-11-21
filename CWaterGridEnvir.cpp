@@ -206,6 +206,13 @@ int CWaterGridEnvir::exitConditions()
      return 0;
 }//end CClonalGridEnvir::exitConditions()
 //---------------------------------------------------------
+void CWaterGridEnvir::GetOutput(){
+   CClonalGridEnvir::GetOutput();
+   this->GridOutData.back()->WaterLevel=this->GetMeanWaterLevel(); //oder:
+//   this->GridOutData.back()->WaterLevel=this->weeklyWL[week-1];
+
+}    //run in 20th week of year
+//---------------------------------------------------------
 /**
    anually output of type-status
 
@@ -213,7 +220,7 @@ int CWaterGridEnvir::exitConditions()
    \author KK
    \date 11/10/25
 */
-  void WriteWaterOutput(){
+  void CWaterGridEnvir::WriteWaterOutput(){
 
 
   }   // end write results
