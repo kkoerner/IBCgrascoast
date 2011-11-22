@@ -591,7 +591,7 @@ void CClonalGridEnvir::OneRun(){
 //      if (year%10==1){//(year==11||year==31){ modulo
 //        WriteSurvival();
         WriteGridComplete(false);//report last year
-        clonalOutput();
+//        clonalOutput();
         WriteSurvival();
 //      }
       if (endofrun)break;

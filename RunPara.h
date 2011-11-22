@@ -63,6 +63,7 @@ struct SRunPara
    char* PftFile;     //!< File with PFT trait parameter in Folder "Input"
    //reed mix exps
    double WaterLevel; ///<standard mean grid water level
+   double WLsigma; ///<grid water level change 
    string species;   ///<which species should be initialized [G M R]
    string WLseason;  ///<modus of seasonal WL change [const season random comb]
 

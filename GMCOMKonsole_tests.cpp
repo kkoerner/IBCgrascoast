@@ -111,9 +111,10 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
     SRunPara::RunPara.species=argv[2];  //init types
     SRunPara::RunPara.WLseason=argv[3]; //schwankungen //not yet implemented
+    SRunPara::RunPara.WLsigma=atof(argv[4]);
   }
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=20; //start-WL   100
+  SRunPara::RunPara.WaterLevel=40; //start-WL   100
   SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
   //sim-loop
   do{
@@ -146,8 +147,8 @@ int main(int argc, char* argv[])
 
       delete Envir;
     }//end run
-    SRunPara::RunPara.WaterLevel-=5;//10cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -20)
+    SRunPara::RunPara.WaterLevel-=5;//5cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel< -40)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors

@@ -18,7 +18,7 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   CutMass(5000),NCut(0),torus(true),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/PftTraits2304.txt"),
-  species("M"),WaterLevel(0),WLseason("const"){}
+  species("M"),WaterLevel(0),WLsigma(0),WLseason("const"){}
 void SRunPara::print(){
   std::cout<<"\n  Parameter setting:\n";
   std::cout<<"Version: "<<Version<<"\tAcomp:"<<AboveCompMode
@@ -31,7 +31,8 @@ void SRunPara::print(){
       <<"\nARes:"<<meanARes<<"\tBres:"<<meanBRes
       <<"\nTramplingArea:"<<DistAreaYear<<"\tTrampl_Prob:"<<AreaEvent
       <<"\nMort_Seeds:"<<mort_seeds
-      <<"\nSpecInit: "<<species<<"\tWLmean: "<<WaterLevel<<"\tWL mode: "<<WLseason
+      <<"\nSpecInit: "<<species<<"\tWLmean: "<<WaterLevel
+      <<"\tWL mode: "<<WLseason<<"\tWL change"<<WLsigma
       <<"\tPFTFile:"<<PftFile<<std::endl;
 }//end print
 ///
@@ -41,7 +42,8 @@ void SRunPara::print(){
 string SRunPara::getRunID(){
       stringstream dummi;
       dummi<<"_R"<<this->meanBRes<<"_"<<species
-           <<"_"<<this->WLseason<<"_WL"<<this->WaterLevel;
+           <<"_"<<this->WLseason<<"_WL"<<this->WaterLevel
+           <<"_WLc"<<WLsigma;
       return dummi.str();
 }// string for file name generation
 

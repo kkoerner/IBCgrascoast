@@ -127,7 +127,7 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 void CWaterGridEnvir::genAutokorrWL(double hurst)
 {
   double mean=SRunPara::RunPara.WaterLevel;
-  double sigma=5;//SRunPara::RunPara.
+  double sigma=SRunPara::RunPara.WLsigma;//5;
   int D=32,N=32, d=D/2;
   //first values
   weeklyWL[0]=CEnvir::rand01()*sigma+(mean-sigma);
@@ -149,7 +149,7 @@ void CWaterGridEnvir::genAutokorrWL(double hurst)
 void CWaterGridEnvir::genSeasonWL()
 {
   double mean=SRunPara::RunPara.WaterLevel;
-  double sigma=5;//SRunPara::RunPara.
+  double sigma=SRunPara::RunPara.WLsigma; //5;//
   for (unsigned int i=0; i<30; i++)
     weeklyWL[i]=mean+sigma*cos(i/2.0/Pi);
 }
@@ -173,7 +173,7 @@ void CWaterGridEnvir::SetCellResource(){
   {
     if(SRunPara::RunPara.WLseason=="random")
     // generate autocorrelated Wl-series
-    genAutokorrWL(0.5);
+    genAutokorrWL(0.1);
     else if(SRunPara::RunPara.WLseason=="season")
     // generate seasonal Wl-series
     genSeasonWL();
