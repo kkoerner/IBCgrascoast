@@ -35,7 +35,7 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  /**2^5 for generating autocorellation
  \sa genAutokorrWL()
  */
- double weeklyWL[32];
+ double weeklyWL[33];
  /// generate autocorrelated Wl-series
  void genAutokorrWL(double hurst);
  /// generate seasonal Wl-series

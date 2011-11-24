@@ -130,8 +130,8 @@ void CWaterGridEnvir::genAutokorrWL(double hurst)
   double sigma=SRunPara::RunPara.WLsigma;//5;
   int D=32,N=32, d=D/2;
   //first values
-  weeklyWL[0]=CEnvir::rand01()*sigma+(mean-sigma);
-  weeklyWL[31]=CEnvir::rand01()*sigma+(mean-sigma);
+  weeklyWL[0]=CEnvir::rand01()*2*sigma+(mean-sigma);
+  weeklyWL[32]=CEnvir::rand01()*2*sigma+(mean-sigma);
   double delta=sigma;
   //generate between
   for (int step=1;step<=5;step++){
@@ -184,7 +184,8 @@ void CWaterGridEnvir::SetCellResource(){
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   this->SetMeanWaterLevel(weeklyWL[week-1]);
-
+  if (week==1)cout<<"\n";
+  cout<<"\n w"<<week<<" "<<weeklyWL[week-1];
 }
 
 //-------------------------------------------------------------
@@ -202,7 +203,7 @@ int CWaterGridEnvir::exitConditions()
         cout<<"no more inds";
         return currTime; //extinction time
      }
-     cout<<"\n  << "<<this->PlantList.size()<<"plants left";
+//     cout<<"\n  << "<<this->PlantList.size()<<"plants left";
      return 0;
 }//end CClonalGridEnvir::exitConditions()
 //---------------------------------------------------------

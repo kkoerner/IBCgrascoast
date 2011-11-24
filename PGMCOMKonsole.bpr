@@ -105,7 +105,7 @@ Comments=
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=100 M season 5
+RunParams=100 M random 5
 Launcher=
 UseLauncher=0
 DebugCWD=
