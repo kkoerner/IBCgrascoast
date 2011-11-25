@@ -110,28 +110,34 @@ int main(int argc, char* argv[])
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
     SRunPara::RunPara.species=argv[2];  //init types
-    SRunPara::RunPara.WLseason=argv[3]; //schwankungen //not yet implemented
-    SRunPara::RunPara.WLsigma=atof(argv[4]);
+    SRunPara::RunPara.changeVal=atof(argv[3]);
   }
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=40; //start-WL   100
-  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
+  SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
   //sim-loop
   do{
+    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
+    SRunPara::RunPara.species=argv[2];  //init types
+    SRunPara::RunPara.changeVal=atof(argv[3]);
     //simNr
     Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
 //    Envir->NameLogFile=((AnsiString)"Mix_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
-    strd<<"Output\\Mix_Grid_log_"<<idstr<<".txt";
+    strd<<"Output\\Mix_Grid_log_"<<idstr
+      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
     strd.str("");
-    strd<<"Output\\Mix_clonO_"<<idstr<<".txt";
+    strd<<"Output\\Mix_clonO_"<<idstr
+      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
     Envir->NameClonalOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<".txt";
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
+      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<".txt";
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
     Envir->NameSurvOutFile= strd.str();
     SRunPara::RunPara.print();
     //Run-loop
@@ -147,7 +153,7 @@ int main(int argc, char* argv[])
 
       delete Envir;
     }//end run
-    SRunPara::RunPara.WaterLevel-=5;//5cm weniger für nächste Sim
+    SRunPara::RunPara.WaterLevel-=10;//5cm weniger für nächste Sim
     if(SRunPara::RunPara.WaterLevel< -40)
     endsim=true;
   }while(!endsim);//end sim
@@ -173,7 +179,7 @@ void Run(){
 //   int exitcond=0;
 //   double start=HRTimeInSec();
    //do one run
-   Envir->CClonalGridEnvir::OneRun();
+   Envir->OneRun();
 //   exitcond=Envir->GetT();
 //   double end=HRTimeInSec();
 }

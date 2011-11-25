@@ -66,6 +66,7 @@ struct SRunPara
    double WLsigma; ///<grid water level change 
    string species;   ///<which species should be initialized [G M R]
    string WLseason;  ///<modus of seasonal WL change [const season random comb]
+   double changeVal; ///<value of the parameter to change (add to) after 20 years
 
    SRunPara();
    void print();    ///<print RunPara - parameters

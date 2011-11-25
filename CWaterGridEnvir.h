@@ -60,6 +60,7 @@ public:
  virtual void InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass);
 //-----
+  void OneRun();    ///< runs one simulation run in default mode
 
   virtual int exitConditions(); ///< get exit conditions
   virtual void GetOutput();    //run in 20th week of year

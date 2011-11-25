@@ -121,6 +121,30 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    }
 
 }
+//------------------------------------------------------------------------------
+void CWaterGridEnvir::OneRun(){
+//   double teval=0.2;  //fraction of Tmax that is used for evaluation
+   //get initial conditions
+   init=1; //for init the second plant (for the invasion experiments)
+   int year_of_change=3;
+   //run simulation until YearsMax
+   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
+      cout<<" y"<<year;
+      //aprupt climate change (WL)
+      OneYear();
+      if (year==year_of_change) SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
+      if (true)//(year>=20)
+      {
+        WriteGridComplete(false);//report last year
+        WriteSurvival();
+      }
+      if (endofrun)break;
+   }//years
+//WL zurücksetzen
+    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
+
+}  // end OneSim
+//------------------------------------------------------------------------------
 /**
   \warning this work only with 30 weeks a year
 */

@@ -61,7 +61,8 @@ void CWaterPlant::Grow2()
  CPlant::Grow2();
  //detailed output - for grid plots
 //if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
-if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
+//enable again for more detailed spatial information
+if (false)//(CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);

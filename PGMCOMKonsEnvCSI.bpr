@@ -3,11 +3,11 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="PGMCOMKonsole.exe"/>
+    <PROJECT value="PGMCOMKonsEnvCSI.exe"/>
     <OBJFILES value="TimeUtils.obj CclonalSeed.obj Cell.obj CGenet.obj CGridclonal.obj 
       clonalPlant.obj clonalTraits.obj CObject.obj CSeed.obj environment.obj 
       GridBase.obj OutStructs.obj Plant.obj rng.obj RunPara.obj 
-      GMCOMKonsole_tests.obj CWaterGridEnvir.obj CWaterPlant.obj"/>
+      GMCOMKonsole_changes.obj CWaterGridEnvir.obj CWaterPlant.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -27,21 +27,20 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value=""/>
     <SYSDEFINES value="NO_STRICT"/>
-    <MAINSOURCE value="PGMCOMKonsole.bpf"/>
+    <MAINSOURCE value="PGMCOMKonsEnvCSI.bpf"/>
     <INCLUDEPATH value="C:\Programme\Borland\CBuilder6\Projects;..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="C:\Programme\Borland\CBuilder6\Projects;..\..\belowground_herbivory\belowground_grazing;&quot;C:\Dokumente und Einstellungen\Katrin\Eigene Dateien\graslandmodell\model ines\ArbeitskopieKatrin&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -tWC 
-      -tWM -c"/>
-    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -tWC -tWM -c"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-D&quot;&quot; -ap -Tpe -x -Gn -v"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -ap -Tpe -x -Gn"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -51,7 +50,7 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="PGMCOMKonsole.bpf" FORMNAME="" UNITNAME="PGMCOMKonsole" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="PGMCOMKonsEnvCSI.bpf" FORMNAME="" UNITNAME="PGMCOMKonsEnvCSI" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="TimeUtils.cpp" FORMNAME="" UNITNAME="TimeUtils.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CclonalSeed.cpp" FORMNAME="" UNITNAME="CclonalSeed.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Cell.cpp" FORMNAME="" UNITNAME="Cell.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -67,7 +66,7 @@
       <FILE FILENAME="Plant.cpp" FORMNAME="" UNITNAME="Plant.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rng.cpp" FORMNAME="" UNITNAME="rng.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="RunPara.cpp" FORMNAME="" UNITNAME="RunPara.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="GMCOMKonsole_tests.cpp" FORMNAME="" UNITNAME="GMCOMKonsole_tests" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GMCOMKonsole_changes.cpp" FORMNAME="" UNITNAME="GMCOMKonsole_changes" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CWaterGridEnvir.cpp" FORMNAME="" UNITNAME="CWaterGridEnvir" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CWaterPlant.cpp" FORMNAME="" UNITNAME="CWaterPlant" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
@@ -106,7 +105,7 @@ Comments=
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=100 M random 5
+RunParams=100 M 15
 Launcher=
 UseLauncher=0
 DebugCWD=

@@ -18,7 +18,7 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   CutMass(5000),NCut(0),torus(true),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/PftTraits2304.txt"),
-  species("M"),WaterLevel(0),WLsigma(0),WLseason("const"){}
+  species("M"),WaterLevel(0),WLsigma(0),WLseason("const"),changeVal(0){}
 void SRunPara::print(){
   std::cout<<"\n  Parameter setting:\n";
   std::cout<<"Version: "<<Version<<"\tAcomp:"<<AboveCompMode
@@ -33,6 +33,7 @@ void SRunPara::print(){
       <<"\nMort_Seeds:"<<mort_seeds
       <<"\nSpecInit: "<<species<<"\tWLmean: "<<WaterLevel
       <<"\tWL mode: "<<WLseason<<"\tWL change"<<WLsigma
+      <<"\n change Param by "<<changeVal
       <<"\tPFTFile:"<<PftFile<<std::endl;
 }//end print
 ///
