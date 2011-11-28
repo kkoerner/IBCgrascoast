@@ -126,13 +126,28 @@ void CWaterGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
    init=1; //for init the second plant (for the invasion experiments)
-   int year_of_change=3;
+   int year_of_change=10;
    //run simulation until YearsMax
    for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       cout<<" y"<<year;
-      //aprupt climate change (WL)
+//seed rain (drift of little individuals) -anually-
+  if(SRunPara::RunPara.species=="R"||SRunPara::RunPara.species=="M") //true
+    InitWaterSeeds(
+//    InitWaterInds(
+      SPftTraits::PftList[15],SclonalTraits::clonalTraits[6],
+      SWaterTraits::PFTWaterList[0],1,8000);
+  if(SRunPara::RunPara.species=="G"||SRunPara::RunPara.species=="M") //true
+    InitWaterInds(
+      SPftTraits::PftList[42],SclonalTraits::clonalTraits[0],
+      SWaterTraits::PFTWaterList[2],1,400);
+
+//--------------------
       OneYear();
+//--------------------
+//aprupt climate change (WL)
       if (year==year_of_change) SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
+
+//file output
       if (true)//(year>=20)
       {
         WriteGridComplete(false);//report last year
@@ -221,7 +236,10 @@ int CWaterGridEnvir::exitConditions()
 {
      int currTime=GetT();
 //    if no more individuals existing
-     if (this->PlantList.size()==0)//||currTime>(30*20))
+//     if (this->PlantList.size()==0)
+
+//   seed input will probably let PFTs reestablish
+     if (false)//(this->PlantList.size()==0)
      {
         endofrun=true;
         cout<<"no more inds";

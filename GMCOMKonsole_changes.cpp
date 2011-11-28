@@ -113,8 +113,8 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.changeVal=atof(argv[3]);
   }
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=40; //start-WL   100
-  SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
+  SRunPara::RunPara.WaterLevel=15; //start-WL   100
+  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
   //sim-loop
   do{
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
       delete Envir;
     }//end run
     SRunPara::RunPara.WaterLevel-=10;//5cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -40)
+    if(SRunPara::RunPara.WaterLevel< -5)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
