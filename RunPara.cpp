@@ -18,23 +18,25 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   CutMass(5000),NCut(0),torus(true),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/PftTraits2304.txt"),
-  species("M"),WaterLevel(0),WLsigma(0),WLseason("const"),changeVal(0){}
+  species("M"),WaterLevel(0),WLsigma(0),WLseason("const"),changeVal(0),
+  Migration(true){}
 void SRunPara::print(){
   std::cout<<"\n  Parameter setting:\n";
-  std::cout<<"Version: "<<Version<<"\tAcomp:"<<AboveCompMode
-      <<"\tBcomp:"<<BelowCompMode
+  std::cout
+//      <<"Version: "<<Version<<"\tAcomp:"<<AboveCompMode
+//      <<"\tBcomp:"<<BelowCompMode
       <<"\nGridSize:"<<GridSize<<"\tTmax:"<<Tmax<<"Torus:"<<torus
       <<"\nAGraz:"<<GrazProb<<"\tRemoval:"<<PropRemove
-      <<"\nBGraz:"<<BelGrazProb<<"\tRemoval:"<<BelPropRemove
-      <<"\tMode:"<<BelGrazMode<<"\tThresh:"<<BGThres<<"\tHetGraz:"<<HetBG
-      <<"\nNCut:"<<NCut<<"\tCutMass:"<<CutMass
+//      <<"\nBGraz:"<<BelGrazProb<<"\tRemoval:"<<BelPropRemove
+//      <<"\tMode:"<<BelGrazMode<<"\tThresh:"<<BGThres<<"\tHetGraz:"<<HetBG
+//      <<"\nNCut:"<<NCut<<"\tCutMass:"<<CutMass
       <<"\nARes:"<<meanARes<<"\tBres:"<<meanBRes
-      <<"\nTramplingArea:"<<DistAreaYear<<"\tTrampl_Prob:"<<AreaEvent
+//      <<"\nTramplingArea:"<<DistAreaYear<<"\tTrampl_Prob:"<<AreaEvent
       <<"\nMort_Seeds:"<<mort_seeds
       <<"\nSpecInit: "<<species<<"\tWLmean: "<<WaterLevel
       <<"\tWL mode: "<<WLseason<<"\tWL change"<<WLsigma
-      <<"\n change Param by "<<changeVal
-      <<"\tPFTFile:"<<PftFile<<std::endl;
+      <<"\n change Param by "<<changeVal<<"\n Migration: "<<Migration
+      <<"\nPFTFile:"<<PftFile<<std::endl;
 }//end print
 ///
 /// currently for Reed-Mix experiments

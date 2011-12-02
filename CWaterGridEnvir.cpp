@@ -122,15 +122,24 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 
 }
 //------------------------------------------------------------------------------
+/**
+ Runs once for the Water Grid Environment. After an init phase of 10 years
+ environmental conditions (WaterLevel) is changed.
+ To allow a type to reestablish, once a year one Ind of each type is addad to
+ the grid (individual drift / migration).
+ \sa SRunPara::RunPara.WaterLevel
+*/
 void CWaterGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
    init=1; //for init the second plant (for the invasion experiments)
    int year_of_change=10;
+   double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
    for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       cout<<" y"<<year;
 //seed rain (drift of little individuals) -anually-
+if (SRunPara::RunPara.Migration){
   if(SRunPara::RunPara.species=="R"||SRunPara::RunPara.species=="M") //true
     InitWaterSeeds(
 //    InitWaterInds(
@@ -140,7 +149,7 @@ void CWaterGridEnvir::OneRun(){
     InitWaterInds(
       SPftTraits::PftList[42],SclonalTraits::clonalTraits[0],
       SWaterTraits::PFTWaterList[2],1,400);
-
+}//if migration
 //--------------------
       OneYear();
 //--------------------
@@ -156,8 +165,8 @@ void CWaterGridEnvir::OneRun(){
       if (endofrun)break;
    }//years
 //WL zurücksetzen
-    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
-
+//    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
+     SRunPara::RunPara.WaterLevel=WLstart;
 }  // end OneSim
 //------------------------------------------------------------------------------
 /**

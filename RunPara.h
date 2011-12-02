@@ -67,6 +67,7 @@ struct SRunPara
    string species;   ///<which species should be initialized [G M R]
    string WLseason;  ///<modus of seasonal WL change [const season random comb]
    double changeVal; ///<value of the parameter to change (add to) after 20 years
+   bool Migration;   ///<does regularly external individuals arrive?
 
    SRunPara();
    void print();    ///<print RunPara - parameters

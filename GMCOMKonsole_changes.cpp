@@ -110,16 +110,18 @@ int main(int argc, char* argv[])
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
     SRunPara::RunPara.species=argv[2];  //init types
-    SRunPara::RunPara.changeVal=atof(argv[3]);
+    SRunPara::RunPara.Migration=argv[3]=="1";  //Migration
+    SRunPara::RunPara.changeVal=atof(argv[4]);  //WLchange after 10 y
   }
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=15; //start-WL   100
-  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
+  SRunPara::RunPara.WaterLevel=25; //start-WL   100
+  SRunPara::RunPara.Tmax=30;//20Jahre Laufzeit
   //sim-loop
   do{
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
     SRunPara::RunPara.species=argv[2];  //init types
-    SRunPara::RunPara.changeVal=atof(argv[3]);
+    SRunPara::RunPara.Migration=argv[3]=="1";  //Migration
+    SRunPara::RunPara.changeVal=atof(argv[4]);  //WLchange after 10 y
     //simNr
     Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
@@ -153,8 +155,8 @@ int main(int argc, char* argv[])
 
       delete Envir;
     }//end run
-    SRunPara::RunPara.WaterLevel-=10;//5cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -5)
+    SRunPara::RunPara.WaterLevel-=5;//5cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel< -25)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
