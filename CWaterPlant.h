@@ -33,15 +33,9 @@ public:
 
 ///add water impact on ressource allocation
   virtual void DistrRes_help();
+  ///corrective value for root uptake and competition
+  double rootEfficiency();
   
-/// \brief get plant's height
-/// \param cheight mg vegetative plant mass per cm height
-/// \note fkt meight be transfered to CPlant
-/// \bug since mass relates to 3D-measurements as volume,
-///   height has to be correlated with mass^(1/3)
-///
-  virtual double getHeight(double const cheight = 6.5){
-    return pow(mshoot/(Traits->LMR),1/3.0)*cheight;};
    virtual string type();  ///<say what you are
    virtual string pft();   ///<say what a pft you are
 

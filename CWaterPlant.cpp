@@ -62,7 +62,10 @@ void CWaterPlant::Grow2()
  //detailed output - for grid plots
 //if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
 //enable again for more detailed spatial information
-if (false)//(CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
+//if (false)
+//if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
+if (CEnvir::year<3)
+//if (true)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);
@@ -73,6 +76,7 @@ if (false)//(CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
  CEnvir::AddLogEntry(ycoord,filename);
  CEnvir::AddLogEntry(GetMass(),filename);
  CEnvir::AddLogEntry(this->getHeight(),filename);
+ CEnvir::AddLogEntry(this->getDepth(),filename);
  CEnvir::AddLogEntry(this->growingSpacerList.size(),filename);
  CEnvir::AddLogEntry(this->getGenet()->number,filename);
  CEnvir::AddLogEntry(" ",filename);
@@ -82,6 +86,31 @@ if (false)//(CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
  CEnvir::AddLogEntry("\n",filename);
 }
 }//end Grow2
+/**
+\note returns 1e-10 minimal (to exclude 'devide by zero')
+\todo Rechenzeit: diesen Wert je Woche ein mal ausrechnen und als Variable in CWaterPlant speichern
+*/
+double CWaterPlant::rootEfficiency(){
+ double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
+//--first approach--------------
+// double diff=wl-this->waterTraits->WL_Optimum;
+// double sigma=this->waterTraits->WL_Tolerance;
+// return min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
+//--2nd approach--------------
+ double depth=this->getDepth();
+ //a) logistic formula
+// double r<-0.7;double diff=1;
+// if(this->waterTraits->assimAnoxWL)
+// {diff=.1;}
+// else{}
+// double lpmax=0.5+diff/2; double lpmin=0.5-diff/2;
+// return (lpmax-lpmin)/(exp(-r*wl)+1)+lpmin ;
+
+ //b) Wenn-Dann
+ if(this->waterTraits->assimAnoxWL)return 0.5;
+ double retval=  max(min(depth,-wl)/depth,1e-10); //0.0
+ return retval;
+}
 /**
 Helping function for CWaterGridEnvir::DistribRessource
 
@@ -101,20 +130,17 @@ void CWaterPlant::DistrRes_help(){
  }
 
  //.. belowground
- double diff=wl-this->waterTraits->WL_Optimum;
- double sigma=this->waterTraits->WL_Tolerance;
+// double diff=wl-this->waterTraits->WL_Optimum;
+// double sigma=this->waterTraits->WL_Tolerance;
  //Ressourcennutzung nach Normalverteilung
-// double cfac=CEnvir::RandNumGen.normal(diff,sigma);
-// double cfac=exp(-0.5*(diff/sigma)*(diff/sigma));
-// double factor= min(1.0,max(0.0,CEnvir::RandNumGen.normal(diff,sigma)));
-// double factor= min(1.0,max(0.0,cfac));
- this->Buptake*=min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
+// this->Buptake*=min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
+ this->Buptake*=rootEfficiency();
 
 }
 /**
   CWater - version of competion strength of a plant.
   Belowground strength varies with distance to WL-Optimum of plant type.
-
+  \bugnot sure for returning zero
   \todo this function line3 to comment out for (not)using rule 3
 */
 double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
@@ -124,10 +150,11 @@ double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
     return cplantval;
   //korrekturwert durch WaterLevel
   else {   //comment out here too
-    double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
-    double diff=wl-this->waterTraits->WL_Optimum;
-    double sigma=this->waterTraits->WL_Tolerance;
-    return cplantval* min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
+//    double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
+//    double diff=wl-this->waterTraits->WL_Optimum;
+//    double sigma=this->waterTraits->WL_Tolerance;
+//    return cplantval* min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
+    return cplantval* rootEfficiency();
   }        //comment out here too
 }
 //---------------------------------------------------------------------------

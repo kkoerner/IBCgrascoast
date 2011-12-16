@@ -33,7 +33,8 @@ void CWaterGridEnvir::InitInds()
   SWaterTraits::ReadWaterStrategy();
   int no_init_seeds=10;
 
-  if(SRunPara::RunPara.species=="R" ||SRunPara::RunPara.species=="M"){   //true
+  if(SRunPara::RunPara.species=="R" ||SRunPara::RunPara.species=="M"
+  ||SRunPara::RunPara.species=="M1"||SRunPara::RunPara.species=="M2"){   //true
   //reed
     SPftTraits*    traits  =SPftTraits::PftList[15]; //15
     traits->pEstab=0.01;   //geringe Etablierung
@@ -51,15 +52,35 @@ void CWaterGridEnvir::InitInds()
     WLinkList[spft]=wtraits;
   }//end reed type
 
-  if(SRunPara::RunPara.species=="G"||SRunPara::RunPara.species=="M"){ //true
+  if(SRunPara::RunPara.species=="G1"
+  ||SRunPara::RunPara.species=="M"||SRunPara::RunPara.species=="M1"){ //true
   //further types
     SPftTraits*   traits  =SPftTraits::PftList[42]; //PFT43
-//  cltraits=SclonalTraits::clonalTraits[1]; //clonal2 Resshare0
+//    traits->RAR=1.5;
+    //  cltraits=SclonalTraits::clonalTraits[1]; //clonal2 Resshare0
     SclonalTraits* cltraits=SclonalTraits::clonalTraits[0]; //clonal1 Resshare1
     cltraits->mSpacer=70; //standard value
     SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[2];
 //  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
     InitWaterInds(traits,cltraits,wtraits,no_init_seeds,4000);    //com out
+//  spft="null";
+    string spft=this->PlantList.back()->pft();                          //com out
+    PftInitList[spft]+=no_init_seeds;                            //com out
+    addPftLink(spft,traits);//?noch mal genauer gucken
+    addClLink(spft,cltraits);
+    WLinkList[spft]=wtraits;
+  }//grass type
+  if(SRunPara::RunPara.species=="G2"
+  ||SRunPara::RunPara.species=="M"||SRunPara::RunPara.species=="M2"){ //true
+  //further types
+    SPftTraits*   traits  =SPftTraits::PftList[71]; //PFT72  klein, stress
+//    traits->RAR=1.5;
+    //  cltraits=SclonalTraits::clonalTraits[1]; //clonal2 Resshare0
+    SclonalTraits* cltraits=SclonalTraits::clonalTraits[0]; //clonal1 Resshare1
+    cltraits->mSpacer=70; //standard value
+    SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[2];
+//  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,800);    //com out
 //  spft="null";
     string spft=this->PlantList.back()->pft();                          //com out
     PftInitList[spft]+=no_init_seeds;                            //com out
@@ -377,7 +398,7 @@ std::vector<SWaterTraits*> SWaterTraits::PFTWaterList;//(8,new SclonalTraits());
 
 
 SWaterTraits::SWaterTraits():name("default"),
-  WL_Optimum(0),WL_Tolerance(0),assimBelWL(false)
+  WL_Optimum(0),WL_Tolerance(0),assimBelWL(false),assimAnoxWL(false)
 {}//end constructor
 
 //---------------------------------------------------------------------------
@@ -388,24 +409,28 @@ void SWaterTraits::ReadWaterStrategy(char* file)
       //read plant parameter from here
       name="swamp";
       temp->WL_Optimum=30;temp->WL_Tolerance= 30;//15;//30;
+      temp->assimAnoxWL=true;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="wet";
       temp->WL_Optimum=10;temp->WL_Tolerance= 15;
+      temp->assimAnoxWL=true;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="moist";
       temp->WL_Optimum=-10;temp->WL_Tolerance= 30;
+      temp->assimAnoxWL=false;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="dry";
       temp->WL_Optimum=-50;temp->WL_Tolerance= 15;
+      temp->assimAnoxWL=false;
       temp->name=name;
       PFTWaterList.push_back(temp);
 

@@ -35,7 +35,8 @@ struct SPftTraits   //plant functional traits
    double Dist;    //!< mean dispersal distance (and standard deviation of the dispersal kernel
    int    Dorm;    //!< maximum seed longevity
    double pEstab;  //!< annual probability of establishment
-   //!< maximal resource utilization per ZOI area per time step
+
+   //! maximal resource utilization per ZOI area per time step
    /*!< (optimum uptake for two layers : LimRes=2*Gmax)
    (optimum uptake for one layer : LimRes=Gmax)
    */
@@ -46,11 +47,12 @@ struct SPftTraits   //plant functional traits
    inline double CompPowerB()const {return Gmax;};
     //! fraction of above-ground biomass removal if a plant is grazed
    inline double GrazFac()const {return 1.0/LMR*palat;};
+
    double palat;   //!< Palatability -> susceptability towards grazing
    int    memory;    //!< equal to surv_max in the model description -> maximal time of survival under stress
    double mThres;  //!< Fraction of maximum uptake that is considered as resource stress
    double growth;  //!< concersion rate  resource -> biomass [mass/resource unit]
-   int    FlowerWeek; //!< week of start of seed oroduction
+   int    FlowerWeek; //!< week of start of seed production
    int    DispWeek;   //!< week of seed dispersal (and end of seed production)
    void SetDefault();   ///< set default trait values (eq. 'PFT1')
    SPftTraits();
@@ -112,6 +114,23 @@ public:
    double Area_root();
    double Radius_shoot();
    double Radius_root();
+/// \brief get plant's height
+/// \param cheight mg vegetative plant mass per cm height
+/// \return plant height in cm
+/// \include SLA in some way (as is in Area_shoot())?
+///
+  virtual double getHeight(double const cheight = 6.5){
+    return pow(mshoot/(Traits->LMR),1/3.0)*cheight;};
+/// \brief get plant's depth
+/// \param cdepth mg vegetative root mass per cm ground layer  (root density)
+/// \return depth of root cylinder in cm
+/// calculation: devide root mass by ZOI-area
+/// \note That is more quick and dirty. One might include a new type
+///  parameter analogous to LMR.
+///
+  virtual double getDepth(double const cdepth = 6.5){
+    return mroot/this->Area_root()*cdepth;};
+
    ///competition coefficient for a plant -needed for AboveComp and BelowComp
    virtual double comp_coef(const int layer,const int symmetry)const;
    //! shoot-root resource allocation and plant growth in two layers (one-layer option obsolete now)
