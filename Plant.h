@@ -125,10 +125,12 @@ public:
 /// \param cdepth mg vegetative root mass per cm ground layer  (root density)
 /// \return depth of root cylinder in cm
 /// calculation: devide root mass by ZOI-area
+/// (calibrated: 2500mg DWroot beeing 50cm)
 /// \note That is more quick and dirty. One might include a new type
 ///  parameter analogous to LMR.
 ///
-  virtual double getDepth(double const cdepth = 6.5){
+///
+  virtual double getDepth(double const cdepth = 4.0){   //6.5
     return mroot/this->Area_root()*cdepth;};
 
    ///competition coefficient for a plant -needed for AboveComp and BelowComp

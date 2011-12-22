@@ -62,7 +62,7 @@ void CWaterGridEnvir::InitInds()
     cltraits->mSpacer=70; //standard value
     SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[2];
 //  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
-    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,4000);    //com out
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,2000);    //com out
 //  spft="null";
     string spft=this->PlantList.back()->pft();                          //com out
     PftInitList[spft]+=no_init_seeds;                            //com out
@@ -80,7 +80,7 @@ void CWaterGridEnvir::InitInds()
     cltraits->mSpacer=70; //standard value
     SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[2];
 //  InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
-    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,800);    //com out
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,400);    //com out
 //  spft="null";
     string spft=this->PlantList.back()->pft();                          //com out
     PftInitList[spft]+=no_init_seeds;                            //com out
