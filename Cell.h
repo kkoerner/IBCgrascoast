@@ -105,6 +105,11 @@ public:
 
  CWaterCell();
  ~CWaterCell(){};
+    //! competition function for size symmetric below-ground resource competition
+   /*! function is overwritten if inherited class with different competitive
+     size-asymmetry of niche differentiation is used*/
+   virtual void BelowComp();
+
  double GetWaterLevel(){return WaterLevel;};
  void SetWaterLevel(double val){WaterLevel=val;};
 };//end CWaterCell

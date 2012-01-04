@@ -314,6 +314,9 @@ void CCell::print_map(map<string,int> &mymap){
      cout<<p->first<<'\t' <<p->second<<endl;
    }
 }
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+#include "CWaterPlant.h"
 
 //! Konstruktor
 CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy):
@@ -330,23 +333,44 @@ CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy,
   double ares,double bres, double wl):CCell(xx,yy,ares,bres),WaterLevel(wl)
   {//cout<<"CWaterCell; ";
   }
+//-----------------------------------------------------------------------------
+/**
+BELOWground competition takes global information on symmetry and version to
+distribute the cell's resources.
+ Resource competition Version is 1.
 
-//-eof--------------------------------------------------------------------------
+virtual function will be substituted by comp function from sub class
+*/
+void CWaterCell::BelowComp()
+{
+   if (BelowPlantList.empty()) return;
+   if (SRunPara::RunPara.BelowCompMode==asymtot){
+     cerr<<"CCell::BelowComp() - "
+         <<"no total asymetric belowground competition allowed"; exit(3);
+   }
+   int symm=1; if (SRunPara::RunPara.BelowCompMode==asympart) symm=2;
+   double comp_tot=0, comp_c=0, max_depth_eff=0;
 
+   //1. sum of resource requirement
+   for (plant_iter iter=BelowPlantList.begin(); iter!=BelowPlantList.end(); ++iter){
+      CPlant* plant=*iter;
+      comp_tot+=plant->comp_coef(2,symm)
+               *plant->getDepth() * ((CWaterPlant*) plant)->rootEfficiency()
+               *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
+       max_depth_eff=max( max_depth_eff,plant->getDepth() * ((CWaterPlant*) plant)->rootEfficiency()
+);
+   }
+   //2. distribute resources
+   for (plant_iter iter=BelowPlantList.begin(); iter!=BelowPlantList.end(); ++iter){
+      CPlant* plant=*iter;
+      comp_c=plant->comp_coef(2,symm)
+              *plant->getDepth() * ((CWaterPlant*) plant)->rootEfficiency()
+              *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
+      plant->Buptake+=BResConc/50.0* max_depth_eff
+                        * comp_c /comp_tot;
+   }
+}//end below_comp
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//-eof---------------------------------------------------------------------
 
 
