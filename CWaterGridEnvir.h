@@ -110,7 +110,11 @@ struct SWaterTraits   //plant functional traits
    double WL_Optimum; ///< optimal mean water level (positive is flooded)
    double WL_Tolerance; ///< SD of optimal water level
    bool assimBelWL;///<plant can assimilate light below WaterLevel
-   bool assimAnoxWL;///<root can uptake Resources in anoxic root zone
+   ///\brief ability to uptake resources in the anoxic root zone
+   /// If zero, no uptake below waterlevel;
+   /// else it's efficiency is reduced by this value for all WL
+   ///
+   double assimAnoxWL;
 
    void SetDefault();   ///< set default trait values (eq. 'PFT1')
    SWaterTraits();

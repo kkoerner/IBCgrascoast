@@ -398,7 +398,7 @@ std::vector<SWaterTraits*> SWaterTraits::PFTWaterList;//(8,new SclonalTraits());
 
 
 SWaterTraits::SWaterTraits():name("default"),
-  WL_Optimum(0),WL_Tolerance(0),assimBelWL(false),assimAnoxWL(false)
+  WL_Optimum(0),WL_Tolerance(0),assimBelWL(false),assimAnoxWL(0)
 {}//end constructor
 
 //---------------------------------------------------------------------------
@@ -408,29 +408,22 @@ void SWaterTraits::ReadWaterStrategy(char* file)
 
       //read plant parameter from here
       name="swamp";
-      temp->WL_Optimum=30;temp->WL_Tolerance= 30;//15;//30;
-      temp->assimAnoxWL=true;
-      temp->name=name;
-      PFTWaterList.push_back(temp);
-
-      temp=new SWaterTraits;
-      name="wet";
-      temp->WL_Optimum=10;temp->WL_Tolerance= 15;
-      temp->assimAnoxWL=true;
+//      temp->WL_Optimum=30;temp->WL_Tolerance= 30;//15;//30;
+      temp->assimAnoxWL=0.2;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="moist";
-      temp->WL_Optimum=-10;temp->WL_Tolerance= 30;
-      temp->assimAnoxWL=false;
+//      temp->WL_Optimum=-10;temp->WL_Tolerance= 30;
+      temp->assimAnoxWL=0.0;
       temp->name=name;
       PFTWaterList.push_back(temp);
 
       temp=new SWaterTraits;
       name="dry";
-      temp->WL_Optimum=-50;temp->WL_Tolerance= 15;
-      temp->assimAnoxWL=false;
+//      temp->WL_Optimum=-50;temp->WL_Tolerance= 15;
+      temp->assimAnoxWL=0.0;
       temp->name=name;
       PFTWaterList.push_back(temp);
 

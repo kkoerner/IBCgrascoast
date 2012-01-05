@@ -87,27 +87,23 @@ if (false)
 }
 }//end Grow2
 /**
+Get root efficiency. 'Normal' plants are not able to uptake
+resources in the anoxic root layer. Here the proportion of roots
+in the oxic root zone is returned.
+
+Adapted plants are not restricted to WaterLevel depth, but have to pay
+with restricted general uptake rate.
+
 \note returns 1e-10 minimal (to exclude 'devide by zero')
-\todo Rechenzeit: diesen Wert je Woche ein mal ausrechnen und als Variable in CWaterPlant speichern
 */
 double CWaterPlant::rootEfficiency(){
  double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
-//--first approach--------------
-// double diff=wl-this->waterTraits->WL_Optimum;
-// double sigma=this->waterTraits->WL_Tolerance;
-// return min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
-//--2nd approach--------------
  double depth=this->getDepth();
  //a) logistic formula
-// double r<-0.7;double diff=1;
-// if(this->waterTraits->assimAnoxWL)
-// {diff=.1;}
-// else{}
-// double lpmax=0.5+diff/2; double lpmin=0.5-diff/2;
-// return (lpmax-lpmin)/(exp(-r*wl)+1)+lpmin ;
-
+// ...
  //b) Wenn-Dann
- if(this->waterTraits->assimAnoxWL)return 0.25;  //0.5
+ if(this->waterTraits->assimAnoxWL>0.0)
+   return min(1.0,this->waterTraits->assimAnoxWL);  //0.5
  double retval=  max(min(depth,-wl)/depth,1e-10); //0.0
  return retval;
 }
