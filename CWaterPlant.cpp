@@ -62,9 +62,9 @@ void CWaterPlant::Grow2()
  //detailed output - for grid plots
 //if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
 //enable again for more detailed spatial information
-//if (false)
+if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
-if (CEnvir::year<3)
+//if (CEnvir::year<3)
 //if (true)
 {
  string filename=CEnvir::NameLogFile;
@@ -107,7 +107,7 @@ double CWaterPlant::rootEfficiency(){
 // return (lpmax-lpmin)/(exp(-r*wl)+1)+lpmin ;
 
  //b) Wenn-Dann
- if(this->waterTraits->assimAnoxWL)return 0.5;
+ if(this->waterTraits->assimAnoxWL)return 0.25;  //0.5
  double retval=  max(min(depth,-wl)/depth,1e-10); //0.0
  return retval;
 }
@@ -134,15 +134,16 @@ void CWaterPlant::DistrRes_help(){
 // double sigma=this->waterTraits->WL_Tolerance;
  //Ressourcennutzung nach Normalverteilung
 // this->Buptake*=min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
- this->Buptake*=rootEfficiency();
+// schon in CWaterCell::BelowComp() enthalten ...
+// this->Buptake*=rootEfficiency();
 
 }
-/**
+/* *
   CWater - version of competion strength of a plant.
   Belowground strength varies with distance to WL-Optimum of plant type.
   \bugnot sure for returning zero
   \todo this function line3 to comment out for (not)using rule 3
-*/
+* /
 double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
   bool rule3=true;  //true
   double cplantval=CPlant::comp_coef(layer,symmetry);
@@ -157,6 +158,7 @@ double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
     return cplantval* rootEfficiency();
   }        //comment out here too
 }
+*/
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 /***/

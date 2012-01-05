@@ -15,8 +15,8 @@ class CWaterPlant:public CclonalPlant
 {
 //protected:
   virtual void Grow2();
-     ///competition coefficient for a plant -needed for AboveComp and BelowComp
-   virtual double comp_coef(const int layer,const int symmetry)const;
+//     ///competition coefficient for a plant -needed for AboveComp and BelowComp
+//   virtual double comp_coef(const int layer,const int symmetry)const;
 
 public:
    SWaterTraits* waterTraits;                ///<traits of water preferences

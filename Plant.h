@@ -131,7 +131,7 @@ public:
 ///
 ///
   virtual double getDepth(double const cdepth = 4.0){   //6.5
-    return mroot/this->Area_root()*cdepth;};
+    return (mroot*this->Traits->RAR)/this->Area_root()*cdepth;};
 
    ///competition coefficient for a plant -needed for AboveComp and BelowComp
    virtual double comp_coef(const int layer,const int symmetry)const;

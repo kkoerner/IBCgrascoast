@@ -133,7 +133,7 @@ void CGridclonal::PlantLoop()
 int CGridclonal::DispersSeeds(CPlant* plant)
 {
    using CEnvir::Round;using SRunPara::RunPara;
-   int x=plant->getCell()->x, y=plant->getCell()->y;
+   int px=plant->getCell()->x, py=plant->getCell()->y;
    int NSeeds=0;
    double dist, direction;
    double rnumber;
@@ -144,6 +144,7 @@ int CGridclonal::DispersSeeds(CPlant* plant)
 
    for (int j=0; j<NSeeds; ++j)
    {
+        int x=px,y=py;
          //negative exponential dispersal kernel
          //dist=RandNumGen->exponential(1/(plant->DispDist*100));   //m -> cm
 

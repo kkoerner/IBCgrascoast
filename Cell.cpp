@@ -357,8 +357,8 @@ void CWaterCell::BelowComp()
       comp_tot+=plant->comp_coef(2,symm)
                *plant->getDepth() * ((CWaterPlant*) plant)->rootEfficiency()
                *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
-       max_depth_eff=max( max_depth_eff,plant->getDepth() * ((CWaterPlant*) plant)->rootEfficiency()
-);
+       max_depth_eff=max( max_depth_eff,plant->getDepth()
+                    * ((CWaterPlant*) plant)->rootEfficiency());
    }
    //2. distribute resources
    for (plant_iter iter=BelowPlantList.begin(); iter!=BelowPlantList.end(); ++iter){
@@ -372,5 +372,6 @@ void CWaterCell::BelowComp()
 }//end below_comp
 
 //-eof---------------------------------------------------------------------
+
 
 

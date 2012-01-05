@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
   }
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=20; //start-WL   100
-  SRunPara::RunPara.Tmax=3;//20Jahre Laufzeit
+  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
   SRunPara::RunPara.Migration=false;
   //sim-loop
   do{
