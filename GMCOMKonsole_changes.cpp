@@ -35,7 +35,15 @@ Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 This code simulates pft-related wetland-grassland dynamics for different
 environmental conditions --develloping process----
 
+Changing WaterLevel is included.
+
 See also: publications of May(2008) and Steinhauer(2008)
+
+\par Parameters
+ #[1] -  belowground resources
+ #[2] -  initial vegetation (one of 'R', 'G1', 'G2', 'M')
+ #[3] -  intraannual WaterLevel variation (one of 'const')
+ #[4] -
 
 \par Type (function, class, unit, form, ...):
 application with some classes
@@ -73,9 +81,8 @@ see publications of May(2008) and Steinhauer(2008)
 see additional page for solved and unsolved bugs
 
 \todo
- -add water-stress feature
- -add opt for water-stress adapted plant types
  -add resource storage by plants ?!
+ -add salinity stress options
 
 \section bib Publications or applications referring to the code:
 - May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of

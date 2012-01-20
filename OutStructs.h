@@ -62,6 +62,7 @@ struct SGridOut
    double bresmean;         //!< mean below-ground resource availability
    double cutted;           ///< cutted biomass
    double WaterLevel;      ///< current mean WaterLevel on grid
+   double bareGround;      ///< portion bare ground
 
    SGridOut();
 };

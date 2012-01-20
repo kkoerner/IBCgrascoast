@@ -130,7 +130,7 @@ public:
 ///  parameter analogous to LMR.
 ///
 ///
-  virtual double getDepth(double const cdepth = 4.0){   //6.5
+  virtual double getDepth(double const cdepth = 3.0){   //6.5
     return (mroot*this->Traits->RAR)/this->Area_root()*cdepth;};
 
    ///competition coefficient for a plant -needed for AboveComp and BelowComp

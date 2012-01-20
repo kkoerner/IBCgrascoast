@@ -6,7 +6,7 @@
     <PROJECT value="PGMCOMKonsole.exe"/>
     <OBJFILES value="TimeUtils.obj CclonalSeed.obj CGenet.obj CGridclonal.obj clonalPlant.obj 
       clonalTraits.obj CObject.obj CSeed.obj environment.obj GridBase.obj 
-      OutStructs.obj Plant.obj rng.obj RunPara.obj GMCOMKonsole_tests.obj 
+      OutStructs.obj Plant.obj rng.obj RunPara.obj GMCOMKonsole_manag.obj 
       CWaterGridEnvir.obj CWaterPlant.obj Cell.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
@@ -60,7 +60,7 @@
       <FILE FILENAME="Plant.cpp" FORMNAME="" UNITNAME="Plant.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rng.cpp" FORMNAME="" UNITNAME="rng.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="RunPara.cpp" FORMNAME="" UNITNAME="RunPara.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="GMCOMKonsole_tests.cpp" FORMNAME="" UNITNAME="GMCOMKonsole_tests" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GMCOMKonsole_manag.cpp" FORMNAME="" UNITNAME="GMCOMKonsole_manag" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CWaterGridEnvir.cpp" FORMNAME="" UNITNAME="CWaterGridEnvir" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CWaterPlant.cpp" FORMNAME="" UNITNAME="CWaterPlant" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Cell.cpp" FORMNAME="" UNITNAME="Cell" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -151,7 +151,7 @@ Item0=$(BCB)\source\vcl
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=100 M const 0
+RunParams=100 M 0.2 0.3 1
 Launcher=
 UseLauncher=0
 DebugCWD=

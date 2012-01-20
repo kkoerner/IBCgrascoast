@@ -23,12 +23,9 @@
   \par Implement WaterLevel-related rules
    -# aboveground plant parts don't assimilate if they are submersed
    (but plant type may be adapted to assim below WL)
-   -# belowground resources collected by a plant, are used lesser the farther
-   the plant is from their WL-Optimum (SWaterTraits::WL_Optimum and
-   SWaterTraits::WL_Tolerance)
-   -# belowground competition is altered by WaterLevel too.
-   The competitive power of a plant is reduced the same way the resources
-   gained are used
+   -# root parts of the anoxic soil don't uptake resources
+      if plant is not adapted; else the entire root gains a constant
+      proportion of the resources available.
 
    \sa CWaterPlant::DistrRes_help and  CWaterPlant::comp_coef
 
@@ -73,7 +70,7 @@ using namespace std;
 //---------------------------------------------------------------------------
 CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
   CoveredCells(0),//MeanShannon(0),
-  NCellsAcover(0),//Mortalitaetsrate(0),
+  //NCellsAcover(0),//Mortalitaetsrate(0),
   init(1),endofrun(false)
 {
    ReadLandscape();
@@ -186,7 +183,7 @@ void CEnvir::clearResults(){
    BCover.assign(SRunPara::RunPara.GetSumCells(),0);
    //MeanShannon=0;
    //Mortalitaetsrate=0;
-   NCellsAcover=0;
+   //NCellsAcover=0;
    //NdeadPlants=0; NPlants=0;
 }
 //------------------------------------------------------------------------------
@@ -214,6 +211,7 @@ void CEnvir::WriteGridComplete(bool allYears)
      GridOutFile<<"Sim\tRun\tTime\t"
               <<"totMass\tNInd\t"
               <<"abovemass\tbelowmass\t"
+              <<"pcBare\t"
               <<"mean_WL\tmean_bres\t"
               <<"shannon\tmeanShannon\t"
               <<"NPFT\tmeanNPFT\tCutted"
@@ -229,6 +227,7 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->Nind
                  <<'\t'<<GridOutData[i]->above_mass
                  <<'\t'<<GridOutData[i]->below_mass
+                 <<'\t'<<GridOutData[i]->bareGround
 //                 <<'\t'<<GridOutData[i]->aresmean
                  <<'\t'<<GridOutData[i]->WaterLevel
                  <<'\t'<<GridOutData[i]->bresmean
@@ -879,10 +878,11 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
    GridWeek->aresmean=sum_above/sumcells;
    GridWeek->bresmean=sum_below/sumcells;
 
-    NCellsAcover=GetCoveredCells();
+    double NCellsAcover=GetCoveredCells();
     if (NCellsAcover>0){
-      CoveredCells=((NCellsAcover)/(SRunPara::RunPara.GetSumCells()))*100;
+      CoveredCells=(NCellsAcover/SRunPara::RunPara.GetSumCells());
     }
+    GridWeek->bareGround=1- CoveredCells;
 
    PftOutData.push_back(PftWeek);
    GridWeek->PftCount=PftSurvival(); //get PFT results

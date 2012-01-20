@@ -40,6 +40,7 @@ void CWaterGridEnvir::InitInds()
     traits->pEstab=0.01;   //geringe Etablierung
     traits->MaxMass=200000;//hohe Individualmasse (100gAG+100gBG)
     traits->LMR=0.25;       //reed growth form
+    traits->RAR=0.5;       //root densed (weniger Aufnahme, mehr Strukturgewebe)
     SclonalTraits* cltraits=SclonalTraits::clonalTraits[6];
     cltraits->mSpacer=500; //analog zu cheight mehr ressourcen pro cm rhizom
     SWaterTraits*  wtraits =SWaterTraits::PFTWaterList[0];
@@ -409,7 +410,7 @@ void SWaterTraits::ReadWaterStrategy(char* file)
       //read plant parameter from here
       name="swamp";
 //      temp->WL_Optimum=30;temp->WL_Tolerance= 30;//15;//30;
-      temp->assimAnoxWL=0.2;
+      temp->assimAnoxWL=0.3;
       temp->name=name;
       PFTWaterList.push_back(temp);
 

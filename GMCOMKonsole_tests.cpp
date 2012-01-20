@@ -50,7 +50,11 @@ Erweiterungen des Modells von May (2008) sind in grau dargestellt.
 \par Expected input (type and range of values, units):
 - input file for 81 plant functional traits
 - input file for 8 clonal trait syndomes
-- optionally an input file for successive simulations
+- model parameter
+  - belowground resources
+  - inital species set (M, R, G1, G2)
+  - intraannual WaterLevel variation (const , , )
+  - variation of above (std 0)
 
 \par Output (type and range of values, units):
 - some ASCII-coded *.txt-files with weekly or yearly numbers
@@ -73,22 +77,21 @@ see publications of May(2008) and Steinhauer(2008)
 see additional page for solved and unsolved bugs
 
 \todo
- -add water-stress feature
- -add opt for water-stress adapted plant types
- -add resource storage by plants ?!
+ - add resource storage by plants ?!
+ - add disturbance impact: cutting, grazing, trampling
 
 \section bib Publications or applications referring to the code:
-- May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of
+ - May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of
   grazing on plant diversity: the role of belowground competition
   and size symmetry. Oikos 118: 1830-1843.
-- May, Felix (2008): Modelling coexistence of plant functional types
+ - May, Felix (2008): Modelling coexistence of plant functional types
   in grassland communities - the role of above- and below-ground competition.
   Diploma thesis Potsdam University.
-- Steinhauer, Ines (2008): KOEXISTENZ IN GRASLANDGESELLSCHAFTEN -
+ - Steinhauer, Ines (2008): KOEXISTENZ IN GRASLANDGESELLSCHAFTEN -
   Modellgestuetzte Untersuchungen unter Beruecksichtigung klonaler Arten.
   Diplomarbeit Universitaet Potsdam
-- Körner, Katrin et al. (in prep): belowground herbivory
-- Weiß, Lina et al. (in prep): clonal growth
+ - Koerner, Katrin et al. (in prep): belowground herbivory
+ - Weiss, Lina et al. (in prep): clonal growth
 */
 //---------------------------------------------------------------------------
 CWaterGridEnvir* Envir;   ///<environment in which simulations are run
@@ -114,9 +117,10 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.WLsigma=atof(argv[4]);
   }
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=0; //start-WL   100
-  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
+  SRunPara::RunPara.WaterLevel=-5; //start-WL   100
+  SRunPara::RunPara.Tmax=3;//20Jahre Laufzeit
   SRunPara::RunPara.Migration=false;
+  int nruns=2;//3
   //sim-loop
   do{
     //simNr
@@ -136,7 +140,7 @@ int main(int argc, char* argv[])
     Envir->NameSurvOutFile= strd.str();
     SRunPara::RunPara.print();
     //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=3;Envir->RunNr++){ //15Runs per Sim
+    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
 

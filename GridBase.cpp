@@ -492,13 +492,16 @@ void CGrid::Cutting()
 {
    CPlant* pPlant;
 
-   double mass_cut = SRunPara::RunPara.CutMass;
+//   double mass_cut = SRunPara::RunPara.CutMass;
+   double height_cut = SRunPara::RunPara.CutLeave;
    double mass_removed=0;
 
    for (plant_size i=0; i<PlantList.size();i++){
          pPlant = PlantList[i];
-         if (pPlant->mshoot/(pPlant->Traits->LMR*pPlant->Traits->LMR) > mass_cut){
-            double to_leave= mass_cut*(pPlant->Traits->LMR*pPlant->Traits->LMR);
+//         if (pPlant->mshoot/(pPlant->Traits->LMR*pPlant->Traits->LMR) > mass_cut){
+         if (pPlant->getHeight() > height_cut){
+//            double to_leave= mass_cut*(pPlant->Traits->LMR*pPlant->Traits->LMR);
+            double to_leave= pPlant->mshoot* height_cut/pPlant->getHeight();
             //doc biomass removed
             mass_removed+= pPlant->mshoot-to_leave+pPlant->mRepro;
             pPlant->mshoot = to_leave;

@@ -50,7 +50,8 @@ struct SRunPara
    ///threshold for additional below_herbivory-mortality  (default is one)
    double BGThres;
    bool HetBG;         //!< flag for heterogenous belowground grazing
-   double CutMass;       //!< plant aboveground biomass for plants with LMR = 1.0
+//   double CutMass;       //!< plant aboveground biomass for plants with LMR = 1.0
+   double CutLeave;       //!< cutting height [cm]
    int    NCut;          //!< number cuts per year
    double DistAreaYear;   //!< fraction of grid area disturbed per year;
    double AreaEvent;      //!< fraction of grid area disturbed in one event
