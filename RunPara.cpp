@@ -29,7 +29,7 @@ void SRunPara::print(){
       <<"\nAGraz:"<<GrazProb<<"\tRemoval:"<<PropRemove
 //      <<"\nBGraz:"<<BelGrazProb<<"\tRemoval:"<<BelPropRemove
 //      <<"\tMode:"<<BelGrazMode<<"\tThresh:"<<BGThres<<"\tHetGraz:"<<HetBG
-      <<"\nNCut:"<<NCut<<"\tCutMass:"<<CutMass
+      <<"\nNCut:"<<NCut<<"\tCutLeave:"<<CutLeave//<<"\tCutMass:"<<CutMass
       <<"\nARes:"<<meanARes<<"\tBres:"<<meanBRes
       <<"\nTramplingArea:"<<DistAreaYear<<"\tTrampl_Prob:"<<AreaEvent
 //      <<"\nMort_Seeds:"<<mort_seeds

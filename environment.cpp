@@ -149,7 +149,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
          //    >>RunPara.BelGrazProb     //for belowground simulations
          //    >>RunPara.BelPropRemove   //for belowground simulations
              >>RunPara.NCut
-             >>RunPara.CutMass
+             >>RunPara.CutLeave//Mass
         //     >>RunPara.DistAreaYear
         //     >>RunPara.AreaEvent
         //     >>RunPara.mort_seeds
