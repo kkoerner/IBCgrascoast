@@ -35,15 +35,7 @@ Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 This code simulates pft-related wetland-grassland dynamics for different
 environmental conditions --develloping process----
 
-Changing WaterLevel is included.
-
 See also: publications of May(2008) and Steinhauer(2008)
-
-\par Parameters
- #[1] -  belowground resources
- #[2] -  initial vegetation (one of 'R', 'G1', 'G2', 'M')
- #[3] -  intraannual WaterLevel variation (one of 'const')
- #[4] -
 
 \par Type (function, class, unit, form, ...):
 application with some classes
@@ -58,7 +50,11 @@ Erweiterungen des Modells von May (2008) sind in grau dargestellt.
 \par Expected input (type and range of values, units):
 - input file for 81 plant functional traits
 - input file for 8 clonal trait syndomes
-- optionally an input file for successive simulations
+- model parameter
+  - belowground resources
+  - inital species set (M, R, G1, G2)
+  - intraannual WaterLevel variation (const , , )
+  - variation of above (std 0)
 
 \par Output (type and range of values, units):
 - some ASCII-coded *.txt-files with weekly or yearly numbers
@@ -81,21 +77,21 @@ see publications of May(2008) and Steinhauer(2008)
 see additional page for solved and unsolved bugs
 
 \todo
- -add resource storage by plants ?!
- -add salinity stress options
+ - add resource storage by plants ?!
+ - add disturbance impact: cutting, grazing, trampling
 
 \section bib Publications or applications referring to the code:
-- May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of
+ - May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of
   grazing on plant diversity: the role of belowground competition
   and size symmetry. Oikos 118: 1830-1843.
-- May, Felix (2008): Modelling coexistence of plant functional types
+ - May, Felix (2008): Modelling coexistence of plant functional types
   in grassland communities - the role of above- and below-ground competition.
   Diploma thesis Potsdam University.
-- Steinhauer, Ines (2008): KOEXISTENZ IN GRASLANDGESELLSCHAFTEN -
+ - Steinhauer, Ines (2008): KOEXISTENZ IN GRASLANDGESELLSCHAFTEN -
   Modellgestuetzte Untersuchungen unter Beruecksichtigung klonaler Arten.
   Diplomarbeit Universitaet Potsdam
-- Körner, Katrin et al. (in prep): belowground herbivory
-- Weiß, Lina et al. (in prep): clonal growth
+ - Koerner, Katrin et al. (in prep): belowground herbivory
+ - Weiss, Lina et al. (in prep): clonal growth
 */
 //---------------------------------------------------------------------------
 CWaterGridEnvir* Envir;   ///<environment in which simulations are run
@@ -115,48 +111,38 @@ void Run();
 int main(int argc, char* argv[])
 {
   if (argc>1){
-//    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
+    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
     SRunPara::RunPara.species=argv[2];  //init types
-    SRunPara::RunPara.Migration=argv[3]=="1";  //Migration
-    SRunPara::RunPara.changeVal=atof(argv[4]);  //WLchange after 10 y
     SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
     SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
+
   }
   bool endsim=false;
-  SRunPara::RunPara.meanBRes=100;
-  SRunPara::RunPara.WaterLevel=-15; //start-WL   100
-  SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
+  SRunPara::RunPara.WaterLevel=0; //start-WL   100
+  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
+  SRunPara::RunPara.Migration=false;
+  int nruns=3;//3
   //sim-loop
   do{
-//    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-//    SRunPara::RunPara.species=argv[2];  //init types
-//    SRunPara::RunPara.Migration=argv[3]=="1";  //Migration
-//    SRunPara::RunPara.changeVal=atof(argv[4]);  //WLchange after 10 y
-    for(SRunPara::RunPara.changeVal=-30;
-        SRunPara::RunPara.changeVal<=30;SRunPara::RunPara.changeVal+=15){
     //simNr
-    Envir->SimNr=SRunPara::RunPara.WaterLevel*1000+SRunPara::RunPara.changeVal;
+    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
 //    Envir->NameLogFile=((AnsiString)"Mix_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
-    strd<<"Output\\Mix_Grid_log_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
+    strd<<"Output\\Mix_Grid_log_"<<idstr<<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
     strd.str("");
-    strd<<"Output\\Mix_clonO_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
+    strd<<"Output\\Mix_clonO_"<<idstr<<".txt";
     Envir->NameClonalOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<".txt";
     Envir->NameSurvOutFile= strd.str();
     SRunPara::RunPara.print();
     //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=3;Envir->RunNr++){ //15Runs per Sim
+    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
 
@@ -168,9 +154,8 @@ int main(int argc, char* argv[])
 
       delete Envir;
     }//end run
-    }//end for WLchng
-    SRunPara::RunPara.WaterLevel-=15;//5cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -45)
+    SRunPara::RunPara.WaterLevel-=5;//5cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel< -50)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
@@ -195,7 +180,7 @@ void Run(){
 //   int exitcond=0;
 //   double start=HRTimeInSec();
    //do one run
-   Envir->OneRun();
+   Envir->CClonalGridEnvir::OneRun();
 //   exitcond=Envir->GetT();
 //   double end=HRTimeInSec();
 }

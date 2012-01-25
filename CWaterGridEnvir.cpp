@@ -155,22 +155,27 @@ void CWaterGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
    init=1; //for init the second plant (for the invasion experiments)
-   int year_of_change=10;
+   int year_of_change=20;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
    for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       cout<<" y"<<year;
-//seed rain (drift of little individuals) -anually-
+
+//drift of little individuals -anually-
 if (SRunPara::RunPara.Migration){
-  if(SRunPara::RunPara.species=="R"||SRunPara::RunPara.species=="M") //true
-    InitWaterSeeds(
-//    InitWaterInds(
+//  if(SRunPara::RunPara.species=="R"||SRunPara::RunPara.species=="M") //true
+//    InitWaterSeeds(
+    InitWaterInds(
       SPftTraits::PftList[15],SclonalTraits::clonalTraits[6],
       SWaterTraits::PFTWaterList[0],1,8000);
-  if(SRunPara::RunPara.species=="G"||SRunPara::RunPara.species=="M") //true
+//  if(SRunPara::RunPara.species=="G"||SRunPara::RunPara.species=="M") //true
     InitWaterInds(
       SPftTraits::PftList[42],SclonalTraits::clonalTraits[0],
-      SWaterTraits::PFTWaterList[2],1,400);
+      SWaterTraits::PFTWaterList[2],1,200);
+    InitWaterInds(
+      SPftTraits::PftList[71],SclonalTraits::clonalTraits[0],
+      SWaterTraits::PFTWaterList[2],1,40);
+
 }//if migration
 //--------------------
       OneYear();
