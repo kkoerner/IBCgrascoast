@@ -105,7 +105,7 @@ Comments=
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=100 M 1 40
+RunParams=M 1 0 0 0 0
 Launcher=
 UseLauncher=0
 DebugCWD=

@@ -50,7 +50,7 @@ string SRunPara::getRunID(){
            <<"_"<<this->DistAreaYear
            <<"_"<<this->NCut
            <<"_WL"<<this->WaterLevel
-           <<"_"<<this->changeVal
+ //          <<"_"<<this->changeVal
 //           <<"_WLc"<<WLsigma
            ;
       return dummi.str();

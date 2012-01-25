@@ -116,12 +116,12 @@ int main(int argc, char* argv[])
 {
   if (argc>1){
 //    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.species=argv[2];  //init types
-    SRunPara::RunPara.Migration=argv[3]=="1";  //Migration
-    SRunPara::RunPara.changeVal=atof(argv[4]);  //WLchange after 10 y
-    SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
-    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
+    SRunPara::RunPara.species=argv[1];  //init types
+    SRunPara::RunPara.Migration=atoi(argv[2]);  //Migration
+//    SRunPara::RunPara.changeVal=atof(argv[3]);  //WLchange after 20 y
+    SRunPara::RunPara.GrazProb=atof(argv[4]); //grazing
+    SRunPara::RunPara.DistAreaYear=atof(argv[5]); //trampling
+    SRunPara::RunPara.NCut=atoi(argv[6]); //number of cuttings
   }
   bool endsim=false;
   SRunPara::RunPara.meanBRes=100;
