@@ -100,45 +100,52 @@ using namespace std;
 
 void Init();
 void Run();
-
+double GrazProb2=0;      ///<2nd grazing probability
+double DistAreaYear2=0;  ///<2nd trampling intensity
+int NCut2 =0;            ///<2nd mowing management
+//-----------------------
 /**
   the new water ressource environment can be tested here
-  \todo baue eine automatische Abfolge je 20 Jahre für WL 0..30[5er schritte]
-  ein. !ändere SimNr und LogFileName
+
+  Tests für Änderung des Management nach 20 Jahren.
+
+  \par Parameters  GrazProb, Trampling(=Grazprob), NCut
   \author KK
-  \date 11/10/6
+  \date 12/01/26
   */
 int main(int argc, char* argv[])
 {
   if (argc>1){
-    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.species=argv[2];  //init types
-    SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
-    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
+//    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
+//    SRunPara::RunPara.species=argv[2];  //init types
+    SRunPara::RunPara.GrazProb=atof(argv[1]); //grazing
+    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
+    SRunPara::RunPara.NCut=atoi(argv[2]); //number of cuttings
+    GrazProb2=atof(argv[3]); //grazing
+    DistAreaYear2=GrazProb2; //trampling
+    NCut2=atoi(argv[4]); //number of cuttings
 
   }
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=0; //start-WL   100
-  SRunPara::RunPara.Tmax=20;//20Jahre Laufzeit
-  SRunPara::RunPara.Migration=false;
+  SRunPara::RunPara.WaterLevel=-15; //start-WL   100
+  SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
+  SRunPara::RunPara.Migration=true;
   int nruns=3;//3
   //sim-loop
   do{
     //simNr
     Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
-//    Envir->NameLogFile=((AnsiString)"Mix_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
-    strd<<"Output\\Mix_Grid_log_"<<idstr<<".txt";
+    strd<<"Output\\Mix_Grid_log_"<<idstr
+      <<"_"<<GrazProb2<<"_"<<NCut2<<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
-    strd.str("");
-    strd<<"Output\\Mix_clonO_"<<idstr<<".txt";
-    Envir->NameClonalOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<".txt";
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
+      <<"_"<<GrazProb2<<"_"<<NCut2<<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<".txt";
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+      <<"_"<<GrazProb2<<"_"<<NCut2<<".txt";
     Envir->NameSurvOutFile= strd.str();
     SRunPara::RunPara.print();
     //Run-loop
@@ -154,7 +161,7 @@ int main(int argc, char* argv[])
 
       delete Envir;
     }//end run
-    SRunPara::RunPara.WaterLevel-=5;//5cm weniger für nächste Sim
+    SRunPara::RunPara.WaterLevel-=15;//5cm weniger für nächste Sim
     if(SRunPara::RunPara.WaterLevel< -50)
     endsim=true;
   }while(!endsim);//end sim
@@ -176,13 +183,50 @@ void Init(){
 //      SRunPara::RunPara.meanBRes=200;
 }
 //------------------------------------------------
+/**\brief one run of simulation
+
+Core function is like CClonalGridEnvir::OneRun().
+The changes are
+ #1 after 20 years the management changes
+ #2 every year one little Individual of each Type arrives/establishes
+    to prevent species loss
+
+*/
 void Run(){
-//   int exitcond=0;
-//   double start=HRTimeInSec();
-   //do one run
-   Envir->CClonalGridEnvir::OneRun();
-//   exitcond=Envir->GetT();
-//   double end=HRTimeInSec();
+   for (Envir->year=1; Envir->year<=SRunPara::RunPara.Tmax; ++Envir->year){
+      cout<<" y"<<Envir->year;
+ //change parameters after 20 years
+      if (Envir->year==20)
+      {
+      SRunPara::RunPara.GrazProb=GrazProb2;
+      SRunPara::RunPara.DistAreaYear=DistAreaYear2;
+      SRunPara::RunPara.NCut=NCut2;
+//doc
+      cout<<"\n parameters changed to:\n" ;
+      SRunPara::RunPara.print();
+
+      }
+//drift of little individuals -anually-
+if (SRunPara::RunPara.Migration){
+    Envir->InitWaterInds(
+      SPftTraits::PftList[15],SclonalTraits::clonalTraits[6],
+      SWaterTraits::PFTWaterList[0],1,8000);
+    Envir->InitWaterInds(
+      SPftTraits::PftList[42],SclonalTraits::clonalTraits[0],
+      SWaterTraits::PFTWaterList[2],1,200);
+    Envir->InitWaterInds(
+      SPftTraits::PftList[71],SclonalTraits::clonalTraits[0],
+      SWaterTraits::PFTWaterList[2],1,40);
+
+}//if migration
+
+      Envir->OneYear();
+//        WriteSurvival();
+        Envir->WriteGridComplete(false);//report last year
+//        clonalOutput();
+        Envir->WriteSurvival();
+      if (Envir->endofrun)break;
+   }//years
 }
 //---------------------------------------------------------------------------
 //eof---------------------------------------------------------------------------

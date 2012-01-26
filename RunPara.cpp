@@ -47,7 +47,7 @@ string SRunPara::getRunID(){
       dummi<<"_R"<<this->meanBRes<<"_"<<species
 //           <<"_"<<this->WLseason
            <<"_"<<this->GrazProb
-           <<"_"<<this->DistAreaYear
+ //          <<"_"<<this->DistAreaYear
            <<"_"<<this->NCut
            <<"_WL"<<this->WaterLevel
  //          <<"_"<<this->changeVal
