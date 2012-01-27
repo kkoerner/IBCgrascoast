@@ -115,17 +115,6 @@ int NCut2 =0;            ///<2nd mowing management
   */
 int main(int argc, char* argv[])
 {
-  if (argc>1){
-//    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-//    SRunPara::RunPara.species=argv[2];  //init types
-    SRunPara::RunPara.GrazProb=atof(argv[1]); //grazing
-    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
-    SRunPara::RunPara.NCut=atoi(argv[2]); //number of cuttings
-    GrazProb2=atof(argv[3]); //grazing
-    DistAreaYear2=GrazProb2; //trampling
-    NCut2=atoi(argv[4]); //number of cuttings
-
-  }
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-15; //start-WL   100
   SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
@@ -133,6 +122,15 @@ int main(int argc, char* argv[])
   int nruns=3;//3
   //sim-loop
   do{
+  if (argc>1){
+  //für jeden Run neu einlesen, da sonst veränderte Daten übernommen werden
+    SRunPara::RunPara.GrazProb=atof(argv[1]); //grazing
+    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
+    SRunPara::RunPara.NCut=atoi(argv[2]); //number of cuttings
+    GrazProb2=atof(argv[3]); //grazing
+    DistAreaYear2=GrazProb2; //trampling
+    NCut2=atoi(argv[4]); //number of cuttings
+  }
     //simNr
     Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
