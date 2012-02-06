@@ -158,6 +158,13 @@ int main(int argc, char* argv[])
       Run();
 
       delete Envir;
+
+  if (argc>1){
+  //für jeden Run neu einlesen, da sonst veränderte Daten übernommen werden
+    SRunPara::RunPara.GrazProb=atof(argv[1]); //grazing
+    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
+    SRunPara::RunPara.NCut=atoi(argv[2]); //number of cuttings
+  }
     }//end run
     SRunPara::RunPara.WaterLevel-=15;//5cm weniger für nächste Sim
     if(SRunPara::RunPara.WaterLevel< -50)
