@@ -12,11 +12,22 @@ string CWaterPlant::type()
 {
         return "CWaterPlant";
 }
+///
+/// \return name of current pft
+///
 string CWaterPlant::pft(){
-        string dummi=CclonalPlant::pft() + this->waterTraits->name;
+//        string dummi=CclonalPlant::pft() + this->waterTraits->name;
+        string dummi=this->waterTraits->name;
 //       cout<<dummi;
         return dummi;
 }   //say what a pft you are
+
+/// print traits
+void CWaterPlant::print_type(){
+   this->Traits->print();
+   this->clonalTraits->print();
+   this->waterTraits->print();
+}
 //---------------------------------------------------------------------------
 /***/
 CWaterPlant::CWaterPlant(CWaterSeed* seed)
@@ -56,16 +67,16 @@ Overload CPlant::Grow2() for additional Effect of WaterLevel.
 */
 void CWaterPlant::Grow2()
 {
-
+double oldmass=this->GetMass();
  //standard growth
  CPlant::Grow2();
  //detailed output - for grid plots
 //if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
 //enable again for more detailed spatial information
-if (false)
+//if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 //if (CEnvir::year<3)
-//if (true)
+if (true)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);
@@ -75,6 +86,8 @@ if (false)
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
  CEnvir::AddLogEntry(GetMass(),filename);
+ CEnvir::AddLogEntry(GetMass()-oldmass,filename);
+  CEnvir::AddLogEntry(this->stress,filename);
  CEnvir::AddLogEntry(this->getHeight(),filename);
  CEnvir::AddLogEntry(this->getDepth(),filename);
  CEnvir::AddLogEntry(this->growingSpacerList.size(),filename);
@@ -175,8 +188,12 @@ string CWaterSeed::type()
 {
         return "CWaterSeed";
 }
+///
+/// \return current pft name
+///
 string CWaterSeed::pft(){
-        string dummi=CclonalSeed::pft() + this->waterTraits->name;
+//        string dummi=CclonalSeed::pft() + this->waterTraits->name;
+        string dummi=this->waterTraits->name;
 //       cout<<dummi;
         return dummi;
 }   //say what a pft you are

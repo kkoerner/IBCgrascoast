@@ -434,7 +434,84 @@ void SWaterTraits::ReadWaterStrategy(char* file)
       PFTWaterList.push_back(temp);
 
 }//end ReadWaterStrategy(
+//------------------------------------------------------------------------------
+/**
+  this function reads a file, introduces PFTs and initializes seeds on grid
+  after file data.
 
+  (each PFT on file gets 10 seeds randomly set on grid)
+  \since 2012-04-18
+*/
+void CWaterGridEnvir::InitInds(string file){
+  const int no_init_seeds=3;//10;
+  //Open InitFile,
+  ifstream InitFile(file.c_str());
+  if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+  cout<<"InitFile: "<<file<<endl;
+  string line;
+  getline(InitFile,line);//skip header line
+  int dummi1; string dummi2; int PFTtype; string Cltype;
+  do{
+  //erstelle neue traits
+    SPftTraits* traits=new SPftTraits();
+    SclonalTraits* cltraits=new SclonalTraits();
+    SWaterTraits* wtraits=new SWaterTraits();
+
+// file structure
+// [1] "ID"      "Species" "alSeed"   "LMR"     "maxMass" "mSeed" "Dist"
+// [8] "pEstab"  "Gmax"    "SLA1"     "palat"   "memo"    "RAR"   "respAnox"
+//[15] "PropSex" "meanSpacerLength" "Resshare" "mSpacer"
+    //get type definitions from file
+    InitFile>> dummi1;
+    InitFile>>dummi2;
+    InitFile>> traits->AllocSeed
+            >> traits->LMR
+            >> traits->MaxMass
+            >> traits->m0 //mSeed
+            >> traits->Dist
+            >> traits->pEstab
+            >> traits->Gmax
+            >> traits->SLA
+            >> traits->palat
+            >> traits->memory
+            >> traits->RAR
+            >> wtraits->assimAnoxWL
+            >> cltraits->PropSex
+            >> cltraits->meanSpacerlength
+            >> cltraits->Resshare
+            >> cltraits->mSpacer;
+     traits->SeedMass=traits->m0;
+     cltraits->sdSpacerlength=cltraits->meanSpacerlength;
+    //namen und IDs
+    traits->name=cltraits->name=wtraits->name=dummi2;
+    traits->TypeID=dummi1;
+    //in Listen einfügen..
+    addPftLink(dummi2,traits);
+    addClLink(dummi2,cltraits);
+    addWLink(dummi2,wtraits);
+    SPftTraits::PftList.push_back(traits);
+    SclonalTraits::clonalTraits.push_back(cltraits);
+    SWaterTraits::PFTWaterList.push_back(wtraits);
+    //print imported trait combination
+    traits->print();cltraits->print();wtraits->print();
+
+    // initialization
+    InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+    PftInitList[traits->name]+=no_init_seeds;
+    cout<<" init "<<no_init_seeds<<" seeds of Pft: "<<dummi2<<endl;
+
+    if(!InitFile.good()) {
+      SRunPara::RunPara.NPft=PftInitList.size(); return;}
+
+  }while(!InitFile.eof());
+}//initialization based on file
+
+//---------------------------------------------------------------------------
+void SWaterTraits::print(){
+   std::cout<<"\nWater Type: "<<this->name;
+   std::cout<<"\n  assimBelWL: "<<this->assimBelWL;
+   std::cout<<"\n  assimAnoxWL: "<<this->assimAnoxWL<<endl;
+} //print water traits
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)

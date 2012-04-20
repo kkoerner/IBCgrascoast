@@ -29,6 +29,7 @@ public:
       SclonalTraits* clonalTraits,
       SWaterTraits* waterTraits, CCell* cell);
    virtual ~CWaterPlant(){};  //!<destructor
+   void print_type();
 
 
 ///add water impact on ressource allocation

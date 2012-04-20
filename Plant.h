@@ -57,8 +57,10 @@ struct SPftTraits   //plant functional traits
    void SetDefault();   ///< set default trait values (eq. 'PFT1')
    SPftTraits();
    virtual ~SPftTraits(){};
-};
+   void print();
 
+};
+//-----------------------------------------------
 class CSeed;class CCell;
 //! Class that describes plant individuals
 class CPlant : public CObject

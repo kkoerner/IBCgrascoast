@@ -310,7 +310,7 @@ void CGridclonal::EstabLottery()
                   CSeed* seed = cell->SeedlingList[index];
                   //establish seedlings
                   EstabLott_help(seed);
-                  cell->PftNSeedling[seed->Traits->TypeID-1]--;
+                  cell->PftNSeedling[pft]--;
                  }//if rnum<
                ++pft;
               }//while pft<max_pft

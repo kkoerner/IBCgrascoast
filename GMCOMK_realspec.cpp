@@ -29,21 +29,14 @@ Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 \date 2010-01 (Felix' grazing rebuilt)
 \date 2010-11 - 2011-03 (Belowground Herbivory)
 \date 2011-08 ff COMTESS
+\date 2012-04 COMTESS real spec (1)
 
 
 \par Verbal description of what the code does:
 This code simulates pft-related wetland-grassland dynamics for different
 environmental conditions --develloping process----
 
-Changing WaterLevel is included.
-
 See also: publications of May(2008) and Steinhauer(2008)
-
-\par Parameters
- #[1] -  belowground resources
- #[2] -  initial vegetation (one of 'R', 'G1', 'G2', 'M')
- #[3] -  intraannual WaterLevel variation (one of 'const')
- #[4] -
 
 \par Type (function, class, unit, form, ...):
 application with some classes
@@ -58,7 +51,11 @@ Erweiterungen des Modells von May (2008) sind in grau dargestellt.
 \par Expected input (type and range of values, units):
 - input file for 81 plant functional traits
 - input file for 8 clonal trait syndomes
-- optionally an input file for successive simulations
+- model parameter
+  - belowground resources
+  - inital species set (M, R, G1, G2)
+  - intraannual WaterLevel variation (const , , )
+  - variation of above (std 0)
 
 \par Output (type and range of values, units):
 - some ASCII-coded *.txt-files with weekly or yearly numbers
@@ -81,21 +78,21 @@ see publications of May(2008) and Steinhauer(2008)
 see additional page for solved and unsolved bugs
 
 \todo
- -add resource storage by plants ?!
- -add salinity stress options
+ - add resource storage by plants ?!
+ - add disturbance impact: cutting, grazing, trampling
 
 \section bib Publications or applications referring to the code:
-- May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of
+ - May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of
   grazing on plant diversity: the role of belowground competition
   and size symmetry. Oikos 118: 1830-1843.
-- May, Felix (2008): Modelling coexistence of plant functional types
+ - May, Felix (2008): Modelling coexistence of plant functional types
   in grassland communities - the role of above- and below-ground competition.
   Diploma thesis Potsdam University.
-- Steinhauer, Ines (2008): KOEXISTENZ IN GRASLANDGESELLSCHAFTEN -
+ - Steinhauer, Ines (2008): KOEXISTENZ IN GRASLANDGESELLSCHAFTEN -
   Modellgestuetzte Untersuchungen unter Beruecksichtigung klonaler Arten.
   Diplomarbeit Universitaet Potsdam
-- Körner, Katrin et al. (in prep): belowground herbivory
-- Weiß, Lina et al. (in prep): clonal growth
+ - Koerner, Katrin et al. (in prep): belowground herbivory
+ - Weiss, Lina et al. (in prep): clonal growth
 */
 //---------------------------------------------------------------------------
 CWaterGridEnvir* Envir;   ///<environment in which simulations are run
@@ -104,59 +101,53 @@ using namespace std;
 
 void Init();
 void Run();
-
+double GrazProb2=0;      ///<2nd grazing probability
+double DistAreaYear2=0;  ///<2nd trampling intensity
+int NCut2 =0;            ///<2nd mowing management
+//-----------------------
 /**
   the new water ressource environment can be tested here
-  \todo baue eine automatische Abfolge je 20 Jahre für WL 0..30[5er schritte]
-  ein. !ändere SimNr und LogFileName
+
+  Tests für Änderung des Management nach 20 Jahren.
+
+  \par Parameters  GrazProb, Trampling(=Grazprob), NCut
   \author KK
-  \date 11/10/6
+  \date 12/01/26
   */
 int main(int argc, char* argv[])
 {
-  if (argc>1){
-//    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.species=argv[1];  //init types
-    SRunPara::RunPara.Migration=atoi(argv[2]);  //Migration
-//    SRunPara::RunPara.changeVal=atof(argv[3]);  //WLchange after 20 y
-    SRunPara::RunPara.GrazProb=atof(argv[4]); //grazing
-    SRunPara::RunPara.DistAreaYear=atof(argv[5]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[6]); //number of cuttings
-  }
   bool endsim=false;
-  SRunPara::RunPara.meanBRes=100;
-  SRunPara::RunPara.WaterLevel=-15; //start-WL   100
-  SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
+  SRunPara::RunPara.WaterLevel=-30; //start-WL   100
+//  SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
+//  SRunPara::RunPara.Migration=true;
+  int nruns=1;//3
+  /// 0-abandoned; 1-grazing; 2-mowing
+  int management=0;
   //sim-loop
   do{
-//    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-//    SRunPara::RunPara.species=argv[2];  //init types
-//    SRunPara::RunPara.Migration=argv[3]=="1";  //Migration
-//    SRunPara::RunPara.changeVal=atof(argv[4]);  //WLchange after 10 y
-    for(SRunPara::RunPara.changeVal=-30;
-        SRunPara::RunPara.changeVal<=30;SRunPara::RunPara.changeVal+=15){
+//  if (argc>1){
+  //für jeden Run neu einlesen, da sonst veränderte Daten übernommen werden
+    SRunPara::RunPara.GrazProb=0; //grazing
+    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
+    SRunPara::RunPara.NCut=0;//atoi(argv[2]); //number of cuttings
+//  }
     //simNr
-    Envir->SimNr=SRunPara::RunPara.WaterLevel*1000+SRunPara::RunPara.changeVal;
+    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
-//    Envir->NameLogFile=((AnsiString)"Mix_Grid_log_"+IntToStr(Envir->SimNr)+".txt").c_str();
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
     strd<<"Output\\Mix_Grid_log_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
+      <<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
-    strd.str("");
-    strd<<"Output\\Mix_clonO_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
-    Envir->NameClonalOutFile=strd.str();
     strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
+      <<".txt";
     Envir->NameGridOutFile=strd.str();
     strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
-      <<"_"<<SRunPara::RunPara.changeVal<<".txt";
+      <<".txt";
     Envir->NameSurvOutFile= strd.str();
     SRunPara::RunPara.print();
     //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=3;Envir->RunNr++){ //15Runs per Sim
+    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
 
@@ -167,10 +158,16 @@ int main(int argc, char* argv[])
       Run();
 
       delete Envir;
+
+//  if (argc>1){
+  //für jeden Run neu einlesen, da sonst veränderte Daten übernommen werden
+//    SRunPara::RunPara.GrazProb=atof(argv[1]); //grazing
+//    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
+//    SRunPara::RunPara.NCut=atoi(argv[2]); //number of cuttings
+//  }
     }//end run
-    }//end for WLchng
-    SRunPara::RunPara.WaterLevel-=15;//5cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel< -45)
+//    SRunPara::RunPara.WaterLevel-=15;//5cm weniger für nächste Sim
+//    if(SRunPara::RunPara.WaterLevel< -50)
     endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
@@ -191,13 +188,30 @@ void Init(){
 //      SRunPara::RunPara.meanBRes=200;
 }
 //------------------------------------------------
+/**\brief one run of simulation
+
+Core function is like CClonalGridEnvir::OneRun().
+The changes are
+ #1 after 20 years the management changes
+ #2 every year one little Individual of each Type arrives/establishes
+    to prevent species loss
+
+*/
 void Run(){
-//   int exitcond=0;
-//   double start=HRTimeInSec();
-   //do one run
-   Envir->OneRun();
-//   exitcond=Envir->GetT();
-//   double end=HRTimeInSec();
+   for (Envir->year=1; Envir->year<=SRunPara::RunPara.Tmax; ++Envir->year){
+      cout<<" y"<<Envir->year;
+//drift of little individuals -anually-
+if (SRunPara::RunPara.Migration){
+
+}//if migration
+
+      Envir->OneYear();
+//        WriteSurvival();
+        Envir->WriteGridComplete(false);//report last year
+//        clonalOutput();
+        Envir->WriteSurvival();
+      if (Envir->endofrun)break;
+   }//years
 }
 //---------------------------------------------------------------------------
 //eof---------------------------------------------------------------------------

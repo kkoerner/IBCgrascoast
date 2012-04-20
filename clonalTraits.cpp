@@ -52,4 +52,15 @@ void SclonalTraits::ReadclonalTraits(char* file)
    }
    clonalFile.close();
 }
-//eof--------------------
+//--------------------
+void SclonalTraits::print(){
+   std::cout<<"\nClonal Type: "<<this->name;
+   std::cout<<"\n  PropSex: "<<this->PropSex;
+   std::cout<<"\n  mSpacer: "<<this->mSpacer;
+   std::cout<<"\n  Resshare: "<<this->Resshare;
+   std::cout<<"\n  SpacerLength: mean "<<this->meanSpacerlength;
+   std::cout<<"sd "<<this->sdSpacerlength<<endl;
+
+} //print clonal traits
+//--------------------
+//eof

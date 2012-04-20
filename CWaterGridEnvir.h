@@ -54,6 +54,7 @@ public:
  virtual void InitInds();///<Initialization of individuals on grid
 // virtual void InitInds(string file);///<initialization of inds based on file data
 // virtual void InitSeeds(string, int);
+  virtual void InitInds(string file);///<initialization of inds based on file data
  //! initalization of clonal seeds
  virtual void InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double estab=1.0);
@@ -119,6 +120,7 @@ struct SWaterTraits   //plant functional traits
    void SetDefault();   ///< set default trait values (eq. 'PFT1')
    SWaterTraits();
    virtual ~SWaterTraits(){};
+   void print();
 };
 
 //---------------------------------------------------------------------------

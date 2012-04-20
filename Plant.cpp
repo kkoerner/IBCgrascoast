@@ -83,6 +83,27 @@ void SPftTraits::ReadPftStrategy(char* file)
    PftFile.close();
 }//end ReadPftStrategy
 //---------------------------------------------------------------------------
+void SPftTraits::print(){
+  std::cout<<"\nBase type:"<<this->name;
+  std::cout<<"\n  AllocSeed:"<<this->AllocSeed;
+  std::cout<<"\n  Weeks: Flower"<<this->FlowerWeek;
+  std::cout<<"\tDisp "<<this->DispWeek;
+  std::cout<<"\n  mSeed:"<<this->SeedMass;
+  std::cout<<"\n  Dist:"<<this->Dist;
+  std::cout<<"\n  Dorm:"<<this->Dorm;
+  std::cout<<"\n  Gmax:"<<this->Gmax;
+  std::cout<<"\tgrowth:"<<this->growth;
+  std::cout<<"\n  MaxAge:"<<this->MaxAge;
+  std::cout<<"\n  LMR:"<<this->LMR;
+  std::cout<<"\n  MaxMass:"<<this->MaxMass;
+  std::cout<<"\tm0:"<<this->m0;
+  std::cout<<"\n  SLA:"<<this->SLA;
+  std::cout<<"\tpalat:"<<this->palat;
+  std::cout<<"\n  pEstab:"<<this->pEstab;
+  std::cout<<"\n  RAR:"<<this->RAR<<endl;
+
+}//print base traits
+//---------------------------------------------------------------------------
 CPlant::CPlant(double x, double y, SPftTraits* Traits):
   xcoord(x),ycoord(y),Traits(Traits),mshoot(Traits->m0),mroot(Traits->m0),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
@@ -220,8 +241,8 @@ void CPlant::Grow2()         //grow plant one timestep
    mshoot+=dm_shoot;
    mroot+=dm_root;
 
-   if ((Auptake<Traits->mThres*Ash_disc*Traits->Gmax*2)
-       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax*2))++stress;
+   if ((Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
+       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax))++stress;
    else if (stress>0) --stress;
 //   cout<<"\n"<<this->xcoord<<";"<<this->ycoord<<"\tBM "<<this->GetMass();
 //   if (stress>Traits->memory) stress=Traits->memory;

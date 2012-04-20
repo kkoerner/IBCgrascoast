@@ -29,5 +29,6 @@ struct SclonalTraits   //clonal plant functional traits
 
    SclonalTraits();   ///<constructor with default values
    ~SclonalTraits(){};
+   void print();
 };
 #endif
