@@ -24,6 +24,7 @@ string CWaterPlant::pft(){
 
 /// print traits
 void CWaterPlant::print_type(){
+   cout<<"\nCoordinates "<<xcoord<<";"<<ycoord<<endl;
    this->Traits->print();
    this->clonalTraits->print();
    this->waterTraits->print();
@@ -34,6 +35,8 @@ CWaterPlant::CWaterPlant(CWaterSeed* seed)
   :CclonalPlant(seed),
   waterTraits(seed->waterTraits)
 {
+//this->print_type();
+cout<<"\n"<<this->pft()<<" Coords: "<<xcoord<<";"<<ycoord<<endl;
 }
 //---------------------------------------------------------------------------
 /***/

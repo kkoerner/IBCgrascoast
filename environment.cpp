@@ -443,6 +443,9 @@ CClonalGridEnvir::CClonalGridEnvir():CGridclonal(),CEnvir()
    ReadLandscape();
 }
 //------------------------------------------------------------------------------
+/**
+\todo move function to struct SPftTraits ?
+*/
 SPftTraits* CClonalGridEnvir::getPftLink(string type)
 {
   SPftTraits* traits=NULL;

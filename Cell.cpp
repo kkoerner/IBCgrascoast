@@ -29,11 +29,7 @@ occupied(false),PlantInCell(NULL)
    using SRunPara::RunPara;
    PftNIndA.clear();
    PftNIndB.clear();
-   PftNSeedling    =new int[RunPara.NPft];
-
-   for (int pft=0; pft<RunPara.NPft; ++pft){
-       PftNSeedling[pft]=0;
-   }
+   PftNSeedling.clear();
 }
 //---------------------------------------------------------------------------
 void CCell::clear(){
@@ -45,9 +41,7 @@ void CCell::clear(){
 
    PftNIndA.clear();
    PftNIndB.clear();
-   for (int pft=0; pft<SRunPara::RunPara.NPft; ++pft){
-       PftNSeedling[pft]=0;
-   }
+   PftNSeedling.clear();
    NPftA=(0);NPftB=(0);
    occupied=(false);PlantInCell=(NULL);
 }
@@ -59,8 +53,7 @@ CCell::~CCell()
    SeedBankList.clear();   SeedlingList.clear();
    AbovePlantList.clear();
    BelowPlantList.clear();
-
-   delete[] PftNSeedling;
+   PftNSeedling.clear();
 }
 //---------------------------------------------------------------------------
 ///not used
@@ -86,29 +79,24 @@ double CCell::Germinate()
       {
          //make a copy in seedling list
          SeedlingList.push_back(seed);//new CSeed(*seed));
-         PftNSeedling[seed->Traits->TypeID-1]++;
+         int dummi=seed->Traits->TypeID-1;
+         PftNSeedling[seed->pft()]++;
          seed->remove=true;
+         sumseedmass+=seed->mass;
       }
    }
    //remove germinated seeds from SeedBankList
    seed_iter iter_rem = partition(SeedBankList.begin(),SeedBankList.end(),GetSeedRemove);
    SeedBankList.erase(iter_rem,SeedBankList.end());
 
-    //get Mass of all seedlings in cell
-    for (seed_iter iter=SeedlingList.begin(); iter!=SeedlingList.end(); ++iter)
-    {
-      sumseedmass+=(*iter)->mass;
-    }
-    return sumseedmass;
+   return sumseedmass;
 }//end Germinate()
 //---------------------------------------------------------------------------
 void CCell::RemoveSeedlings()
 {
    PftNIndA.clear();
    PftNIndB.clear();
-  for (int pft=0; pft<SRunPara::RunPara.NPft; ++pft){
-      PftNSeedling[pft]=0;
-   }
+   PftNSeedling.clear();
 
    for (seed_iter iter=SeedlingList.begin(); iter!=SeedlingList.end();++iter){
       CSeed* seed = *iter;
@@ -372,6 +360,8 @@ void CWaterCell::BelowComp()
 }//end below_comp
 
 //-eof---------------------------------------------------------------------
+
+
 
 
 

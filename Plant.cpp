@@ -11,7 +11,7 @@
 //---------------------------------------------------------------------------
 SPftTraits::SPftTraits():TypeID(999),name("default"),N0(1),MaxAge(100),
   AllocSeed(0.05),LMR(0),m0(0),MaxMass(0),SeedMass(0),Dist(0),
-  pEstab(0.5),Gmax(0),memory(0),SLA(0),palat(0),RAR(1),growth(0.25),
+  pEstab(0.5),Gmax(0),memory(0),SLA(0),palat(0),RAR(1),growth(0.5),//.25
   mThres(0.2),Dorm(1),FlowerWeek(16),DispWeek(20)
 {}//end constructor
 //---------------------------------------------------------------------------
@@ -144,6 +144,7 @@ CPlant::CPlant(CSeed* seed):
      xcoord=(cell->x*SRunPara::RunPara.CellScale());
      ycoord=(cell->y*SRunPara::RunPara.CellScale());
    }
+   
 //   mRepro=0;
 
 // //   Allometrics();

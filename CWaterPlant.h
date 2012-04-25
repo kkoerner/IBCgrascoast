@@ -65,5 +65,6 @@ virtual string type(); ///<say what you are
 virtual string pft(); ///<say what you are
 
 };
+
 //---------------------------------------------------------------------------
 #endif

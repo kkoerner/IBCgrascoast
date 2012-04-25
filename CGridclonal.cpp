@@ -251,78 +251,71 @@ void CGridclonal::EstabLottery()
       {//only if its a clonal plant
          RametEstab((CclonalPlant*)plant);
       }
-   }
+   }//for all plants
 
 //for Seeds (for clonal and non-klonal plants)
-   double* PftCumEstabProb= new double[SRunPara::RunPara.NPft];
-//   map<string,double> PftCumEstabProb;
-   int* PftCumNSeedling   = new int[SRunPara::RunPara.NPft];
-//   map<string,int> PftCumNSeedling;
+   map<string,double> PftEstabProb;//=map<string,int>(0);
+   map<string,int> PftNSeedling;
    int gweek=CEnvir::week;
+
    if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))
    { //establishment only between week 1-4 and 21-25
-      double sum=0;
-      int index=0;
+     double sum=0;
 
-      for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i)
-      {  //loop for all cells
-         CCell* cell = CellList[i];
-         if ((cell->AbovePlantList.empty())
-             && (!cell->SeedBankList.empty())
-             && (!cell->occupied))
-         {  //germination if cell is uncovered
-           sum=cell->Germinate();
-
-           //relative probability for establishment for all Pfts (cumulated)
-           if (sum>0){
-//             typedef map<string,int>::const_iterator CI;
-//             for (CI p=cell->PftNSeedling.begin();p!=cell->PftNSeedling.end();++p)
-             for (int pft=0; pft<SRunPara::RunPara.NPft; ++pft)
-             {
-                PftCumEstabProb[pft]=
-                  (double) cell->PftNSeedling[pft]
-//                PftCumEstabProb[p->first]=
-//                  (double) p->second//cell->PftNSeedling[pft]
-                  *SPftTraits::PftList[pft]->SeedMass;// /sum;
-                PftCumNSeedling[pft]=(cell->PftNSeedling[pft]);
-                if (pft>=1)
-                {
-                  PftCumEstabProb[pft]+=PftCumEstabProb[pft-1];
-                  PftCumNSeedling[pft]+=PftCumNSeedling[pft-1];
-                }
+     for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i)
+     {  //loop for all cells
+        CCell* cell = CellList[i];
+        if ((cell->AbovePlantList.empty())
+            && (!cell->SeedBankList.empty())
+            && (!cell->occupied))
+        {  //germination if cell is uncovered
+          sum=cell->Germinate();
+          if (sum>0){//if seeds germinated...
+            typedef map<string,int> mapType;
+            for(mapType::const_iterator it = cell->PftNSeedling.begin();
+              it != cell->PftNSeedling.end(); ++it)
+            { //for all types              (diesen Teil in Germinate verschieben?)
+              string  pft =it->first;
+              map<string, int>::iterator itr = cell->PftNSeedling.find(pft);
+              if (itr != cell->PftNSeedling.end()) {
+                PftEstabProb[pft]=
+                  (double) itr->second
+                  *CClonalGridEnvir::getPftLink(pft)->SeedMass;
+                PftNSeedling[pft]=itr->second;//(cell->PftNSeedling[pft]);
               }
-
-            if (!cell->SeedlingList.empty())
-            {
-              int pft=0;
-              double rnum=CEnvir::rand01()*sum;
+            }//for each type
             //chose seedling that establishes at random
-              while ((!cell->occupied) && (pft<SRunPara::RunPara.NPft))
-              {
-                if (rnum<PftCumEstabProb[pft])
-                {
-                  //Sort after TypeID
-                  cell->SortTypeID();
-
-                  index=CEnvir::nrand(cell->PftNSeedling[pft])
-                                  +PftCumNSeedling[pft]
-                                  -cell->PftNSeedling[pft];
-                  CSeed* seed = cell->SeedlingList[index];
-                  //establish seedlings
-                  EstabLott_help(seed);
-                  cell->PftNSeedling[pft]--;
-                 }//if rnum<
-               ++pft;
-              }//while pft<max_pft
-            }//if seedlings
+            double rnum=CEnvir::rand01()*sum;  //random double between 0 and sum of seed mass
+            for(mapType::const_iterator it = cell->PftNSeedling.begin();
+                it != cell->PftNSeedling.end()&&(!cell->occupied); ++it)
+            { //for each type germinated
+              string pft =it->first;
+              if (rnum<PftEstabProb[pft])
+              {  //random number < current types' estab Probability?
+                //mische die Keimlinge des Gewinnertyps
+                random_shuffle(cell->SeedlingList.begin(),
+                   partition(cell->SeedlingList.begin(),cell->SeedlingList.end(),
+                   bind2nd(ptr_fun(SeedOfType),pft)));
+                //Was, wenn keine Seedlings(typ==pft) gefunden werden (sollte nicht passieren)?
+                //etabliere jetzt das erste Element der Liste
+                CSeed* seed = cell->SeedlingList.front();
+                EstabLott_help(seed);
+                cell->PftNSeedling[pft]--;
+                continue; //if established, go to next cell
+              }//if rnum<
+              else{   //if not: subtrahiere   PftCumEstabProb[pft]
+                rnum-= PftEstabProb.find(pft)->second;
+              }   //und gehe zum nächsten Typ
+            }//for all types in list
             cell->RemoveSeedlings();
          }//if seedlings in cell
       }//seeds in cell
     }//for all cells
   }//if between week 1-4 and 21-25
-  delete[] PftCumEstabProb;
-  delete[] PftCumNSeedling;
+  PftEstabProb.clear();
+  PftNSeedling.clear();
 }//end CGridclonal::EstabLottery()
+
 void CGridclonal::EstabLott_help(CSeed* seed){
 cout<<"estabLott_help - CGridClonal";
                   CPlant* plant;

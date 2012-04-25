@@ -52,8 +52,8 @@ public:
    map<string,int> PftNIndB;
 
    //! array of seedling number of each PFT
-   int *PftNSeedling;
-
+//   int *PftNSeedling;
+   map<string,int> PftNSeedling;
    //! number of different PFTs covering the cell above-ground
    /*! necessary for niche differentiation version 3 */
    int NPftA;
