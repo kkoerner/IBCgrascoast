@@ -51,10 +51,11 @@ public:
   ~CWaterGridEnvir();
  ///initialization of grid cells - no functionality
  void CellsInit();
+ virtual void InitRun();///<Init current run
  virtual void InitInds();///<Initialization of individuals on grid
 // virtual void InitInds(string file);///<initialization of inds based on file data
 // virtual void InitSeeds(string, int);
-  virtual void InitInds(string file);///<initialization of inds based on file data
+  virtual void InitInds(string file,int n=-1);///<initialization of inds based on file data
  //! initalization of clonal seeds
  virtual void InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double estab=1.0);

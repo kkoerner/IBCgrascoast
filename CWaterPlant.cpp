@@ -91,6 +91,7 @@ if (true)
  CEnvir::AddLogEntry(GetMass(),filename);
  CEnvir::AddLogEntry(GetMass()-oldmass,filename);
   CEnvir::AddLogEntry(this->stress,filename);
+ CEnvir::AddLogEntry(this->Area_shoot(),filename);
  CEnvir::AddLogEntry(this->getHeight(),filename);
  CEnvir::AddLogEntry(this->getDepth(),filename);
  CEnvir::AddLogEntry(this->growingSpacerList.size(),filename);

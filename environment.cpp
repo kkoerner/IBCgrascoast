@@ -470,7 +470,6 @@ void CClonalGridEnvir::InitRun(){
 
   //set initial plants on grid...
   InitInds("Input\\RSpec20.txt");
-  init=1; //start new
 }
 //------------------------------------------------------------------------------
 /**
@@ -584,7 +583,7 @@ void CClonalGridEnvir::InitSeeds(string type, int number)
 void CClonalGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
-   init=1; //for init the second plant (for the invasion experiments)
+//   init=1; //for init the second plant (for the invasion experiments)
 
    //run simulation until YearsMax
    for (year=1; year<=SRunPara::RunPara.Tmax; ++year){

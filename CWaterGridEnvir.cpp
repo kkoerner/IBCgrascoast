@@ -154,7 +154,7 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 void CWaterGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
-   init=1; //for init the second plant (for the invasion experiments)
+ //  init=1; //for init the second plant (for the invasion experiments)
    int year_of_change=20;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
@@ -436,13 +436,24 @@ void SWaterTraits::ReadWaterStrategy(char* file)
 }//end ReadWaterStrategy(
 //------------------------------------------------------------------------------
 /**
+  Initiate new Run: reset grid and randomly set initial individuals.
+*/
+void CWaterGridEnvir::InitRun(){
+  CEnvir::InitRun();
+  resetGrid();
+
+  //set initial plants on grid...
+  InitInds("Input\\RSpec20.txt",SimNr);
+
+}
+/**
   this function reads a file, introduces PFTs and initializes seeds on grid
   after file data.
 
   (each PFT on file gets 10 seeds randomly set on grid)
   \since 2012-04-18
 */
-void CWaterGridEnvir::InitInds(string file){
+void CWaterGridEnvir::InitInds(string file,int n){
   const int no_init_seeds=3;//10;
   //Open InitFile,
   ifstream InitFile(file.c_str());
@@ -450,6 +461,8 @@ void CWaterGridEnvir::InitInds(string file){
   cout<<"InitFile: "<<file<<endl;
   string line;
   getline(InitFile,line);//skip header line
+  //skip first lines if only one Types should be initiated
+  if (n>-1) for (int x=0;x<n;x++)getline(InitFile,line);
   int dummi1; string dummi2; int PFTtype; string Cltype;
   do{
   //erstelle neue traits
@@ -496,11 +509,14 @@ void CWaterGridEnvir::InitInds(string file){
     traits->print();cltraits->print();wtraits->print();
 
     // initialization
+    //InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/3.0); //com out
     InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+
     PftInitList[traits->name]+=no_init_seeds;
     cout<<" init "<<no_init_seeds<<" seeds of Pft: "<<dummi2<<endl;
 
-    if(!InitFile.good()) {
+    if (n>-1) SRunPara::RunPara.species=dummi2;
+    if(!InitFile.good()||n>-1) {
       SRunPara::RunPara.NPft=PftInitList.size(); return;}
 
   }while(!InitFile.eof());

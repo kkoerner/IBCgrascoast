@@ -135,7 +135,8 @@ public:
    double GetMeanPopSize(string pft,int x);
       ///get current PopSize of type pft
    double GetCurrPopSize(string pft);
-
+//    ///get n'th plant type; return value equals 'err' if index is out of scope
+//   string getType(int n){string v="err"; if (n<this->PftInitList.size()) PftInitList;return v;};
 };
 //---------------------------------------------------------------------------
 /// simulation service class including grid-, result- and environmental information

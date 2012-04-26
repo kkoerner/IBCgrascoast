@@ -118,11 +118,11 @@ int main(int argc, char* argv[])
 {
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-30; //start-WL   100
-//  SRunPara::RunPara.Tmax=40;//20Jahre Laufzeit
+  SRunPara::RunPara.Tmax=1;//40;//20Jahre Laufzeit
 //  SRunPara::RunPara.Migration=true;
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
-  int management=0;
+  int management=0;CEnvir::SimNr=1;
   //sim-loop
   do{
 //  if (argc>1){
@@ -131,8 +131,15 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
     SRunPara::RunPara.NCut=0;//atoi(argv[2]); //number of cuttings
 //  }
-    //simNr
-    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
+    //Run-loop
+    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
+      cout<<"new Environment...\n";
+      Envir=new CWaterGridEnvir();
+      Init();
+      if (SRunPara::RunPara.species.length()<2)continue;
+//-----------------
+//    //simNr
+//    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
@@ -146,15 +153,7 @@ int main(int argc, char* argv[])
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
     SRunPara::RunPara.print();
-    //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
-      cout<<"new Environment...\n";
-      Envir=new CWaterGridEnvir();
-
-      //SRunPara::RunPara.WaterLevel=30;
-      //CEnvir::NameLogFile="C-reed-out.txt";
-      cout<<"\n test water types ";
-      Init();
+ //-----------------
       Run();
 
       delete Envir;
@@ -165,10 +164,11 @@ int main(int argc, char* argv[])
 //    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
 //    SRunPara::RunPara.NCut=atoi(argv[2]); //number of cuttings
 //  }
+    Envir->SimNr++;
     }//end run
 //    SRunPara::RunPara.WaterLevel-=15;//5cm weniger für nächste Sim
 //    if(SRunPara::RunPara.WaterLevel< -50)
-    endsim=true;
+//    endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)
