@@ -44,6 +44,7 @@ CWaterPlant::CWaterPlant(double x, double y, CWaterPlant* plant)
   :CclonalPlant(x,y,plant),
   waterTraits(plant->waterTraits)
 {
+//cout<<"\nnew Ramet "<<this->pft()<<": "<<x<<";"<<y<<endl;
 }
 //---------------------------------------------------------------------------
 /**
@@ -88,13 +89,19 @@ if (true)
  CEnvir::AddLogEntry(CEnvir::week,filename);
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
- CEnvir::AddLogEntry(GetMass(),filename);
+ CEnvir::AddLogEntry(GetMass(),filename);    //biomass
  CEnvir::AddLogEntry(GetMass()-oldmass,filename);
+ CEnvir::AddLogEntry(this->mRepro,filename); //growing seed mass
+
   CEnvir::AddLogEntry(this->stress,filename);
  CEnvir::AddLogEntry(this->Area_shoot(),filename);
  CEnvir::AddLogEntry(this->getHeight(),filename);
  CEnvir::AddLogEntry(this->getDepth(),filename);
- CEnvir::AddLogEntry(this->growingSpacerList.size(),filename);
+ if (this->growingSpacerList.size()>0)
+ CEnvir::AddLogEntry(this->growingSpacerList.front()->Spacerlength
+ - this->growingSpacerList.front()->SpacerlengthToGrow ,filename);
+ else
+ CEnvir::AddLogEntry(0.0,filename);
  CEnvir::AddLogEntry(this->getGenet()->number,filename);
  CEnvir::AddLogEntry(" ",filename);
  CEnvir::AddLogEntry(this->pft(),filename);
@@ -103,6 +110,34 @@ if (true)
  CEnvir::AddLogEntry("\n",filename);
 }
 }//end Grow2
+//-------------------------------------------------------------
+/**
+  CWaterPlant Version of plant beeing stressed due to limited resource uptake.
+  Accouts for the used root zone (short roots can reach less resources than deep roots)
+
+  \return T/F plant is stressed
+  \since 27/04/2012
+*/
+bool CWaterPlant::stressed(){
+   return (Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
+       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax
+       *this->getDepth()/50);
+}
+/** reimplemented for different root depths
+\since 27/04/2012
+*/
+double CWaterPlant::RootGrow(double rres){
+   double Assim_root, Resp_root;
+   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+   Assim_root=Traits->growth*min(rres,Traits->Gmax/50.0*this->getDepth()*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
+   Resp_root=Traits->growth*(Traits->Gmax/50.0*this->getDepth())*Traits->RAR
+            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
+
+   return max(0.0,Assim_root-Resp_root);
+
+}
+//-------------------------------------------------------------
+
 /**
 Get root efficiency. 'Normal' plants are not able to uptake
 resources in the anoxic root layer. Here the proportion of roots
@@ -124,6 +159,7 @@ double CWaterPlant::rootEfficiency(){
  double retval=  max(min(depth,-wl)/depth,1e-10); //0.0
  return retval;
 }
+//-------------------------------------------------------------
 /**
 Helping function for CWaterGridEnvir::DistribRessource
 

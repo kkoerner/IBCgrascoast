@@ -17,6 +17,7 @@ class CWaterPlant:public CclonalPlant
   virtual void Grow2();
 //     ///competition coefficient for a plant -needed for AboveComp and BelowComp
 //   virtual double comp_coef(const int layer,const int symmetry)const;
+   virtual double RootGrow(double rres);
 
 public:
    SWaterTraits* waterTraits;                ///<traits of water preferences
@@ -30,6 +31,7 @@ public:
       SWaterTraits* waterTraits, CCell* cell);
    virtual ~CWaterPlant(){};  //!<destructor
    void print_type();
+   virtual bool stressed();///< return true if plant is stressed
 
 
 ///add water impact on ressource allocation

@@ -68,6 +68,8 @@ class CPlant : public CObject
 protected:
    CCell* cell;      ///<cell where it sits
    virtual double ReproGrow(double uptake);
+   virtual double ShootGrow(double shres);
+   virtual double RootGrow(double rres);
 
 public:
    SPftTraits* Traits;///<PFT Traits
@@ -139,6 +141,7 @@ public:
    virtual double comp_coef(const int layer,const int symmetry)const;
    //! shoot-root resource allocation and plant growth in two layers (one-layer option obsolete now)
    virtual void Grow2(); //!< shoot-root resource allocation and plant growth in two layers
+   virtual bool stressed();///< return true if plant is stressed
    void DecomposeDead();     //!< calculate mass shrinkage of dead plants
    void Kill();  //!< Mortality due to resource shortage or at random
 

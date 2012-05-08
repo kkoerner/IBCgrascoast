@@ -11,7 +11,7 @@
 //---------------------------------------------------------------------------
 SPftTraits::SPftTraits():TypeID(999),name("default"),N0(1),MaxAge(100),
   AllocSeed(0.05),LMR(0),m0(0),MaxMass(0),SeedMass(0),Dist(0),
-  pEstab(0.5),Gmax(0),memory(0),SLA(0),palat(0),RAR(1),growth(0.5),//.25
+  pEstab(0.5),Gmax(0),memory(0),SLA(0),palat(0),RAR(1),growth(0.25),//.25
   mThres(0.2),Dorm(1),FlowerWeek(16),DispWeek(20)
 {}//end constructor
 //---------------------------------------------------------------------------
@@ -202,9 +202,7 @@ double CPlant::ReproGrow(double uptake){
 void CPlant::Grow2()         //grow plant one timestep
 {
    double dm_shoot, dm_root,alloc_shoot;
-   double Assim_shoot, Resp_shoot, Assim_root, Resp_root;
    double LimRes, ShootRes, RootRes, VegRes;
-   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
 
    /********************************************/
    /*  dm/dt = growth*(c*m^p - m^q / m_max^r)  */
@@ -219,38 +217,52 @@ void CPlant::Grow2()         //grow plant one timestep
 
    ShootRes=alloc_shoot*VegRes;
    RootRes =VegRes-ShootRes;
-   //   RootRes=(1-alloc_shoot)*VegRes;
 
    //Shoot growth
-   Assim_shoot=Traits->growth*min(ShootRes,Traits->Gmax*Ash_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-   Resp_shoot=Traits->growth*Traits->SLA
-              *pow(Traits->LMR,p)*Traits->Gmax
-              *pow(mshoot,q)/pow(Traits->MaxMass*0.5,r);       //respiration proportional to mshoot^2
-
-   dm_shoot=max(0.0,Assim_shoot-Resp_shoot);
+   dm_shoot=this->ShootGrow(ShootRes);
 
    //Root growth
-   Assim_root=Traits->growth*min(RootRes,Traits->Gmax*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-   Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
-            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
-
-   dm_root=max(0.0,Assim_root-Resp_root);
-
-//   if (dm_shoot<0) dm_shoot=0;  //no negative growth
-//   if (dm_root<0)  dm_root=0;  //no negative growth
+   dm_root=this->RootGrow(RootRes);
 
    mshoot+=dm_shoot;
    mroot+=dm_root;
 
-   if ((Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
-       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax))++stress;
+   if (stressed())++stress;
    else if (stress>0) --stress;
-//   cout<<"\n"<<this->xcoord<<";"<<this->ycoord<<"\tBM "<<this->GetMass();
-//   if (stress>Traits->memory) stress=Traits->memory;
-//   Auptake=0;
-//   Buptake=0;
+}
+/**
+     shoot growth
+
+     dm/dt = growth*(c*m^p - m^q / m_max^r)
+*/
+double CPlant::ShootGrow(double shres){
+   double Assim_shoot, Resp_shoot;
+   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+   Assim_shoot=Traits->growth*min(shres,Traits->Gmax*Ash_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
+   Resp_shoot=Traits->growth*Traits->SLA
+              *pow(Traits->LMR,p)*Traits->Gmax
+              *pow(mshoot,q)/pow(Traits->MaxMass*0.5,r);       //respiration proportional to mshoot^2
+   return max(0.0,Assim_shoot-Resp_shoot);
+}
+/**
+    root growth
+
+    dm/dt = growth*(c*m^p - m^q / m_max^r)
+*/
+double CPlant::RootGrow(double rres){
+   double Assim_root, Resp_root;
+   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+   Assim_root=Traits->growth*min(rres,Traits->Gmax*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
+   Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
+            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
+
+   return max(0.0,Assim_root-Resp_root);
 }
 
+bool CPlant::stressed(){
+   return (Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
+       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax);
+}
 //-----------------------------------------------------------------------------
 void CPlant::Kill()
 {
@@ -353,10 +365,14 @@ void CPlant::Decompose()
 }
 */
 //-----------------------------------------------------------------------------
+///not used
+///
 double CPlant::Radius_shoot(){
    return sqrt(Traits->SLA*pow(Traits->LMR*mshoot,2.0/3.0)/Pi);
 }
 //-----------------------------------------------------------------------------
+///not used
+///
 double CPlant::Radius_root(){
    return sqrt(pow(Traits->RAR*mroot,2.0/3.0)/Pi);
 }

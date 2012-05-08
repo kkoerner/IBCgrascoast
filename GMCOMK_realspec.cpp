@@ -118,11 +118,11 @@ int main(int argc, char* argv[])
 {
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-30; //start-WL   100
-  SRunPara::RunPara.Tmax=1;//40;//20Jahre Laufzeit
+  SRunPara::RunPara.Tmax=3;//40;//20Jahre Laufzeit
 //  SRunPara::RunPara.Migration=true;
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
-  int management=0;CEnvir::SimNr=1;
+  int management=0;CEnvir::SimNr=0;
   //sim-loop
   do{
 //  if (argc>1){
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
       cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
       Init();
-      if (SRunPara::RunPara.species.length()<2)continue;
+      if (SRunPara::RunPara.species.length()<2)endsim=true;
 //-----------------
 //    //simNr
 //    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;

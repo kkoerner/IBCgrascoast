@@ -373,6 +373,7 @@ void CGridclonal::RametEstab(CclonalPlant* plant)
            Ramet->setCell(cell);
 
            PlantList.push_back(Ramet);
+cout<<"\nnew Ramet "<<Ramet->pft()<<": "<<x<<";"<<y<<endl;
            //delete from list but not the element itself
            plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f);
         }//if cell ist not occupied

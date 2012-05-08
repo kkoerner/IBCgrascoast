@@ -492,7 +492,8 @@ void CWaterGridEnvir::InitInds(string file,int n){
             >> cltraits->PropSex
             >> cltraits->meanSpacerlength
             >> cltraits->Resshare
-            >> cltraits->mSpacer;
+            >> cltraits->mSpacer
+            >> cltraits->clonal;
      traits->SeedMass=traits->m0;
      cltraits->sdSpacerlength=cltraits->meanSpacerlength;
     //namen und IDs
@@ -509,7 +510,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
     traits->print();cltraits->print();wtraits->print();
 
     // initialization
-    //InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/3.0); //com out
+    //InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/2.0); //com out
     InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
 
     PftInitList[traits->name]+=no_init_seeds;

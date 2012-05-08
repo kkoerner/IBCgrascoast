@@ -20,6 +20,8 @@ struct SclonalTraits   //clonal plant functional traits
    static void ReadclonalTraits(char* file="");
 
    std::string name;         ///<name of PFT
+   ///is this a clonal type?
+   bool clonal; 
    ///allocation to sexual reproduction during time of seed production
    double PropSex;
    double meanSpacerlength;  ///<mean spacer length [cm]

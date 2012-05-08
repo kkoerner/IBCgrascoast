@@ -133,11 +133,15 @@ double CclonalPlant::ReproGrow(double uptake){
       int pweek=CEnvir::week;
       if ((pweek>=Traits->FlowerWeek) && (pweek<Traits->DispWeek))
       {//during the seed-production-weeks
+         //if non-clonal plant in fruiting season
+         if (!this->clonalTraits->clonal){mRepro+=dm_seeds; return VegRes;}
          mRepro+=(dm_seeds*this->clonalTraits->PropSex);
          mReproRamets+=(dm_seeds*(1-this->clonalTraits->PropSex));
       }else
       { //during the other weeks (without seed production)
-         mReproRamets+=dm_seeds;
+          //if non-clonal plant out of the fruiting season
+         if (!this->clonalTraits->clonal){return uptake;}
+        mReproRamets+=dm_seeds;
       }
    }else VegRes=uptake;
 //   cout<<"\tVeg "<<VegRes<<"\tSpacer "<<mReproRamets<<"\tSeed"<<mRepro;

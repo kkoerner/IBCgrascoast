@@ -18,7 +18,7 @@ std::vector<SclonalTraits*> SclonalTraits::clonalTraits;//(8,new SclonalTraits()
 initialize clonal traits with default values
 */
 SclonalTraits::SclonalTraits()  //clonal plant with specifc traits
-  :name("default"),PropSex(0.1),meanSpacerlength(17.5),sdSpacerlength(12.5),
+  :name("default"),clonal(true),PropSex(0.1),meanSpacerlength(17.5),sdSpacerlength(12.5),
   Resshare(true),mSpacer(70)
 {
 }
@@ -55,6 +55,7 @@ void SclonalTraits::ReadclonalTraits(char* file)
 //--------------------
 void SclonalTraits::print(){
    std::cout<<"\nClonal Type: "<<this->name;
+   if (this->clonal) std::cout<<"\tclonal"; else std::cout<<"\tnon-clonal";
    std::cout<<"\n  PropSex: "<<this->PropSex;
    std::cout<<"\n  mSpacer: "<<this->mSpacer;
    std::cout<<"\n  Resshare: "<<this->Resshare;
