@@ -108,7 +108,9 @@ int NCut2 =0;            ///<2nd mowing management
 /**
   the new water ressource environment can be tested here
 
-  Tests für Änderung des Management nach 20 Jahren.
+  teste 'reale' Arten - jede Art ein Jahr:
+   wie entwickeln sich die Keimlinge, entstehen Rameten / neue Keimlinge?
+
 
   \par Parameters  GrazProb, Trampling(=Grazprob), NCut
   \author KK
@@ -118,7 +120,7 @@ int main(int argc, char* argv[])
 {
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-30; //start-WL   100
-  SRunPara::RunPara.Tmax=3;//40;//20Jahre Laufzeit
+  SRunPara::RunPara.Tmax=2;//40;//20Jahre Laufzeit
 //  SRunPara::RunPara.Migration=true;
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing

@@ -75,7 +75,9 @@ double oldmass=this->GetMass();
  //standard growth
  CPlant::Grow2();
  //detailed output - for grid plots
-//if (CEnvir::week==2||CEnvir::week==20||CEnvir::week==25)
+// if (this->genetID%%4==1)   //nur jeder 4. Genet
+// if (CEnvir::week==21) //Samen fertig, aber noch nicht released
+// if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
 //if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
@@ -90,24 +92,26 @@ if (true)
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
  CEnvir::AddLogEntry(GetMass(),filename);    //biomass
- CEnvir::AddLogEntry(GetMass()-oldmass,filename);
+// CEnvir::AddLogEntry(GetMass()-oldmass,filename);
  CEnvir::AddLogEntry(this->mRepro,filename); //growing seed mass
 
   CEnvir::AddLogEntry(this->stress,filename);
- CEnvir::AddLogEntry(this->Area_shoot(),filename);
+// CEnvir::AddLogEntry(this->Area_shoot(),filename);
  CEnvir::AddLogEntry(this->getHeight(),filename);
- CEnvir::AddLogEntry(this->getDepth(),filename);
+// CEnvir::AddLogEntry(this->getDepth(),filename);
  if (this->growingSpacerList.size()>0)
  CEnvir::AddLogEntry(this->growingSpacerList.front()->Spacerlength
  - this->growingSpacerList.front()->SpacerlengthToGrow ,filename);
  else
  CEnvir::AddLogEntry(0.0,filename);
  CEnvir::AddLogEntry(this->getGenet()->number,filename);
- CEnvir::AddLogEntry(" ",filename);
- CEnvir::AddLogEntry(this->pft(),filename);
+ string dummi=" "+this->pft()+"\n";
+ CEnvir::AddLogEntry(dummi,filename);
+ //CEnvir::AddLogEntry(" ",filename);
+ //CEnvir::AddLogEntry(this->pft(),filename);
 
 // CEnvir::AddLogEntry(height,"C-reed-out.txt");
- CEnvir::AddLogEntry("\n",filename);
+ //CEnvir::AddLogEntry("\n",filename);
 }
 }//end Grow2
 //-------------------------------------------------------------

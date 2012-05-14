@@ -443,7 +443,8 @@ void CWaterGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-  InitInds("Input\\RSpec20.txt",SimNr);
+  InitInds("Input\\RSpec20o3.txt"); //all species simultanously
+//  InitInds("Input\\RSpec20.txt",SimNr);
 
 }
 /**
@@ -454,7 +455,7 @@ void CWaterGridEnvir::InitRun(){
   \since 2012-04-18
 */
 void CWaterGridEnvir::InitInds(string file,int n){
-  const int no_init_seeds=3;//10;
+  const int no_init_seeds=10;//10;
   //Open InitFile,
   ifstream InitFile(file.c_str());
   if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
@@ -510,8 +511,8 @@ void CWaterGridEnvir::InitInds(string file,int n){
     traits->print();cltraits->print();wtraits->print();
 
     // initialization
-    //InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/2.0); //com out
-    InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
+    InitWaterInds(traits,cltraits,wtraits,2,traits->MaxMass/2.0); //com out
+//    InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
 
     PftInitList[traits->name]+=no_init_seeds;
     cout<<" init "<<no_init_seeds<<" seeds of Pft: "<<dummi2<<endl;
