@@ -113,8 +113,8 @@ void CWaterGridEnvir::InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
 
         CCell* cell = CellList[x*SideCells+y];
         new CWaterSeed(estab,traits,cltraits,wtraits,cell);
-      cout<<"disp "<<cell->SeedBankList.back()->pft()
-          <<" at "<<cell->x<<";"<<cell->y<<endl;
+//      cout<<"disp "<<cell->SeedBankList.back()->pft()
+//          <<" at "<<cell->x<<";"<<cell->y<<endl;
    }
 }//end distribute seed rain
 void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
@@ -138,8 +138,8 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
         GenetList.push_back(Genet);
         plant->setGenet(Genet);
 
-      cout<<"disp "<<plant->pft()
-          <<" at "<<cell->x<<";"<<cell->y<<endl;
+//      cout<<"disp "<<plant->pft()
+//          <<" at "<<cell->x<<";"<<cell->y<<endl;
    }
 
 }
@@ -443,7 +443,7 @@ void CWaterGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-  InitInds("Input\\RSpec20o3.txt"); //all species simultanously
+  InitInds("Input\\RSpec20.txt"); //all species simultanously
 //  InitInds("Input\\RSpec20.txt",SimNr);
 
 }

@@ -36,7 +36,7 @@ CWaterPlant::CWaterPlant(CWaterSeed* seed)
   waterTraits(seed->waterTraits)
 {
 //this->print_type();
-cout<<"\n"<<this->pft()<<" Coords: "<<xcoord<<";"<<ycoord<<endl;
+//cout<<"\n"<<this->pft()<<" Coords: "<<xcoord<<";"<<ycoord<<endl;
 }
 //---------------------------------------------------------------------------
 /***/
@@ -80,9 +80,9 @@ double oldmass=this->GetMass();
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
 //if (false)
-//if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
+if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 //if (CEnvir::year<3)
-if (true)
+//if (true)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);

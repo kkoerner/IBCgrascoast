@@ -120,25 +120,26 @@ int main(int argc, char* argv[])
 {
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-30; //start-WL   100
-  SRunPara::RunPara.Tmax=2;//40;//20Jahre Laufzeit
+  SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
 //  SRunPara::RunPara.Migration=true;
-  int nruns=1;//3
+  int nruns=5;//3
   /// 0-abandoned; 1-grazing; 2-mowing
   int management=0;CEnvir::SimNr=0;
   //sim-loop
+  if (argc>1){
+    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
+    SRunPara::RunPara.species=argv[2];  //init types
+    SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
+    SRunPara::RunPara.DistAreaYear=atof(argv[3]); //trampling
+    SRunPara::RunPara.NCut=atoi(argv[4]); //number of cuttings
+  }
   do{
-//  if (argc>1){
-  //für jeden Run neu einlesen, da sonst veränderte Daten übernommen werden
-    SRunPara::RunPara.GrazProb=0; //grazing
-    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
-    SRunPara::RunPara.NCut=0;//atoi(argv[2]); //number of cuttings
-//  }
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
       Init();
-      if (SRunPara::RunPara.species.length()<2)endsim=true;
+//      if (SRunPara::RunPara.species.length()<2)endsim=true;
 //-----------------
 //    //simNr
 //    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
@@ -160,17 +161,10 @@ int main(int argc, char* argv[])
 
       delete Envir;
 
-//  if (argc>1){
-  //für jeden Run neu einlesen, da sonst veränderte Daten übernommen werden
-//    SRunPara::RunPara.GrazProb=atof(argv[1]); //grazing
-//    SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb; //trampling
-//    SRunPara::RunPara.NCut=atoi(argv[2]); //number of cuttings
-//  }
     Envir->SimNr++;
     }//end run
-//    SRunPara::RunPara.WaterLevel-=15;//5cm weniger für nächste Sim
-//    if(SRunPara::RunPara.WaterLevel< -50)
-//    endsim=true;
+    SRunPara::RunPara.WaterLevel+=15;//5cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel> 15) endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)

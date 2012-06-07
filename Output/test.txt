@@ -1,0 +1,17 @@
+Versuch9:
+PGMCOMKonsole.exe
+
+Parametrization of real spec data
+Modellparameter: Bres[100] Species[M] GrazProb[0 0.1 0.2] NCut[0 1 2 3]
+
+----------------------
+Traiteinstellungen
+
+List of 18 Species (not Jgerardii, Ptrivialis)
+parameterized via LEDA
+--------------------------
+Setting 
+
+1run a 10 Jahre; yaerly doc in week21
+
+>>Output der typen mit Deckung; spatial output of all inds
