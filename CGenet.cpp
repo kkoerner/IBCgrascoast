@@ -25,9 +25,7 @@ void CGenet::ResshareA()
   {
        double AddtoSum=0;
        CclonalPlant* Ramet =(CclonalPlant*) AllRametList[m];
-       double minres= Ramet->Traits->mThres
-                     *Ramet->Ash_disc
-                     *Ramet->Traits->Gmax*2;
+       double minres= Ramet->minresA() *2;
        //Uptake - the min resources that the plant need
        AddtoSum=max(0.0,Ramet->Auptake-minres);
        //if the plant has enought resources
@@ -55,7 +53,8 @@ void CGenet::ResshareB()
     {
        double AddtoSum=0;
        CclonalPlant* Ramet =AllRametList[m];
-       double minres= Ramet->Traits->mThres*Ramet->Art_disc*Ramet->Traits->Gmax*2;
+//       double minres= Ramet->Traits->mThres*Ramet->Art_disc*Ramet->Traits->Gmax*2;
+       double minres= Ramet->minresB()*2;
        //Uptake - the min resources that the plant need
        AddtoSum=max(0.0,Ramet->Buptake-minres);
        //if the plant has enought resources

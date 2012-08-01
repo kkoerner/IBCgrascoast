@@ -328,6 +328,10 @@ distribute the cell's resources.
  Resource competition Version is 1.
 
 virtual function will be substituted by comp function from sub class
+
+soil resources are meant as res per 50cm rooting depth
+
+\sa CWaterPlant::RootGrow
 */
 void CWaterCell::BelowComp()
 {

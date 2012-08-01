@@ -26,12 +26,18 @@ public:
    CWaterPlant(CWaterSeed* seed);
    ///clonal growth
    CWaterPlant(double x, double y, CWaterPlant* plant);
+   /// general constructor
    CWaterPlant(double mass, SPftTraits* traits,
       SclonalTraits* clonalTraits,
       SWaterTraits* waterTraits, CCell* cell);
    virtual ~CWaterPlant(){};  //!<destructor
    void print_type();
-   virtual bool stressed();///< return true if plant is stressed
+//   virtual bool stressed();///< return true if plant is stressed
+/// \brief lower threshold of belowground resource uptake (nutrient stress thresh.)
+///    with respect of rooting depth (Gmax now represents optimal
+///    resource uptake per 50cm rooting depth)
+///
+   virtual double minresB(){return CPlant::minresB()*this->getDepth()/50.0;}
 
 
 ///add water impact on ressource allocation

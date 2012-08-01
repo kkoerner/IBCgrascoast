@@ -114,6 +114,24 @@ if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
  //CEnvir::AddLogEntry("\n",filename);
 }
 }//end Grow2
+/**
+    root growth
+
+    dm/dt = growth*(c*m^p - m^q / m_max^r)
+
+    with respect of rooting depth (Gmax now represents resources per 50cm rooting depth)
+*/
+double CWaterPlant::RootGrow(double rres){
+   double Assim_root, Resp_root;
+   double p_depth= this->getDepth();
+   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+   Assim_root=Traits->growth*min(rres,Traits->Gmax*p_depth/50.0*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
+   Resp_root=Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
+            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
+
+   return max(0.0,Assim_root-Resp_root);
+}
+
 //-------------------------------------------------------------
 /**
   CWaterPlant Version of plant beeing stressed due to limited resource uptake.

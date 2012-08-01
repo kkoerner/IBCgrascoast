@@ -259,10 +259,31 @@ double CPlant::RootGrow(double rres){
    return max(0.0,Assim_root-Resp_root);
 }
 
+/**
+    identify resource stressing situation
+
+    \return true if plant is stressed
+
+    \note May et al. (2009) documented this part as
+   \verbatim
+    delta_res<Traits->mThres*Ash/rt_disc*Traits->Gmax
+   \endverbatim
+ but his code was
+    \code
+             (Auptake<Traits->mThres*Ash_disc*Traits->Gmax*2)
+          || (Buptake<Traits->mThres*Art_disc*Traits->Gmax*2);
+    \endcode
+ as described in his diploma thesis
+
+ \date 2012-07-31  code splitted by KK
+*/
 bool CPlant::stressed(){
-   return (Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
-       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax);
+//   return (Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
+//       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax);
+   return (Auptake<minresA())
+       || (Buptake<minresB());
 }
+
 //-----------------------------------------------------------------------------
 void CPlant::Kill()
 {
