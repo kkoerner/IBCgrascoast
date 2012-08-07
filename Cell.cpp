@@ -145,7 +145,7 @@ double CCell::getCover(const string type) const{
 //wenn zelle besetzt
   if (occupied) {
     string ltype=PlantInCell->pft();
-    if (ltype==type) return 1;}
+    if (ltype==type) return 1;else return 0;}
 //wenn zelle leer
   if (AbovePlantList.empty()){
     if (type=="bare")return 1;else return 0;
