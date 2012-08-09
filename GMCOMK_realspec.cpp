@@ -194,20 +194,7 @@ The changes are
 
 */
 void Run(){
-   for (Envir->year=1; Envir->year<=SRunPara::RunPara.Tmax; ++Envir->year){
-      cout<<" y"<<Envir->year;
-//drift of little individuals -anually-
-if (SRunPara::RunPara.Migration){
-
-}//if migration
-
-      Envir->OneYear();
-//        WriteSurvival();
-        Envir->WriteGridComplete(false);//report last year
-//        clonalOutput();
-        Envir->WriteSurvival();
-      if (Envir->endofrun)break;
-   }//years
+   Envir->OneRun();
 }
 //---------------------------------------------------------------------------
 //eof---------------------------------------------------------------------------

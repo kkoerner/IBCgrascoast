@@ -91,6 +91,15 @@ void CWaterGridEnvir::InitInds()
   }//grass type
 
 }//end InitInds
+
+void CWaterGridEnvir::InitWaterSeeds(const string PftName,const int n,double estab)
+{
+     InitWaterSeeds(this->getPftLink(PftName),
+        this->getClLink(PftName),
+        this->getWLink(PftName),n); //com out
+
+}//end initWaterSeeds(string,...)
+
 /**
  randomly distribute seeds of a given plant type (CWaterPlant)
 
@@ -163,25 +172,22 @@ void CWaterGridEnvir::OneRun(){
 
 //drift of little individuals -anually-
 if (SRunPara::RunPara.Migration){
-//  if(SRunPara::RunPara.species=="R"||SRunPara::RunPara.species=="M") //true
-//    InitWaterSeeds(
-    InitWaterInds(
-      SPftTraits::PftList[15],SclonalTraits::clonalTraits[6],
-      SWaterTraits::PFTWaterList[0],1,8000);
-//  if(SRunPara::RunPara.species=="G"||SRunPara::RunPara.species=="M") //true
-    InitWaterInds(
-      SPftTraits::PftList[42],SclonalTraits::clonalTraits[0],
-      SWaterTraits::PFTWaterList[2],1,200);
-    InitWaterInds(
-      SPftTraits::PftList[71],SclonalTraits::clonalTraits[0],
-      SWaterTraits::PFTWaterList[2],1,40);
+   typedef map<string, int> mapType;
+
+ //      for_each(PftInitList.begin(),PftInitList.end(),InitWaterSeeds);     //funkt nicht
+
+      //streue für jeden Typ einen Samen aufs Grid
+       for (std::map<const string,long>::iterator it = PftInitList.begin(); it != PftInitList.end(); ++it)
+      {
+        InitWaterSeeds(it->first);
+      }
 
 }//if migration
 //--------------------
       OneYear();
 //--------------------
 //aprupt climate change (WL)
-      if (year==year_of_change) SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
+//      if (year==year_of_change) SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
 
 //file output
       if (true)//(year>=20)
