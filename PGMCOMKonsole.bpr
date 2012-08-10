@@ -116,7 +116,7 @@ Item0=$(BCB)\source\vcl
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=100 M 0 0
+RunParams=100 1 0 0
 Launcher=
 UseLauncher=0
 DebugCWD=

@@ -171,7 +171,7 @@ void CWaterGridEnvir::OneRun(){
       cout<<" y"<<year;
 
 //drift of little individuals -anually-
-if (SRunPara::RunPara.Migration){
+if (SRunPara::RunPara.Migration>0){
    typedef map<string, int> mapType;
 
  //      for_each(PftInitList.begin(),PftInitList.end(),InitWaterSeeds);     //funkt nicht
@@ -179,7 +179,7 @@ if (SRunPara::RunPara.Migration){
       //streue für jeden Typ einen Samen aufs Grid
        for (std::map<const string,long>::iterator it = PftInitList.begin(); it != PftInitList.end(); ++it)
       {
-        InitWaterSeeds(it->first);
+        InitWaterSeeds(it->first,SRunPara::RunPara.Migration);
       }
 
 }//if migration

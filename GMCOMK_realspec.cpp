@@ -128,7 +128,8 @@ int main(int argc, char* argv[])
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.species=argv[2];  //init types
+    //SRunPara::RunPara.species=argv[2];  //init types
+    SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
     SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
     SRunPara::RunPara.DistAreaYear=atof(argv[3]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[4]); //number of cuttings
