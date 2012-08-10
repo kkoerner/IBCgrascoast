@@ -44,7 +44,7 @@ void SRunPara::print(){
 ///
 string SRunPara::getRunID(){
       stringstream dummi;
-      dummi<<"_R"<<this->meanBRes<<"_"<<species
+      dummi<<"_R"<<this->meanBRes<<"_"<<Migration//species
 //           <<"_"<<this->WLseason
            <<"_"<<this->GrazProb
  //          <<"_"<<this->DistAreaYear
