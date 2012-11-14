@@ -1,0 +1,4 @@
+SimNrMax	NRep	OutFile														
+18	1	ComTest
+SimNr	Tmax	GrazPrb	NCut	CutMass	ARes	BRes
+101	2	0	0	5000	100	30

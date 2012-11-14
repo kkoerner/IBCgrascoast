@@ -1,0 +1,73 @@
+//additional doxygen documentation not included in source files
+
+/**\page output Output generation and files
+
+\par This page describes how and which output variables are/could be gained
+
+\section content Content
+ - \ref gather
+ - \ref structure
+ - \ref write
+
+\section structure Runtime output data structure
+Output information is gathered several times during one simulation run. 
+To save time and, thus, to minimize the number of file-write access events, 
+the information is buffered in self defined output data collection globally 
+located in the environmental class: CEnvir or CClonalGridEnvir 
+( CEnvir::PftOutData, CEnvir::GridOutData, and CClonalGridEnvir::ClonOutData). 
+
+Additionally the current values of coverage (CEnvir::CoveredCells) and Type-specific Cover (CEnvir::PftCover) are located here.
+
+\subsection ovars Output variables
+As already mentioned, global access to the simulation output is over the vectors 
+CEnvir::PftOutData, CEnvir::GridOutData, and CClonalGridEnvir::ClonOutData.
+Every time, an output is calculated (\ref gather), the results are appended to the existing list.
+
+The map CEnvir::PftSurvTime contains the Time-to-Extinction of all Types to date.
+ 
+\subsection ofuncs Public functions
+ - Gathering (CClonalGridEnvir::GetOutput, CClonalGridEnvir::GetClonOutput, CClonalGridEnvir::GetOutputCutted, CClonalGridEnvir::setCover)
+ - File Writing (CEnvir::WriteGridComplete, CEnvir::WritePftComplete, CEnvir::WriteSurvival, CClonalGridEnvir::clonalOutput)
+
+Other Functions are called from one of the gathering functions (e.g. CEnvir::PftSurvival)
+
+\subsection oclass Output data classes
+The lists of Output date consist of Elements of the Structures SGridOut, SClonOut, and SPftOut; 
+the last containing a list and doc of each type (SPftOut::SPftSingle) included in the simulation.
+
+\section gather Output gathering
+\par Once a week the simulation is checked for Output Gathering (OneWeek)
+ which is true when CEnvir::week 20 for general output, and week 30 for clonal Output and mown biomass. 
+Pft coverage is gathered in week 20, in function setCover() called from CClonalGridEnvir::OneWeek().
+ 
+
+\ subsection ocover Cover
+\ subsection oother All Other
+
+
+\section write File writing - structure
+
+\subsection wgrid Grid-wide data 
+\sa CEnvir::WriteGridComplete
+\par Structure
+Each observation is written in one line. The header informs you on the variables 
+documented. The Tabs are \verb"\t" - delimited.
+
+
+\subsection wpft Data for each Type / species separately 
+\sa CEnvir::WritePftComplete
+\par Structure
+Each observation is written in one line. The header informs you on the variables 
+documented. The Tabs are \verb"\t" - delimited.
+
+\subsection wsurv Survival data 
+\sa CEnvir::WriteSurvival
+\par Structure
+
+\subsection wclon Clonal data (not activated)
+\sa CClonalGridEnvir::clonalOutput()
+\par Structure
+Each observation is written in one line. The header informs you on the variables 
+documented. The Tabs are \verb"\t" - delimited.
+
+*/
