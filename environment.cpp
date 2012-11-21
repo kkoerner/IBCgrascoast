@@ -469,7 +469,7 @@ void CClonalGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-  InitInds("Input\\RSpec20.txt");
+  InitInds("Input\\RSpec28.txt");
 }
 //------------------------------------------------------------------------------
 /**
