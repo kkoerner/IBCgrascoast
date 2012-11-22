@@ -1,3 +1,7 @@
+09:43 22.11.2012
+COmtess-Version mit Parametrisierung realer Arten
+
+--------------------------------------------------------------
 11:53 08.03.2011
 -dokumentation nach 10, 30 jahren und am Ende
 -zusätzliche Mortalität durch BG möglich BGThres=1 - ohne

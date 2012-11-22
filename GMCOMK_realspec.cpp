@@ -49,13 +49,13 @@ Die anderen Prozesse werden fuer alle Pflanze/Samen ausgefuehrt.
 Erweiterungen des Modells von May (2008) sind in grau dargestellt.
 
 \par Expected input (type and range of values, units):
-- input file for 81 plant functional traits
-- input file for 8 clonal trait syndomes
-- model parameter
-  - belowground resources
-  - inital species set (M, R, G1, G2)
-  - intraannual WaterLevel variation (const , , )
-  - variation of above (std 0)
+- input file for COMTESS-specific PFT-definitions (species list)
+- (optional) five input variables
+  - Belowground resources
+  - Migration [0,1]
+  - Aboveground grazing probability
+  - Trampling (disturbed area per year [\%])
+  - Mowing management [0..3]
 
 \par Output (type and range of values, units):
 - some ASCII-coded *.txt-files with weekly or yearly numbers
@@ -79,7 +79,6 @@ see additional page for solved and unsolved bugs
 
 \todo
  - add resource storage by plants ?!
- - add disturbance impact: cutting, grazing, trampling
 
 \section bib Publications or applications referring to the code:
  - May, Felix, Grimm, Volker and Jeltsch, Florian (2009): Reversed effects of
@@ -108,8 +107,8 @@ int NCut2 =0;            ///<2nd mowing management
 /**
   the new water ressource environment can be tested here
 
-  teste 'reale' Arten - jede Art ein Jahr:
-   wie entwickeln sich die Keimlinge, entstehen Rameten / neue Keimlinge?
+  teste 'reale' Arten -
+  \depreciated jede Art ein Jahr: wie entwickeln sich die Keimlinge, entstehen Rameten / neue Keimlinge?
 
 
   \par Parameters  GrazProb, Trampling(=Grazprob), NCut
