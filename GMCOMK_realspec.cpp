@@ -118,7 +118,7 @@ int NCut2 =0;            ///<2nd mowing management
 int main(int argc, char* argv[])
 {
   bool endsim=false;
-  SRunPara::RunPara.WaterLevel=-30; //start-WL   100
+  SRunPara::RunPara.WaterLevel=-60; //start-WL   100
   SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
 //  SRunPara::RunPara.Migration=true;
   int nruns=5;//3

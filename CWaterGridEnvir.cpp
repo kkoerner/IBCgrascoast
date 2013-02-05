@@ -164,7 +164,7 @@ void CWaterGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
  //  init=1; //for init the second plant (for the invasion experiments)
-   int year_of_change=20;
+   int year_of_change=50;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
    for (year=1; year<=SRunPara::RunPara.Tmax; ++year){

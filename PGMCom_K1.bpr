@@ -28,7 +28,7 @@
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL;USEPACKAGES"/>
+    <SYSDEFINES value="NO_STRICT;_NO_VCL"/>
     <MAINSOURCE value="PGMCom_K1.bpf"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>
@@ -36,18 +36,18 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-tWC -tWM- -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y 
-      -v -vi- -c"/>
-    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -tWC 
+      -tWM- -c"/>
+    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-Tpe -ap -D&quot;&quot; -x -Gn -v"/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -ap -Tpe -x -Gn -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0x32.obj $(PACKAGES) $(OBJFILES)"/>
+    <ALLOBJ value="c0x32.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32i.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32.lib"/>
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
