@@ -154,16 +154,17 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 }
 //------------------------------------------------------------------------------
 /**
- Runs once for the Water Grid Environment. After an init phase of 10 years
+ Runs once for the Water Grid Environment. After an init phase of x years
  environmental conditions (WaterLevel) is changed.
+
+ Migration, additional Winter mortality and salt-toxidity are implemented.
+\todo add additional Winter mortality and salt-toxidity
+
  To allow a type to reestablish, once a year one Ind of each type is addad to
  the grid (individual drift / migration).
  \sa SRunPara::RunPara.WaterLevel
 */
 void CWaterGridEnvir::OneRun(){
-//   double teval=0.2;  //fraction of Tmax that is used for evaluation
-   //get initial conditions
- //  init=1; //for init the second plant (for the invasion experiments)
    int year_of_change=50;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
@@ -177,7 +178,8 @@ if (SRunPara::RunPara.Migration>0){
  //      for_each(PftInitList.begin(),PftInitList.end(),InitWaterSeeds);     //funkt nicht
 
       //streue für jeden Typ einen Samen aufs Grid
-       for (std::map<const string,long>::iterator it = PftInitList.begin(); it != PftInitList.end(); ++it)
+       for (std::map<const string,long>::iterator it = PftInitList.begin();
+            it != PftInitList.end(); ++it)
       {
         InitWaterSeeds(it->first,SRunPara::RunPara.Migration);
       }
@@ -186,6 +188,13 @@ if (SRunPara::RunPara.Migration>0){
 //--------------------
       OneYear();
 //--------------------
+//-apply here additional winter mortality due to prolonged inundation or
+// warm*salty conditions during winter time
+
+
+//-apply salt toxidicy effect
+
+
 //aprupt climate change (WL)
 //      if (year==year_of_change) SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
 
@@ -410,8 +419,22 @@ std::vector<SWaterTraits*> SWaterTraits::PFTWaterList;//(8,new SclonalTraits());
 
 
 SWaterTraits::SWaterTraits():name("default"),
-  WL_Optimum(0),WL_Tolerance(0),assimBelWL(false),assimAnoxWL(0)
+  assimBelWL(false),assimAnoxWL(0),saltTol(0)
 {}//end constructor
+
+/**
+Translates Ellenberg Value saltTol to respiratory costs
+for an adaptation to salt.
+*/
+double SWaterTraits::saltTolCosts(){
+return 0;
+} // salt tolerance costs
+/**
+Translates Ellenberg Value saltTol to tolerance level of salt content.
+*/
+double SWaterTraits::saltTolEffect(){
+return 0;
+} // salt tolerance effect
 
 //---------------------------------------------------------------------------
 void SWaterTraits::ReadWaterStrategy(char* file)
@@ -534,7 +557,9 @@ void CWaterGridEnvir::InitInds(string file,int n){
 void SWaterTraits::print(){
    std::cout<<"\nWater Type: "<<this->name;
    std::cout<<"\n  assimBelWL: "<<this->assimBelWL;
-   std::cout<<"\n  assimAnoxWL: "<<this->assimAnoxWL<<endl;
+   std::cout<<"\n  assimAnoxWL: "<<this->assimAnoxWL;
+   std::cout<<"\n  saltTol: "<<this->saltTol
+   <<endl;
 } //print water traits
 //---------------------------------------------------------------------------
 

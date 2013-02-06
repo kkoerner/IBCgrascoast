@@ -4,16 +4,16 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="PGMCom_K1.exe"/>
-    <OBJFILES value="GMCOMK_realspec.obj TimeUtils.obj CclonalSeed.obj Cell.obj CGenet.obj 
-      CGridclonal.obj clonalPlant.obj clonalTraits.obj CObject.obj CSeed.obj 
-      CWaterGridEnvir.obj CWaterPlant.obj environment.obj GridBase.obj 
-      OutStructs.obj Plant.obj rng.obj RunPara.obj SiteScale.obj"/>
-    <RESFILES value="PGMCom_K1.res"/>
+    <OBJFILES value="TimeUtils.obj CclonalSeed.obj Cell.obj CGenet.obj CGridclonal.obj 
+      clonalPlant.obj clonalTraits.obj CObject.obj CSeed.obj CWaterGridEnvir.obj 
+      CWaterPlant.obj environment.obj GridBase.obj OutStructs.obj Plant.obj 
+      rng.obj RunPara.obj SiteScale.obj GMCom_K1.obj"/>
+    <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
+    <LIBRARIES value="rtl.lib"/>
+    <SPARELIBS value="rtl.lib"/>
     <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi 
       inetdbxpress.bpi bcbsmp.bpi qrpt.bpi nmfast.bpi indy.bpi dbrtl.bpi 
       bdertl.bpi vcldb.bpi soaprtl.bpi dsnap.bpi ibxpress.bpi visualclx.bpi 
@@ -51,9 +51,7 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="PGMCom_K1.res" FORMNAME="" UNITNAME="PGMCom_K1.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="PGMCom_K1.bpf" FORMNAME="" UNITNAME="PGMCom_K1" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="GMCOMK_realspec.cpp" FORMNAME="" UNITNAME="GMCOMK_realspec" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="TimeUtils.cpp" FORMNAME="" UNITNAME="TimeUtils.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CclonalSeed.cpp" FORMNAME="" UNITNAME="CclonalSeed.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Cell.cpp" FORMNAME="" UNITNAME="Cell.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -72,6 +70,7 @@
       <FILE FILENAME="rng.cpp" FORMNAME="" UNITNAME="rng.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="RunPara.cpp" FORMNAME="" UNITNAME="RunPara.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="SiteScale.cpp" FORMNAME="" UNITNAME="SiteScale.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GMCom_K1.cpp" FORMNAME="" UNITNAME="GMCom_K1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
