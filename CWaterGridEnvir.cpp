@@ -188,10 +188,6 @@ if (SRunPara::RunPara.Migration>0){
 //--------------------
       OneYear();
 //--------------------
-//-apply here additional winter mortality due to prolonged inundation or
-// warm*salty conditions during winter time
-
-
 //-apply salt toxidicy effect
 
 

@@ -161,9 +161,20 @@ double CWaterPlant::rootEfficiency(){
 /**
 calc effect of winter disturbance on plant
 depending on water-related traits
+
+\verbatim
+ mort=min(0.95, max(0,MonthsInundation-Thresh_by_adapt )/4)
+ Thresh_by_adapt(no,yes)=(2,8)
+\endverbatim
+no additional dieback at the moment
 */
 void CWaterPlant::winterDisturbance(int weeks_of_dist){
-
+  double mortality=0;
+  int aThresh=2; if (this->waterTraits->assimAnoxWL>0) aThresh=8;
+  if (!dead){
+    mortality=min(0.95, max(0,weeks_of_dist-aThresh)/4.0);
+    if (CEnvir::rand01()<mortality) dead=true;
+  }
 } //end CWaterPlant::winterDisturbance
 //-------------------------------------------------------------
 /**

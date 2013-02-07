@@ -9,7 +9,7 @@
    \date 07/2010
 */
 /** \page changes Changes for the COMTESS-version
-  \section Water stress option
+  \section secWatStr Water stress option
   \par Extend class CCell with WaterLevel.
   A makro swiches in CGrid between an array of CCell and CWaterCell.
   \par Write derived class CWaterGridEnvir.
@@ -29,7 +29,20 @@
 
    \sa CWaterPlant::DistrRes_help and  CWaterPlant::comp_coef
 
+  \section secWintMort Additional Winter Mortality
+  Additional winter mortality due to prolonged inundation or disturbance events
+  as dike breaking are calculated calling the Plant's function
+  CWaterPlant::winterDisturbance in CWaterGridEnvir::Winter.
+  A prolonged winter inundation let plants die by oxygen deficit. Types that are
+  adapted to high water levels in summer, here also perform better.
 
+  \verbatim
+  mort=min(0.95, (MonthsInundation-Thresh_by_adapt )/4)
+  Thresh_by_adapt(no,yes)=(2,8)
+  \endverbatim
+
+  \section secSalt Salt stress option
+  \sa SWaterTraits::salt salt value after Ellenberg
    */
 //---------------------------------------------------------------------------
 
