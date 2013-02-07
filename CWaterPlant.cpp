@@ -159,6 +159,14 @@ double CWaterPlant::rootEfficiency(){
 }
 //-------------------------------------------------------------
 /**
+calc effect of winter disturbance on plant
+depending on water-related traits
+*/
+void CWaterPlant::winterDisturbance(int weeks_of_dist){
+
+} //end CWaterPlant::winterDisturbance
+//-------------------------------------------------------------
+/**
 Helping function for CWaterGridEnvir::DistribRessource
 
 Corrects plant's resource uptake for current Water conditions.

@@ -212,6 +212,23 @@ if (SRunPara::RunPara.Migration>0){
 }  // end OneSim
 //------------------------------------------------------------------------------
 /**
+winter dieback and additional mortality due to prolonged inundation
+as external disurbance
+
+interpretes winterInundation as disturbance signal
+**/
+void CWaterGridEnvir::Winter(){
+  //calculate additional mortality due to prolonged inundation (ditch breaching)
+  //effected types: all non adapted to water and the other to smaller extend
+   //mass removal and mortality in case of Disturbance
+   for (int i=0; i<PlantList.size(); ++i){
+      ((CWaterPlant*)PlantList[i])->winterDisturbance(winterInundation);
+   }
+  CGrid::Winter(); //remove dead plants and calc winter dieback
+}//end winter() - winter mortality
+//------------------------------------------------------------------------------
+
+/**
   \warning this work only with 30 weeks a year
 */
 void CWaterGridEnvir::genAutokorrWL(double hurst)

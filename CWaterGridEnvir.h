@@ -42,11 +42,18 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  void genSeasonWL();
  /// generate const Wl-series
  void genConstWL();
+ /// plot's salinity level
+ double salinity;
+ /// inundation time in winter season \[weeks\] 0..12
+ int winterInundation;
 protected:
  void DistribResource();    ///<water impact on ressource allocation
  void SetCellResource();     ///< set amount of resources the cells serve
+    //! calls seed mortality and mass removal of plants
+ virtual void Winter();
+
 public:
-  CWaterGridEnvir():WaterFlow(no){CellsInit();
+  CWaterGridEnvir():WaterFlow(no),salinity(0),winterInundation(0){CellsInit();
  cout<<"\nCWaterGrid() ";};
   ~CWaterGridEnvir();
  ///initialization of grid cells - no functionality

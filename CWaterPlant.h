@@ -44,6 +44,8 @@ public:
   virtual void DistrRes_help();
   ///corrective value for root uptake and competition
   double rootEfficiency();
+  ///calc effect of winter disturbance on plant
+  void winterDisturbance(int weeks_of_dist);
   
    virtual string type();  ///<say what you are
    virtual string pft();   ///<say what a pft you are
