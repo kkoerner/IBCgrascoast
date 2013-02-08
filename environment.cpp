@@ -43,6 +43,7 @@
 
   \section secSalt Salt stress option
   \sa SWaterTraits::salt salt value after Ellenberg
+  Salt stress reduces 
    */
 //---------------------------------------------------------------------------
 

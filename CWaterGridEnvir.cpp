@@ -485,7 +485,7 @@ void CWaterGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-  InitInds("Input\\RSpec28.txt"); //all species simultanously
+  InitInds("Input\\RSpec28S.txt"); //all species simultanously
 //  InitInds("Input\\RSpec20.txt",SimNr);
 
 }
@@ -536,7 +536,8 @@ void CWaterGridEnvir::InitInds(string file,int n){
             >> cltraits->meanSpacerlength
             >> cltraits->Resshare
             >> cltraits->mSpacer
-            >> cltraits->clonal;
+            >> cltraits->clonal
+            >> wtraits->saltTol;
      traits->SeedMass=traits->m0;
      cltraits->sdSpacerlength=cltraits->meanSpacerlength;
     //namen und IDs

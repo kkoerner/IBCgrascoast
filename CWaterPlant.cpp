@@ -145,6 +145,12 @@ Adapted plants are not restricted to WaterLevel depth, but have to pay
 with restricted general uptake rate.
 
 \note returns 1e-10 minimal (to exclude 'devide by zero')
+
+Reduce Plant's root efficiency in case of salt stress.
+\author KK
+\date 13/02/07
+
+
 */
 double CWaterPlant::rootEfficiency(){
  double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
@@ -155,6 +161,9 @@ double CWaterPlant::rootEfficiency(){
  if(this->waterTraits->assimAnoxWL>0.0)
    return min(1.0,this->waterTraits->assimAnoxWL);  //0.5
  double retval=  max(min(depth,-wl)/depth,1e-10); //0.0
+
+//salt stress
+
  return retval;
 }
 //-------------------------------------------------------------
@@ -181,9 +190,10 @@ void CWaterPlant::winterDisturbance(int weeks_of_dist){
 Helping function for CWaterGridEnvir::DistribRessource
 
 Corrects plant's resource uptake for current Water conditions.
-\not not stochasticity
+\note no stochasticity
 \author KK
 \date 11/10/11
+
 */
 void CWaterPlant::DistrRes_help(){
  //add water-effect
