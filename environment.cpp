@@ -42,8 +42,15 @@
   \endverbatim
 
   \section secSalt Salt stress option
-  \sa SWaterTraits::salt salt value after Ellenberg
-  Salt stress reduces 
+  Salt stress reduces belowground resource uptake to zero.
+  Adaptation comes with costs that increase with tolerated salinity level
+  (S0,1: 30% for <6g/l  and S2-5:60% for <10g/l; to date salinity levels above are not
+  considered).
+
+  \image html salinity_rules.jpg "salinity rules"
+
+  \sa SWaterTraits::saltTol salt value after Ellenberg
+
    */
 //---------------------------------------------------------------------------
 

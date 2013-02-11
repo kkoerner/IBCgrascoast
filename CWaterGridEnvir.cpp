@@ -7,7 +7,7 @@
 #include "CWaterPlant.h"
    map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=
      map<string,SWaterTraits*>();
-
+ double CWaterGridEnvir::salinity=0;
 //---------------------------------------------------------------------------
 void CWaterGridEnvir::CellsInit(){
 }//end CellsInit
@@ -438,15 +438,29 @@ SWaterTraits::SWaterTraits():name("default"),
 /**
 Translates Ellenberg Value saltTol to respiratory costs
 for an adaptation to salt.
+
+\return fraction of uptake as costs for  adaptation. \[1e-10 - 1\]
+
+\todo validate rule/values
 */
 double SWaterTraits::saltTolCosts(){
-return 0;
+  if (saltTol<=1) return 0;
+  if (saltTol<=5) return 0.3;
+  return 0.6;
 } // salt tolerance costs
 /**
 Translates Ellenberg Value saltTol to tolerance level of salt content.
+
+\return fraction of uptake as loss due to salinity. \[1e-10 - 1\]
+
+\todo validate rule/values
 */
-double SWaterTraits::saltTolEffect(){
-return 0;
+double SWaterTraits::saltTolEffect(double salinity){
+  double eff=1e-10;
+  if (saltTol<=1) {if (salinity<1) eff= 1};
+    else if (saltTol<=5) {if(salinity<7) eff= 1};
+      else eff=1;
+  return eff;
 } // salt tolerance effect
 
 //---------------------------------------------------------------------------

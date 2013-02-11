@@ -42,8 +42,6 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  void genSeasonWL();
  /// generate const Wl-series
  void genConstWL();
- /// plot's salinity level
- double salinity;
  /// inundation time in winter season \[weeks\] 0..12
  int winterInundation;
 protected:
@@ -53,7 +51,16 @@ protected:
  virtual void Winter();
 
 public:
-  CWaterGridEnvir():WaterFlow(no),salinity(0),winterInundation(0){CellsInit();
+ /// plot's salinity level
+ /**
+   Global salinity value for the whole grid. Function CWaterPlant::rootEfficiency
+   can read this.
+
+   Unit is g/l (Thresholds in Ellenberg are in \'\%\').
+ */
+ static double salinity;
+
+  CWaterGridEnvir():WaterFlow(no),winterInundation(0){CellsInit();
  cout<<"\nCWaterGrid() ";};
   ~CWaterGridEnvir();
  ///initialization of grid cells - no functionality
@@ -126,7 +133,7 @@ struct SWaterTraits   //plant functional traits
    double assimAnoxWL;
    int saltTol; ///< salt tolerance of species (Ellenberg salt value)
    double saltTolCosts(); ///< salt tolerance costs
-   double saltTolEffect(); ///< salt tolerance effect
+   double saltTolEffect(double salinity); ///< salt tolerance effect
 
    void SetDefault();   ///< set default trait values (eq. 'PFT1')
    SWaterTraits();
