@@ -444,7 +444,7 @@ for an adaptation to salt.
 \todo validate rule/values
 */
 double SWaterTraits::saltTolCosts(){
-  if (saltTol<=1) return 0;
+  if (saltTol<1) return 0;
   if (saltTol<=5) return 0.3;
   return 0.6;
 } // salt tolerance costs
@@ -457,8 +457,8 @@ Translates Ellenberg Value saltTol to tolerance level of salt content.
 */
 double SWaterTraits::saltTolEffect(double salinity){
   double eff=1e-10;
-  if (saltTol<=1) {if (salinity<1) eff= 1};
-    else if (saltTol<=5) {if(salinity<7) eff= 1};
+  if (saltTol<1) {if (salinity<1.0) eff= 1;}
+    else if (saltTol<=5) {if(salinity<7.0) eff= 1;}
       else eff=1;
   return eff;
 } // salt tolerance effect

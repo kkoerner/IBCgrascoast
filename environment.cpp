@@ -10,6 +10,7 @@
 */
 /** \page changes Changes for the COMTESS-version
   \section secWatStr Water stress option
+  \image html ZOIs_Water_middle.png "New Rules' imagination"
   \par Extend class CCell with WaterLevel.
   A makro swiches in CGrid between an array of CCell and CWaterCell.
   \par Write derived class CWaterGridEnvir.
