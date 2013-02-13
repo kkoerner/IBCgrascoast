@@ -79,6 +79,7 @@ public:
 
    //Functions
    CEnvir();
+   CEnvir(string id);  ///<load saved parameter set and state info
    virtual ~CEnvir();
 
    //! read in fractal below-ground resource distribution (not used)
@@ -103,6 +104,8 @@ public:
    virtual void OneRun()=0;  ///<runs one simulation run in default mode
    ///collect and write Output to an output-file
    virtual void GetOutput()=0;//PftOut& PftData, GridOut& GridData)=0;
+   virtual void Save(string ID)=0;//<save current grid state
+   virtual void Load(string ID)=0;//<load previosly saved grid
    //! returns number of surviving PFTs
    /*! a PFT is condsidered as a survivor if individuals or
         at least seeds are still there
@@ -158,6 +161,7 @@ public:
 
   //Constructors, Destructors ...
   CClonalGridEnvir();
+  CClonalGridEnvir(string id); ///< load from file(s)
   virtual ~CClonalGridEnvir();//delete clonalTraits;
 
   //annual Results variables -clonal
@@ -175,6 +179,8 @@ public:
   void OneYear();   ///< runs one year in default mode
   void OneRun();    ///< runs one simulation run in default mode
   void OneWeek();   //!< calls all weekly processes
+  virtual void Save(string ID);//<save current grid state
+  virtual void Load(string ID){};//<load previosly saved grid
   int PftSurvival();    ///< from CEnvir
   /// from CEnvir: collect and write general results
   virtual void GetOutput();    //run in 20th week of year
@@ -183,9 +189,11 @@ public:
   //new...
   ///reads simulation environment from file
   int GetSim(const int pos=0,string file=NameSimFile);
-  virtual void InitInds();///<Initialization of individuals on grid
-  virtual void InitInds(string file);///<initialization of inds based on file data
-  virtual void InitSeeds(string, int);
+  void InitInds();///<Initialization of individuals on grid
+  void InitInds(string file);///<initialization of inds based on file data
+  bool InitInd(string def);///<init of one ind based on saved data
+  void InitSeeds(int); ///<Initialization of seeds on grid
+  void InitSeeds(string, int);
   void GetOutputCutted(); ///<get anually cutted biomass (after week 22)
   void clonalOutput();   ///< write clonal results collected last
   virtual int exitConditions(); ///< get exit conditions //first implemented by Ines

@@ -7,6 +7,7 @@
 #include "CGridclonal.h"
 #include "environment.h"
 #include <iostream>
+#include <sstream>
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -14,6 +15,16 @@
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 CGridclonal::CGridclonal() : CGrid(){
+   SclonalTraits::ReadclonalTraits();
+}  // Constructor
+//---------------------------------------------------------------------------
+/**
+   Constructor to load a grid from files.
+
+   \autor KK
+   \date 120905
+*/
+CGridclonal::CGridclonal(string id) : CGrid(id){
    SclonalTraits::ReadclonalTraits();
 }  // Constructor
 //----------------------------------------------------------
@@ -29,6 +40,34 @@ CGridclonal::~CGridclonal(){
    GenetList.clear();CGenet::staticID=0;
 }   // Destructor
 //---------------------------------------------------------------------------
+/**
+  File saving the entire clonal grid for later reload.
+
+  \note not included: LDD-Seed list ; genet info - IDs are included in ramets
+  \autor KK
+  \date 120831
+*/
+void CGridclonal::Save(string fname){
+//open file..
+   ofstream SaveFile(fname.c_str());
+  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+  cout<<"SaveFile: "<<fname<<endl;
+//write..
+
+//Cells (without Plants, with seeds)
+//  SaveFile<<"\nNumber of Cells\t"<<SRunPara::RunPara.GetSumCells() <<endl;
+  for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i)  //loop for all cells
+     SaveFile<<CellList[i]->asString();
+
+//Plants
+  SaveFile<<"\nNumber of Plants\t"<<this->PlantList.size();
+  for (int i=0; i<this->PlantList.size(); ++i)  //loop for all cells
+//    SaveFile<<"\nPlant "<<i;//Plant->asString()
+     SaveFile<<PlantList[i]->asString();
+//genet information
+  SaveFile<<"\nNumber of Genets\t"<<this->GetNMotherPlants();
+
+}  // file save of entire grid
 //-----------------------------------------------------------------------------
 /**
   Set a number of randomly distributed clonal Plants (CclonalPlant)

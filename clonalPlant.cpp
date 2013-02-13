@@ -4,6 +4,7 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include <iostream>
+#include <sstream>
 
 #include "clonalPlant.h"
 #include "environment.h"
@@ -69,6 +70,27 @@ CclonalPlant::CclonalPlant(double x, double y,
    Generation=1;
    SpacerlengthToGrow=0;
 }
+//--SAVE-----------------------------------------------------------------------
+/**
+  CclonalPlant-Version of plant report
+
+  \note direction not reportet; mReproRamets not reportet - weekly transfered
+   directly to Spacerlength
+  \autor KK
+  \date 120905
+*/
+string CclonalPlant::asString(){
+  std::stringstream dummi;
+  // cPlant part
+  dummi<<CPlant::asString();
+  // generation number and genet-ID
+  dummi<<"\t"<<Generation<<'\t'<<genet->number;
+  // Spacerinfo Length and Length-to-grow  (only for first spacer)
+  if (growingSpacerList.size()>0)
+    dummi<<'\t'<<this->growingSpacerList[0]->Spacerlength
+         <<'\t'<<this->growingSpacerList[0]->SpacerlengthToGrow;
+  return dummi.str();
+} //<report plant's status
 //---------------------------------------------------------------------------
 /**
   If a seed germinates, the new plant inherits its parameters.

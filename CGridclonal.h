@@ -38,6 +38,7 @@ protected:
 
 public:
    CGridclonal();                       //!< Constructor
+   CGridclonal(string id);              //!< load saved grid
    virtual ~CGridclonal();              //!< Destructor
    virtual void resetGrid();
 
@@ -50,6 +51,7 @@ public:
      const int n,double estab=1.0);
    void DispersRamets(CclonalPlant* plant); ///<initiate new ramets
    //service functions...
+   void Save(string fname);  ///< file save of entire grid
    int GetNclonalPlants();   ///< number of living clonal plants
    int GetNPlants();         ///< number of living non-clonal plants
    int GetNMotherPlants();   ///< number of living genets

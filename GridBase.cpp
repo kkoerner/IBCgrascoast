@@ -20,6 +20,18 @@ CGrid::CGrid():cutted_BM(0)
    for (unsigned int i=0;i<ZOIBase.size();i++) ZOIBase[i]=i;
    sort(ZOIBase.begin(),ZOIBase.end(),CompareIndexRel);
 }
+//---------------------------------------------------------------------------
+CGrid::CGrid(string id):cutted_BM(0)
+{
+   SPftTraits::ReadPftStrategy(); //get list of available Strategies
+   CellsInit();
+
+   LDDSeeds = new map<string,long>;
+   //generate ZOIBase...
+   ZOIBase.assign(SRunPara::RunPara.GetSumCells(),0);
+   for (unsigned int i=0;i<ZOIBase.size();i++) ZOIBase[i]=i;
+   sort(ZOIBase.begin(),ZOIBase.end(),CompareIndexRel);
+}
 //-----------------------------------------------------------------------------
 /**
   Initiate grid cells.
@@ -822,9 +834,24 @@ void CGrid::InitSeeds(SPftTraits* traits, int n,double estab)
      for (int i=0; i<n; ++i){
         x=nrand(SideCells);
         y=nrand(SideCells);
-        CCELL* cell = CellList[x*SideCells+y];
+//        CCell* cell = CellList[x*SideCells+y];
+//        new CSeed(estab,traits,cell);
+        InitSeeds(traits,1,x,y,estab);
+     }
+}//end CGrid::SeedsInit()
+//---------------------------------------------------------------------------
+void CGrid::InitSeeds(SPftTraits* traits, int n,int x, int y,double estab)
+{
+   using CEnvir::nrand;using SRunPara::RunPara;
+   int SideCells=RunPara.CellNum;
+   if (estab==0) estab=traits->pEstab;
+   CCell* cell = CellList[x*SideCells+y];
+
+   //random initial conditions
+     for (int i=0; i<n; ++i){
         new CSeed(estab,traits,cell);
      }
+//     if (n>1) cout<<n<<" seeds of type "<<traits->name<<" at "<<x<<":"<<y<<endl;
 }//end CGrid::SeedsInit()
 //---------------------------------------------------------------------------
 /**

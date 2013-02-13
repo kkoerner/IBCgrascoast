@@ -41,6 +41,7 @@ public:
 
    virtual string type();              ///<say what you are
    virtual string pft();   ///<say what a pft you are
+   virtual string asString(); ///<report plant's status
 
    ///set genet and add ramet to its list
    void setGenet(CGenet* genet);
