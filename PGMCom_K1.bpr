@@ -7,7 +7,7 @@
     <OBJFILES value="TimeUtils.obj CclonalSeed.obj Cell.obj CGenet.obj CGridclonal.obj 
       clonalPlant.obj clonalTraits.obj CObject.obj CSeed.obj CWaterGridEnvir.obj 
       CWaterPlant.obj environment.obj GridBase.obj OutStructs.obj Plant.obj 
-      rng.obj RunPara.obj SiteScale.obj GMCom_K1.obj"/>
+      rng.obj RunPara.obj SiteScale.obj GMCom_K1_BlockDesign.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -69,7 +69,7 @@
       <FILE FILENAME="rng.cpp" FORMNAME="" UNITNAME="rng.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="RunPara.cpp" FORMNAME="" UNITNAME="RunPara.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="SiteScale.cpp" FORMNAME="" UNITNAME="SiteScale.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="GMCom_K1.cpp" FORMNAME="" UNITNAME="GMCom_K1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GMCom_K1_BlockDesign.cpp" FORMNAME="" UNITNAME="GMCom_K1_BlockDesign" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

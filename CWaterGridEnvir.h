@@ -62,6 +62,7 @@ public:
 
   CWaterGridEnvir():WaterFlow(no),winterInundation(0){CellsInit();
  cout<<"\nCWaterGrid() ";};
+  CWaterGridEnvir(string id); ///< load from file(s)
   ~CWaterGridEnvir();
  ///initialization of grid cells - no functionality
  void CellsInit();

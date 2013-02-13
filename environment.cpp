@@ -104,7 +104,7 @@ CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
 //---------------------------------------------------------------------------
 CEnvir::CEnvir(string id)://NdeadPlants(0),NPlants(0),
   CoveredCells(0),//MeanShannon(0),
-  NCellsAcover(0),//Mortalitaetsrate(0),
+//  NCellsAcover(0),//Mortalitaetsrate(0),
   init(1),endofrun(false)
 {
 //read file
@@ -153,16 +153,13 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   if (!SimFile.good()) {cerr<<("Fehler beim Öffnen SimFile");exit(3); }
   cout<<"SimFile: "<<NameSimFile<<endl;
   int lpos=pos;
+  using SRunPara::RunPara;
   if (pos==0){  //read header
     string line,file_id;
     getline(SimFile,line);
-    int SimNrMax;//dummi
-    SimFile>>SimNrMax>>NRep>>file_id;
-    //set file names
-    NamePftOutFile= (string)"Output\\Pft-"+file_id+".txt";
-    NameGridOutFile=(string)"Output\\Grd-"+file_id+".txt";
-    NameSurvOutFile=(string)"Output\\Srv-"+file_id+".txt";
-    NameLogFile=    (string)"Output\\Log-"+file_id+".log";
+    int tmax;//dummi
+    SimFile>>tmax>>file_id;
+    RunPara.Tmax=tmax;
 
     getline(SimFile,line);
     getline(SimFile,line);
@@ -173,49 +170,41 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   if (!SimFile.good()) return -1;
 
   int version, acomp, bcomp;
-   using SRunPara::RunPara;
    //RunNr=0; int dummi;
    //for (int i=0; i<SimNrMax; ++i)
 
       SimFile>>SimNr
-       //      >>dummi     //RunPara.Layer
-       //      >>version   //>>RunPara.Version - enum types cannot be read with >>
-       //      >>acomp     //>>RunPara.AboveCompMode
-       //      >>bcomp    //>>RunPara.BelowCompMode
-       //      >>RunPara.BelGrazMode   //mode of belowground grazing
-        //     >>RunPara.GridSize
-        //     >>RunPara.CellNum
-             >>RunPara.Tmax
-        //     >>RunPara.NPft
+            >>RunPara.meanBRes
              >>RunPara.GrazProb
-         //    >>RunPara.PropRemove
-         //    >>RunPara.BelGrazProb     //for belowground simulations
-         //    >>RunPara.BelPropRemove   //for belowground simulations
              >>RunPara.NCut
-             >>RunPara.CutLeave//Mass
-        //     >>RunPara.DistAreaYear
-        //     >>RunPara.AreaEvent
-        //     >>RunPara.mort_seeds
-             >>RunPara.meanARes
-             >>RunPara.meanBRes
-     //        >>RunPara.PftFile
-         //    >>RunPara.BGThres
-             ;
+             >>RunPara.WaterLevel
+             >>RunPara.salt
+              ;
 
       //---------standard parameter:
+      //aboveground resources
+      RunPara.meanARes=100;
+
       //grazing intensity
       RunPara.PropRemove=0.5;
-      //no trampling
-      RunPara.DistAreaYear=0;
+      //trampling equals grazing
+      RunPara.DistAreaYear=RunPara.GrazProb;
       //above- and belowground competition
       acomp=1;bcomp=0;
       //--------------------------------
-      // set version and competition  modes - in this way because of enum types!
-//      RunPara.Version=version;
-//      RunPara.AboveCompMode=acomp;
-//      RunPara.BelowCompMode=bcomp;
-//      //Größenänderung des Grids auf 3qm
-//      RunPara.GridSize=RunPara.CellNum=173;
+      //filenames
+    string idstr= SRunPara::RunPara.getRunID();
+    stringstream strd;
+    strd<<"Output\\Mix_Grid_log_"<<idstr
+      <<".txt";
+    NameLogFile=strd.str();     // clear stream
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
+      <<".txt";
+    NameGridOutFile=strd.str();
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+      <<".txt";
+    NameSurvOutFile= strd.str();
+
   RunPara.print();
   return SimFile.tellg();
 }//end  CEnvir::GetSim
@@ -512,6 +501,8 @@ belonging to one task.
 
 \author KK
 \date 120905
+\todo implement comtess-related terms of loading and saving
+
 */
 
 /**

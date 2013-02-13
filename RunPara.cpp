@@ -34,7 +34,7 @@ std::string SRunPara::asString(){
       <<"\t"<<GrazProb    <<"\t"<<PropRemove
       <<"\t"<<BelGrazProb <<"\t"<<BelPropRemove
       <<"\t"<<BelGrazMode  <<"\t"<<BGThres   <<"\t"<<HetBG
-      <<"\t"<<NCut         <<"\t"<<CutMass  //<<"\nCutLeave:\t"<<CutLeave
+      <<"\t"<<NCut         <<"\t"<<CutLeave  //<<"\nCutLeave:\t"<<CutLeave
       <<"\t"<<meanARes     <<"\t"<<meanBRes
       <<"\t"<<DistAreaYear<<"\t"<<AreaEvent
       <<"\t"<<mort_seeds
@@ -56,7 +56,7 @@ void SRunPara::setRunPara(std::string def){
   dummi>> GridSize; CellNum=GridSize;
   dummi>> Tmax>> torus;
   dummi>> GrazProb>> PropRemove>> BelGrazProb >>BelPropRemove>> BelGrazMode
-       >> BGThres>> HetBG>> NCut>> CutMass>> meanARes>> meanBRes>>DistAreaYear
+       >> BGThres>> HetBG>> NCut>> CutLeave>> meanARes>> meanBRes>>DistAreaYear
        >> AreaEvent >>mort_seeds >>PftFile;
 }
 void SRunPara::print(){
@@ -90,6 +90,7 @@ string SRunPara::getRunID(){
  //          <<"_"<<this->DistAreaYear
            <<"_"<<this->NCut
            <<"_WL"<<this->WaterLevel
+           <<"_S"<<this->salt
  //          <<"_"<<this->changeVal
 //           <<"_WLc"<<WLsigma
            ;

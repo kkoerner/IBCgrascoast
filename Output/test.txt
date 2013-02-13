@@ -1,5 +1,4 @@
-Versuch9:
-PGMCOMKonsole.exe
+Blockdesign experimente der COMTESS-Modellversion (noch ohne L/S der Wasser/Salzeigenschaften)
 
 Parametrization of real spec data
 Modellparameter: Bres[100] Species[M] GrazProb[0 0.1 0.2] NCut[0 1 2 3]

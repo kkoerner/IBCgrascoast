@@ -5,6 +5,10 @@
 
 #include "CWaterGridEnvir.h"
 #include "CWaterPlant.h"
+#include <iomanip>
+#include <sstream>
+
+
    map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=
      map<string,SWaterTraits*>();
  double CWaterGridEnvir::salinity=0;
@@ -12,7 +16,14 @@
 void CWaterGridEnvir::CellsInit(){
 }//end CellsInit
 //---------------------------------------------------------------------------
-
+/**
+  Load CWaterGridEnvir from file(s).
+  \param id file name ID to load from
+*/
+CWaterGridEnvir::CWaterGridEnvir(string id):CClonalGridEnvir(id)
+{
+}//load from file
+//---------------------------------------------------------------------------
 CWaterGridEnvir::~CWaterGridEnvir(){
 //  for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
 //      CWaterCell* cell = CellList[i];
@@ -200,8 +211,17 @@ if (SRunPara::RunPara.Migration>0){
         WriteGridComplete(false);//report last year
         WriteSurvival();
       }
+   //save grid after init time
+      if (year==5) {
+        stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
+        this->Save(v.str());
+      }
+   //if all done
       if (endofrun)break;
    }//years
+   //save grid at end of run
+   stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
+   this->Save(v.str());
 //WL zurücksetzen
 //    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
      SRunPara::RunPara.WaterLevel=WLstart;
