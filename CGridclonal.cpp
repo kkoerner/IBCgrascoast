@@ -21,11 +21,13 @@ CGridclonal::CGridclonal() : CGrid(){
 /**
    Constructor to load a grid from files.
 
+\warning does not initiate pft definitions.
+this had to be done at least vie prior dummi grid
    \autor KK
    \date 120905
 */
 CGridclonal::CGridclonal(string id) : CGrid(id){
-   SclonalTraits::ReadclonalTraits();
+//   SclonalTraits::ReadclonalTraits();
 }  // Constructor
 //----------------------------------------------------------
 void CGridclonal::resetGrid()

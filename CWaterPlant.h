@@ -32,6 +32,8 @@ public:
       SWaterTraits* waterTraits, CCell* cell);
    virtual ~CWaterPlant(){};  //!<destructor
    void print_type();
+   virtual string asString(); ///<report plant's status
+
 //   virtual bool stressed();///< return true if plant is stressed
 /// \brief lower threshold of belowground resource uptake (nutrient stress thresh.)
 ///    with respect of rooting depth (Gmax now represents optimal

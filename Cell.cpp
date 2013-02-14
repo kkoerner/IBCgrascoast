@@ -389,5 +389,17 @@ void CWaterCell::BelowComp()
                         * comp_c /comp_tot;
    }
 }//end below_comp
+/**
+report cell's content without plants
+
+  - no abiotic data documented
+  - no additional biotic data to document
+\autor KK
+\date 1209xx
+*/
+std::string CWaterCell::asString(){
+return CCell::asString();
+}//return content for file saving
 
 //-eof---------------------------------------------------------------------
+

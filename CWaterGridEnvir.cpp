@@ -19,9 +19,14 @@ void CWaterGridEnvir::CellsInit(){
 /**
   Load CWaterGridEnvir from file(s).
   \param id file name ID to load from
+
+  \note no water grid specific data to load
 */
 CWaterGridEnvir::CWaterGridEnvir(string id):CClonalGridEnvir(id)
 {
+
+cout<<"grid "<<id<<" initiated ---------------\n" ;
+//load type definitions
 }//load from file
 //---------------------------------------------------------------------------
 CWaterGridEnvir::~CWaterGridEnvir(){
@@ -32,6 +37,30 @@ CWaterGridEnvir::~CWaterGridEnvir(){
 //   delete[] CellList;
 
 }
+//-Save.. and Load.. --------------------------------------------------------------------------
+/**
+ Saves the current state of the grid and parameters.
+
+ -does it have to be in one file?
+ -how to store all information
+
+ \note not saved: abiotic and weather data
+\autor KK
+\date 130214
+*/
+void CWaterGridEnvir::Save(string ID){
+  //open file(s)
+//  string fname="Save\\W_"+ID+".sav";
+//  ofstream SaveFile(fname.c_str());
+//  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+//  cout<<"SaveFile: "<<fname<<endl;
+
+////environmental parameters CEnvir, CClonalGridEnvir
+//  SaveFile<<endl;
+
+  CClonalGridEnvir::Save(ID);
+
+}//Save
 //---------------------------------------------------------------------------
 /**
  With which plant types the system to start.
@@ -179,7 +208,8 @@ void CWaterGridEnvir::OneRun(){
    int year_of_change=50;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
-   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
+   for (year=1; year<=5; ++year){
+//   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       cout<<" y"<<year;
 
 //drift of little individuals -anually-
@@ -212,7 +242,7 @@ if (SRunPara::RunPara.Migration>0){
         WriteSurvival();
       }
    //save grid after init time
-      if (year==5) {
+      if (year==2) {
         stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }

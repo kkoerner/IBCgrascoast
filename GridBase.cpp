@@ -21,6 +21,10 @@ CGrid::CGrid():cutted_BM(0)
    sort(ZOIBase.begin(),ZOIBase.end(),CompareIndexRel);
 }
 //---------------------------------------------------------------------------
+/**
+\warning does not initiate pft definitions.
+this had to be done at least vie prior dummi grid
+*/
 CGrid::CGrid(string id):cutted_BM(0)
 {
    SPftTraits::ReadPftStrategy(); //get list of available Strategies

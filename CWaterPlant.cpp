@@ -6,7 +6,7 @@
 
 #include "CWaterPlant.h"
 #include "CWaterGridEnvir.h"
-
+#include <sstream>
 //---------------------------------------------------------------------------
 string CWaterPlant::type()
 {
@@ -59,6 +59,20 @@ CWaterPlant::CWaterPlant(double mass, SPftTraits* traits,
   this->mshoot=mass/2.0;
   this->mroot=mass/2.0;
 }
+//--SAVE-----------------------------------------------------------------------
+/**
+  CWaterPlant-Version of plant report
+
+  -no additional state variables
+  \autor KK
+  \date 130214
+*/
+string CWaterPlant::asString(){
+  std::stringstream dummi;
+  // CclonalPlant part
+  dummi<<CclonalPlant::asString();
+  return dummi.str();
+} //<report plant's status
 //---------------------------------------------------------------------------
 /**
 Overload CPlant::Grow2() for additional Effect of WaterLevel.
@@ -79,9 +93,9 @@ double oldmass=this->GetMass();
 // if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
-//if (false)
+if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
-if (CEnvir::year<15)
+//if (CEnvir::year<15)
 //if (true)
 {
  string filename=CEnvir::NameLogFile;

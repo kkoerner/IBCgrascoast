@@ -738,6 +738,7 @@ void CClonalGridEnvir::OneRun(){
 }  // end OneSim
 //------------------------------------------------------------------------------
 void CClonalGridEnvir::OneYear(){
+   week=1;
    do{
    //for (week=1;week<=WeeksPerYear; ++week){
      OneWeek();

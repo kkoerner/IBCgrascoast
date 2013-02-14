@@ -113,6 +113,7 @@ public:
 
  double GetWaterLevel(){return WaterLevel;};
  void SetWaterLevel(double val){WaterLevel=val;};
+   std::string asString();///<return content for file saving
 };//end CWaterCell
 
 //---------------------------------------------------------------------------

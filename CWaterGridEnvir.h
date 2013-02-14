@@ -78,6 +78,9 @@ public:
    SWaterTraits* wtraits,const int n,double estab=1.0);
  virtual void InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass);
+
+ virtual void Save(string ID);//<save current grid state
+
 //-----
   void OneRun();    ///< runs one simulation run in default mode
 
