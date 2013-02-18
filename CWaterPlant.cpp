@@ -51,14 +51,29 @@ CWaterPlant::CWaterPlant(double x, double y, CWaterPlant* plant)
 initialization of adult plants
 \param mass initial biomass of Plant (above- + belowground)
 */
-CWaterPlant::CWaterPlant(double mass, SPftTraits* traits,
+CWaterPlant::CWaterPlant(SPftTraits* traits,
       SclonalTraits* clonalTraits,
-      SWaterTraits* waterTraits, CCell* cell):
-      CclonalPlant(traits,clonalTraits,cell),waterTraits(waterTraits)
+      SWaterTraits* waterTraits, CCell* cell,
+     double mshoot,double mroot,double mrepro,
+     int stress,bool dead,int generation,int genetnb,
+     double spacerl,double spacerl2grow):
+      CclonalPlant(traits,clonalTraits,cell,mshoot,mroot,mrepro,stress,dead,generation, genetnb,
+      spacerl,spacerl2grow),waterTraits(waterTraits)
 {
-  this->mshoot=mass/2.0;
-  this->mroot=mass/2.0;
 }
+/**
+Copies the data from an existing CclonalPlant and appends water related traits.
+\note the original clonal plant is still existing.
+*/
+CWaterPlant::CWaterPlant(CclonalPlant* clplant, SWaterTraits* waterTraits):
+      CclonalPlant(clplant->Traits,clplant->clonalTraits,clplant->getCell(),
+      clplant->mshoot,clplant->mroot,clplant->mRepro,clplant->stress,
+      clplant->dead,clplant->Generation, //clplant->genetnb,
+      clplant->Spacerlength,clplant->SpacerlengthToGrow),waterTraits(waterTraits)
+{
+this->setGenet(clplant->getGenet());
+}
+
 //--SAVE-----------------------------------------------------------------------
 /**
   CWaterPlant-Version of plant report

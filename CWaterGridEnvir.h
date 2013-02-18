@@ -71,11 +71,15 @@ public:
 // virtual void InitInds(string file);///<initialization of inds based on file data
 // virtual void InitSeeds(string, int);
   virtual void InitInds(string file,int n=-1);///<initialization of inds based on file data
+  /// Initialization of one Individual while loading a saved grid
+  virtual bool InitInd(string def);
  //! initalization of clonal seeds
  virtual void InitWaterSeeds(const string  PftName,const int n=1,double estab=1.0);
+   //! initalization of seeds
+   virtual void InitWaterSeeds(const string  PftName,const int n,int x, int y,double estab=1.0);
  //! initalization of clonal seeds
  virtual void InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
-   SWaterTraits* wtraits,const int n,double estab=1.0);
+   SWaterTraits* wtraits,const int n,double estab=1.0,int x=-1, int y=-1);
  virtual void InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass);
 

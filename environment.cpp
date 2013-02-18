@@ -509,6 +509,9 @@ belonging to one task.
    Constructor for loading a previously saved environment.
 
    \note only state variables are restored
+
+   \note species' parameter definitions from program initiation are used
+
    \param id core string for the set of saved files
    \autor KK
    \date  120905
@@ -522,8 +525,8 @@ CClonalGridEnvir::CClonalGridEnvir(string id):CGridclonal(id),CEnvir(id)
   loadf0>>d>>this->NameClonalPftFile;
 
   //fill PftLinkList
-for(int i=0;i<SPftTraits::PftList.size();i++){
-  this->addPftLink(SPftTraits::PftList[i]->name,SPftTraits::PftList[i]);}
+//for(int i=0;i<SPftTraits::PftList.size();i++){
+//  this->addPftLink(SPftTraits::PftList[i]->name,SPftTraits::PftList[i]);}
   //open file..
  dummi=(string)"Save/G_"+id+".sav";
  ifstream loadf(dummi.c_str());
@@ -672,15 +675,38 @@ bool CClonalGridEnvir::InitInd(string def){
   //frage streamzustand ab ; wenn nicht good, beende Funktion
   if (!d.good())
   return false;
-  CCell* cell = CellList[x*SRunPara::RunPara.CellNum+y];
+  CCell* cell = CellList[x*SRunPara::RunPara.GetGridSize()+y];
 
   string type;double mshoot, mroot, mrepro; int stress;bool dead;
   d>>type>>mshoot>>mroot>>mrepro>>stress>>dead;
 
   //for nonclonal CPlant
-  CPlant* plant = new CPlant(this->getPftLink(type),cell,mshoot,mroot,mrepro,
+  SPftTraits* ptraits=getPftLink(type);
+  SclonalTraits* pcltraits=getClLink(type);
+  CPlant* plant;
+  if (!pcltraits){
+    plant = new CPlant(ptraits,cell,mshoot,mroot,mrepro,
                   stress,dead);
+  }else{
+    int generation,genetnb; double spacerl=0, spacerl2grow=0;
+    d>>generation>>genetnb; if (!d.eof())d>>spacerl>>spacerl2grow;
+    CclonalPlant* tplant=new CclonalPlant(ptraits,pcltraits,cell,mshoot,mroot,mrepro,
+                  stress,dead,generation,genetnb,spacerl,spacerl2grow);
+    //set Genet
+    CGenet* genet=NULL;
+    for (int i=0; i<GenetList.size();i++){
+      if (GenetList[i]->number=genetnb)genet=GenetList[i];
+    }
+    if (!genet) {
+      CGenet::staticID=max(CGenet::staticID,genetnb);
+      genet=new CGenet();genet->number=genetnb;
+      GenetList.push_back(genet);
+    }
+    tplant->setGenet(genet);
+    plant=tplant;
+  }
   PlantList.push_back(plant);
+  cout<<"L: ClonalPlant "<<plant->asString()<<endl;
 //  cout<<"Init "<<type<<" at "<<x<<":"<<y
 //      <<" ("<<mshoot<<", "<<mroot<<", "<<mrepro<<", "<<stress<<", "<<dead<<")\n";
   return true;

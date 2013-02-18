@@ -27,9 +27,15 @@ public:
    ///clonal growth
    CWaterPlant(double x, double y, CWaterPlant* plant);
    /// general constructor
-   CWaterPlant(double mass, SPftTraits* traits,
-      SclonalTraits* clonalTraits,
-      SWaterTraits* waterTraits, CCell* cell);
+//   CWaterPlant(double mass, SPftTraits* traits,
+//      SclonalTraits* clonalTraits,
+//      SWaterTraits* waterTraits, CCell* cell);
+   CWaterPlant(SPftTraits* PlantTraits, SclonalTraits* clonalTraits,SWaterTraits* waterTraits,CCell* cell,
+     double mshoot=0,double mroot=0,double mrepro=0,
+     int stress=0,bool dead=false,int generation=1,int genetnb=0,
+     double spacerl=0,double spacerl2grow=0);
+     ///upgrade clonal plant
+   CWaterPlant(CclonalPlant* clplant, SWaterTraits* waterTraits);
    virtual ~CWaterPlant(){};  //!<destructor
    void print_type();
    virtual string asString(); ///<report plant's status

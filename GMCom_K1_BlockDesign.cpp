@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
       string file = argv[1];
       CEnvir::NameSimFile="Input\\"+file;
    }else CEnvir::NameSimFile="Input\\comtest.txt";
-   int maxRun=3; if (argc>=3) {maxRun = atoi(argv[2]);}
+   int maxRun=1; if (argc>=3) {maxRun = atoi(argv[2]);}
    //hier: loop verschiedener Grids
    for (CEnvir::RunNr=1;CEnvir::RunNr<=maxRun;CEnvir::RunNr++){
      //erstes Grid und Kontrolle
@@ -153,7 +153,9 @@ int main(int argc, char* argv[])
     delete SPftTraits::PftList[i];
   for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
     delete SclonalTraits::clonalTraits[j];
-//   string dummi;
+  for (unsigned int i=0;i<SWaterTraits::PFTWaterList.size();i++)
+    delete SWaterTraits::PFTWaterList[i];
+ //   string dummi;
 //   cin>>dummi;
   return 0;
 }//end main

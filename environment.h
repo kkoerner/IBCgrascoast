@@ -191,7 +191,7 @@ public:
   int GetSim(const int pos=0,string file=NameSimFile);
   void InitInds();///<Initialization of individuals on grid
   void InitInds(string file);///<initialization of inds based on file data
-  bool InitInd(string def);///<init of one ind based on saved data
+  virtual bool InitInd(string def);///<init of one ind based on saved data
   void InitSeeds(int); ///<Initialization of seeds on grid
   void InitSeeds(string, int);
   void GetOutputCutted(); ///<get anually cutted biomass (after week 22)

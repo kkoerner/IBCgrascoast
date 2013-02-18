@@ -36,8 +36,11 @@ public:
    CclonalPlant(double x, double y, CclonalPlant* plant);
    ///keine vordefinierten Eigenschaften
    CclonalPlant(double x, double y, SPftTraits* PlantTraits, SclonalTraits* clonalTraits);
-   CclonalPlant(SPftTraits* PlantTraits, SclonalTraits* clonalTraits,CCell* cell);
-   virtual ~CclonalPlant();  //!<destructor
+   CclonalPlant(SPftTraits* PlantTraits, SclonalTraits* clonalTraits,CCell* cell,
+     double mshoot=0,double mroot=0,double mrepro=0,
+     int stress=0,bool dead=false,int generation=1,int genetnb=0,
+     double spacerl=0,double spacerl2grow=0);
+  virtual ~CclonalPlant();  //!<destructor
 
    virtual string type();              ///<say what you are
    virtual string pft();   ///<say what a pft you are

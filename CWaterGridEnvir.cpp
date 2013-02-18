@@ -24,6 +24,32 @@ void CWaterGridEnvir::CellsInit(){
 */
 CWaterGridEnvir::CWaterGridEnvir(string id):CClonalGridEnvir(id)
 {
+  //open file..
+ string dummi=(string)"Save/G_"+id+".sav";
+ ifstream loadf(dummi.c_str());
+ string d; getline(loadf,d);
+ int x=0,y=0;int xmax=SRunPara::RunPara.CellNum-1;
+   //load cells..
+   //loop over cell entries
+   do{
+     loadf>>x>>y;
+     getline(loadf,d);getline(loadf,d);
+     while(d!="CE"){
+       //set seeds of type x
+       stringstream mstr(d);string type;int num;
+       mstr>>type>>num;
+        InitWaterSeeds(type,num,x,y,0);
+       getline(loadf,d);
+     }
+
+   }while(!(x==xmax&&y==xmax));
+   //load Plants..
+   int num;
+ loadf>>d>>d>>d>>num;getline(loadf,d);
+ cout<<"lade "<<num<<"plant individuals.."<<endl;
+ do {getline(loadf,d);}while(InitInd(d));
+  ReadLandscape();
+
 
 cout<<"grid "<<id<<" initiated ---------------\n" ;
 //load type definitions
@@ -131,12 +157,51 @@ void CWaterGridEnvir::InitInds()
   }//grass type
 
 }//end InitInds
+bool CWaterGridEnvir::InitInd(string def){
+  //initiate clonal plant
+  CClonalGridEnvir::InitInd(def);
+  //upgrade..
+  stringstream d(def);
+  //get dummi cell
+  int x,y;  d>>x>>y;
+  //frage streamzustand ab ; wenn nicht good, beende Funktion
+  if (!d.good())
+  return false;
 
-void CWaterGridEnvir::InitWaterSeeds(const string PftName,const int n,double estab)
+  string type;
+  d>>type;
+
+  //for CWaterPlant
+  CPlant* clplant=PlantList.back();
+  CWaterPlant* plant = new CWaterPlant((CclonalPlant*)clplant,this->getWLink(type));
+  DeletePlant( clplant); //erase and delete old clonal plant
+   plant->getCell()->occupied=true;
+   plant->getCell()->PlantInCell = plant;
+  PlantList.pop_back(); PlantList.push_back(plant);           //append water plant
+  cout<<"update "<<type<<" at "<<x<<":"<<y<<endl;
+  return true;
+
+} //end load water plant
+/**
+ init n seeds at position xy
+*/
+void CWaterGridEnvir::InitWaterSeeds(const string  PftName,const int n,int x, int y,double estab)
 {
      InitWaterSeeds(this->getPftLink(PftName),
         this->getClLink(PftName),
-        this->getWLink(PftName),n); //com out
+        this->getWLink(PftName),n,x,y); //com out
+
+}
+
+/**
+ init n seeds at random positions.
+*/
+void CWaterGridEnvir::InitWaterSeeds(const string PftName,const int n,double estab)
+{
+     for (int i =0; i<n;i++)
+     InitWaterSeeds(this->getPftLink(PftName),
+        this->getClLink(PftName),
+        this->getWLink(PftName),this->getPftLink(PftName)->pEstab,1); //com out
 
 }//end initWaterSeeds(string,...)
 
@@ -150,21 +215,21 @@ void CWaterGridEnvir::InitWaterSeeds(const string PftName,const int n,double est
  \param estab    establishment (default is 1 for initial conditions)
 */
 void CWaterGridEnvir::InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
-     SWaterTraits* wtraits, const int n,double estab)
+     SWaterTraits* wtraits, const int n,double estab,int x, int y)
 {
    using CEnvir::nrand;using SRunPara::RunPara;
-   int x,y;
+//   int x,y;
    int SideCells=RunPara.CellNum;
-
-   for (int i=0; i<n; ++i){
+   if(x<0 || y<0)   //set random position
+     for (int i=0; i<n; ++i){
         x=nrand(SideCells);
         y=nrand(SideCells);
-
-        CCell* cell = CellList[x*SideCells+y];
-        new CWaterSeed(estab,traits,cltraits,wtraits,cell);
+     }
+   CCell* cell = CellList[x*SideCells+y];
+   new CWaterSeed(estab,traits,cltraits,wtraits,cell);
 //      cout<<"disp "<<cell->SeedBankList.back()->pft()
 //          <<" at "<<cell->x<<";"<<cell->y<<endl;
-   }
+
 }//end distribute seed rain
 void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass)
@@ -179,7 +244,7 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
 
         CCell* cell = CellList[x*SideCells+y];
         //set Plant
-        CWaterPlant* plant= new CWaterPlant(mass,traits,cltraits,wtraits,cell);
+        CWaterPlant* plant= new CWaterPlant(traits,cltraits,wtraits,cell,mass/2.0,mass/2.0);
         PlantList.push_back(plant);
 
         //set Genet
@@ -208,8 +273,8 @@ void CWaterGridEnvir::OneRun(){
    int year_of_change=50;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
-   for (year=1; year<=5; ++year){
-//   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
+//   for (year=1; year<=5; ++year){
+   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       cout<<" y"<<year;
 
 //drift of little individuals -anually-
@@ -618,7 +683,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
     traits->print();cltraits->print();wtraits->print();
 
     // initialization
-    InitWaterInds(traits,cltraits,wtraits,2,traits->MaxMass/2.0); //com out
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/2.0); //com out
 //    InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
 
     PftInitList[traits->name]+=no_init_seeds;

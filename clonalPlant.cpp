@@ -41,6 +41,29 @@ CclonalPlant::CclonalPlant(double x, double y, CclonalPlant* plant)
   not used
 */
 CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
+  SclonalTraits* clonalTraits, CCell* cell,
+     double mshoot,double mroot,double mrepro,
+     int stress,bool dead,int generation,int genetnb,
+     double spacerl,double spacerl2grow)
+  :CPlant(PlantTraits,cell,mshoot,mroot,mrepro,stress,dead),
+  clonalTraits(clonalTraits),genet(NULL),mReproRamets(0),
+  Spacerlength(0),Spacerdirection(0),Generation(generation),
+  SpacerlengthToGrow(0)//keine vordefinierten Eigenschaften
+{
+   growingSpacerList.clear();
+   //define spacer (with random direction)
+   if (spacerl>0){
+     CclonalPlant* spacer=new CclonalPlant(0,0,this);
+     spacer->Spacerlength=spacerl;
+     spacer->SpacerlengthToGrow=spacerl2grow;
+     spacer->Spacerdirection=2*Pi*CEnvir::rand01();
+     this->growingSpacerList.push_back(spacer);
+   }
+
+}//---------------------------------------------------------------------------
+/**
+  not used
+CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
   SclonalTraits* clonalTraits, CCell* cell)
   :CPlant(PlantTraits,cell),genet(NULL)//keine vordefinierten Eigenschaften
 {
@@ -53,6 +76,8 @@ CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
    Generation=1;
    SpacerlengthToGrow=0;
 }
+*/
+
 //---------------------------------------------------------------------------
 /**
   not used
