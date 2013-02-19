@@ -124,19 +124,19 @@ void CGridclonal::InitClonalPlants(
 
 */
 void CGridclonal::InitClonalSeeds(
-  SPftTraits* traits,SclonalTraits* cltraits,const int n,double estab)
-{ //init clonal seeds in random cells
+  SPftTraits* traits,SclonalTraits* cltraits,const int n,double estab, int x, int y)
+{ //init clonal seeds in random cells  if x or y are <0
    using CEnvir::nrand;using SRunPara::RunPara;
-   int x,y;
+//   int x,y;
    int SideCells=RunPara.CellNum;
-
+if (x<0 || y<0)
    for (int i=0; i<n; ++i){
         x=nrand(SideCells);
         y=nrand(SideCells);
 
-        CCell* cell = CellList[x*SideCells+y];
-        new CclonalSeed(estab,traits,cltraits,cell);
    }
+   CCell* cell = CellList[x*SideCells+y];
+   new CclonalSeed(estab,traits,cltraits,cell);
 } //end CGridclonal::clonalSeedsInit()
 //-----------------------------------------------------------------------------
 /**

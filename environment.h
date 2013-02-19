@@ -192,8 +192,8 @@ public:
   void InitInds();///<Initialization of individuals on grid
   void InitInds(string file);///<initialization of inds based on file data
   virtual bool InitInd(string def);///<init of one ind based on saved data
-  void InitSeeds(int); ///<Initialization of seeds on grid
-  void InitSeeds(string, int);
+//  void InitSeeds(int); ///<Initialization of seeds on grid
+//  void InitSeeds(string, int n, int x=-1, int y=-1);
   void GetOutputCutted(); ///<get anually cutted biomass (after week 22)
   void clonalOutput();   ///< write clonal results collected last
   virtual int exitConditions(); ///< get exit conditions //first implemented by Ines

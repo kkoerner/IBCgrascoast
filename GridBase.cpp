@@ -819,6 +819,11 @@ void CGrid::InitPlants(SPftTraits* traits,const int n)
    }
 }//end CGrid::PlantsInit()
 //-----------------------------------------------------------------------------
+//void CGrid::InitSeeds(const string  PftName,const int n,int x, int y,double estab)
+//{
+//     InitSeeds(getPftLink(PftName),n,x,y); //com out
+//
+//}
 /**
   Set a number of randomly distributed Seeds (CSeed) of a specific
   trait-combination on the grid.

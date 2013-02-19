@@ -38,7 +38,7 @@ CWaterGridEnvir::CWaterGridEnvir(string id):CClonalGridEnvir(id)
        //set seeds of type x
        stringstream mstr(d);string type;int num;
        mstr>>type>>num;
-        InitWaterSeeds(type,num,x,y,0);
+        InitSeeds(type,num,x,y,0);
        getline(loadf,d);
      }
 
@@ -48,8 +48,6 @@ CWaterGridEnvir::CWaterGridEnvir(string id):CClonalGridEnvir(id)
  loadf>>d>>d>>d>>num;getline(loadf,d);
  cout<<"lade "<<num<<"plant individuals.."<<endl;
  do {getline(loadf,d);}while(InitInd(d));
-  ReadLandscape();
-
 
 cout<<"grid "<<id<<" initiated ---------------\n" ;
 //load type definitions
@@ -185,9 +183,9 @@ bool CWaterGridEnvir::InitInd(string def){
 /**
  init n seeds at position xy
 */
-void CWaterGridEnvir::InitWaterSeeds(const string  PftName,const int n,int x, int y,double estab)
+void CWaterGridEnvir::InitSeeds(const string  PftName,const int n,int x, int y,double estab)
 {
-     InitWaterSeeds(this->getPftLink(PftName),
+     InitSeeds(this->getPftLink(PftName),
         this->getClLink(PftName),
         this->getWLink(PftName),n,x,y); //com out
 
@@ -196,12 +194,12 @@ void CWaterGridEnvir::InitWaterSeeds(const string  PftName,const int n,int x, in
 /**
  init n seeds at random positions.
 */
-void CWaterGridEnvir::InitWaterSeeds(const string PftName,const int n,double estab)
+void CWaterGridEnvir::InitSeeds(const string PftName,const int n,double estab)
 {
      for (int i =0; i<n;i++)
-     InitWaterSeeds(this->getPftLink(PftName),
+     InitSeeds(this->getPftLink(PftName),
         this->getClLink(PftName),
-        this->getWLink(PftName),this->getPftLink(PftName)->pEstab,1); //com out
+        this->getWLink(PftName),1,this->getPftLink(PftName)->pEstab); //com out
 
 }//end initWaterSeeds(string,...)
 
@@ -214,7 +212,7 @@ void CWaterGridEnvir::InitWaterSeeds(const string PftName,const int n,double est
  \param n        number of seeds to disperse
  \param estab    establishment (default is 1 for initial conditions)
 */
-void CWaterGridEnvir::InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
+void CWaterGridEnvir::InitSeeds(SPftTraits* traits,SclonalTraits* cltraits,
      SWaterTraits* wtraits, const int n,double estab,int x, int y)
 {
    using CEnvir::nrand;using SRunPara::RunPara;
@@ -274,12 +272,14 @@ void CWaterGridEnvir::OneRun(){
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
 //   for (year=1; year<=5; ++year){
-   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
+//   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
+   while(year<SRunPara::RunPara.Tmax){
+      this->NewWeek();
       cout<<" y"<<year;
 
-//drift of little individuals -anually-
-if (SRunPara::RunPara.Migration>0){
-   typedef map<string, int> mapType;
+  //drift of little individuals -anually-
+  if (SRunPara::RunPara.Migration>0){
+    typedef map<string, int> mapType;
 
  //      for_each(PftInitList.begin(),PftInitList.end(),InitWaterSeeds);     //funkt nicht
 
@@ -287,7 +287,10 @@ if (SRunPara::RunPara.Migration>0){
        for (std::map<const string,long>::iterator it = PftInitList.begin();
             it != PftInitList.end(); ++it)
       {
-        InitWaterSeeds(it->first,SRunPara::RunPara.Migration);
+cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl;
+        InitSeeds(it->first,
+          SRunPara::RunPara.Migration,
+          this->getPftLink(it->first)->pEstab );
       }
 
 }//if migration
@@ -402,6 +405,9 @@ void CWaterGridEnvir::SetCellResource(){
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   this->SetMeanWaterLevel(weeklyWL[week-1]);
+
+  //salinity
+  salinity=SRunPara::RunPara.salt;
   if (week==1)cout<<"\n";
   cout<<"\n w"<<week<<" "<<weeklyWL[week-1];
 }
@@ -559,7 +565,7 @@ for an adaptation to salt.
 \todo validate rule/values
 */
 double SWaterTraits::saltTolCosts(){
-  if (saltTol<1) return 0;
+  if (saltTol<2) return 0;
   if (saltTol<=5) return 0.3;
   return 0.6;
 } // salt tolerance costs
@@ -572,7 +578,7 @@ Translates Ellenberg Value saltTol to tolerance level of salt content.
 */
 double SWaterTraits::saltTolEffect(double salinity){
   double eff=1e-10;
-  if (saltTol<1) {if (salinity<1.0) eff= 1;}
+  if (saltTol<2) {if (salinity<1.0) eff= 1;}
     else if (saltTol<=5) {if(salinity<7.0) eff= 1;}
       else eff=1;
   return eff;

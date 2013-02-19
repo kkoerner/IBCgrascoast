@@ -97,6 +97,7 @@ CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
   //NCellsAcover(0),//Mortalitaetsrate(0),
   init(1),endofrun(false)
 {
+   ResetT();
    ReadLandscape();
    ACover.assign(SRunPara::RunPara.GetSumCells(),0);
    BCover.assign(SRunPara::RunPara.GetSumCells(),0);
@@ -524,6 +525,7 @@ CClonalGridEnvir::CClonalGridEnvir(string id):CGridclonal(id),CEnvir(id)
   getline(loadf0,d);//>>year>>week;
   loadf0>>d>>this->NameClonalPftFile;
 
+/*
   //fill PftLinkList
 //for(int i=0;i<SPftTraits::PftList.size();i++){
 //  this->addPftLink(SPftTraits::PftList[i]->name,SPftTraits::PftList[i]);}
@@ -541,7 +543,7 @@ CClonalGridEnvir::CClonalGridEnvir(string id):CGridclonal(id),CEnvir(id)
        //set seeds of type x
        stringstream mstr(d);string type;int num;
        mstr>>type>>num;
-        CGrid::InitSeeds(getPftLink(type),num,x,y,0);
+        this->InitSeeds(type,num,x,y);
         //or InitClonalSeeds(..) for clonal types
        getline(loadf,d);
      }
@@ -552,6 +554,7 @@ CClonalGridEnvir::CClonalGridEnvir(string id):CGridclonal(id),CEnvir(id)
  loadf>>d>>d>>d>>num;getline(loadf,d);
  cout<<"lade "<<num<<"plant individuals.."<<endl;
  do {getline(loadf,d);}while(InitInd(d));
+*/
   ReadLandscape();
 }
 //------------------------------------------------------------------------------
@@ -712,25 +715,25 @@ bool CClonalGridEnvir::InitInd(string def){
   return true;
 }//<init of one ind based on saved data
 //------------------------------------------------------------------------------
-/**
- This function initiates a number of seeds of the specified type on the grid.
-
- \param type string naming the type to be set
- \param number number of seeds to set
-*/
-void CClonalGridEnvir::InitSeeds(string type, int number)
-{
-   //searching the type
-   SclonalTraits *cltraits=getClLink(type);//=SclonalTraits::clonalTraits[Cltype];
-   SPftTraits *pfttraits=getPftLink(type);//=SclonalTraits::clonalTraits[Cltype];
-   bool clonal= (cltraits!=NULL);//(cltraits->name=="default");
-
-   //set seeds...
-   if (clonal)
-       CGridclonal::InitClonalSeeds(pfttraits,cltraits,number,pfttraits->pEstab);
-   else
-       CGrid::InitSeeds(pfttraits,number,pfttraits->pEstab);
-}//InitSeeds
+///**
+// This function initiates a number of seeds of the specified type on the grid.
+//
+// \param type string naming the type to be set
+// \param number number of seeds to set
+//*/
+//void CClonalGridEnvir::InitSeeds(string type, int number, int x, int y)
+//{
+//   //searching the type
+//   SclonalTraits *cltraits=getClLink(type);//=SclonalTraits::clonalTraits[Cltype];
+//   SPftTraits *pfttraits=getPftLink(type);//=SclonalTraits::clonalTraits[Cltype];
+//   bool clonal= (cltraits!=NULL);//(cltraits->name=="default");
+//
+//   //set seeds...
+//   if (clonal)
+//       CGridclonal::InitClonalSeeds(pfttraits,cltraits,number,pfttraits->pEstab);
+//   else
+//       CGrid::InitSeeds(pfttraits,number,pfttraits->pEstab);
+//}//InitSeeds
 //------------------------------------------------------------------------------
 void CClonalGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation

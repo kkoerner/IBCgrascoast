@@ -74,11 +74,11 @@ public:
   /// Initialization of one Individual while loading a saved grid
   virtual bool InitInd(string def);
  //! initalization of clonal seeds
- virtual void InitWaterSeeds(const string  PftName,const int n=1,double estab=1.0);
+ virtual void InitSeeds(const string  PftName,const int n=1,double estab=1.0);
    //! initalization of seeds
-   virtual void InitWaterSeeds(const string  PftName,const int n,int x, int y,double estab=1.0);
+   virtual void InitSeeds(const string  PftName,const int n,int x, int y,double estab=1.0);
  //! initalization of clonal seeds
- virtual void InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
+ virtual void InitSeeds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double estab=1.0,int x=-1, int y=-1);
  virtual void InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass);

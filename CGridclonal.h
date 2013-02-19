@@ -48,7 +48,7 @@ public:
      const int n);
    //! initalization of clonal seeds
    virtual void InitClonalSeeds(SPftTraits* traits,SclonalTraits* cltraits,
-     const int n,double estab=1.0);
+     const int n,double estab=1.0, int x=-1, int y=-1);
    void DispersRamets(CclonalPlant* plant); ///<initiate new ramets
    //service functions...
    void Save(string fname);  ///< file save of entire grid

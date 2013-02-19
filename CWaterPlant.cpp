@@ -108,9 +108,9 @@ double oldmass=this->GetMass();
 // if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
-if (false)
+//if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
-//if (CEnvir::year<15)
+if (CEnvir::year==3&CEnvir::week<10)
 //if (true)
 {
  string filename=CEnvir::NameLogFile;
@@ -188,9 +188,11 @@ double CWaterPlant::rootEfficiency(){
  //a) logistic formula
 // ...
  //b) Wenn-Dann
+ double retval=1.0;
+ //oxygen deficit
  if(this->waterTraits->assimAnoxWL>0.0)
-   return min(1.0,this->waterTraits->assimAnoxWL);  //0.5
- double retval=  max(min(depth,-wl)/depth,1e-10); //0.0
+   retval= min(1.0,this->waterTraits->assimAnoxWL);  //0.5
+ else retval=  max(min(depth,-wl)/depth,1e-10); //0.0
 
 //salt stress
  retval*=this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)
