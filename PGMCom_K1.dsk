@@ -10,30 +10,30 @@ File_7=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTE
 File_8=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\RunPara.cpp',0,1,1,1,1,0,0
 
 [Modules]
-Module0=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp
-Module1=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp
-Module2=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp
-Module3=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp
+Module0=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp
+Module1=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp
+Module2=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp
+Module3=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp
 Module4=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CSeed.cpp
 Count=5
 EditWindowCount=1
-
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
 
 [C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
 [C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
@@ -53,7 +53,7 @@ FormOnTop=0
 
 [EditWindow0]
 ViewCount=5
-CurrentView=0
+CurrentView=1
 View0=0
 View1=1
 View2=2
@@ -78,21 +78,21 @@ LeftPanelClients=DockSite0
 LeftPanelData=0000040000000000000000000000000000000000000000000001000000000000000009000000446F636B5369746530FFFFFFFF
 RightPanelSize=0
 BottomPanelSize=155
-BottomPanelClients=MessageView@EditWindow0,CallStackWindow
-BottomPanelData=00000400010000000B0000004D657373616765566965779B0000000000000001AB0400000000000001000000009B0000000F00000043616C6C537461636B57696E646F7701000000009B00000000000000FFFFFFFF
+BottomPanelClients=CallStackWindow,MessageView@EditWindow0
+BottomPanelData=00000400000000009B0000000000000001AB0400000000000001000000004D0000000F00000043616C6C537461636B57696E646F7701000000009B0000000B0000004D6573736167655669657701000000009B00000000000000FFFFFFFF
 
 [View0]
 Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp
-CursorX=3
-CursorY=131
-TopLine=122
+CursorX=48
+CursorY=146
+TopLine=131
 LeftCol=1
 
 [View1]
 Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp
-CursorX=19
-CursorY=313
-TopLine=265
+CursorX=49
+CursorY=307
+TopLine=301
 LeftCol=1
 
 [View2]
@@ -105,15 +105,15 @@ LeftCol=1
 [View3]
 Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp
 CursorX=1
-CursorY=769
-TopLine=762
+CursorY=474
+TopLine=469
 LeftCol=1
 
 [View4]
 Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp
 CursorX=1
-CursorY=101
-TopLine=125
+CursorY=111
+TopLine=96
 LeftCol=1
 
 [Watches]
@@ -121,8 +121,10 @@ Count=1
 Watch0='SRunPara::RunPara.Tmax',256,0,18,1,0,'Überwachte Ausdrücke'
 
 [Breakpoints]
-Count=1
+Count=3
 Breakpoint0='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp',25,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint1='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.h',63,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint2='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp',474,'',0,1,'',1,0,0,'',1,'','',''
 
 [AddressBreakpoints]
 Count=0
@@ -196,12 +198,12 @@ State=0
 Left=12
 Top=0
 Width=1183
-Height=155
+Height=73
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1183
-ClientHeight=155
-TBDockHeight=155
+ClientHeight=73
+TBDockHeight=73
 LRDockWidth=294
 Dockable=1
 
@@ -309,17 +311,17 @@ ClassViewDisplayMode=0
 
 [MessageView@EditWindow0]
 Create=1
-Visible=0
+Visible=1
 State=0
 Left=12
-Top=97
+Top=77
 Width=1183
-Height=58
+Height=77
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1183
-ClientHeight=58
-TBDockHeight=58
+ClientHeight=77
+TBDockHeight=77
 LRDockWidth=443
 Dockable=1
 

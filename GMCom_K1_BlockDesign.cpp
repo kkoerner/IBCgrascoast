@@ -134,8 +134,8 @@ int main(int argc, char* argv[])
    for (CEnvir::RunNr=1;CEnvir::RunNr<=maxRun;CEnvir::RunNr++){
      //erstes Grid und Kontrolle
      cout<<"start master Environment...\n";
-     Envir=new CWaterGridEnvir();  //lade hier gespeicherte Version
-     int lpos=Envir->GetSim();
+     Envir=new CWaterGridEnvir();  //erstelle neues Grid
+     int lpos=Envir->GetSim();int startID=CEnvir::SimNr;
            Init();
      CEnvir::ResetT();
      //do simulations specified in input-file
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
             Run();
         cout<<"new Environment...\n";
         //lade hier gespeicherte Version
-        stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
+        stringstream v; v<<"B"<<startID<<setw(2)<<setfill('0')<<CEnvir::RunNr;
         delete Envir; Envir=new CWaterGridEnvir(v.str());
       lpos=Envir->GetSim(lpos);
    }while (lpos!=-1);

@@ -311,14 +311,14 @@ cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl
       }
    //save grid after init time
       if (year==20) {
-        stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
+        stringstream v; v<<"B"<<CEnvir::SimNr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
    //if all done
       if (endofrun)break;
    }//years
    //save grid at end of run
-   stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
+   stringstream v; v<<"B"<<CEnvir::SimNr<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
    this->Save(v.str());
 //WL zurücksetzen
 //    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim

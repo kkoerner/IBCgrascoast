@@ -1,0 +1,15 @@
+TMax	OutFile	
+50	ComTest
+SimNr	BRes	GrazPrb	NCut	WL	salt
+104	100	0	0	-15	0
+207	100	0	0	-15	3
+
+105	100	0	0	0	0
+205	100	0	0	0	3
+106	100	0	0	15	0
+206	100	0	0	15	3
+
+# Blockdesign: oberste Zeile entspricht Kontrolle, 
+# nach Init-Zeit wird auf die nächsten Zeilen geändert
+# hier: von Süßwasserfrischwiese 1-versalzend 2-vernässend 3-1+2
+# 4-überflutet 5-1+4
