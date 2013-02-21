@@ -4,6 +4,7 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include <iostream>
+#include <sstream>
 
 #include "clonalPlant.h"
 #include "environment.h"
@@ -40,6 +41,29 @@ CclonalPlant::CclonalPlant(double x, double y, CclonalPlant* plant)
   not used
 */
 CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
+  SclonalTraits* clonalTraits, CCell* cell,
+     double mshoot,double mroot,double mrepro,
+     int stress,bool dead,int generation,int genetnb,
+     double spacerl,double spacerl2grow)
+  :CPlant(PlantTraits,cell,mshoot,mroot,mrepro,stress,dead),
+  clonalTraits(clonalTraits),genet(NULL),mReproRamets(0),
+  Spacerlength(0),Spacerdirection(0),Generation(generation),
+  SpacerlengthToGrow(0)//keine vordefinierten Eigenschaften
+{
+   growingSpacerList.clear();
+   //define spacer (with random direction)
+   if (spacerl>0){
+     CclonalPlant* spacer=new CclonalPlant(0,0,this);
+     spacer->Spacerlength=spacerl;
+     spacer->SpacerlengthToGrow=spacerl2grow;
+     spacer->Spacerdirection=2*Pi*CEnvir::rand01();
+     this->growingSpacerList.push_back(spacer);
+   }
+
+}//---------------------------------------------------------------------------
+/**
+  not used
+CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
   SclonalTraits* clonalTraits, CCell* cell)
   :CPlant(PlantTraits,cell),genet(NULL)//keine vordefinierten Eigenschaften
 {
@@ -52,6 +76,8 @@ CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
    Generation=1;
    SpacerlengthToGrow=0;
 }
+*/
+
 //---------------------------------------------------------------------------
 /**
   not used
@@ -69,6 +95,27 @@ CclonalPlant::CclonalPlant(double x, double y,
    Generation=1;
    SpacerlengthToGrow=0;
 }
+//--SAVE-----------------------------------------------------------------------
+/**
+  CclonalPlant-Version of plant report
+
+  \note direction not reportet; mReproRamets not reportet - weekly transfered
+   directly to Spacerlength
+  \autor KK
+  \date 120905
+*/
+string CclonalPlant::asString(){
+  std::stringstream dummi;
+  // cPlant part
+  dummi<<CPlant::asString();
+  // generation number and genet-ID
+  dummi<<"\t"<<Generation<<'\t'<<genet->number;
+  // Spacerinfo Length and Length-to-grow  (only for first spacer)
+  if (growingSpacerList.size()>0)
+    dummi<<'\t'<<this->growingSpacerList[0]->Spacerlength
+         <<'\t'<<this->growingSpacerList[0]->SpacerlengthToGrow;
+  return dummi.str();
+} //<report plant's status
 //---------------------------------------------------------------------------
 /**
   If a seed germinates, the new plant inherits its parameters.

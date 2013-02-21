@@ -61,6 +61,8 @@
 
 #include "environment.h"
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 using namespace std;
 //-CEnvir: Init static variables--------------------------------------------------------------------------
@@ -95,6 +97,26 @@ CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
   //NCellsAcover(0),//Mortalitaetsrate(0),
   init(1),endofrun(false)
 {
+   ResetT();
+   ReadLandscape();
+   ACover.assign(SRunPara::RunPara.GetSumCells(),0);
+   BCover.assign(SRunPara::RunPara.GetSumCells(),0);
+}
+//---------------------------------------------------------------------------
+CEnvir::CEnvir(string id)://NdeadPlants(0),NPlants(0),
+  CoveredCells(0),//MeanShannon(0),
+//  NCellsAcover(0),//Mortalitaetsrate(0),
+  init(1),endofrun(false)
+{
+//read file
+ string dummi=(string)"Save/E_"+id+".sav";
+ ifstream loadf(dummi.c_str()); string d;
+  loadf>>year>>week;
+  string dummi2;
+  loadf>>NamePftFile>>dummi2;//NameClonalPftFile muss extra gelesen werden
+//  getline(loadf,d);
+  getline(loadf,dummi2); getline(loadf,dummi2);
+  SRunPara::RunPara.setRunPara(dummi2);
    ReadLandscape();
    ACover.assign(SRunPara::RunPara.GetSumCells(),0);
    BCover.assign(SRunPara::RunPara.GetSumCells(),0);
@@ -132,16 +154,13 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   if (!SimFile.good()) {cerr<<("Fehler beim Öffnen SimFile");exit(3); }
   cout<<"SimFile: "<<NameSimFile<<endl;
   int lpos=pos;
+  using SRunPara::RunPara;
   if (pos==0){  //read header
     string line,file_id;
     getline(SimFile,line);
-    int SimNrMax;//dummi
-    SimFile>>SimNrMax>>NRep>>file_id;
-    //set file names
-    NamePftOutFile= (string)"Output\\Pft-"+file_id+".txt";
-    NameGridOutFile=(string)"Output\\Grd-"+file_id+".txt";
-    NameSurvOutFile=(string)"Output\\Srv-"+file_id+".txt";
-    NameLogFile=    (string)"Output\\Log-"+file_id+".log";
+    int tmax;//dummi
+    SimFile>>tmax>>file_id;
+    RunPara.Tmax=tmax;
 
     getline(SimFile,line);
     getline(SimFile,line);
@@ -152,49 +171,41 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   if (!SimFile.good()) return -1;
 
   int version, acomp, bcomp;
-   using SRunPara::RunPara;
    //RunNr=0; int dummi;
    //for (int i=0; i<SimNrMax; ++i)
 
       SimFile>>SimNr
-       //      >>dummi     //RunPara.Layer
-       //      >>version   //>>RunPara.Version - enum types cannot be read with >>
-       //      >>acomp     //>>RunPara.AboveCompMode
-       //      >>bcomp    //>>RunPara.BelowCompMode
-       //      >>RunPara.BelGrazMode   //mode of belowground grazing
-        //     >>RunPara.GridSize
-        //     >>RunPara.CellNum
-             >>RunPara.Tmax
-        //     >>RunPara.NPft
+            >>RunPara.meanBRes
              >>RunPara.GrazProb
-         //    >>RunPara.PropRemove
-         //    >>RunPara.BelGrazProb     //for belowground simulations
-         //    >>RunPara.BelPropRemove   //for belowground simulations
              >>RunPara.NCut
-             >>RunPara.CutLeave//Mass
-        //     >>RunPara.DistAreaYear
-        //     >>RunPara.AreaEvent
-        //     >>RunPara.mort_seeds
-             >>RunPara.meanARes
-             >>RunPara.meanBRes
-     //        >>RunPara.PftFile
-         //    >>RunPara.BGThres
-             ;
+             >>RunPara.WaterLevel
+             >>RunPara.salt
+              ;
 
       //---------standard parameter:
+      //aboveground resources
+      RunPara.meanARes=100;
+
       //grazing intensity
       RunPara.PropRemove=0.5;
-      //no trampling
-      RunPara.DistAreaYear=0;
+      //trampling equals grazing
+      RunPara.DistAreaYear=RunPara.GrazProb;
       //above- and belowground competition
       acomp=1;bcomp=0;
       //--------------------------------
-      // set version and competition  modes - in this way because of enum types!
-//      RunPara.Version=version;
-//      RunPara.AboveCompMode=acomp;
-//      RunPara.BelowCompMode=bcomp;
-//      //Größenänderung des Grids auf 3qm
-//      RunPara.GridSize=RunPara.CellNum=173;
+      //filenames
+    string idstr= SRunPara::RunPara.getRunID();
+    stringstream strd;
+    strd<<"Output\\Mix_Grid_log_"<<idstr
+      <<".txt";
+    NameLogFile=strd.str();     // clear stream
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
+      <<".txt";
+    NameGridOutFile=strd.str();
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+      <<".txt";
+    NameSurvOutFile= strd.str();
+
   RunPara.print();
   return SimFile.tellg();
 }//end  CEnvir::GetSim
@@ -465,14 +476,93 @@ CClonalGridEnvir::CClonalGridEnvir():CGridclonal(),CEnvir()
    ReadLandscape();
 }
 //------------------------------------------------------------------------------
-/**
-\todo move function to struct SPftTraits ?
+/** \page loadsave Loading and Saving environments
+Since initalization phase on grid takes a lot of simulation time,
+with this option we aim to shorten simulation runs that look at performance
+after environmental changes to an existing community. We should be able to
+generate a set of (parameter-defined) 'starting points' with repititions. Thus
+we are able to compare the community with and without environmental change.
+
+\par Saving.
+All state variables of
+  - the environment (CClonalGridEnvir::Save()),
+  - the grid (CGridclonal::Save()),
+  - the plants (CPlant::asString(), CclonalPlant::asString())
+  - and cells  (CCell::asString())
+are saved in files with one core id code to identify associated files.
+
+\par Loading.
+An environment is loaded mainly via constructors of the various
+structures and classes. One core-string (\verb'id') defines the set of files
+belonging to one task.
+
+\note saving should work already, while loading ability still is in process
+\sa CClonalGridEnvir::CClonalGridEnvir(string id), CEnvir::CEnvir(string id),
+ CGridclonal::CGridclonal(string id), CGrid::CGrid(string id), ...
+
+\author KK
+\date 120905
+\todo implement comtess-related terms of loading and saving
+
 */
+
+/**
+   Constructor for loading a previously saved environment.
+
+   \note only state variables are restored
+
+   \note species' parameter definitions from program initiation are used
+
+   \param id core string for the set of saved files
+   \autor KK
+   \date  120905
+*/
+CClonalGridEnvir::CClonalGridEnvir(string id):CGridclonal(id),CEnvir(id)
+{
+  //here re-eval clonal PFTFile
+  string dummi=(string)"Save/E_"+id+".sav";
+  ifstream loadf0(dummi.c_str()); string d;
+  getline(loadf0,d);//>>year>>week;
+  loadf0>>d>>this->NameClonalPftFile;
+
+/*
+  //fill PftLinkList
+//for(int i=0;i<SPftTraits::PftList.size();i++){
+//  this->addPftLink(SPftTraits::PftList[i]->name,SPftTraits::PftList[i]);}
+  //open file..
+ dummi=(string)"Save/G_"+id+".sav";
+ ifstream loadf(dummi.c_str());
+ getline(loadf,d);
+ int x=0,y=0;int xmax=SRunPara::RunPara.CellNum-1;
+   //load cells..
+   //loop over cell entries
+   do{
+     loadf>>x>>y;
+     getline(loadf,d);getline(loadf,d);
+     while(d!="CE"){
+       //set seeds of type x
+       stringstream mstr(d);string type;int num;
+       mstr>>type>>num;
+        this->InitSeeds(type,num,x,y);
+        //or InitClonalSeeds(..) for clonal types
+       getline(loadf,d);
+     }
+
+   }while(!(x==xmax&&y==xmax));
+   //load Plants..
+   int num;
+ loadf>>d>>d>>d>>num;getline(loadf,d);
+ cout<<"lade "<<num<<"plant individuals.."<<endl;
+ do {getline(loadf,d);}while(InitInd(d));
+*/
+  ReadLandscape();
+}
+//------------------------------------------------------------------------------
 SPftTraits* CClonalGridEnvir::getPftLink(string type)
 {
   SPftTraits* traits=NULL;
   map<string,SPftTraits*>::iterator pos = PftLinkList.find(type);
-  if (pos==(PftLinkList.end())) cerr<<"type not found\n";
+  if (pos==(PftLinkList.end())) cerr<<"type not found:"<<type<<endl;
   else traits=pos->second;
   if (traits==NULL) cerr<<"NULL-pointer error\n";
   return traits;
@@ -581,35 +671,77 @@ void CClonalGridEnvir::InitInds(string file){
 
   }while(!InitFile.eof());
 }//initialization based on file
+bool CClonalGridEnvir::InitInd(string def){
+  stringstream d(def);
+  //get cell
+  int x,y;  d>>x>>y;
+  //frage streamzustand ab ; wenn nicht good, beende Funktion
+  if (!d.good())
+  return false;
+  CCell* cell = CellList[x*SRunPara::RunPara.GetGridSize()+y];
+
+  string type;double mshoot, mroot, mrepro; int stress;bool dead;
+  d>>type>>mshoot>>mroot>>mrepro>>stress>>dead;
+
+  //for nonclonal CPlant
+  SPftTraits* ptraits=getPftLink(type);
+  SclonalTraits* pcltraits=getClLink(type);
+  CPlant* plant;
+  if (!pcltraits){
+    plant = new CPlant(ptraits,cell,mshoot,mroot,mrepro,
+                  stress,dead);
+  }else{
+    int generation,genetnb; double spacerl=0, spacerl2grow=0;
+    d>>generation>>genetnb; if (!d.eof())d>>spacerl>>spacerl2grow;
+    CclonalPlant* tplant=new CclonalPlant(ptraits,pcltraits,cell,mshoot,mroot,mrepro,
+                  stress,dead,generation,genetnb,spacerl,spacerl2grow);
+    //set Genet
+    CGenet* genet=NULL;
+    for (int i=0; i<GenetList.size();i++){
+      if (GenetList[i]->number=genetnb)genet=GenetList[i];
+    }
+    if (!genet) {
+      CGenet::staticID=max(CGenet::staticID,genetnb);
+      genet=new CGenet();genet->number=genetnb;
+      GenetList.push_back(genet);
+    }
+    tplant->setGenet(genet);
+    plant=tplant;
+  }
+  PlantList.push_back(plant);
+  cout<<"L: ClonalPlant "<<plant->asString()<<endl;
+//  cout<<"Init "<<type<<" at "<<x<<":"<<y
+//      <<" ("<<mshoot<<", "<<mroot<<", "<<mrepro<<", "<<stress<<", "<<dead<<")\n";
+  return true;
+}//<init of one ind based on saved data
 //------------------------------------------------------------------------------
-/**
- This function initiates a number of seeds of the specified type on the grid.
-
- \param type string naming the type to be set
- \param number number of seeds to set
-*/
-void CClonalGridEnvir::InitSeeds(string type, int number)
-{
-   //searching the type
-   SclonalTraits *cltraits=getClLink(type);//=SclonalTraits::clonalTraits[Cltype];
-   SPftTraits *pfttraits=getPftLink(type);//=SclonalTraits::clonalTraits[Cltype];
-   bool clonal= (cltraits!=NULL);//(cltraits->name=="default");
-
-   //set seeds...
-   if (clonal)
-       CGridclonal::InitClonalSeeds(pfttraits,cltraits,number,pfttraits->pEstab);
-   else
-       CGrid::InitSeeds(pfttraits,number,pfttraits->pEstab);
-}//InitSeeds
+///**
+// This function initiates a number of seeds of the specified type on the grid.
+//
+// \param type string naming the type to be set
+// \param number number of seeds to set
+//*/
+//void CClonalGridEnvir::InitSeeds(string type, int number, int x, int y)
+//{
+//   //searching the type
+//   SclonalTraits *cltraits=getClLink(type);//=SclonalTraits::clonalTraits[Cltype];
+//   SPftTraits *pfttraits=getPftLink(type);//=SclonalTraits::clonalTraits[Cltype];
+//   bool clonal= (cltraits!=NULL);//(cltraits->name=="default");
+//
+//   //set seeds...
+//   if (clonal)
+//       CGridclonal::InitClonalSeeds(pfttraits,cltraits,number,pfttraits->pEstab);
+//   else
+//       CGrid::InitSeeds(pfttraits,number,pfttraits->pEstab);
+//}//InitSeeds
 //------------------------------------------------------------------------------
 void CClonalGridEnvir::OneRun(){
 //   double teval=0.2;  //fraction of Tmax that is used for evaluation
    //get initial conditions
 //   init=1; //for init the second plant (for the invasion experiments)
-
    //run simulation until YearsMax
-   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
-      cout<<" y"<<year;
+   do{
+   //for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
       OneYear();
 //      if (year%10==1){//(year==11||year==31){ modulo
 //        WriteSurvival();
@@ -617,8 +749,16 @@ void CClonalGridEnvir::OneRun(){
 //        clonalOutput();
         WriteSurvival();
 //      }
+   //save grid
+      if (year==5) {
+        stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
+        this->Save(v.str());
+      }
       if (endofrun)break;
-   }//years
+   }while(year<SRunPara::RunPara.Tmax);//years
+   //save grid
+   stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
+   this->Save(v.str());
       //file-write output     -now in main.cpp
 //   WriteGridComplete();
 //   WriteSurvival();
@@ -627,13 +767,14 @@ void CClonalGridEnvir::OneRun(){
 }  // end OneSim
 //------------------------------------------------------------------------------
 void CClonalGridEnvir::OneYear(){
-   for (week=1;week<=WeeksPerYear; ++week)
-   {
+   week=1;
+   do{
+   //for (week=1;week<=WeeksPerYear; ++week){
      OneWeek();
      //exit conditions
       exitConditions();
       if (endofrun)break;
-  }//weeks
+  }while(++week<=WeeksPerYear);//weeks
 } // end OneYear
 //------------------------------------------------------------------------------
 /**
@@ -699,6 +840,51 @@ int CClonalGridEnvir::exitConditions()
      }
      return 0;
 }//end CClonalGridEnvir::exitConditions()
+//-Save.. and Load.. --------------------------------------------------------------------------
+/**
+ Saves the current state of the grid and parameters.
+
+ -does it have to be in one file?
+ -how to store all information
+
+ \note not saved: output file names, WeeksPerYear
+\autor KK
+\date 120830
+*/
+void CClonalGridEnvir::Save(string ID){
+  //open file(s)
+  string fname="Save\\E_"+ID+".sav";
+  ofstream SaveFile(fname.c_str());
+  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+  cout<<"SaveFile: "<<fname<<endl;
+
+//environmental parameters CEnvir, CClonalGridEnvir
+//ifiles, PftInitList, week, year (SimNr, RunNr)
+//  SaveFile<<"PftInitList\t"<<NamePftFile<<endl; //erstellbar aus PftFile?
+//  SaveFile<<"NameSimFile\t"<<NameSimFile<<endl; //nicht wichtig, wenn RunPara gespeichert
+  SaveFile<<year<<"\t"<<week<<endl;
+  SaveFile<<NamePftFile<<endl;
+  SaveFile<<NameClonalPftFile;
+//Run Parameter
+// string fname="Save\\R_"+ID+".sav";
+//model Parameters SRunParaRunPara
+//SRunPara::Save() ?
+  SaveFile<<SRunPara::RunPara.asString()<<endl;
+
+
+ fname="Save\\G_"+ID+".sav";
+//CGrid, CClonalGrid
+//CGridClonal::Save() ?
+  CGridclonal::Save(fname);
+
+}//Save
+
+/* *
+  Loads a previosly saved Grid.
+
+  \note some data has to be generated here (e.g. link lists, WL and Resources)
+*/
+//void CClonalGridEnvir::Load(){}//Load
 //-Auswertung--------------------------------------------------------------------------
 int CClonalGridEnvir::getACover(int x, int y){
   return ACover[x*SRunPara::RunPara.CellNum+y];}

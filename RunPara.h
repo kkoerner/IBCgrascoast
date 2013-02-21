@@ -79,7 +79,8 @@ struct SRunPara
    inline double CellScale(){return GridSize/(double)CellNum;};
    inline int GetGridSize() const {return CellNum;};
    inline int GetSumCells() const {return CellNum*CellNum;};
-
+   std::string asString();///<
+   void setRunPara(std::string def);
 };
 //---------------------------------------------------------------------------
 #endif

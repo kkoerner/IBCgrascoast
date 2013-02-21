@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include <iostream>
+#include <sstream>
 
 #include "Plant.h"
 #include "environment.h"
@@ -116,21 +117,33 @@ CPlant::CPlant(double x, double y, SPftTraits* Traits):
 //   Art_disc=0;
 }
 //-----------------------------------------------------------------------------
-CPlant::CPlant(SPftTraits* Traits, CCell* cell):
-  xcoord(0),ycoord(0),Traits(Traits),mshoot(Traits->m0),mroot(Traits->m0),
-  Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL)
+CPlant::CPlant(SPftTraits* Traits, CCell* cell,
+     double mshoot, double mroot, double mrepro,
+     int stress, bool dead):
+  xcoord(0),ycoord(0),Traits(Traits),mshoot(mshoot),mroot(mroot),
+  Aroots_all(0),Aroots_type(0),mRepro(mrepro),Ash_disc(0),Art_disc(0),
+  Auptake(0),Buptake(0),dead(dead),remove(false),stress(stress),cell(NULL)
 {
+  if (mshoot==0)this->mshoot=Traits->m0;
+  if (mroot==0)this->mroot=Traits->m0;
   setCell(cell);
   if (cell){
     xcoord=(cell->x*SRunPara::RunPara.CellScale());
     ycoord=(cell->y*SRunPara::RunPara.CellScale());
   }
-//  mRepro=0;
-// //  Allometrics();
-//  Ash_disc=0;
-//  Art_disc=0;
 }
+//-----------------------------------------------------------------------------
+/*
+CPlant::CPlant(SPftTraits* traits,CCell* cell,
+     double mshoot, double mroot, double mrepro, int stress, bool dead)
+:CPlant(traits,cell){
+  this->mshoot=mshoot;
+  this->mroot=mroot;
+  this->mRepro=mrepro;
+  this->stress=stress;
+  this->dead=dead;
+}
+*/
 //-----------------------------------------------------------------------------
 CPlant::CPlant(CSeed* seed):
   xcoord(seed->xcoord),ycoord(seed->ycoord),Traits(seed->Traits),
@@ -155,7 +168,17 @@ CPlant::CPlant(CSeed* seed):
 CPlant::~CPlant(){
 //  cout<<'~'<<type();
 }
+//--SAVE-----------------------------------------------------------------------
+string CPlant::asString(){
+std::stringstream dummi;
+//coordinates +type
+dummi<<"\n"<<xcoord<<"\t"<<ycoord<<"\t"<<this->pft();
+//biomasses dead? - state variables
+dummi<<'\t'<<mshoot<<'\t'<<mroot<<'\t'<<mRepro<<'\t'<<stress<<'\t'<<dead;
+return dummi.str();
+} //<report plant's status
 //-----------------------------------------------------------------------------
+
 void CPlant::setCell(CCell* cell){
    if (this->cell==NULL&&cell!=NULL){
      this->cell=cell;

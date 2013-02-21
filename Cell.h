@@ -87,6 +87,7 @@ public:
 
    void SortTypeID();  //!< sort individuals after PFT ID
    void print_map(map<string,int> &mymap);  //!< print map content for debugging - can be deleted
+   std::string asString();///<return content for file saving
 };
 
 /**\brief Water-Cell class inherits from CCell
@@ -112,6 +113,7 @@ public:
 
  double GetWaterLevel(){return WaterLevel;};
  void SetWaterLevel(double val){WaterLevel=val;};
+   std::string asString();///<return content for file saving
 };//end CWaterCell
 
 //---------------------------------------------------------------------------

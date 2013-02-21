@@ -72,6 +72,7 @@ public:
 //  CWaterCell** CellList;    //!<array of pointers to CCell
 
    CGrid(); //!< Konstruktor
+   CGrid(string id); //!< Konstruktor for loading a file saved grid
    virtual ~CGrid();                 //!< Destruktor
    virtual void resetGrid();
 
@@ -79,6 +80,8 @@ public:
    virtual void InitPlants(SPftTraits* traits,const int n);
    //! initalization of seeds
    virtual void InitSeeds(SPftTraits* traits,const int n,double estab=1.0);
+   //! initalization of seeds
+   virtual void InitSeeds(SPftTraits* traits,const int n,int x, int y,double estab=1.0);
    ///add seeds to ldd-pool of grid
    void addLDDSeeds(string pft,int nb){(*LDDSeeds)[pft]+=nb;};
    ///get ldd-pool of grid and clear buffer
