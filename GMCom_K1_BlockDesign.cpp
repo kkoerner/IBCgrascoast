@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
       CEnvir::NameSimFile="Input\\"+file;
    }else CEnvir::NameSimFile="Input\\comtest.txt";
    int maxRun=1; if (argc>=3) {maxRun = atoi(argv[2]);}
-   SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50; //make smaller for develloping process
+//   SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50; //make smaller for develloping process
    SRunPara::RunPara.Migration=2;
    //hier: loop verschiedener Grids
    for (CEnvir::RunNr=1;CEnvir::RunNr<=maxRun;CEnvir::RunNr++){

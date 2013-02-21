@@ -110,7 +110,7 @@ double oldmass=this->GetMass();
 //enable again for more detailed spatial information
 //if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
-if (CEnvir::year==3&CEnvir::week<10)
+if (CEnvir::year==21&CEnvir::week<10)
 //if (true)
 {
  string filename=CEnvir::NameLogFile;

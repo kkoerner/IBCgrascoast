@@ -310,7 +310,7 @@ cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl
         WriteSurvival();
       }
    //save grid after init time
-      if (year==2) {
+      if (year==20) {
         stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
