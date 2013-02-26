@@ -188,15 +188,18 @@ double CWaterPlant::rootEfficiency(){
  //a) logistic formula
 // ...
  //b) Wenn-Dann
- double retval=1.0;
+ /// \todo entferne Korrekturfaktor
+ double retval=1.0, WLcost= this->waterTraits->assimAnoxWL*0.8;
  //oxygen deficit
+ //costs..
  if(this->waterTraits->assimAnoxWL>0.0)
-   retval= min(1.0,this->waterTraits->assimAnoxWL);  //0.5
+   retval= min(1.0,WLcost);  //0.5
+ //effect..
  else retval=  max(min(depth,-wl)/depth,1e-10); //0.0
 
 //salt stress
  retval*=this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)
-     - this->waterTraits->saltTolCosts();
+     * this->waterTraits->saltTolCosts();
  return retval;
 }
 //-------------------------------------------------------------

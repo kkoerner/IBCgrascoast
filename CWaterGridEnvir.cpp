@@ -566,7 +566,7 @@ for an adaptation to salt.
 */
 double SWaterTraits::saltTolCosts(){
   if (saltTol<2) return 0;
-  if (saltTol<=5) return 0.3;
+  if (saltTol<=5) return 0.8;
   return 0.6;
 } // salt tolerance costs
 /**
