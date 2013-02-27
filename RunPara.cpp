@@ -16,7 +16,7 @@ SRunPara SRunPara::RunPara=SRunPara();
 SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym),
   GridSize(128),CellNum(128),Tmax(10),NPft(81),GrazProb(0),PropRemove(0.5),
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
-  CutLeave(10),NCut(0),torus(true),//CutMass(5000),
+  CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/PftTraits2304.txt"){}
 

@@ -188,8 +188,7 @@ double CWaterPlant::rootEfficiency(){
  //a) logistic formula
 // ...
  //b) Wenn-Dann
- /// \todo entferne Korrekturfaktor
- double retval=1.0, WLcost= this->waterTraits->assimAnoxWL*0.8;
+ double retval=1.0, WLcost= this->waterTraits->assimAnoxWL;
  //oxygen deficit
  //costs..
  if(this->waterTraits->assimAnoxWL>0.0)

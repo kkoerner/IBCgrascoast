@@ -560,28 +560,28 @@ SWaterTraits::SWaterTraits():name("default"),
 Translates Ellenberg Value saltTol to respiratory costs
 for an adaptation to salt.
 
-\return fraction of uptake as costs for  adaptation. \[1e-10 - 1\]
+\return fraction of uptake as costs for  adaptation. \[0 - 1\]
 
 \todo validate rule/values
 */
 double SWaterTraits::saltTolCosts(){
-  if (saltTol<2) return 0;
+  if (saltTol<2) return 1;
   if (saltTol<=5) return 0.8;
   return 0.6;
 } // salt tolerance costs
 /**
 Translates Ellenberg Value saltTol to tolerance level of salt content.
 
-\return fraction of uptake as loss due to salinity. \[1e-10 - 1\]
+\return fraction of uptake as loss due to salinity. \[1e-1 - 1\]
 
 \todo validate rule/values
 */
 double SWaterTraits::saltTolEffect(double salinity){
-  double eff=1e-10;
-  if (saltTol<2) {if (salinity<1.0) eff= 1;}
-    else if (saltTol<=5) {if(salinity<7.0) eff= 1;}
-      else eff=1;
-  return eff;
+ double min_lim=0.1;
+  if (saltTol<2)  {if (salinity<1.0) return 1.0;else return min_lim;}
+  if (saltTol<=5) {if(salinity<7.0) return 1.0;else return min_lim;}
+  if (saltTol>5)  {return 1.0;}
+  return min_lim;  //should not be reached
 } // salt tolerance effect
 
 //---------------------------------------------------------------------------
