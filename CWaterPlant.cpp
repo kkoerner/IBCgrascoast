@@ -152,6 +152,8 @@ if (false)
     with respect of rooting depth (Gmax now represents resources per 50cm rooting depth)
 
     \since 27/04/2012
+
+    \since 05/03/2013 NEW:dieback of roots due to salinity; negative output possible
 */
 double CWaterPlant::RootGrow(double rres){
    double Assim_root, Resp_root;
@@ -160,8 +162,10 @@ double CWaterPlant::RootGrow(double rres){
    Assim_root=Traits->growth*min(rres,Traits->Gmax*p_depth/50.0*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
    Resp_root=Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
             *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
-
-   return max(0.0,Assim_root-Resp_root);
+   double grow=max(0.0,Assim_root-Resp_root);
+   //salinity dieback
+   if (this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)<1)grow -=0.1*this->mroot;
+   return grow;
 }
 
 //-------------------------------------------------------------
@@ -271,6 +275,23 @@ double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
 }
 */
 //---------------------------------------------------------------------------
+/**
+  Reimplemented from CCell::Germinate(). Prior to germination a seed mortality due to
+  salinity is calculated. Survival responds to saltTolEffect() of seed's PFT.
+*/
+double CWaterCell::Germinate(){
+   //seed mortality due to salinity
+   unsigned int sbsize=SeedBankList.size();
+   for (unsigned int i =0; i<sbsize;i++)
+   {
+     CSeed* seed = SeedBankList[i];// *iter;
+     if (CEnvir::rand01()>
+       ((CWaterSeed*)seed)->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)<1)
+       seed->remove=true;
+   }
+   this->RemoveSeeds();
+   return CCell::Germinate();
+}//end Germinate
 //---------------------------------------------------------------------------
 /***/
 CWaterSeed::CWaterSeed(double estab, SPftTraits* traits,

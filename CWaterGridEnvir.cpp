@@ -674,7 +674,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
             >> cltraits->clonal
             >> wtraits->saltTol;
      traits->SeedMass=traits->m0;
-     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
+//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
      cltraits->sdSpacerlength=cltraits->meanSpacerlength;
     //namen und IDs
     traits->name=cltraits->name=wtraits->name=dummi2;

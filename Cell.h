@@ -68,7 +68,7 @@ public:
 
    void clear();
    void SetResource(double Ares, double Bres);
-   double Germinate();
+   virtual double Germinate();
    void RemoveSeedlings();
    void RemoveSeeds();
    void GetNPft();     //!< calculates number of individuals of each PFT
@@ -110,6 +110,7 @@ public:
    /*! function is overwritten if inherited class with different competitive
      size-asymmetry of niche differentiation is used*/
    virtual void BelowComp();
+   virtual double Germinate();
 
  double GetWaterLevel(){return WaterLevel;};
  void SetWaterLevel(double val){WaterLevel=val;};

@@ -350,7 +350,8 @@ int CPlant::GetNSeeds()
          NSeeds=floor(mRepro*prop_seed/Traits->SeedMass);
          mRepro=0;
          //kill annual or bienn plant
-         if (Age>Traits->MaxAge-1) this->dead=true;
+         if (Age>Traits->MaxAge-1)
+         this->dead=true;
       }
    }
    return NSeeds;

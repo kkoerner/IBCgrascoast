@@ -8,6 +8,7 @@
 #include "Cell.h"
 #include "GridBase.h"
 #include "environment.h"
+//#include "CWaterPlant.h"
 #pragma hdrstop
 
 //-----------------------------------------------------------------------------
@@ -92,6 +93,8 @@ double CCell::Germinate()
 
    return sumseedmass;
 }//end Germinate()
+
+
 //---------------------------------------------------------------------------
 void CCell::RemoveSeedlings()
 {
@@ -402,6 +405,7 @@ return CCell::asString();
 }//return content for file saving
 
 //-eof---------------------------------------------------------------------
+
 
 
 

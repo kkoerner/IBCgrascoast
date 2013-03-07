@@ -1,6 +1,6 @@
 ID	Species	AllocSeed	LMR	maxMass	mSeed	Dist	pEstab	Gmax	SLA1	palat	memo	RAR	respAnox	propSex	meanSpacerLength	Resshare	mSpacer	clonal	salinity
 1	Phrgmtsa	0.1	0.5	233046	0.13	23.26	0.5	40	0.54	0.5	5	1	0.5	0.1	25	1	250	1	1
-2	Blbschnm	0.1	0.75	5462	2.48	0.27	0.5	40	0.41	1	5	1	0.5	0.1	25	1	36.4133191726036	1	2
+2	Blbschnm	0.1	0.75	5462	2.48	0.27	0.5	40	0.41	1	5	1	0.5	0.1	25	1	36.4133191726036	1	6
 3	Lolmprnn	0.15	0.75	44	1.99	0.31	0.5	60	0.85	0.25	2	1	0	1	1	1	5	1	1
 4	Jncsgrrd	0.1	0.75	682	0.06	0.33	0.5	20	0.47	1	8	1	0.5	0.1	10	1	9.09666190792688	1	7
 5	Ppratnss	0.1	0.7	644	0.27	0.43	0.5	60	0.76	0.25	2	1	0	0.1	10	1	9.16766069353935	1	0
