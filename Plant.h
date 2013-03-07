@@ -100,6 +100,7 @@ public:
    bool remove;    //!< trampled or not - should the plant be removed?
 
    int stress;     //!< counter for weeks with resource stress exposure
+   int Age;        ///< age of (established) plant in years (ageing in winter)
 
 //   int LimitRes;   //!< limiting resource: 1->above, 2->below 0->equal (not used)
 

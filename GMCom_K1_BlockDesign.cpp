@@ -47,7 +47,7 @@ See also: publications of May(2008) and Steinhauer(2008)
 application with some classes
 
 \par Flow chart
-\image html SteinhFlow1.png "FlowChart of the clonal ModelVersion. In: Steinhauer(2008)"
+\image html IBC-Grass_2x-flow.png "FlowChart of the clonal ModelVersion. In: Weiﬂ et al.(in review)"
 Flussdiagramm des Graslandmodells inklusive Wachstumsprozessen klonaler Pflanzen.
 Prozesse mit abgerundeten Ecken sind Prozesse der Zelle.
 Die anderen Prozesse werden fuer alle Pflanze/Samen ausgefuehrt.

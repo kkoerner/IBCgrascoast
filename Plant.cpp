@@ -108,7 +108,7 @@ void SPftTraits::print(){
 CPlant::CPlant(double x, double y, SPftTraits* Traits):
   xcoord(x),ycoord(y),Traits(Traits),mshoot(Traits->m0),mroot(Traits->m0),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL)
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),Age(0)
 {
 //   mRepro=0;
 
@@ -122,7 +122,7 @@ CPlant::CPlant(SPftTraits* Traits, CCell* cell,
      int stress, bool dead):
   xcoord(0),ycoord(0),Traits(Traits),mshoot(mshoot),mroot(mroot),
   Aroots_all(0),Aroots_type(0),mRepro(mrepro),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(dead),remove(false),stress(stress),cell(NULL)
+  Auptake(0),Buptake(0),dead(dead),remove(false),stress(stress),cell(NULL),Age(0)
 {
   if (mshoot==0)this->mshoot=Traits->m0;
   if (mroot==0)this->mroot=Traits->m0;
@@ -149,7 +149,7 @@ CPlant::CPlant(CSeed* seed):
   xcoord(seed->xcoord),ycoord(seed->ycoord),Traits(seed->Traits),
   mshoot(seed->Traits->m0),mroot(seed->Traits->m0),cell(NULL),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0)
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),Age(0)
 {
    //establish this plant on cell
    setCell(seed->getCell());
@@ -337,6 +337,8 @@ void CPlant::DecomposeDead()
   If the plant is alive and it is dispersal time, the function returns
   the number of seeds produced during the last weeks.
   Subsequently the allocated resources are reset to zero.
+
+  If the plant is monocarpic (annual or bienn) it gets killed.
 */
 int CPlant::GetNSeeds()
 {
@@ -347,6 +349,8 @@ int CPlant::GetNSeeds()
       if ((mRepro>0)&&(CEnvir::week>Traits->DispWeek)){
          NSeeds=floor(mRepro*prop_seed/Traits->SeedMass);
          mRepro=0;
+         //kill annual or bienn plant
+         if (Age>Traits->MaxAge-1) this->dead=true;
       }
    }
    return NSeeds;
@@ -386,11 +390,19 @@ double CPlant::RemoveRootMass(const double prop_remove){
    return mass_removed;
 }//end RemoveRootMass
 //-----------------------------------------------------------------------------
+/**
+  Calculate Winter dieback of plant and increase plant's age by one.
+
+  Dieback factor is 0.5 (aboveground biomass only).
+  Reproductive mass is set to zero.
+*/
 void CPlant::WinterLoss()
 {
    double prop_remove=0.5;
    mshoot*=1-prop_remove;
    mRepro=0;
+   //ageing
+   Age++;
 }//end WinterLoss
 //-----------------------------------------------------------------------------
 //double CPlant::GetMass()
