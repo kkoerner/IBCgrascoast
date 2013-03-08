@@ -197,6 +197,8 @@ string CPlant::pft(){
 //---------------------------------------------------------------------------
 ///
 /// \return uptake portion available for vegetative growth
+/// \since 13/03/08 hapaxanth types fruit above biomass threshold 80%
+///
 ///
 double CPlant::ReproGrow(double uptake){
    double SeedRes,VegRes,dm_seeds;
@@ -204,6 +206,10 @@ double CPlant::ReproGrow(double uptake){
    //fixed Proportion of resource to seed production
    if ((pweek>=Traits->FlowerWeek) && (pweek<Traits->DispWeek) &&
        (mRepro<=Traits->AllocSeed*mshoot)){
+   //test for hapaxantic type
+   //fruit only, if biomass-threshold (80%) is crossed
+      if(Traits->MaxAge<5 & this->mshoot<Traits->MaxMass*0.5*0.8)
+        return uptake;
       SeedRes =uptake*Traits->AllocSeed;
       VegRes  =uptake*(1-Traits->AllocSeed);
        //reproductive growth
@@ -349,7 +355,7 @@ int CPlant::GetNSeeds()
       if ((mRepro>0)&&(CEnvir::week>Traits->DispWeek)){
          NSeeds=floor(mRepro*prop_seed/Traits->SeedMass);
          mRepro=0;
-         //kill annual or bienn plant
+         //kill annual or biennial plant
          if (Age>Traits->MaxAge-1)
          this->dead=true;
       }

@@ -165,6 +165,12 @@ string CclonalPlant::pft(){
 
 //---------------------------------------------------------------------------
 /**
+ reimplement CPlant::ReproGrow().
+ \param uptake the plant's uptake
+ \return resources for vegetative growth
+
+ \since 13/03/08 rule for hapaxanthic plants: dont fruit below biomass threshold
+
 */
 double CclonalPlant::ReproGrow(double uptake){
    double SeedRes,VegRes,dm_seeds;
@@ -173,17 +179,23 @@ double CclonalPlant::ReproGrow(double uptake){
    {
       SeedRes =uptake*Traits->AllocSeed;
       VegRes  =uptake-SeedRes;
+      double thresh_hapax=0.8;
       //      VegRes  =uptake*(1-Traits->AllocSeed);
        //reproductive growth
       dm_seeds=max(0.0,Traits->growth*SeedRes);
       // distrubution of mRepro
       int pweek=CEnvir::week;
+      //test for hapaxantic type
+      //fruit only, if biomass-threshold (80%) is crossed
+      if(Traits->MaxAge<5 & this->mshoot<Traits->MaxMass*0.5*thresh_hapax)
+        pweek=Traits->FlowerWeek-1;
       if ((pweek>=Traits->FlowerWeek) && (pweek<Traits->DispWeek))
       {//during the seed-production-weeks
-         //if non-clonal plant in fruiting season
-         if (!this->clonalTraits->clonal){mRepro+=dm_seeds; return VegRes;}
-         mRepro+=(dm_seeds*this->clonalTraits->PropSex);
-         mReproRamets+=(dm_seeds*(1-this->clonalTraits->PropSex));
+        //if non-clonal plant in fruiting season
+        if (!this->clonalTraits->clonal){
+          mRepro+=dm_seeds; return VegRes;}
+        mRepro+=(dm_seeds*this->clonalTraits->PropSex);
+        mReproRamets+=(dm_seeds*(1-this->clonalTraits->PropSex));
       }else
       { //during the other weeks (without seed production)
           //if non-clonal plant out of the fruiting season
