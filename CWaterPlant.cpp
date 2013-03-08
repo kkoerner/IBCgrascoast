@@ -164,7 +164,8 @@ double CWaterPlant::RootGrow(double rres){
             *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
    double grow=max(0.0,Assim_root-Resp_root);
    //salinity dieback
-   if (this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)<1)grow -=0.1*this->mroot;
+   if (this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)<1.0)
+     grow -=0.1*this->mroot;
    return grow;
 }
 
@@ -286,7 +287,7 @@ double CWaterCell::Germinate(){
    {
      CSeed* seed = SeedBankList[i];// *iter;
      if (CEnvir::rand01()>
-       ((CWaterSeed*)seed)->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)<1)
+       ((CWaterSeed*)seed)->waterTraits->saltTolEffect(CWaterGridEnvir::salinity))
        seed->remove=true;
    }
    this->RemoveSeeds();

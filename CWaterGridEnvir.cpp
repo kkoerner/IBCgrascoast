@@ -317,9 +317,9 @@ cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl
    //if all done
       if (endofrun)break;
    }//years
-   //save grid at end of run
-   stringstream v; v<<"B"<<CEnvir::SimNr<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
-   this->Save(v.str());
+//   //save grid at end of run
+//   stringstream v; v<<"B"<<CEnvir::SimNr<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
+//   this->Save(v.str());
 //WL zurücksetzen
 //    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
      SRunPara::RunPara.WaterLevel=WLstart;
@@ -674,7 +674,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
             >> cltraits->clonal
             >> wtraits->saltTol;
      traits->SeedMass=traits->m0;
-//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
+     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
      cltraits->sdSpacerlength=cltraits->meanSpacerlength;
     //namen und IDs
     traits->name=cltraits->name=wtraits->name=dummi2;
