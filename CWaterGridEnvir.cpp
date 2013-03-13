@@ -563,11 +563,12 @@ for an adaptation to salt.
 \return fraction of uptake as costs for  adaptation. \[0 - 1\]
 
 \todo validate rule/values
+\date 13.3. set costs to 5/10% for med/well adapted spec (20/40% before)
 */
 double SWaterTraits::saltTolCosts(){
   if (saltTol<2) return 1;
-  if (saltTol<=5) return 0.8;
-  return 0.6;
+  if (saltTol<=5) return 0.95;
+  return 0.9;
 } // salt tolerance costs
 /**
 Translates Ellenberg Value saltTol to tolerance level of salt content.
