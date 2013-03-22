@@ -392,7 +392,7 @@ cout<<"estabLott_help - CGridClonal";
 */
 void CGridclonal::RametEstab(CclonalPlant* plant)
 {
-   using CEnvir::rand01;
+ //  using CEnvir::rand01;
    int RametListSize=plant->growingSpacerList.size();
 
    if (RametListSize==0)return;
@@ -417,6 +417,8 @@ void CGridclonal::RametEstab(CclonalPlant* plant)
 //cout<<"\nnew Ramet "<<Ramet->pft()<<": "<<x<<";"<<y<<endl;
            //delete from list but not the element itself
            plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f);
+           //establishment success
+           if(CEnvir::rand01()<SRunPara::RunPara.EstabRamet) Ramet->dead=true; //tag:SA
         }//if cell ist not occupied
         else //find another random cell in the area around
         {

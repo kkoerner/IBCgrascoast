@@ -72,8 +72,8 @@ public:
    map<string,double> PftCover;  //!< current Grid-cover of Pfts used
 //   int NPlants;            ///< Number of Plants on Grid
 //   int NdeadPlants;        ///< Number of dead Plants on Grid
-   double CoveredCells;       ///< Grid coverage
-//   double NCellsAcover;    ///< Number of Cells shaded by plants on ground
+//   int CoveredCells;       ///< Number of Cells covered by plants on Grid
+   double NCellsAcover;    ///< Number of Cells shaded by plants on ground
 //   double MeanShannon;     ///< mean Shannon Diversity
 //   double Mortalitaetsrate;///< mortality rate
 

@@ -30,7 +30,7 @@ class CGrid
    double cutted_BM;  ///< biomass removed by mowing
 
 protected:
-   double mort_seeds;    //!< annual seed mortality  (constant)
+//   double mort_seeds;    //!< annual seed mortality  (constant)
    //! assigns grid cells to plants - which cell is covered by which plant
    virtual void CoverCells();
    void CalcRootInteraction();

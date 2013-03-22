@@ -93,7 +93,7 @@ using namespace std;
 
 //---------------------------------------------------------------------------
 CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
-  CoveredCells(0),//MeanShannon(0),
+//  CoveredCells(0),//MeanShannon(0),
   //NCellsAcover(0),//Mortalitaetsrate(0),
   init(1),endofrun(false)
 {
@@ -104,7 +104,7 @@ CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
 }
 //---------------------------------------------------------------------------
 CEnvir::CEnvir(string id)://NdeadPlants(0),NPlants(0),
-  CoveredCells(0),//MeanShannon(0),
+//  CoveredCells(0),//MeanShannon(0),
 //  NCellsAcover(0),//Mortalitaetsrate(0),
   init(1),endofrun(false)
 {
@@ -755,6 +755,7 @@ void CClonalGridEnvir::OneRun(){
         this->Save(v.str());
       }
       if (endofrun)break;
+
    }while(year<SRunPara::RunPara.Tmax);//years
    //save grid
    stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
@@ -1089,10 +1090,11 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
    GridWeek->bresmean=sum_below/sumcells;
 
     double NCellsAcover=GetCoveredCells();
-    if (NCellsAcover>0){
-      CoveredCells=(NCellsAcover/SRunPara::RunPara.GetSumCells());
-    }
-    GridWeek->bareGround=1- CoveredCells;
+//    if (NCellsAcover>0){
+//      CoveredCells=((NCellsAcover)/(SRunPara::RunPara.GetSumCells()))*100;
+//    }
+    GridWeek->bareGround=1.0- (double(NCellsAcover)/
+       (SRunPara::RunPara.GetSumCells()));//bare ground
 
    PftOutData.push_back(PftWeek);
    GridWeek->PftCount=PftSurvival(); //get PFT results

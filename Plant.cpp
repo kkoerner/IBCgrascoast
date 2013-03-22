@@ -319,7 +319,7 @@ void CPlant::Kill()
 //   double pmort;//,rnumber;
 
    //resource deficiency mortality  ; pmin->random background mortality
-   const double pmin=0.007;
+   const double pmin=SRunPara::RunPara.mort_base;//0.007;
    double pmort= (double)stress/Traits->memory  + pmin;  //stress mortality + random background mortality
 //   rnumber = CEnvir::rand01();//(double )rand()/(RAND_MAX+1);
    if (CEnvir::rand01()<pmort) dead=true;
@@ -328,7 +328,7 @@ void CPlant::Kill()
 void CPlant::DecomposeDead()
 {
    const double minmass=10; // mass at which dead plants are removed
-   const double rate=0.5;
+   const double rate=SRunPara::RunPara.LitterDecomp;//0.5;
 
    if (dead)
    {
@@ -372,8 +372,8 @@ int CPlant::GetNSeeds()
 double CPlant::RemoveMass()
 {
    double mass_removed=0;
-   const double prop_remove=0.5; //proportion of mass removed
-
+   //proportion of mass removed (0.5)
+   const double prop_remove=SRunPara::RunPara.BitSize;
    if (mshoot+mRepro>1){   //only remove mass if shoot mas > 1mg
       mass_removed=prop_remove*mshoot+mRepro;
       mshoot*=1-prop_remove;
@@ -405,7 +405,7 @@ double CPlant::RemoveRootMass(const double prop_remove){
 */
 void CPlant::WinterLoss()
 {
-   double prop_remove=0.5;
+   double prop_remove=SRunPara::RunPara.DiebackWinter;//0.5;
    mshoot*=1-prop_remove;
    mRepro=0;
    //ageing

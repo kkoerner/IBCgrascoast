@@ -780,7 +780,7 @@ void CGrid::SeedMortWinter()
       CCELL* cell = CellList[i];
       for (seed_iter iter=cell->SeedBankList.begin(); iter!=cell->SeedBankList.end(); ++iter){
          CSeed* seed = *iter;
-         if ((CEnvir::rand01()<mort_seeds)){
+         if ((CEnvir::rand01()<SRunPara::RunPara.mort_seeds)){
             seed->remove=true;
          } //if not seed survive
          else ++seed->Age;

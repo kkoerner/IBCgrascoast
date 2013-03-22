@@ -14,7 +14,8 @@ using namespace std;
 SRunPara SRunPara::RunPara=SRunPara();
 //-------------------------------------------------------------------
 SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym),
-  GridSize(128),CellNum(128),Tmax(10),NPft(81),GrazProb(0),PropRemove(0.5),
+  mort_base(0.007),LitterDecomp(0.5),DiebackWinter(0.5),EstabRamet(1),
+  GridSize(128),CellNum(128),Tmax(10),NPft(81),GrazProb(0),PropRemove(0.5),BitSize(0.5),
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
@@ -28,20 +29,22 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
 std::string SRunPara::asString(){
   std::stringstream mystream;
       mystream
-      <<"\n"<<Version<<"\t"<<AboveCompMode
-      <<"\t"<<BelowCompMode
+      <<"\n"<<Version<<"\t"<<AboveCompMode<<"\t"<<BelowCompMode
       <<"\t"<<GridSize <<"\t"<<Tmax        <<"\t"<<torus
-      <<"\t"<<GrazProb    <<"\t"<<PropRemove
-      <<"\t"<<BelGrazProb <<"\t"<<BelPropRemove
+      <<"\t"<<mort_seeds<<"\t"<<EstabRamet
+      <<"\t"<<mort_base<<"\t"<<LitterDecomp<<"\t"<<DiebackWinter
+      <<"\nRes: \t"<<meanARes     <<"\t"<<meanBRes
+      <<"\nGrazing:\t"<<GrazProb    <<"\t"<<PropRemove <<"\t"<<BitSize
+      <<"\nBGHerb:\t"<<BelGrazProb <<"\t"<<BelPropRemove
       <<"\t"<<BelGrazMode  <<"\t"<<BGThres   <<"\t"<<HetBG
-      <<"\t"<<NCut         <<"\t"<<CutLeave  //<<"\nCutLeave:\t"<<CutLeave
-      <<"\t"<<meanARes     <<"\t"<<meanBRes
+      <<"\nCutting:\t"<<NCut         <<"\t"<<CutLeave  //<<"\nCutLeave:\t"<<CutLeave
+      <<"\nTrampling:\t"<<DistAreaYear<<"\t"<<AreaEvent
       <<"\t"<<DistAreaYear<<"\t"<<AreaEvent
-      <<"\t"<<mort_seeds
+//      <<"\t"<<mort_seeds
  //     <<"\nspecies:\t"<<species   <<"\nWaterLevel:\t"<<WaterLevel
  //     <<"\nWLseason:\t"<<WLseason <<"\nWLsigma:\t"<<WLsigma
  //     <<"\nchangeVal:\t"<<changeVal<<"\n Migration:\t"<<Migration
-      <<"\t"<<PftFile;
+      <<"\n"<<PftFile;
  return mystream.str();
 }//end print
 void SRunPara::setRunPara(std::string def){
@@ -55,9 +58,10 @@ void SRunPara::setRunPara(std::string def){
   dummi>>d;BelowCompMode=atoi(d.c_str());
   dummi>> GridSize; CellNum=GridSize;
   dummi>> Tmax>> torus;
-  dummi>> GrazProb>> PropRemove>> BelGrazProb >>BelPropRemove>> BelGrazMode
+  dummi>>mort_seeds>> EstabRamet>>mort_base>>LitterDecomp>>DiebackWinter;
+  dummi>> GrazProb>> PropRemove>>BitSize>> BelGrazProb >>BelPropRemove>> BelGrazMode
        >> BGThres>> HetBG>> NCut>> CutLeave>> meanARes>> meanBRes>>DistAreaYear
-       >> AreaEvent >>mort_seeds >>PftFile;
+       >> AreaEvent  >>PftFile;
 }
 void SRunPara::print(){
   std::cout<<"\n  Parameter setting:\n";
