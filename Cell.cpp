@@ -3,10 +3,12 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <sstream>
 //---------------------------------------------------------------------------
 #include "Cell.h"
 #include "GridBase.h"
 #include "environment.h"
+//#include "CWaterPlant.h"
 #pragma hdrstop
 
 //-----------------------------------------------------------------------------
@@ -91,6 +93,8 @@ double CCell::Germinate()
 
    return sumseedmass;
 }//end Germinate()
+
+
 //---------------------------------------------------------------------------
 void CCell::RemoveSeedlings()
 {
@@ -306,6 +310,33 @@ void CCell::print_map(map<string,int> &mymap){
 //---------------------------------------------------------------------------
 #include "CWaterPlant.h"
 
+/**
+report cell's content without plants
+
+\autor KK
+\date 1209xx
+*/
+std::string CCell::asString(){
+//coordinates
+std::stringstream dummi;
+dummi<<"\n"<<(x)<<"\t"<<(y);
+//resources (not needed in constant and even resource scenarios)
+//seed bank               
+   typedef vector<CSeed*>::iterator CI;
+   map<string,int> pftlist;
+//   typedef map<string,int>::const_iterator CI;
+   for (CI p=SeedBankList.begin();p!=SeedBankList.end();++p){
+     pftlist[(*p)->pft()]++;
+   }
+   typedef map<string,int>::const_iterator CII;
+   for (CII pie=pftlist.begin();pie!=pftlist.end();++pie){
+     dummi<<"\n"<<pie->first<<"\t"<<pftlist[pie->first];
+   }
+
+dummi<<"\nCE";
+return dummi.str();
+}//return content for file saving
+
 //! Konstruktor
 CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy):
   CCell(xx,yy),WaterLevel(0){
@@ -326,7 +357,6 @@ CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy,
 BELOWground competition takes global information on symmetry and version to
 distribute the cell's resources.
  Resource competition Version is 1.
-
 virtual function will be substituted by comp function from sub class
 
 soil resources are meant as res per 50cm rooting depth
@@ -362,9 +392,19 @@ void CWaterCell::BelowComp()
                         * comp_c /comp_tot;
    }
 }//end below_comp
+/**
+report cell's content without plants
+
+  - no abiotic data documented
+  - no additional biotic data to document
+\autor KK
+\date 1209xx
+*/
+std::string CWaterCell::asString(){
+return CCell::asString();
+}//return content for file saving
 
 //-eof---------------------------------------------------------------------
-
 
 
 

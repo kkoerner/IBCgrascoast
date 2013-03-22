@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include <iostream>
+#include <sstream>
 
 #include "Plant.h"
 #include "environment.h"
@@ -107,7 +108,7 @@ void SPftTraits::print(){
 CPlant::CPlant(double x, double y, SPftTraits* Traits):
   xcoord(x),ycoord(y),Traits(Traits),mshoot(Traits->m0),mroot(Traits->m0),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL)
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),Age(0)
 {
 //   mRepro=0;
 
@@ -116,27 +117,39 @@ CPlant::CPlant(double x, double y, SPftTraits* Traits):
 //   Art_disc=0;
 }
 //-----------------------------------------------------------------------------
-CPlant::CPlant(SPftTraits* Traits, CCell* cell):
-  xcoord(0),ycoord(0),Traits(Traits),mshoot(Traits->m0),mroot(Traits->m0),
-  Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL)
+CPlant::CPlant(SPftTraits* Traits, CCell* cell,
+     double mshoot, double mroot, double mrepro,
+     int stress, bool dead):
+  xcoord(0),ycoord(0),Traits(Traits),mshoot(mshoot),mroot(mroot),
+  Aroots_all(0),Aroots_type(0),mRepro(mrepro),Ash_disc(0),Art_disc(0),
+  Auptake(0),Buptake(0),dead(dead),remove(false),stress(stress),cell(NULL),Age(0)
 {
+  if (mshoot==0)this->mshoot=Traits->m0;
+  if (mroot==0)this->mroot=Traits->m0;
   setCell(cell);
   if (cell){
     xcoord=(cell->x*SRunPara::RunPara.CellScale());
     ycoord=(cell->y*SRunPara::RunPara.CellScale());
   }
-//  mRepro=0;
-// //  Allometrics();
-//  Ash_disc=0;
-//  Art_disc=0;
 }
+//-----------------------------------------------------------------------------
+/*
+CPlant::CPlant(SPftTraits* traits,CCell* cell,
+     double mshoot, double mroot, double mrepro, int stress, bool dead)
+:CPlant(traits,cell){
+  this->mshoot=mshoot;
+  this->mroot=mroot;
+  this->mRepro=mrepro;
+  this->stress=stress;
+  this->dead=dead;
+}
+*/
 //-----------------------------------------------------------------------------
 CPlant::CPlant(CSeed* seed):
   xcoord(seed->xcoord),ycoord(seed->ycoord),Traits(seed->Traits),
   mshoot(seed->Traits->m0),mroot(seed->Traits->m0),cell(NULL),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0)
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),Age(0)
 {
    //establish this plant on cell
    setCell(seed->getCell());
@@ -155,7 +168,17 @@ CPlant::CPlant(CSeed* seed):
 CPlant::~CPlant(){
 //  cout<<'~'<<type();
 }
+//--SAVE-----------------------------------------------------------------------
+string CPlant::asString(){
+std::stringstream dummi;
+//coordinates +type
+dummi<<"\n"<<xcoord<<"\t"<<ycoord<<"\t"<<this->pft();
+//biomasses dead? - state variables
+dummi<<'\t'<<mshoot<<'\t'<<mroot<<'\t'<<mRepro<<'\t'<<stress<<'\t'<<dead;
+return dummi.str();
+} //<report plant's status
 //-----------------------------------------------------------------------------
+
 void CPlant::setCell(CCell* cell){
    if (this->cell==NULL&&cell!=NULL){
      this->cell=cell;
@@ -174,6 +197,8 @@ string CPlant::pft(){
 //---------------------------------------------------------------------------
 ///
 /// \return uptake portion available for vegetative growth
+/// \since 13/03/08 hapaxanth types fruit above biomass threshold 80%
+///
 ///
 double CPlant::ReproGrow(double uptake){
    double SeedRes,VegRes,dm_seeds;
@@ -181,6 +206,10 @@ double CPlant::ReproGrow(double uptake){
    //fixed Proportion of resource to seed production
    if ((pweek>=Traits->FlowerWeek) && (pweek<Traits->DispWeek) &&
        (mRepro<=Traits->AllocSeed*mshoot)){
+   //test for hapaxantic type
+   //fruit only, if biomass-threshold (80%) is crossed
+      if(Traits->MaxAge<5 & this->mshoot<Traits->MaxMass*0.5*0.8)
+        return uptake;
       SeedRes =uptake*Traits->AllocSeed;
       VegRes  =uptake*(1-Traits->AllocSeed);
        //reproductive growth
@@ -314,6 +343,8 @@ void CPlant::DecomposeDead()
   If the plant is alive and it is dispersal time, the function returns
   the number of seeds produced during the last weeks.
   Subsequently the allocated resources are reset to zero.
+
+  If the plant is monocarpic (annual or bienn) it gets killed.
 */
 int CPlant::GetNSeeds()
 {
@@ -324,6 +355,9 @@ int CPlant::GetNSeeds()
       if ((mRepro>0)&&(CEnvir::week>Traits->DispWeek)){
          NSeeds=floor(mRepro*prop_seed/Traits->SeedMass);
          mRepro=0;
+         //kill annual or biennial plant
+         if (Age>Traits->MaxAge-1)
+         this->dead=true;
       }
    }
    return NSeeds;
@@ -363,11 +397,19 @@ double CPlant::RemoveRootMass(const double prop_remove){
    return mass_removed;
 }//end RemoveRootMass
 //-----------------------------------------------------------------------------
+/**
+  Calculate Winter dieback of plant and increase plant's age by one.
+
+  Dieback factor is 0.5 (aboveground biomass only).
+  Reproductive mass is set to zero.
+*/
 void CPlant::WinterLoss()
 {
    double prop_remove=0.5;
    mshoot*=1-prop_remove;
    mRepro=0;
+   //ageing
+   Age++;
 }//end WinterLoss
 //-----------------------------------------------------------------------------
 //double CPlant::GetMass()

@@ -69,6 +69,8 @@ struct SRunPara
    string WLseason;  ///<modus of seasonal WL change [const season random comb]
    double changeVal; ///<value of the parameter to change (add to) after 20 years
    int Migration;   ///<How many seeds per species arrive annually?
+   double salt; ///<salt level on plot
+
 
    SRunPara();
    void print();    ///<print RunPara - parameters
@@ -77,7 +79,8 @@ struct SRunPara
    inline double CellScale(){return GridSize/(double)CellNum;};
    inline int GetGridSize() const {return CellNum;};
    inline int GetSumCells() const {return CellNum*CellNum;};
-
+   std::string asString();///<
+   void setRunPara(std::string def);
 };
 //---------------------------------------------------------------------------
 #endif

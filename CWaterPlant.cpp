@@ -6,7 +6,7 @@
 
 #include "CWaterPlant.h"
 #include "CWaterGridEnvir.h"
-
+#include <sstream>
 //---------------------------------------------------------------------------
 string CWaterPlant::type()
 {
@@ -51,14 +51,43 @@ CWaterPlant::CWaterPlant(double x, double y, CWaterPlant* plant)
 initialization of adult plants
 \param mass initial biomass of Plant (above- + belowground)
 */
-CWaterPlant::CWaterPlant(double mass, SPftTraits* traits,
+CWaterPlant::CWaterPlant(SPftTraits* traits,
       SclonalTraits* clonalTraits,
-      SWaterTraits* waterTraits, CCell* cell):
-      CclonalPlant(traits,clonalTraits,cell),waterTraits(waterTraits)
+      SWaterTraits* waterTraits, CCell* cell,
+     double mshoot,double mroot,double mrepro,
+     int stress,bool dead,int generation,int genetnb,
+     double spacerl,double spacerl2grow):
+      CclonalPlant(traits,clonalTraits,cell,mshoot,mroot,mrepro,stress,dead,generation, genetnb,
+      spacerl,spacerl2grow),waterTraits(waterTraits)
 {
-  this->mshoot=mass/2.0;
-  this->mroot=mass/2.0;
 }
+/**
+Copies the data from an existing CclonalPlant and appends water related traits.
+\note the original clonal plant is still existing.
+*/
+CWaterPlant::CWaterPlant(CclonalPlant* clplant, SWaterTraits* waterTraits):
+      CclonalPlant(clplant->Traits,clplant->clonalTraits,clplant->getCell(),
+      clplant->mshoot,clplant->mroot,clplant->mRepro,clplant->stress,
+      clplant->dead,clplant->Generation, //clplant->genetnb,
+      clplant->Spacerlength,clplant->SpacerlengthToGrow),waterTraits(waterTraits)
+{
+this->setGenet(clplant->getGenet());
+}
+
+//--SAVE-----------------------------------------------------------------------
+/**
+  CWaterPlant-Version of plant report
+
+  -no additional state variables
+  \autor KK
+  \date 130214
+*/
+string CWaterPlant::asString(){
+  std::stringstream dummi;
+  // CclonalPlant part
+  dummi<<CclonalPlant::asString();
+  return dummi.str();
+} //<report plant's status
 //---------------------------------------------------------------------------
 /**
 Overload CPlant::Grow2() for additional Effect of WaterLevel.
@@ -79,9 +108,9 @@ double oldmass=this->GetMass();
 // if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
-//if (false)
-if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
-//if (CEnvir::year<3)
+if (false)
+//if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
+//if (CEnvir::year==21&CEnvir::week<10)
 //if (true)
 {
  string filename=CEnvir::NameLogFile;
@@ -89,6 +118,7 @@ if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
  CEnvir::AddLogEntry(CEnvir::RunNr,filename);
  CEnvir::AddLogEntry(CEnvir::year,filename);
  CEnvir::AddLogEntry(CEnvir::week,filename);
+ CEnvir::AddLogEntry(CWaterGridEnvir::salinity,filename);
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
  CEnvir::AddLogEntry(GetMass(),filename);    //biomass
@@ -122,6 +152,8 @@ if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
     with respect of rooting depth (Gmax now represents resources per 50cm rooting depth)
 
     \since 27/04/2012
+
+    \since 05/03/2013 NEW:dieback of roots due to salinity; negative output possible
 */
 double CWaterPlant::RootGrow(double rres){
    double Assim_root, Resp_root;
@@ -130,8 +162,11 @@ double CWaterPlant::RootGrow(double rres){
    Assim_root=Traits->growth*min(rres,Traits->Gmax*p_depth/50.0*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
    Resp_root=Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
             *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
-
-   return max(0.0,Assim_root-Resp_root);
+   double grow=max(0.0,Assim_root-Resp_root);
+   //salinity dieback
+   if (this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)<1.0)
+     grow -=0.1*this->mroot;
+   return grow;
 }
 
 //-------------------------------------------------------------
@@ -145,6 +180,12 @@ Adapted plants are not restricted to WaterLevel depth, but have to pay
 with restricted general uptake rate.
 
 \note returns 1e-10 minimal (to exclude 'devide by zero')
+
+Reduce Plant's root efficiency in case of salt stress.
+\author KK
+\date 13/02/07
+
+
 */
 double CWaterPlant::rootEfficiency(){
  double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
@@ -152,19 +193,47 @@ double CWaterPlant::rootEfficiency(){
  //a) logistic formula
 // ...
  //b) Wenn-Dann
+ double retval=1.0, WLcost= this->waterTraits->assimAnoxWL;
+ //oxygen deficit
+ //costs..
  if(this->waterTraits->assimAnoxWL>0.0)
-   return min(1.0,this->waterTraits->assimAnoxWL);  //0.5
- double retval=  max(min(depth,-wl)/depth,1e-10); //0.0
+   retval= min(1.0,WLcost);  //0.5
+ //effect..
+ else retval=  max(min(depth,-wl)/depth,1e-10); //0.0
+
+//salt stress
+ retval*=this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)
+     * this->waterTraits->saltTolCosts();
  return retval;
 }
+//-------------------------------------------------------------
+/**
+calc effect of winter disturbance on plant
+depending on water-related traits
+
+\verbatim
+ mort=min(0.95, max(0,MonthsInundation-Thresh_by_adapt )/4)
+ Thresh_by_adapt(no,yes)=(2,8)
+\endverbatim
+no additional dieback at the moment
+*/
+void CWaterPlant::winterDisturbance(int weeks_of_dist){
+  double mortality=0;
+  int aThresh=2; if (this->waterTraits->assimAnoxWL>0) aThresh=8;
+  if (!dead){
+    mortality=min(0.95, max(0,weeks_of_dist-aThresh)/4.0);
+    if (CEnvir::rand01()<mortality) dead=true;
+  }
+} //end CWaterPlant::winterDisturbance
 //-------------------------------------------------------------
 /**
 Helping function for CWaterGridEnvir::DistribRessource
 
 Corrects plant's resource uptake for current Water conditions.
-\not not stochasticity
+\note no stochasticity
 \author KK
 \date 11/10/11
+
 */
 void CWaterPlant::DistrRes_help(){
  //add water-effect
@@ -207,6 +276,23 @@ double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
 }
 */
 //---------------------------------------------------------------------------
+/**
+  Reimplemented from CCell::Germinate(). Prior to germination a seed mortality due to
+  salinity is calculated. Survival responds to saltTolEffect() of seed's PFT.
+*/
+double CWaterCell::Germinate(){
+   //seed mortality due to salinity
+   unsigned int sbsize=SeedBankList.size();
+   for (unsigned int i =0; i<sbsize;i++)
+   {
+     CSeed* seed = SeedBankList[i];// *iter;
+     if (CEnvir::rand01()>
+       ((CWaterSeed*)seed)->waterTraits->saltTolEffect(CWaterGridEnvir::salinity))
+       seed->remove=true;
+   }
+   this->RemoveSeeds();
+   return CCell::Germinate();
+}//end Germinate
 //---------------------------------------------------------------------------
 /***/
 CWaterSeed::CWaterSeed(double estab, SPftTraits* traits,

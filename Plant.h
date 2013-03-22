@@ -100,19 +100,25 @@ public:
    bool remove;    //!< trampled or not - should the plant be removed?
 
    int stress;     //!< counter for weeks with resource stress exposure
+   int Age;        ///< age of (established) plant in years (ageing in winter)
 
 //   int LimitRes;   //!< limiting resource: 1->above, 2->below 0->equal (not used)
 
    //functions
    //! constructor for plant objects
    CPlant(double x, double y,SPftTraits* Traits);
-   CPlant(SPftTraits* Traits,CCell* cell);
+   CPlant(SPftTraits* Traits,CCell* cell,
+     double mshoot=0, double mroot=0, double mrepro=0,
+     int stress=0, bool dead=false);
    ///make a plant from a clonal-seed object
    CPlant(CSeed* seed);
+   //! initalization of one plant
+//   CPlant(SPftTraits* traits,CCell* cell,
+//     double mshoot, double mroot, double mrepro, int stress, bool dead);
    virtual ~CPlant();  //!<destruktor
    virtual string type();  ///<say what you are
    virtual string pft();   ///<say what a pft you are
-
+   virtual string asString(); ///<report plant's status
 //   void Allometrics(); //!< calculates ZOI areas (above and below) from shoot and root mass
    double Area_shoot();
    double Area_root();

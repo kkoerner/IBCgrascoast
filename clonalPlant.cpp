@@ -4,6 +4,7 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include <iostream>
+#include <sstream>
 
 #include "clonalPlant.h"
 #include "environment.h"
@@ -40,6 +41,29 @@ CclonalPlant::CclonalPlant(double x, double y, CclonalPlant* plant)
   not used
 */
 CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
+  SclonalTraits* clonalTraits, CCell* cell,
+     double mshoot,double mroot,double mrepro,
+     int stress,bool dead,int generation,int genetnb,
+     double spacerl,double spacerl2grow)
+  :CPlant(PlantTraits,cell,mshoot,mroot,mrepro,stress,dead),
+  clonalTraits(clonalTraits),genet(NULL),mReproRamets(0),
+  Spacerlength(0),Spacerdirection(0),Generation(generation),
+  SpacerlengthToGrow(0)//keine vordefinierten Eigenschaften
+{
+   growingSpacerList.clear();
+   //define spacer (with random direction)
+   if (spacerl>0){
+     CclonalPlant* spacer=new CclonalPlant(0,0,this);
+     spacer->Spacerlength=spacerl;
+     spacer->SpacerlengthToGrow=spacerl2grow;
+     spacer->Spacerdirection=2*Pi*CEnvir::rand01();
+     this->growingSpacerList.push_back(spacer);
+   }
+
+}//---------------------------------------------------------------------------
+/**
+  not used
+CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
   SclonalTraits* clonalTraits, CCell* cell)
   :CPlant(PlantTraits,cell),genet(NULL)//keine vordefinierten Eigenschaften
 {
@@ -52,6 +76,8 @@ CclonalPlant::CclonalPlant(SPftTraits* PlantTraits,
    Generation=1;
    SpacerlengthToGrow=0;
 }
+*/
+
 //---------------------------------------------------------------------------
 /**
   not used
@@ -69,6 +95,27 @@ CclonalPlant::CclonalPlant(double x, double y,
    Generation=1;
    SpacerlengthToGrow=0;
 }
+//--SAVE-----------------------------------------------------------------------
+/**
+  CclonalPlant-Version of plant report
+
+  \note direction not reportet; mReproRamets not reportet - weekly transfered
+   directly to Spacerlength
+  \autor KK
+  \date 120905
+*/
+string CclonalPlant::asString(){
+  std::stringstream dummi;
+  // cPlant part
+  dummi<<CPlant::asString();
+  // generation number and genet-ID
+  dummi<<"\t"<<Generation<<'\t'<<genet->number;
+  // Spacerinfo Length and Length-to-grow  (only for first spacer)
+  if (growingSpacerList.size()>0)
+    dummi<<'\t'<<this->growingSpacerList[0]->Spacerlength
+         <<'\t'<<this->growingSpacerList[0]->SpacerlengthToGrow;
+  return dummi.str();
+} //<report plant's status
 //---------------------------------------------------------------------------
 /**
   If a seed germinates, the new plant inherits its parameters.
@@ -118,6 +165,12 @@ string CclonalPlant::pft(){
 
 //---------------------------------------------------------------------------
 /**
+ reimplement CPlant::ReproGrow().
+ \param uptake the plant's uptake
+ \return resources for vegetative growth
+
+ \since 13/03/08 rule for hapaxanthic plants: dont fruit below biomass threshold
+
 */
 double CclonalPlant::ReproGrow(double uptake){
    double SeedRes,VegRes,dm_seeds;
@@ -126,17 +179,23 @@ double CclonalPlant::ReproGrow(double uptake){
    {
       SeedRes =uptake*Traits->AllocSeed;
       VegRes  =uptake-SeedRes;
+      double thresh_hapax=0.8;
       //      VegRes  =uptake*(1-Traits->AllocSeed);
        //reproductive growth
       dm_seeds=max(0.0,Traits->growth*SeedRes);
       // distrubution of mRepro
       int pweek=CEnvir::week;
+      //test for hapaxantic type
+      //fruit only, if biomass-threshold (80%) is crossed
+      if(Traits->MaxAge<5 & this->mshoot<Traits->MaxMass*0.5*thresh_hapax)
+        pweek=Traits->FlowerWeek-1;
       if ((pweek>=Traits->FlowerWeek) && (pweek<Traits->DispWeek))
       {//during the seed-production-weeks
-         //if non-clonal plant in fruiting season
-         if (!this->clonalTraits->clonal){mRepro+=dm_seeds; return VegRes;}
-         mRepro+=(dm_seeds*this->clonalTraits->PropSex);
-         mReproRamets+=(dm_seeds*(1-this->clonalTraits->PropSex));
+        //if non-clonal plant in fruiting season
+        if (!this->clonalTraits->clonal){
+          mRepro+=dm_seeds; return VegRes;}
+        mRepro+=(dm_seeds*this->clonalTraits->PropSex);
+        mReproRamets+=(dm_seeds*(1-this->clonalTraits->PropSex));
       }else
       { //during the other weeks (without seed production)
           //if non-clonal plant out of the fruiting season

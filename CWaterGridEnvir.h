@@ -42,12 +42,27 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  void genSeasonWL();
  /// generate const Wl-series
  void genConstWL();
+ /// inundation time in winter season \[weeks\] 0..12
+ int winterInundation;
 protected:
  void DistribResource();    ///<water impact on ressource allocation
  void SetCellResource();     ///< set amount of resources the cells serve
+    //! calls seed mortality and mass removal of plants
+ virtual void Winter();
+
 public:
-  CWaterGridEnvir():WaterFlow(no){CellsInit();
+ /// plot's salinity level
+ /**
+   Global salinity value for the whole grid. Function CWaterPlant::rootEfficiency
+   can read this.
+
+   Unit is g/l (Thresholds in Ellenberg are in \'\%\').
+ */
+ static double salinity;
+
+  CWaterGridEnvir():WaterFlow(no),winterInundation(0){CellsInit();
  cout<<"\nCWaterGrid() ";};
+  CWaterGridEnvir(string id); ///< load from file(s)
   ~CWaterGridEnvir();
  ///initialization of grid cells - no functionality
  void CellsInit();
@@ -56,13 +71,20 @@ public:
 // virtual void InitInds(string file);///<initialization of inds based on file data
 // virtual void InitSeeds(string, int);
   virtual void InitInds(string file,int n=-1);///<initialization of inds based on file data
+  /// Initialization of one Individual while loading a saved grid
+  virtual bool InitInd(string def);
  //! initalization of clonal seeds
- virtual void InitWaterSeeds(const string  PftName,const int n=1,double estab=1.0);
+ virtual void InitSeeds(const string  PftName,const int n=1,double estab=1.0);
+   //! initalization of seeds
+   virtual void InitSeeds(const string  PftName,const int n,int x, int y,double estab=1.0);
  //! initalization of clonal seeds
- virtual void InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
-   SWaterTraits* wtraits,const int n,double estab=1.0);
+ virtual void InitSeeds(SPftTraits* traits,SclonalTraits* cltraits,
+   SWaterTraits* wtraits,const int n,double estab=1.0,int x=-1, int y=-1);
  virtual void InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass);
+
+ virtual void Save(string ID);//<save current grid state
+
 //-----
   void OneRun();    ///< runs one simulation run in default mode
 
@@ -111,14 +133,15 @@ struct SWaterTraits   //plant functional traits
    static void ReadWaterStrategy(char* file="");    //!> read PFT parameters from the input file
 
    string name;   ///< name of functional type
-   double WL_Optimum; ///< optimal mean water level (positive is flooded)
-   double WL_Tolerance; ///< SD of optimal water level
    bool assimBelWL;///<plant can assimilate light below WaterLevel
    ///\brief ability to uptake resources in the anoxic root zone
    /// If zero, no uptake below waterlevel;
    /// else it's efficiency is reduced by this value for all WL
    ///
    double assimAnoxWL;
+   int saltTol; ///< salt tolerance of species (Ellenberg salt value)
+   double saltTolCosts(); ///< salt tolerance costs
+   double saltTolEffect(double salinity); ///< salt tolerance effect
 
    void SetDefault();   ///< set default trait values (eq. 'PFT1')
    SWaterTraits();

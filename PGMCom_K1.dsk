@@ -1,115 +1,201 @@
 [Closed Files]
-File_0=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\rng.h',0,1,95,1,107,0,0
-File_1=SourceModule,'C:\DOKUME~1\KatrinK\LOKALE~1\Temp\environment.cpp-revHEAD.svn000.tmp.cpp',0,1,400,1,413,0,0
-File_2=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\GMGrazBGKl.cpp',0,1,110,1,105,0,0
-File_3=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\environment.cpp',0,1,102,63,108,0,0
-File_4=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\CGridclonal.cpp',0,1,21,1,50,0,0
-File_5=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\Cell.cpp',0,1,186,1,196,0,0
-File_6=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\Plant.cpp',0,1,96,16,101,0,0
-File_7=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\GridBase.cpp',0,1,757,3,840,0,0
-File_8=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\RunPara.cpp',0,1,1,1,1,0,0
-File_9=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\Grassland\Grassland\BG2\GMGrazBGKonsole.cpp',0,1,134,17,139,0,0
+File_0=SourceModule,'c:\programme\borland\cbuilder6\include\stl\_vector.h',0,1,322,44,323,0,0
+File_1=SourceModule,'c:\programme\borland\cbuilder6\include\stl\_tree.h',0,1,162,1,172,0,0
+File_2=SourceModule,'c:\programme\borland\cbuilder6\include\stl\_map.h',0,1,137,1,147,0,0
+File_3=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CGridclonal.cpp',0,1,119,56,128,0,0
 
 [Modules]
-Module0=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\GMCOMK_realspec.cpp
-Module1=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\environment.cpp
-Module2=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\CWaterGridEnvir.cpp
-Module3=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\CGridclonal.cpp
-Count=4
+Module0=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp
+Module1=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp
+Module2=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp
+Module3=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp
+Module4=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\RunPara.cpp
+Module5=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CSeed.cpp
+Module6=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp
+Module7=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Cell.cpp
+Module8=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GridBase.cpp
+Module9=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp
+Count=10
 EditWindowCount=1
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\GMCOMK_realspec.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\environment.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\CWaterGridEnvir.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\CGridclonal.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\ProjectGroup1.bpg]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\RunPara.cpp]
+ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\PGMCom_K1.bpr]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CSeed.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Cell.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GridBase.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Programme\Borland\CBuilder6\Projects\ProjectGroup1.bpg]
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\PGMCom_K1.bpr]
 FormState=0
 FormOnTop=0
 
 [EditWindow0]
-ViewCount=4
-CurrentView=0
+ViewCount=10
+CurrentView=1
 View0=0
 View1=1
 View2=2
 View3=3
+View4=4
+View5=5
+View6=6
+View7=7
+View8=8
+View9=9
 CodeExplorer=CodeExplorer@EditWindow0
 MessageView=MessageView@EditWindow0
 ClassHierarchy=ClassHierarchy@EditWindow0
 Create=1
 Visible=1
 State=0
-Left=200
-Top=140
-Width=1062
-Height=576
+Left=160
+Top=279
+Width=1203
+Height=653
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=1054
-ClientHeight=542
-LeftPanelSize=283
+ClientWidth=1195
+ClientHeight=619
+LeftPanelSize=420
 LeftPanelClients=DockSite0
 LeftPanelData=0000040000000000000000000000000000000000000000000001000000000000000009000000446F636B5369746530FFFFFFFF
 RightPanelSize=0
-BottomPanelSize=191
+BottomPanelSize=259
 BottomPanelClients=CallStackWindow,MessageView@EditWindow0
-BottomPanelData=0000040000000000BF00000000000000011E0400000000000001000000005F0000000F00000043616C6C537461636B57696E646F770100000000BF0000000B0000004D65737361676556696577FFFFFFFF
+BottomPanelData=0000040000000000030100000000000001AB040000000000000100000000320000000F00000043616C6C537461636B57696E646F770100000000030100000B0000004D6573736167655669657701000000009B00000000000000FFFFFFFF
 
 [View0]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\GMCOMK_realspec.cpp
-CursorX=1
-CursorY=118
-TopLine=110
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp
+CursorX=102
+CursorY=50
+TopLine=22
 LeftCol=1
 
 [View1]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\environment.cpp
-CursorX=24
-CursorY=384
-TopLine=380
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp
+CursorX=72
+CursorY=566
+TopLine=562
 LeftCol=1
 
 [View2]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\CGridclonal.cpp
-CursorX=1
-CursorY=202
-TopLine=1
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GridBase.cpp
+CursorX=11
+CursorY=347
+TopLine=343
 LeftCol=1
 
 [View3]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\CWaterGridEnvir.cpp
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Cell.cpp
+CursorX=20
+CursorY=77
+TopLine=71
+LeftCol=1
+
+[View4]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp
 CursorX=1
-CursorY=174
-TopLine=172
+CursorY=211
+TopLine=199
+LeftCol=1
+
+[View5]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp
+CursorX=1
+CursorY=191
+TopLine=183
+LeftCol=1
+
+[View6]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CSeed.cpp
+CursorX=1
+CursorY=76
+TopLine=21
+LeftCol=1
+
+[View7]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp
+CursorX=1
+CursorY=474
+TopLine=457
+LeftCol=1
+
+[View8]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\RunPara.cpp
+CursorX=42
+CursorY=19
+TopLine=14
+LeftCol=1
+
+[View9]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp
+CursorX=12
+CursorY=291
+TopLine=281
 LeftCol=1
 
 [Watches]
 Count=1
-Watch0='plant',256,0,18,1,0,'Überwachte Ausdrücke'
+Watch0='seed',256,0,18,1,0,'Überwachte Ausdrücke'
 
 [Breakpoints]
-Count=1
-Breakpoint0='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\water-stress\Grassland\CWaterGridEnvir.cpp',174,'',0,1,'',1,0,0,'',1,'','',''
+Count=9
+Breakpoint0='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp',25,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint1='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp',291,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint2='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp',585,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint3='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp',169,'grow<0',0,1,'',1,0,0,'',1,'','',''
+Breakpoint4='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp',212,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint5='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp',211,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint6='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp',203,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint7='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp',196,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint8='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp',191,'CEnvir::week>17',0,1,'',1,0,0,'',1,'','',''
 
 [AddressBreakpoints]
 Count=0
@@ -129,10 +215,10 @@ ClientHeight=78
 
 [ProjectManager]
 Create=1
-Visible=1
+Visible=0
 State=0
-Left=278
-Top=255
+Left=337
+Top=217
 Width=438
 Height=305
 MaxLeft=-1
@@ -166,12 +252,12 @@ Visible=1
 State=0
 Left=0
 Top=0
-Width=275
-Height=307
+Width=412
+Height=316
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=275
-ClientHeight=307
+ClientWidth=412
+ClientHeight=316
 TBDockHeight=149
 LRDockWidth=421
 Dockable=1
@@ -182,13 +268,13 @@ Visible=1
 State=0
 Left=12
 Top=0
-Width=1042
-Height=91
+Width=1183
+Height=46
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=1042
-ClientHeight=91
-TBDockHeight=91
+ClientWidth=1183
+ClientHeight=46
+TBDockHeight=46
 LRDockWidth=294
 Dockable=1
 
@@ -244,16 +330,16 @@ Dockable=1
 
 [CodeguardLog]
 Create=1
-Visible=0
+Visible=1
 State=0
-Left=191
-Top=108
-Width=448
-Height=190
+Left=0
+Top=0
+Width=412
+Height=316
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=440
-ClientHeight=164
+ClientWidth=412
+ClientHeight=316
 TBDockHeight=190
 LRDockWidth=448
 Dockable=1
@@ -283,14 +369,14 @@ Visible=1
 State=0
 Left=0
 Top=0
-Width=275
-Height=307
+Width=412
+Height=316
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=275
-ClientHeight=307
+ClientWidth=412
+ClientHeight=316
 TBDockHeight=388
-LRDockWidth=170
+LRDockWidth=227
 Dockable=1
 ClassViewDisplayMode=0
 
@@ -299,14 +385,14 @@ Create=1
 Visible=1
 State=0
 Left=12
-Top=95
-Width=1042
-Height=96
+Top=50
+Width=1183
+Height=209
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=1042
-ClientHeight=96
-TBDockHeight=96
+ClientWidth=1183
+ClientHeight=209
+TBDockHeight=209
 LRDockWidth=443
 Dockable=1
 
@@ -320,16 +406,16 @@ Visible=1
 State=0
 Left=0
 Top=12
-Width=283
-Height=336
+Width=420
+Height=345
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=283
-ClientHeight=336
+ClientWidth=420
+ClientHeight=345
 TBDockHeight=94
-LRDockWidth=283
+LRDockWidth=420
 Dockable=1
 TabPosition=0
 ActiveTab=ClassExplorer
-TabDockClients=CodeExplorer@EditWindow0,WatchWindow
+TabDockClients=CodeExplorer@EditWindow0,CodeguardLog,WatchWindow
 

@@ -7,6 +7,7 @@
 #include "CGridclonal.h"
 #include "environment.h"
 #include <iostream>
+#include <sstream>
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -15,6 +16,18 @@
 //---------------------------------------------------------------------------
 CGridclonal::CGridclonal() : CGrid(){
    SclonalTraits::ReadclonalTraits();
+}  // Constructor
+//---------------------------------------------------------------------------
+/**
+   Constructor to load a grid from files.
+
+\warning does not initiate pft definitions.
+this had to be done at least vie prior dummi grid
+   \autor KK
+   \date 120905
+*/
+CGridclonal::CGridclonal(string id) : CGrid(id){
+//   SclonalTraits::ReadclonalTraits();
 }  // Constructor
 //----------------------------------------------------------
 void CGridclonal::resetGrid()
@@ -29,6 +42,34 @@ CGridclonal::~CGridclonal(){
    GenetList.clear();CGenet::staticID=0;
 }   // Destructor
 //---------------------------------------------------------------------------
+/**
+  File saving the entire clonal grid for later reload.
+
+  \note not included: LDD-Seed list ; genet info - IDs are included in ramets
+  \autor KK
+  \date 120831
+*/
+void CGridclonal::Save(string fname){
+//open file..
+   ofstream SaveFile(fname.c_str());
+  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+  cout<<"SaveFile: "<<fname<<endl;
+//write..
+
+//Cells (without Plants, with seeds)
+//  SaveFile<<"\nNumber of Cells\t"<<SRunPara::RunPara.GetSumCells() <<endl;
+  for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i)  //loop for all cells
+     SaveFile<<CellList[i]->asString();
+
+//Plants
+  SaveFile<<"\nNumber of Plants\t"<<this->PlantList.size();
+  for (int i=0; i<this->PlantList.size(); ++i)  //loop for all cells
+//    SaveFile<<"\nPlant "<<i;//Plant->asString()
+     SaveFile<<PlantList[i]->asString();
+//genet information
+  SaveFile<<"\nNumber of Genets\t"<<this->GetNMotherPlants();
+
+}  // file save of entire grid
 //-----------------------------------------------------------------------------
 /**
   Set a number of randomly distributed clonal Plants (CclonalPlant)
@@ -83,19 +124,19 @@ void CGridclonal::InitClonalPlants(
 
 */
 void CGridclonal::InitClonalSeeds(
-  SPftTraits* traits,SclonalTraits* cltraits,const int n,double estab)
-{ //init clonal seeds in random cells
+  SPftTraits* traits,SclonalTraits* cltraits,const int n,double estab, int x, int y)
+{ //init clonal seeds in random cells  if x or y are <0
    using CEnvir::nrand;using SRunPara::RunPara;
-   int x,y;
+//   int x,y;
    int SideCells=RunPara.CellNum;
-
+if (x<0 || y<0)
    for (int i=0; i<n; ++i){
         x=nrand(SideCells);
         y=nrand(SideCells);
 
-        CCell* cell = CellList[x*SideCells+y];
-        new CclonalSeed(estab,traits,cltraits,cell);
    }
+   CCell* cell = CellList[x*SideCells+y];
+   new CclonalSeed(estab,traits,cltraits,cell);
 } //end CGridclonal::clonalSeedsInit()
 //-----------------------------------------------------------------------------
 /**

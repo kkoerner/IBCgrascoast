@@ -68,7 +68,7 @@ public:
 
    void clear();
    void SetResource(double Ares, double Bres);
-   double Germinate();
+   virtual double Germinate();
    void RemoveSeedlings();
    void RemoveSeeds();
    void GetNPft();     //!< calculates number of individuals of each PFT
@@ -87,6 +87,7 @@ public:
 
    void SortTypeID();  //!< sort individuals after PFT ID
    void print_map(map<string,int> &mymap);  //!< print map content for debugging - can be deleted
+   std::string asString();///<return content for file saving
 };
 
 /**\brief Water-Cell class inherits from CCell
@@ -109,9 +110,11 @@ public:
    /*! function is overwritten if inherited class with different competitive
      size-asymmetry of niche differentiation is used*/
    virtual void BelowComp();
+   virtual double Germinate();
 
  double GetWaterLevel(){return WaterLevel;};
  void SetWaterLevel(double val){WaterLevel=val;};
+   std::string asString();///<return content for file saving
 };//end CWaterCell
 
 //---------------------------------------------------------------------------
