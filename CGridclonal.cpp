@@ -418,7 +418,7 @@ void CGridclonal::RametEstab(CclonalPlant* plant)
            //delete from list but not the element itself
            plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f);
            //establishment success
-           if(CEnvir::rand01()<SRunPara::RunPara.EstabRamet) Ramet->dead=true; //tag:SA
+           if(CEnvir::rand01()<(1.0-SRunPara::RunPara.EstabRamet)) Ramet->dead=true; //tag:SA
         }//if cell ist not occupied
         else //find another random cell in the area around
         {
