@@ -35,13 +35,17 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  /**2^5 for generating autocorellation
  \sa genAutokorrWL()
  */
- double weeklyWL[33];
+ static vector<double> weeklyWL;
+ static vector<double> weeklySAL;///< weekly salinity levels
+ static vector<double> weeklySAT;///< weekly soil saturation levels
  /// generate autocorrelated Wl-series
  void genAutokorrWL(double hurst);
  /// generate seasonal Wl-series
  void genSeasonWL();
  /// generate const Wl-series
  void genConstWL();
+ /// read annual environmental conditions from file
+ void getEnvirCond(string file);
  /// inundation time in winter season \[weeks\] 0..12
  int winterInundation;
 protected:
@@ -58,7 +62,10 @@ public:
 
    Unit is g/l (Thresholds in Ellenberg are in \'\%\').
  */
- static double salinity;
+static double getSAL();///<get current salinity
+// static double salinity;
+static double getSAT();///<get current soil saturation
+double getWL(); ///<get current water level
 
   CWaterGridEnvir():WaterFlow(no),winterInundation(0){CellsInit();
  cout<<"\nCWaterGrid() ";};

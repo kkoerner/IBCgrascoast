@@ -19,7 +19,7 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
-  PftFile("Input/PftTraits2304.txt"){}
+  WLseason("file"),PftFile("Input/PftTraits2304.txt"){}
 
 /**
 \note  es fehlen: CellNum,NPft

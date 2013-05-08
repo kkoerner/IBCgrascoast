@@ -341,12 +341,46 @@ void CWaterGridEnvir::Winter(){
   CGrid::Winter(); //remove dead plants and calc winter dieback
 }//end winter() - winter mortality
 //------------------------------------------------------------------------------
+/**
+    \param file file name of source file
+*/
+void CWaterGridEnvir::getEnvirCond(string file){
+  weeklyWL.clear();weeklySAL.clear();weeklySAT.clear();
+   ifstream EnvFile;
+   //open parameter file
+     EnvFile.open(file.c_str());
+//   ifstream PftFile(SRunPara::RunPara.PftFile);
+   if (!EnvFile.good()) {std::cerr<<("Fehler beim Öffnen EnvFile");exit(3); }
+   string line1;
+   getline(EnvFile,line1); //ignore header
+   //*******************
+    //loop for all weeks
+   for (int lweek=0; lweek<30; ++lweek){
+      int wl,sal,sat;
+      //read plant parameter from inputfile
+      EnvFile>>sal>>wl>>sat;
+      weeklyWL.push_back(wl);
+      weeklySAL.push_back(sal);
+      weeklySAT.push_back(sat);
+   }
+
+}
+double CWaterGridEnvir::getSAL(){
+  return weeklySAL[week-1];
+}//<get current salinity
+double CWaterGridEnvir::getSAT(){
+  return weeklySAT[week-1];
+}//<get current soil saturation
+double CWaterGridEnvir::getWL(){
+  return weeklyWL[week-1];
+}//<get current water level
 
 /**
   \warning this work only with 30 weeks a year
 */
 void CWaterGridEnvir::genAutokorrWL(double hurst)
 {
+  weeklyWL.clear();weeklyWL.assign(33,0);
   double mean=SRunPara::RunPara.WaterLevel;
   double sigma=SRunPara::RunPara.WLsigma;//5;
   int D=32,N=32, d=D/2;
@@ -369,6 +403,7 @@ void CWaterGridEnvir::genAutokorrWL(double hurst)
 */
 void CWaterGridEnvir::genSeasonWL()
 {
+  weeklyWL.clear();weeklyWL.assign(30,0);
   double mean=SRunPara::RunPara.WaterLevel;
   double sigma=SRunPara::RunPara.WLsigma; //5;//
   for (unsigned int i=0; i<30; i++)
@@ -379,8 +414,11 @@ void CWaterGridEnvir::genSeasonWL()
 */
 void CWaterGridEnvir::genConstWL()
 {
+   weeklyWL.clear();weeklyWL.assign(30,0);
+
   for (unsigned int i=0; i<30; i++) weeklyWL[i]=SRunPara::RunPara.WaterLevel;
 }
+
 
 /**
   weekly change grid water level
@@ -398,6 +436,9 @@ void CWaterGridEnvir::SetCellResource(){
     else if(SRunPara::RunPara.WLseason=="season")
     // generate seasonal Wl-series
     genSeasonWL();
+    else if(SRunPara::RunPara.WLseason=="file")
+    // generate seasonal Wl-series
+    getEnvirCond((string)"Input\\env_con_1a.txt");
     else
 //if(SRunPara::RunPara.WLseason=="const")
     // generate const Wl-series
@@ -409,7 +450,7 @@ void CWaterGridEnvir::SetCellResource(){
   //salinity
   salinity=SRunPara::RunPara.salt;
   if (week==1)cout<<"\n";
-  cout<<"\n w"<<week<<" "<<weeklyWL[week-1];
+  cout<<"\n w"<<week<<" WL:"<<weeklyWL[week-1]<<""<<;
 }
 
 //-------------------------------------------------------------
@@ -631,6 +672,9 @@ void CWaterGridEnvir::InitRun(){
 
   (each PFT on file gets 10 seeds randomly set on grid)
   \since 2012-04-18
+
+  \param file name of init file
+  \param n initiate only n'th species for monoculture exps
 */
 void CWaterGridEnvir::InitInds(string file,int n){
   const int no_init_seeds=10;//10;

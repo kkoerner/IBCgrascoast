@@ -5,26 +5,33 @@ File_2=SourceModule,'c:\programme\borland\cbuilder6\include\stl\_map.h',0,1,137,
 File_3=SourceModule,'C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CGridclonal.cpp',0,1,119,56,128,0,0
 
 [Modules]
-Module0=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp
-Module1=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GridBase.cpp
-Module2=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\RunPara.cpp
-Module3=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp
-Module4=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp
-Module5=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\RunPara.cpp
-Module6=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp
-Module7=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CSeed.cpp
-Module8=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp
-Module9=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp
-Module10=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Cell.cpp
-Count=11
+Module0=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterGridEnvir.cpp
+Module1=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\GMCom_K1_BlockDesign.cpp
+Module2=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\Plant.cpp
+Module3=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\RunPara.cpp
+Module4=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\environment.cpp
+Module5=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\clonalTraits.cpp
+Module6=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterPlant.cpp
+Module7=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CSeed.cpp
+Module8=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\GridBase.cpp
+Module9=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\Cell.cpp
+Module10=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CGridclonal.cpp
+Module11=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\clonalPlant.cpp
+Module12=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\PGMCom_K1.bpr
+Count=13
 EditWindowCount=1
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterGridEnvir.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GridBase.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\GMCom_K1_BlockDesign.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\Plant.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
@@ -34,57 +41,58 @@ ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\environment.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\clonalTraits.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\RunPara.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterPlant.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CSeed.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CSeed.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\GridBase.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\Cell.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CGridclonal.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Cell.cpp]
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\clonalPlant.cpp]
 ModuleType=SourceModule
-FormState=0
-FormOnTop=0
-
-[C:\Programme\Borland\CBuilder6\Projects\ProjectGroup1.bpg]
 FormState=0
 FormOnTop=0
 
 [C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\PGMCom_K1.bpr]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\ProjectGroup1.bpg]
 FormState=0
 FormOnTop=0
 
 [EditWindow0]
-ViewCount=11
-CurrentView=0
+ViewCount=13
+CurrentView=8
 View0=0
 View1=1
 View2=2
@@ -96,120 +104,139 @@ View7=7
 View8=8
 View9=9
 View10=10
+View11=11
+View12=12
 CodeExplorer=CodeExplorer@EditWindow0
 MessageView=MessageView@EditWindow0
 ClassHierarchy=ClassHierarchy@EditWindow0
 Create=1
 Visible=1
 State=0
-Left=-9
-Top=114
-Width=1203
-Height=653
+Left=194
+Top=115
+Width=1005
+Height=623
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=1195
-ClientHeight=619
-LeftPanelSize=420
-LeftPanelClients=DockSite0
-LeftPanelData=0000040000000000000000000000000000000000000000000001000000000000000009000000446F636B5369746530FFFFFFFF
+ClientWidth=997
+ClientHeight=589
+LeftPanelSize=343
+LeftPanelClients=LocalVarsWindow,CodeExplorer@EditWindow0
+LeftPanelData=0000040000000000E90100000000000001570100000000000001000000008F0000000F0000004C6F63616C5661727357696E646F770100000000E90100000C000000436F64654578706C6F726572FFFFFFFF
 RightPanelSize=0
-BottomPanelSize=259
-BottomPanelClients=CallStackWindow,MessageView@EditWindow0
-BottomPanelData=0000040000000000030100000000000001AB040000000000000100000000320000000F00000043616C6C537461636B57696E646F770100000000030100000B0000004D6573736167655669657701000000009B00000000000000FFFFFFFF
+BottomPanelSize=97
+BottomPanelClients=MessageView@EditWindow0
+BottomPanelData=000004000000000000000000000000000000000000000000000100000000000000000B0000004D65737361676556696577FFFFFFFF
 
 [View0]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GMCom_K1_BlockDesign.cpp
-CursorX=102
-CursorY=50
-TopLine=22
-LeftCol=1
-
-[View1]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp
-CursorX=72
-CursorY=566
-TopLine=562
-LeftCol=1
-
-[View2]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\RunPara.cpp
-CursorX=54
-CursorY=40
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\PGMCom_K1.bpf
+CursorX=1
+CursorY=1
 TopLine=1
 LeftCol=1
 
-[View3]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\GridBase.cpp
-CursorX=11
-CursorY=347
-TopLine=343
+[View1]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\clonalPlant.cpp
+CursorX=1
+CursorY=175
+TopLine=173
 LeftCol=1
 
-[View4]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Cell.cpp
-CursorX=20
-CursorY=77
+[View2]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CGridclonal.cpp
+CursorX=1
+CursorY=334
+TopLine=325
+LeftCol=1
+
+[View3]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\Cell.cpp
+CursorX=1
+CursorY=70
 TopLine=71
 LeftCol=1
 
-[View5]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp
+[View4]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\GridBase.cpp
 CursorX=1
-CursorY=211
-TopLine=199
+CursorY=375
+TopLine=370
+LeftCol=1
+
+[View5]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CSeed.cpp
+CursorX=20
+CursorY=117
+TopLine=111
 LeftCol=1
 
 [View6]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp
-CursorX=1
-CursorY=191
-TopLine=183
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterPlant.cpp
+CursorX=5
+CursorY=314
+TopLine=277
 LeftCol=1
 
 [View7]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CSeed.cpp
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\Plant.cpp
 CursorX=1
-CursorY=76
-TopLine=21
+CursorY=48
+TopLine=37
 LeftCol=1
 
 [View8]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\environment.cpp
-CursorX=1
-CursorY=474
-TopLine=457
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterGridEnvir.cpp
+CursorX=19
+CursorY=369
+TopLine=379
 LeftCol=1
 
 [View9]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\RunPara.cpp
-CursorX=42
-CursorY=19
-TopLine=14
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\RunPara.cpp
+CursorX=17
+CursorY=22
+TopLine=17
 LeftCol=1
 
 [View10]
-Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp
-CursorX=12
-CursorY=291
-TopLine=281
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\GMCom_K1_BlockDesign.cpp
+CursorX=1
+CursorY=123
+TopLine=111
+LeftCol=1
+
+[View11]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\environment.cpp
+CursorX=1
+CursorY=855
+TopLine=862
+LeftCol=1
+
+[View12]
+Module=C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\clonalTraits.cpp
+CursorX=1
+CursorY=20
+TopLine=21
 LeftCol=1
 
 [Watches]
 Count=1
-Watch0='seed',256,0,18,1,0,'Überwachte Ausdrücke'
+Watch0='pft',256,0,18,1,0,'Überwachte Ausdrücke'
 
 [Breakpoints]
-Count=9
+Count=12
 Breakpoint0='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp',25,'',0,1,'',1,0,0,'',1,'','',''
 Breakpoint1='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp',291,'',0,1,'',1,0,0,'',1,'','',''
-Breakpoint2='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp',585,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint2='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterGridEnvir.cpp',626,'',0,1,'',1,0,0,'',1,'','',''
 Breakpoint3='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\CWaterPlant.cpp',169,'grow<0',0,1,'',1,0,0,'',1,'','',''
 Breakpoint4='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp',212,'',0,1,'',1,0,0,'',1,'','',''
 Breakpoint5='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp',211,'',0,1,'',1,0,0,'',1,'','',''
 Breakpoint6='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\Plant.cpp',203,'',0,1,'',1,0,0,'',1,'','',''
-Breakpoint7='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp',196,'',0,1,'',1,0,0,'',1,'','',''
-Breakpoint8='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\WinterSalt\clonalPlant.cpp',191,'CEnvir::week>17',0,1,'',1,0,0,'',1,'','',''
+Breakpoint7='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\GridBase.cpp',375,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint8='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CGridclonal.cpp',333,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint9='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\Cell.cpp',70,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint10='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterGridEnvir.cpp',441,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint11='C:\Dokumente und Einstellungen\KatrinK\Eigene Dateien\COMTESS\GM-COMTESS\Coast_trunk\CWaterGridEnvir.cpp',347,'',0,1,'',1,0,0,'',1,'','',''
 
 [AddressBreakpoints]
 Count=0
@@ -260,6 +287,22 @@ DisassemblyPane=187
 RegisterPane=231
 FlagPane=64
 
+[LocalVarsWindow]
+Create=1
+Visible=1
+State=0
+Left=0
+Top=12
+Width=343
+Height=127
+MaxLeft=-1
+MaxTop=-1
+ClientWidth=343
+ClientHeight=127
+TBDockHeight=282
+LRDockWidth=343
+Dockable=1
+
 [WatchWindow]
 Create=1
 Visible=1
@@ -278,12 +321,12 @@ Dockable=1
 
 [CallStackWindow]
 Create=1
-Visible=1
+Visible=0
 State=0
-Left=12
-Top=0
-Width=1183
-Height=46
+Left=4
+Top=504
+Width=1191
+Height=72
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1183
@@ -382,15 +425,15 @@ Create=1
 Visible=1
 State=0
 Left=0
-Top=0
-Width=412
-Height=316
+Top=155
+Width=343
+Height=334
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=412
-ClientHeight=316
+ClientWidth=343
+ClientHeight=334
 TBDockHeight=388
-LRDockWidth=227
+LRDockWidth=343
 Dockable=1
 ClassViewDisplayMode=0
 
@@ -399,14 +442,14 @@ Create=1
 Visible=1
 State=0
 Left=12
-Top=50
-Width=1183
-Height=209
+Top=0
+Width=985
+Height=97
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=1183
-ClientHeight=209
-TBDockHeight=209
+ClientWidth=985
+ClientHeight=97
+TBDockHeight=97
 LRDockWidth=443
 Dockable=1
 
@@ -416,12 +459,12 @@ DockHostCount=1
 [DockSite0]
 DockSiteType=1
 Create=1
-Visible=1
+Visible=0
 State=0
-Left=0
-Top=12
-Width=420
-Height=345
+Left=4
+Top=30
+Width=428
+Height=371
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=420
@@ -430,6 +473,6 @@ TBDockHeight=94
 LRDockWidth=420
 Dockable=1
 TabPosition=0
-ActiveTab=ClassExplorer
-TabDockClients=CodeExplorer@EditWindow0,CodeguardLog,WatchWindow
+ActiveTab=CodeGuard-Protokoll
+TabDockClients=CodeguardLog,WatchWindow
 
