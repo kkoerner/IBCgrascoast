@@ -358,21 +358,21 @@ void CWaterGridEnvir::getEnvirCond(string file){
    for (int lweek=0; lweek<30; ++lweek){
       int wl,sal,sat;
       //read plant parameter from inputfile
-      EnvFile>>sal>>wl>>sat;
+      EnvFile>>wl>>sat>>sal;
       weeklyWL.push_back(wl);
       weeklySAL.push_back(sal);
       weeklySAT.push_back(sat);
    }
-
+  EnvFile>>winterInundation;//get winter inundation weeks in last line
 }
 double CWaterGridEnvir::getSAL(){
-  return weeklySAL[week-1];
+  return weeklySAL.at(week-1);
 }//<get current salinity
 double CWaterGridEnvir::getSAT(){
-  return weeklySAT[week-1];
+  return weeklySAT.at(week-1);
 }//<get current soil saturation
 double CWaterGridEnvir::getWL(){
-  return weeklyWL[week-1];
+  return weeklyWL.at(week-1);
 }//<get current water level
 
 /**
