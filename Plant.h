@@ -161,7 +161,10 @@ public:
    virtual double GetMass(){return mshoot+mroot+mRepro;};//!< returns plant mass
    virtual int GetNSeeds();     //!< returns number of seeds of one plant individual
    bool is_left(){return (this->xcoord < SRunPara::RunPara.CellNum/2);};
-   //functions that are used for STL algorithms (sort + partition)
+   //-----------------------------------------------------------------------------
+   //! return if plant should be removed (necessary to apply algorithms from STL)
+   bool GetPlantRemove(){return (!this->remove);};
+//functions that are used for STL algorithms (sort + partition)
    //-----------------------------------------------------------------------------
 
    /// (necessary to apply algorithms from STL)
@@ -189,12 +192,6 @@ public:
 };
 
 
-//-----------------------------------------------------------------------------
-//! return if plant should be removed (necessary to apply algorithms from STL)
-bool GetPlantRemove(const CPlant* plant1)
-{
-   return (!plant1->remove);
-}
 //---------------------------------------------------------------------------
 // bool is_left( CPlant*& plant1)//const
 // {

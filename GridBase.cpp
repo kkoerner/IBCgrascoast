@@ -734,7 +734,7 @@ void CGrid::Trampling()
 void CGrid::RemovePlants()
 {
    plant_iter irem = partition(PlantList.begin(),PlantList.end(),
-     GetPlantRemove);
+     mem_fun(&CPlant::GetPlantRemove));
    for (plant_iter iplant=irem; iplant<PlantList.end(); ++iplant)
    {
       CPlant* plant = *iplant;

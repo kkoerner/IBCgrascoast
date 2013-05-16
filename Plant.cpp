@@ -43,7 +43,8 @@ void SPftTraits::ReadPftStrategy(char* file)
 //open parameter file
    string sfile=file;   ifstream PftFile;
    //open parameter file
-   if (sfile=="") sfile=(SRunPara::RunPara.PftFile);
+   //if (file=="")
+	   sfile=(SRunPara::RunPara.PftFile);
    PftFile.open(sfile.c_str());
 //   ifstream PftFile(SRunPara::RunPara.PftFile);
    if (!PftFile.good()) {std::cerr<<("Fehler beim Öffnen PftFile");exit(3); }
