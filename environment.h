@@ -96,7 +96,7 @@ public:
    static void ResetT(){ year=1;week=0;};
    /// set new week
    static void NewWeek(){week++;if (week>WeeksPerYear){week=1;year++;};};
-   ///round a doube value
+   ///round a double value
    inline static int Round(const double& a){return (int)floor(a+0.5);};
 
    ///get a uniformly distributed random number (0-n)

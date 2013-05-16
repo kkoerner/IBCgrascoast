@@ -276,7 +276,7 @@ CclonalPlant* CWaterGridEnvir::newSpacer(int x,int y, CclonalPlant* plant){
 //-------------------------------------------------------------
 int CWaterGridEnvir::exitConditions()
 {
-     int currTime=GetT();
+     int currTime=1;//GetT();
 //    if no more individuals existing
 //     if (this->PlantList.size()==0)
 
