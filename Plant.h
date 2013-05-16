@@ -160,44 +160,46 @@ public:
    inline CCell* getCell(){return cell;};///<returns central cell
    virtual double GetMass(){return mshoot+mroot+mRepro;};//!< returns plant mass
    virtual int GetNSeeds();     //!< returns number of seeds of one plant individual
+   bool is_left(){return (this->xcoord < SRunPara::RunPara.CellNum/2);};
+   //functions that are used for STL algorithms (sort + partition)
+   //-----------------------------------------------------------------------------
+
+   /// (necessary to apply algorithms from STL)
+   /// sort plant individuals descending after shoot size * palatability
+   static bool ComparePalat(const CPlant* plant1, const CPlant* plant2)
+   {
+      return ((plant1->mshoot*plant1->Traits->GrazFac())
+         > (plant2->mshoot*plant2->Traits->GrazFac()));
+   };
+   //-----------------------------------------------------------------------------
+   /// sort plants descending after shoot size (mass*1/LMR)
+   /**\bug '*' in secound line solved 100202*/
+   static bool CompareShoot(const CPlant* plant1, const CPlant* plant2)
+   {
+      return ((plant1->mshoot/plant1->Traits->LMR)
+          > (plant2->mshoot/plant2->Traits->LMR));
+   };
+   //-----------------------------------------------------------------------------
+   /// sort plants descending after root mass
+   static bool CompareRoot(const CPlant* plant1, const CPlant* plant2)
+   {
+      return ((plant1->mroot) > (plant2->mroot));
+   };
+
 };
 
-//functions that are used for STL algorithms (sort + partition)
-//-----------------------------------------------------------------------------
-/// sort plant individuals descending after shoot size * palatability
 
-/// (necessary to apply algorithms from STL)
-///
-bool ComparePalat(const CPlant*& plant1, const CPlant*& plant2)
-{
-   return ((plant1->mshoot*plant1->Traits->GrazFac())
-      > (plant2->mshoot*plant2->Traits->GrazFac()));
-}
-//-----------------------------------------------------------------------------
-/// sort plants descending after shoot size (mass*1/LMR)
-/**\bug '*' in secound line solved 100202*/
-bool CompareShoot(const CPlant*& plant1, const CPlant*& plant2)
-{
-   return ((plant1->mshoot/plant1->Traits->LMR)
-       > (plant2->mshoot/plant2->Traits->LMR));
-}
-//-----------------------------------------------------------------------------
-/// sort plants descending after root mass
-bool CompareRoot(const CPlant*& plant1, const CPlant*& plant2)
-{
-   return ((plant1->mroot) > (plant2->mroot));
-}
 //-----------------------------------------------------------------------------
 //! return if plant should be removed (necessary to apply algorithms from STL)
-bool GetPlantRemove(const CPlant*& plant1)
+bool GetPlantRemove(const CPlant* plant1)
 {
    return (!plant1->remove);
 }
 //---------------------------------------------------------------------------
-bool is_left(const CPlant*& plant1)
-{
-   return (plant1->xcoord < SRunPara::RunPara.CellNum/2);
-}
+// bool is_left( CPlant*& plant1)//const
+// {
+//   return (plant1->xcoord < SRunPara::RunPara.CellNum/2);
+//}
 //-----------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 #endif

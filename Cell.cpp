@@ -1,13 +1,14 @@
 //---------------------------------------------------------------------------
-#pragma package(smart_init)
+//#pragma package(smart_init)
 #include <iostream>
 #include <map>
 #include <string>
+// #include <algorithm>
 //---------------------------------------------------------------------------
 #include "Cell.h"
 #include "GridBase.h"
 #include "environment.h"
-#pragma hdrstop
+//#pragma hdrstop
 
 //-----------------------------------------------------------------------------
 CCell::CCell(const unsigned int xx,const unsigned int yy){
@@ -26,7 +27,7 @@ occupied(false),PlantInCell(NULL)
    SeedBankList.clear();
    SeedlingList.clear();
 
-   using SRunPara::RunPara;
+ //  using SRunPara::RunPara;
    PftNIndA.clear();
    PftNIndB.clear();
    PftNSeedling.clear();
@@ -210,7 +211,7 @@ void CCell::AboveComp()
    if (AbovePlantList.empty()) return;
    if (SRunPara::RunPara.AboveCompMode==asymtot){
      //total asymmetry only for above plant competition
-      sort(AbovePlantList.begin(),AbovePlantList.end(),CompareShoot);
+      sort(AbovePlantList.begin(),AbovePlantList.end(),CPlant::CompareShoot);
       CPlant* plant=*AbovePlantList.begin(); //biggest plant
       plant->Auptake+=AResConc;
       return;
