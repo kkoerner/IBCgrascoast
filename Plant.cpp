@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
+//#pragma hdrstop
 #include <iostream>
 
 #include "Plant.h"
 #include "environment.h"
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)
 
 //---------------------------------------------------------------------------
 SPftTraits::SPftTraits():TypeID(999),name("default"),N0(1),MaxAge(100),
@@ -432,8 +432,10 @@ double CPlant::comp_coef(const int layer, const int symmetry)const{
    switch (symmetry){
      case 1: if (layer==1) return Traits->Gmax;//CompPowerA();
              if (layer==2) return Traits->Gmax;//CompPowerB();
+             break;
      case 2: if (layer==1) return mshoot*Traits->CompPowerA();
              if (layer==2) return mroot *Traits->CompPowerB();
+             break;
      default: cerr<<"CPlant::comp_coef() - wrong input"; exit(3);
    }
    return -1;  //should not be reached

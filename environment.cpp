@@ -33,12 +33,13 @@
    */
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)
 
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "environment.h"
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 //-CEnvir: Init static variables--------------------------------------------------------------------------
@@ -62,10 +63,11 @@ using namespace std;
    int CEnvir::NRep=1;        //!> number of replications -> read from SimFile;
    int CEnvir::SimNr=0;
    int CEnvir::RunNr=0;
-   KW_RNG::RNG CEnvir::RandNumGen;   //!< random number generator object pointer
+ //  KW_RNG::RNG CEnvir::RandNumGen;   //!< random number generator object pointer
    vector<double> CEnvir::AResMuster;
    vector<double> CEnvir::BResMuster;
    map<string,long> CEnvir::PftInitList;  //!< list of Pfts used
+
 
 //---------------------------------------------------------------------------
 CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
@@ -92,10 +94,12 @@ CEnvir::~CEnvir(){
 */
 void CEnvir::ReadLandscape(){
   //100% autocorrelated values
-  using SRunPara::RunPara;
+//  using SRunPara::RunPara;
   AResMuster.clear();BResMuster.clear();
-  AResMuster.assign(RunPara.GetSumCells(),RunPara.meanARes);
-  BResMuster.assign(RunPara.GetSumCells(),RunPara.meanBRes);
+  AResMuster.assign(SRunPara::RunPara.GetSumCells(),
+		  SRunPara::RunPara.meanARes);
+  BResMuster.assign(SRunPara::RunPara.GetSumCells(),
+		  SRunPara::RunPara.meanBRes);
 }//end ReadLandscape
 
 //------------------------------------------------------------------------------
@@ -130,7 +134,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   if (!SimFile.good()) return -1;
 
   int version, acomp, bcomp;
-   using SRunPara::RunPara;
+//   using SRunPara::RunPara;
    //RunNr=0; int dummi;
    //for (int i=0; i<SimNrMax; ++i)
 
@@ -142,28 +146,28 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
        //      >>RunPara.BelGrazMode   //mode of belowground grazing
         //     >>RunPara.GridSize
         //     >>RunPara.CellNum
-             >>RunPara.Tmax
+             >>SRunPara::RunPara.Tmax
         //     >>RunPara.NPft
-             >>RunPara.GrazProb
+             >>SRunPara::RunPara.GrazProb
          //    >>RunPara.PropRemove
          //    >>RunPara.BelGrazProb     //for belowground simulations
          //    >>RunPara.BelPropRemove   //for belowground simulations
-             >>RunPara.NCut
-             >>RunPara.CutLeave//Mass
+             >>SRunPara::RunPara.NCut
+             >>SRunPara::RunPara.CutLeave//Mass
         //     >>RunPara.DistAreaYear
         //     >>RunPara.AreaEvent
         //     >>RunPara.mort_seeds
-             >>RunPara.meanARes
-             >>RunPara.meanBRes
+             >>SRunPara::RunPara.meanARes
+             >>SRunPara::RunPara.meanBRes
      //        >>RunPara.PftFile
          //    >>RunPara.BGThres
              ;
 
       //---------standard parameter:
       //grazing intensity
-      RunPara.PropRemove=0.5;
+      SRunPara::RunPara.PropRemove=0.5;
       //no trampling
-      RunPara.DistAreaYear=0;
+      SRunPara::RunPara.DistAreaYear=0;
       //above- and belowground competition
       acomp=1;bcomp=0;
       //--------------------------------
@@ -173,7 +177,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
 //      RunPara.BelowCompMode=bcomp;
 //      //Größenänderung des Grids auf 3qm
 //      RunPara.GridSize=RunPara.CellNum=173;
-  RunPara.print();
+      SRunPara::RunPara.print();
   return SimFile.tellg();
 }//end  CEnvir::GetSim
 //------------------------------------------------------------------------------

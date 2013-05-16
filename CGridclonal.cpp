@@ -2,14 +2,15 @@
    \brief functions of class CclonalGrid
 */
 //---------------------------------------------------------------------------
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "CGridclonal.h"
 #include "environment.h"
 #include <iostream>
+#include <functional>
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+// #pragma package(smart_init)
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -41,16 +42,16 @@ CGridclonal::~CGridclonal(){
 void CGridclonal::InitClonalPlants(
   SPftTraits* traits,SclonalTraits* cltraits,const int n)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
+   //using CEnvir::nrand;using SRunPara::RunPara;
    int  x, y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
    CCell* cell;
 
    for (int h=0; h<n; h++)
    {
       do{
-        x=nrand(SideCells);
-        y=nrand(SideCells);
+        x=CEnvir::nrand(SideCells);
+        y=CEnvir::nrand(SideCells);
         cell = CellList[x*SideCells+y];
       }while (cell->occupied);
       if (!cell->occupied)
@@ -85,13 +86,13 @@ void CGridclonal::InitClonalPlants(
 void CGridclonal::InitClonalSeeds(
   SPftTraits* traits,SclonalTraits* cltraits,const int n,double estab)
 { //init clonal seeds in random cells
-   using CEnvir::nrand;using SRunPara::RunPara;
+//   using CEnvir::nrand;using SRunPara::RunPara;
    int x,y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    for (int i=0; i<n; ++i){
-        x=nrand(SideCells);
-        y=nrand(SideCells);
+        x=CEnvir::nrand(SideCells);
+        y=CEnvir::nrand(SideCells);
 
         CCell* cell = CellList[x*SideCells+y];
         new CclonalSeed(estab,traits,cltraits,cell);
@@ -132,13 +133,13 @@ void CGridclonal::PlantLoop()
 //-----------------------------------------------------------------------------
 int CGridclonal::DispersSeeds(CPlant* plant)
 {
-   using CEnvir::Round;using SRunPara::RunPara;
+//   using CEnvir::Round;using SRunPara::RunPara;
    int px=plant->getCell()->x, py=plant->getCell()->y;
    int NSeeds=0;
-   double dist, direction;
-   double rnumber;
+   double dist=0, direction=0;
+   double rnumber=0;
    int nb_LDDseeds=0;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    NSeeds=plant->GetNSeeds();
 
@@ -186,7 +187,7 @@ void CGridclonal::DispSeeds_help(CPlant* plant,CCell* cell)
 void CGridclonal::DispersRamets(CclonalPlant* plant)
 {
    double CmToCell=1.0/SRunPara::RunPara.CellScale();
-   using CEnvir::Round;
+//   using CEnvir::Round;
 
 //   if (plant->type() == "CclonalPlant" ||
 //       plant->type() == "CWaterPlant")//only if its a clonal plant
@@ -201,11 +202,11 @@ void CGridclonal::DispersRamets(CclonalPlant* plant)
          mean=plant->clonalTraits->meanSpacerlength;   //cm
          sd  =plant->clonalTraits->sdSpacerlength;     //mean = std (simple assumption)
 
-         while (dist<=0) dist=CEnvir::RandNumGen.normal(mean,sd);
+         while (dist<=0) dist=CEnvir::normrand(mean,sd);
          //direction uniformly distributed
          direction=2*Pi*CEnvir::rand01();
-         int x=Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
-         int y=Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
+         int x=CEnvir::Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
+         int y=CEnvir::Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
 
          /// \todo change boundary conditions
          Boundary(x,y);   //periodic boundary condition
@@ -295,7 +296,8 @@ void CGridclonal::EstabLottery()
                 //mische die Keimlinge des Gewinnertyps
                 random_shuffle(cell->SeedlingList.begin(),
                    partition(cell->SeedlingList.begin(),cell->SeedlingList.end(),
-                   bind2nd(ptr_fun(SeedOfType),pft)));
+                   bind2nd(mem_fun(&CSeed::SeedOfType),pft)));
+//                   bind(SeedOfType,_1,pft)));
                 //Was, wenn keine Seedlings(typ==pft) gefunden werden (sollte nicht passieren)?
                 //etabliere jetzt das erste Element der Liste
                 CSeed* seed = cell->SeedlingList.front();
@@ -351,7 +353,7 @@ cout<<"estabLott_help - CGridClonal";
 */
 void CGridclonal::RametEstab(CclonalPlant* plant)
 {
-   using CEnvir::rand01;
+ //  using CEnvir::rand01;
    int RametListSize=plant->growingSpacerList.size();
 
    if (RametListSize==0)return;
@@ -556,7 +558,7 @@ double CGridclonal::GetNGeneration() //calculate the mean generations per genet
             {
                CclonalPlant* Ramet;
                Ramet=Genet->AllRametList[j];
-               highestGeneration=max(highestGeneration,Ramet->Generation);
+               highestGeneration=max(highestGeneration,double (Ramet->Generation));
             }
             SumGeneration+=highestGeneration;
             Sum++;

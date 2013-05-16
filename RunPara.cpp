@@ -2,13 +2,13 @@
 \brief constructor of struct SRunPara and Initialization of static Variables
 */
 //---------------------------------------------------------------------------
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "RunPara.h"
 #include <iostream>
 #include <sstream>
 //---------------------------------------------------------------------------
-#pragma package(smart_init)
+//#pragma package(smart_init)
 
 SRunPara SRunPara::RunPara=SRunPara();
 //-------------------------------------------------------------------
@@ -19,7 +19,7 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/PftTraits2304.txt"),
   species("M"),WaterLevel(0),WLsigma(0),WLseason("const"),changeVal(0),
-  Migration(0){}
+  Migration(0),Aampl(0),Bampl(0),cv_res(0){}
 void SRunPara::print(){
   std::cout<<"\n  Parameter setting:\n";
   std::cout

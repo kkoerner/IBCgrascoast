@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
 
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "CWaterGridEnvir.h"
 #include "CWaterPlant.h"
@@ -112,9 +112,9 @@ void CWaterGridEnvir::InitWaterSeeds(const string PftName,const int n,double est
 void CWaterGridEnvir::InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
      SWaterTraits* wtraits, const int n,double estab)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
+//   using CEnvir::nrand;using SRunPara::RunPara;
    int x,y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    for (int i=0; i<n; ++i){
         x=nrand(SideCells);
@@ -129,9 +129,9 @@ void CWaterGridEnvir::InitWaterSeeds(SPftTraits* traits,SclonalTraits* cltraits,
 void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
+//   using CEnvir::nrand;using SRunPara::RunPara;
    int x,y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    for (int i=0; i<n; ++i){
         x=nrand(SideCells);
@@ -538,4 +538,4 @@ void SWaterTraits::print(){
 } //print water traits
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)

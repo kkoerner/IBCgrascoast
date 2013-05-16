@@ -6,12 +6,12 @@ This file contains the main() function to start and coordinate the designed
 experiments.
 */
 //---------------------------------------------------------------------------
-#include <vcl.h>
+// #include <vcl.h>
 #include <iostream>
 #include <sstream>
-#include "TimeUtils.h"
-
-#pragma hdrstop
+// #include "TimeUtils.h"
+#include <time.h>
+//#pragma hdrstop
 
 //the only information the GUI needs from the model
 #include "environment.h"
@@ -96,13 +96,14 @@ see additional page for solved and unsolved bugs
 //---------------------------------------------------------------------------
 CWaterGridEnvir* Envir;   ///<environment in which simulations are run
 using namespace std;
-#pragma argsused
+//#pragma argsused
 
 void Init();
 void Run();
 double GrazProb2=0;      ///<2nd grazing probability
 double DistAreaYear2=0;  ///<2nd trampling intensity
 int NCut2 =0;            ///<2nd mowing management
+
 //-----------------------
 /**
   the new water ressource environment can be tested here
@@ -117,6 +118,7 @@ int NCut2 =0;            ///<2nd mowing management
   */
 int main(int argc, char* argv[])
 {
+  initLCG(time(NULL),3487234);//start random number generator
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //start-WL   100
   SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
