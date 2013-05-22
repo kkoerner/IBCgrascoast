@@ -2,13 +2,13 @@
     \brief functions of class CGenet
 */
 //---------------------------------------------------------------------------
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "CGenet.h"
 
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)
 //----------------------------------------------------------------------------
 int CGenet::staticID=0;
 /// Calculate the mean of the uptakes of one genet and save this

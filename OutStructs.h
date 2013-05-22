@@ -5,6 +5,7 @@
 
 //#include <vector>
 #include <map>
+#include <string>
 using namespace std;
 //---------------------------------------------------------------------------
 //! Structure with output data for each PFT
@@ -24,7 +25,7 @@ struct SPftOut
 
    int week;                  //!< week of the year (1-30)
 //   vector<SPftSingle*> PFT;    //!< list of active PFTs
-   std::map<std::string,SPftSingle*> PFT;                 //!< list of active PFTs
+   map<string,SPftSingle*> PFT;                 //!< list of active PFTs
 //   vector<string> PFT;
 //   vector<double> totmass;
 //   vector<double> shootmass;

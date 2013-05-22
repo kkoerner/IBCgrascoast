@@ -1,13 +1,13 @@
 //---------------------------------------------------------------------------
 
 
-#pragma hdrstop
+// #pragma hdrstop
 
 #include "OutStructs.h"
 #include "environment.h"
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+// #pragma package(smart_init)
 //-result structs - constructors...----------------------------------------
 SPftOut::SPftOut():week(CEnvir::week){//GetT()){
 //  const unsigned int length=SRunPara::RunPara.NPft;

@@ -2,14 +2,14 @@
     \brief functions of class CclonalPlant
 */
 //---------------------------------------------------------------------------
-#pragma hdrstop
+//#pragma hdrstop
 #include <iostream>
 #include <sstream>
 
 #include "clonalPlant.h"
 #include "environment.h"
 //---------------------------------------------------------------------------
-#pragma package(smart_init)
+//#pragma package(smart_init)
 //extern void Boundary(int&, int&);
 //---------------------------------------------------------------------------
 /**

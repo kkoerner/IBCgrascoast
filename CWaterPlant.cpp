@@ -2,7 +2,7 @@
 /**\file implement functions related to water ressources*/
 
 
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "CWaterPlant.h"
 #include "CWaterGridEnvir.h"
@@ -323,4 +323,4 @@ string CWaterSeed::pft(){
 }   //say what a pft you are
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)

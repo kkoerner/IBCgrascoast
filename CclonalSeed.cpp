@@ -1,13 +1,13 @@
 //---------------------------------------------------------------------------
 
 
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "CclonalSeed.h"
 #include "clonalPlant.h"
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)
 /*
 CclonalSeed::CclonalSeed(double x, double y, int ID, double m, double estab,
   int maxage, CDTclonalTraits clonalTraits):CSeed(x,y,ID,m,estab,maxage)

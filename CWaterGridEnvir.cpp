@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
 
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "CWaterGridEnvir.h"
 #include "CWaterPlant.h"
@@ -215,9 +215,9 @@ void CWaterGridEnvir::InitSeeds(const string PftName,const int n,double estab)
 void CWaterGridEnvir::InitSeeds(SPftTraits* traits,SclonalTraits* cltraits,
      SWaterTraits* wtraits, const int n,double estab,int x, int y)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
+//   using CEnvir::nrand;using SRunPara::RunPara;
 //   int x,y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
    if(x<0 || y<0)   //set random position
      for (int i=0; i<n; ++i){
         x=nrand(SideCells);
@@ -232,9 +232,9 @@ void CWaterGridEnvir::InitSeeds(SPftTraits* traits,SclonalTraits* cltraits,
 void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
+//   using CEnvir::nrand;using SRunPara::RunPara;
    int x,y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    for (int i=0; i<n; ++i){
         x=nrand(SideCells);
@@ -460,7 +460,7 @@ CclonalPlant* CWaterGridEnvir::newSpacer(int x,int y, CclonalPlant* plant){
 //-------------------------------------------------------------
 int CWaterGridEnvir::exitConditions()
 {
-     int currTime=GetT();
+     int currTime=1;//GetT();
 //    if no more individuals existing
 //     if (this->PlantList.size()==0)
 
@@ -758,4 +758,4 @@ void SWaterTraits::print(){
 } //print water traits
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)

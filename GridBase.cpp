@@ -2,13 +2,14 @@
    \brief functions of class CGrid
 */
 
-#pragma package(smart_init)
-#pragma hdrstop
+//#pragma package(smart_init)
+//#pragma hdrstop
 #define CCELL CWaterCell //CCell for old version
 #include "GridBase.h"
 #include "environment.h"
 #include <iostream>
 #include <map>
+#include <algorithm>
 //---------------------------------------------------------------------------
 CGrid::CGrid():cutted_BM(0)
 {
@@ -45,8 +46,8 @@ CGrid::CGrid(string id):cutted_BM(0)
 */
 void CGrid::CellsInit()
 {
-   using SRunPara::RunPara;
-   int index;int SideCells=RunPara.CellNum;
+//   using SRunPara::RunPara;
+   int index;int SideCells=SRunPara::RunPara.CellNum;
    CellList = new (CCELL* [SideCells*SideCells]);
 //     CellList = new (CWaterCell* [SideCells*SideCells]);
 
@@ -131,7 +132,7 @@ void getTargetCell(int& xx,int& yy,const float mean,const float sd,double cellsc
 {
    double sigma=sqrt(log((sd/mean)*(sd/mean)+1));
    double mu=log(mean)-0.5*sigma;
-   double dist=exp(CEnvir::RandNumGen.normal(mu,sigma));
+   double dist=exp(CEnvir::normrand(mu,sigma));//RandNumGen.normal
    if (cellscale==0)cellscale= SRunPara::RunPara.CellScale();
 //   double CellScale=SRunPara::RunPara.CellScale();
    double CmToCell=1.0/cellscale;
@@ -196,9 +197,9 @@ void CGrid::CoverCells()
    int index;
    double dist,Radius;
    int xhelp, yhelp;
-   using SRunPara::RunPara;
+//   using SRunPara::RunPara;
 
-   double CellScale=RunPara.CellScale();
+   double CellScale=SRunPara::RunPara.CellScale();
    double CellArea=CellScale*CellScale;
    //loop for all plants
    for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
@@ -212,12 +213,14 @@ void CGrid::CoverCells()
      for (int a=0;a<Amax;a++){
         //get current position: add plant pos with ZOIBase-pos
         xhelp=plant->getCell()->x
-              +ZOIBase[a]/RunPara.CellNum-RunPara.CellNum/2;//x;
+              +ZOIBase[a]/SRunPara::RunPara.CellNum
+              -SRunPara::RunPara.CellNum/2;//x;
         yhelp=plant->getCell()->y
-              +ZOIBase[a]%RunPara.CellNum-RunPara.CellNum/2;//y;
+              +ZOIBase[a]%SRunPara::RunPara.CellNum
+              -SRunPara::RunPara.CellNum/2;//y;
         /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
-        index = xhelp*RunPara.CellNum+yhelp;
+        index = xhelp*SRunPara::RunPara.CellNum+yhelp;
         CCELL* cell = CellList[index];
 
         //Aboveground****************************************************
@@ -258,8 +261,8 @@ void CGrid::CalcRootInteraction(){
   and PftNIndB are evaluated and up to date.
 */
 void CGrid::CalcRootInteraction(CPlant * plant){
-   using SRunPara::RunPara;
-   double CellScale=RunPara.CellScale();
+//   using SRunPara::RunPara;
+   double CellScale=SRunPara::RunPara.CellScale();
    double CellArea=CellScale*CellScale;
 //   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
 //        CPlant* plant = *iplant;
@@ -270,12 +273,14 @@ void CGrid::CalcRootInteraction(CPlant * plant){
      for (int a=0;a<Aroot;a++){
         //get current position: add plant pos with ZOIBase-pos
         int xhelp=plant->getCell()->x
-              +ZOIBase[a]/RunPara.CellNum-RunPara.CellNum/2;//x;
+              +ZOIBase[a]/SRunPara::RunPara.CellNum
+              -SRunPara::RunPara.CellNum/2;//x;
         int yhelp=plant->getCell()->y
-              +ZOIBase[a]%RunPara.CellNum-RunPara.CellNum/2;//y;
+              +ZOIBase[a]%SRunPara::RunPara.CellNum
+              -SRunPara::RunPara.CellNum/2;//y;
         /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
-        int index = xhelp*RunPara.CellNum+yhelp;
+        int index = xhelp*SRunPara::RunPara.CellNum+yhelp;
         CCELL* cell = CellList[index];
         //-----------------------
         plant->Aroots_all  += cell->BelowPlantList.size();
@@ -340,11 +345,11 @@ void CGrid::EstabLottery()
 {
    double sum=0;
    int index=0;
-   using SRunPara::RunPara;
+//   using SRunPara::RunPara;
    map<string,double> PftEstabProb;//=map<string,int>(0);
    map<string,int> PftNSeedling;
 
-      for (int i=0; i<RunPara.GetSumCells(); ++i){  //loop for all cells
+      for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
          CCELL* cell = CellList[i];
          if ((cell->getCover(1)==0) && (!cell->SeedBankList.empty())){  //germination if cell is uncovered
 
@@ -377,7 +382,7 @@ void CGrid::EstabLottery()
                 //mische die Keimlinge des Gewinnertyps
                 random_shuffle(cell->SeedlingList.begin(),
                    partition(cell->SeedlingList.begin(),cell->SeedlingList.end(),
-                   bind2nd(ptr_fun(SeedOfType),pft)));
+                   bind2nd(mem_fun(&CSeed::SeedOfType),pft)));
                 //Was, wenn keine Seedlings(typ==pft) gefunden werden (sollte nicht passieren)?
                 //etabliere jetzt das erste Element der Liste
                 CSeed* seed = cell->SeedlingList.front();
@@ -486,7 +491,7 @@ void CGrid::Grazing()
    while(MassRemoved<MaxMassRemove){
    //calculate slope for individual grazing probability;
       //sort PlantList descending after mshoot/LMR
-      sort(PlantList.begin(),PlantList.end(),ComparePalat);
+      sort(PlantList.begin(),PlantList.end(),CPlant::ComparePalat);
       //plant with highest grazing susceptibility
       CPlant* plant = *PlantList.begin() ;
       Max = plant->mshoot*plant->Traits->GrazFac();
@@ -594,7 +599,7 @@ void CGrid::GrazingBelGr(const int mode)
 //      oldMroot[PlantList[i]]=PlantList[i]->mroot;
 //partition of Plants left and right of grid
     plant_iter LeftPlants=
-    partition(PlantList.begin(),PlantList.end(),is_left);
+    partition(PlantList.begin(),PlantList.end(),mem_fun(&CPlant::is_left));
     vector<CPlant*> leftPlantList(LeftPlants,PlantList.end());
     //get ranking list of aboveground types after aboveground biomass
     map<string,double> aboveDom;
@@ -706,30 +711,33 @@ void CGrid::GrazingBelGr(const int mode)
 void CGrid::Trampling()
 {
    int xcell, ycell,xhelp, yhelp,index;   //central point
-   using CEnvir::nrand;using CEnvir::Round;using SRunPara::RunPara;
+ //  using CEnvir::nrand;using CEnvir::Round;using SRunPara::RunPara;
 
    double radius=10.0;                 //radius of disturbance [cm]
    double Apatch=(Pi*radius*radius);   //area of patch [cm²]
    //number of gaps
-   int NTrample=floor(RunPara.AreaEvent*RunPara.GridSize*RunPara.GridSize/
+   int NTrample=floor(SRunPara::RunPara.AreaEvent
+		   *SRunPara::RunPara.GridSize*SRunPara::RunPara.GridSize/
                       Apatch);
    //area of patch [cell number]
    Apatch/=SRunPara::RunPara.CellScale()*SRunPara::RunPara.CellScale();
 
    for (int i=0; i<NTrample; ++i){
       //get random center of disturbance
-      xcell=nrand(RunPara.CellNum);
-      ycell=nrand(RunPara.CellNum);
+      xcell=CEnvir::nrand(SRunPara::RunPara.CellNum);
+      ycell=CEnvir::nrand(SRunPara::RunPara.CellNum);
 
       for (int a=0;a<Apatch;a++){
         //get current position: add random center pos with ZOIBase-pos
         xhelp=xcell
-              +ZOIBase[a]/RunPara.CellNum-RunPara.CellNum/2;
+              +ZOIBase[a]/SRunPara::RunPara.CellNum
+              -SRunPara::RunPara.CellNum/2;
         yhelp=ycell
-              +ZOIBase[a]%RunPara.CellNum-RunPara.CellNum/2;
+              +ZOIBase[a]%SRunPara::RunPara.CellNum
+              -SRunPara::RunPara.CellNum/2;
         /// \todo change to absorbing bound for upscaling
         Boundary(xhelp,yhelp);
-        index = xhelp*RunPara.CellNum+yhelp;
+        index = xhelp*SRunPara::RunPara.CellNum+yhelp;
         CCELL* cell = CellList[index];
         if (cell->occupied){
            CPlant* plant = (CPlant*) cell->PlantInCell;
@@ -742,7 +750,7 @@ void CGrid::Trampling()
 void CGrid::RemovePlants()
 {
    plant_iter irem = partition(PlantList.begin(),PlantList.end(),
-     GetPlantRemove);
+     mem_fun(&CPlant::GetPlantRemove));
    for (plant_iter iplant=irem; iplant<PlantList.end(); ++iplant)
    {
       CPlant* plant = *iplant;
@@ -799,14 +807,14 @@ void CGrid::SeedMortWinter()
 */
 void CGrid::InitPlants(SPftTraits* traits,const int n)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
+//   using CEnvir::nrand;using SRunPara::RunPara;
    int  x, y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    int counter=0;
    while (counter<n){
-         x=nrand(SideCells);
-         y=nrand(SideCells);
+         x=CEnvir::nrand(SideCells);
+         y=CEnvir::nrand(SideCells);
 
          CCELL* cell = CellList[x*SideCells+y];
          if (!cell->occupied){
@@ -835,14 +843,14 @@ void CGrid::InitPlants(SPftTraits* traits,const int n)
 */
 void CGrid::InitSeeds(SPftTraits* traits, int n,double estab)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
+//   using CEnvir::nrand;using SRunPara::RunPara;
    int x,y;
-   int SideCells=RunPara.CellNum;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    //random initial conditions
      for (int i=0; i<n; ++i){
-        x=nrand(SideCells);
-        y=nrand(SideCells);
+        x=CEnvir::nrand(SideCells);
+        y=CEnvir::nrand(SideCells);
 //        CCell* cell = CellList[x*SideCells+y];
 //        new CSeed(estab,traits,cell);
         InitSeeds(traits,1,x,y,estab);
@@ -874,15 +882,16 @@ void CGrid::SetCellResource()
 {
    //set mean year
    int gweek=CEnvir::week;
-   using SRunPara::RunPara;
+//   using SRunPara::RunPara;
 
-   for (int i=0; i<RunPara.GetSumCells(); ++i){
+   for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
       CCELL* cell = CellList[i];
       cell->AResConc=max(0.0,
-         (-1.0)*RunPara.Aampl*cos(2.0*Pi*gweek/(double)CEnvir::WeeksPerYear)
+         (-1.0)*SRunPara::RunPara.Aampl*cos(2.0*Pi*gweek/(double)CEnvir::WeeksPerYear)
          +CEnvir::AResMuster[i]);
       cell->BResConc=max(0.0,
-         RunPara.Bampl*sin(2.0*Pi*gweek/(double)CEnvir::WeeksPerYear)
+    		  SRunPara::RunPara.Bampl
+    		  *sin(2.0*Pi*gweek/(double)CEnvir::WeeksPerYear)
          +CEnvir::BResMuster[i]);
    }
 }//end SetCellResource

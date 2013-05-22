@@ -9,10 +9,16 @@
 #include "CGridclonal.h"
 //#include "CWaterGrid.h"
 
-#include "rng.h"
 #include "OutStructs.h"
 #include <vector>
 #include <fstream>
+#include "LCG.h"
+
+//#include "rng.h"
+
+// class KW_RNG::RNG;
+
+//#include "LCG.h"
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 /// virtual Basic Results Class with general static simulation parameters
@@ -52,7 +58,8 @@ public:
 //   static int NumPft;              ///<Number of Plant functional Types
    static vector<double> AResMuster;     //!< mean above-ground resource availability [resource units per cm^2]
    static vector<double> BResMuster;     //!< mean below-ground resource availability [resource units per cm^2]
-   static KW_RNG::RNG RandNumGen;   //!< random number generator
+//   static KW_RNG::RNG RandNumGen;   //!< random number generator
+//   static RNG RandNumGen;   //!< random number generator
 
    static int week;        ///< current week (0-30)
    static int year;        ///< current year
@@ -90,12 +97,22 @@ public:
    static void ResetT(){ year=1;week=0;};
    /// set new week
    static void NewWeek(){week++;if (week>WeeksPerYear){week=1;year++;};};
-   ///round a doube value
-   inline static int Round(const double& a){return floor(a+0.5);};
+   ///round a double value
+   inline static int Round(const double& a){return (int)floor(a+0.5);};
+
    ///get a uniformly distributed random number (0-n)
-   inline static int nrand(int n){return RandNumGen.rand_int32()/(double)ULONG_MAX*n;};
+   inline static int nrand(int n){return (int)combinedLCG()*n;};
+   //   inline static int nrand(int n){return RandNumGen.rand_int32()/(double)ULONG_MAX*n;};
+
    ///get a uniformly distributed random number (0-1)
-   inline static double rand01(){return RandNumGen.rand_halfclosed01();};
+   inline static double rand01(){return combinedLCG();};//RandNumGen.rand_halfclosed01()
+
+   ///get a uniformly distributed random number (0-1)
+   inline static double normrand(double mean,double sd){return normcLCG(mean,sd);};//RandNumGen.rand_halfclosed01()
+
+   //   ///get a uniformly distributed random number (0-1)
+//   inline static double rand01(){return combinedLCG();};
+//   inline static int nrand(int n){return (int)(combinedLCG()*n);};
 
    virtual void InitRun();   ///<init a new run
    virtual void clearResults(); ///<reset result storage

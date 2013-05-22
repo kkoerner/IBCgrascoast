@@ -34,15 +34,17 @@ public:
 
    void setCell(CCell* cell);       ///<define cell (only if none defined yet)
    CCell* getCell(){return cell;}; ///<return address of cell
+
+   //! return type affiliation(necessary to apply algorithms from STL)
+   bool SeedOfType(string type){return (this->pft()==type);};
+
 };
 
 //-----------------------------------------------------------------------------
 //! return seed removed -> necessary to use STL algorithm
-bool GetSeedRemove(const CSeed*& seed1);
+bool GetSeedRemove(const CSeed* seed1);
 //!< sort seeds ascending after PFT ID
-int CompareTypeID(const CSeed*& seed1, const CSeed*& seed2);
-//! return type affiliation(necessary to apply algorithms from STL)
-bool SeedOfType(CSeed* seed,string type){return (seed->pft()==type);};
+int CompareTypeID(const CSeed* seed1, const CSeed* seed2);
 //-----------------------------------------------------------------------------
 
 #endif

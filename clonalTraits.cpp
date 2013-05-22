@@ -3,13 +3,13 @@
 #include <fstream>
 #include <iostream>
 
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "clonalTraits.h"
 #include "environment.h"
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)
 
 //vector<CDTclonalTraits*> SclonalTraits::clonalTraits(8);
 std::vector<SclonalTraits*> SclonalTraits::clonalTraits;//(8,new SclonalTraits());

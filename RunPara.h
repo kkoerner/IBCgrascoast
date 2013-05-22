@@ -24,7 +24,8 @@ enum CompVersion {version1, version2, version3};
 //! Structure with all scenario parameters
 struct SRunPara
 {
-   static SRunPara RunPara;  //!> scenario parameters
+public:
+	static SRunPara RunPara;  //!> scenario parameters
    CompMode AboveCompMode;   //!<0 = symmetric; 1 = partial asymmetry; 2 = total asymmetry
    CompMode BelowCompMode;   //!<0 = symmetric; 1 = partial asymmetry; 2 = total asymmetry
    //!niche differentiation
