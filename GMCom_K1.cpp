@@ -105,22 +105,39 @@ double DistAreaYear2=0;  ///<2nd trampling intensity
 int NCut2 =0;            ///<2nd mowing management
 //-----------------------
 /**
-  the new water ressource environment can be tested here
+  Design of the main trunk version of the IBC-grass_coast model:
 
-  teste 'reale' Arten -
-  \depreciated jede Art ein Jahr: wie entwickeln sich die Keimlinge, entstehen Rameten / neue Keimlinge?
+  On an 1.28 by 1.28cm square grid 10 for each of 28 PFTs
+  (parameterized according to real species) are initiated.
+  Successively several constant water levels (-60,-45,-30,..,15cm)
+  are tested for 100 years (5 repititions). Salinity is zero/constant.
+  No block design.
 
+  \par Parameters
+  facultative program parameters are:
+   -# belowground resource supply <100>
+   -# Migration (amount of annual seed rain) <0>
+   -# grazing probability = Dist Area Year (Trampling) <0>
+   -# NCut (cutting) <0>
 
-  \par Parameters  GrazProb, Trampling(=Grazprob), NCut
+  \par Input
+   -species definitions
+   -no sim file
+
+  \par Output
+   -annual grid information
+   -annual type information
+   -saved grid after x years of init time (x=20)
+
   \author KK
-  \date 12/01/26
+  \date 13/05/29
   */
 int main(int argc, char* argv[])
 {
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //start-WL   100
   SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
-  SRunPara::RunPara.WLseason="file";
+  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   int nruns=5;//3
   /// 0-abandoned; 1-grazing; 2-mowing
   int management=0;CEnvir::SimNr=0;
@@ -163,7 +180,7 @@ int main(int argc, char* argv[])
 
     Envir->SimNr++;
     }//end run
-    SRunPara::RunPara.WaterLevel+=15;//5cm weniger für nächste Sim
+    SRunPara::RunPara.WaterLevel+=15;//15cm weniger für nächste Sim
     if(SRunPara::RunPara.WaterLevel> 15) endsim=true;
   }while(!endsim);//end sim
    //delete static pointer vectors
