@@ -6,12 +6,12 @@ This file contains the main() function to start and coordinate the designed
 experiments.
 */
 //---------------------------------------------------------------------------
-#include <vcl.h>
+//#include <vcl.h>
 #include <iostream>
 #include <sstream>
-#include "TimeUtils.h"
+//#include "TimeUtils.h"
 
-#pragma hdrstop
+//#pragma hdrstop
 
 //the only information the GUI needs from the model
 #include "environment.h"
@@ -96,7 +96,7 @@ see additional page for solved and unsolved bugs
 //---------------------------------------------------------------------------
 CWaterGridEnvir* Envir;   ///<environment in which simulations are run
 using namespace std;
-#pragma argsused
+//#pragma argsused
 
 void Init();
 void Run();
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //start-WL   100
   SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
-//  SRunPara::RunPara.Migration=true;
+  SRunPara::RunPara.WLseason="file";
   int nruns=5;//3
   /// 0-abandoned; 1-grazing; 2-mowing
   int management=0;CEnvir::SimNr=0;

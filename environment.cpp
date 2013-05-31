@@ -179,7 +179,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
    //for (int i=0; i<SimNrMax; ++i)
 
       SimFile>>SimNr
-            >>RunPara.meanBRes
+            >>SRunPara::RunPara.meanBRes
              >>SRunPara::RunPara.GrazProb
              >>SRunPara::RunPara.NCut
              >>SRunPara::RunPara.WaterLevel
@@ -188,7 +188,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
 
       //---------standard parameter:
       //aboveground resources
-      RunPara.meanARes=100;
+      SRunPara::RunPara.meanARes=100;
 
       //grazing intensity
       SRunPara::RunPara.PropRemove=0.5;
@@ -754,7 +754,7 @@ void CClonalGridEnvir::OneRun(){
         WriteSurvival();
 //      }
    //save grid
-      if (year==5) { \\\<\todo save after init time
+      if (year==5) { ///<\todo save after init time
         stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }

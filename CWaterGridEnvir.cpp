@@ -11,7 +11,10 @@
 
    map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=
      map<string,SWaterTraits*>();
- double CWaterGridEnvir::salinity=0;
+   vector<double> CWaterGridEnvir::weeklyWL=vector<double>();
+   vector<double> CWaterGridEnvir::weeklySAL=vector<double>();
+   vector<double> CWaterGridEnvir::weeklySAT=vector<double>();
+// double CWaterGridEnvir::salinity=0;
 //---------------------------------------------------------------------------
 void CWaterGridEnvir::CellsInit(){
 }//end CellsInit
@@ -385,14 +388,14 @@ void CWaterGridEnvir::genAutokorrWL(double hurst)
   double sigma=SRunPara::RunPara.WLsigma;//5;
   int D=32,N=32, d=D/2;
   //first values
-  weeklyWL[0]=CEnvir::rand01()*2*sigma+(mean-sigma);
-  weeklyWL[32]=CEnvir::rand01()*2*sigma+(mean-sigma);
+  weeklyWL.at(0)=CEnvir::rand01()*2*sigma+(mean-sigma);
+  weeklyWL.at(32)=CEnvir::rand01()*2*sigma+(mean-sigma);
   double delta=sigma;
   //generate between
   for (int step=1;step<=5;step++){
     delta*= pow(0.5,0.5*hurst);
     for(int x=d;x<=N-d;x+=D){
-      weeklyWL[x]=(weeklyWL[x-d]+weeklyWL[x+d])/2.0
+    	weeklyWL.at(x)=(weeklyWL.at(x-d)+weeklyWL.at(x+d))/2.0
                   +delta*(2.0*rand01()-1);
     }
     D/=2;d/=2;
@@ -438,19 +441,21 @@ void CWaterGridEnvir::SetCellResource(){
     genSeasonWL();
     else if(SRunPara::RunPara.WLseason=="file")
     // generate seasonal Wl-series
-    getEnvirCond((string)"Input\\env_con_1a.txt");
+    getEnvirCond((string)"Input\\env_con.txt");
     else
 //if(SRunPara::RunPara.WLseason=="const")
     // generate const Wl-series
     genConstWL(); //default
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
-  this->SetMeanWaterLevel(weeklyWL[week-1]);
+  this->SetMeanWaterLevel(getWL());
 
   //salinity
-  salinity=SRunPara::RunPara.salt;
+//  salinity=SRunPara::SRunPara::RunPara.salt;
   if (week==1)cout<<"\n";
-  cout<<"\n w"<<week<<" WL:"<<weeklyWL[week-1]<<""<<;
+  cout<<"\n w"<<week<<" WL:"<<getWL()
+                    <<" Sat:"<<getSAT()
+                    <<" Sal:"<<getSAL();
 }
 
 //-------------------------------------------------------------

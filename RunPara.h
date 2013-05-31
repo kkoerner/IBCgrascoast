@@ -99,7 +99,7 @@ public:
    double WaterLevel; ///<standard mean grid water level
    double WLsigma; ///<grid water level change 
    string species;   ///<which species should be initialized [G M R]
-   string WLseason;  ///<modus of seasonal WL change [const season random comb]
+   string WLseason;  ///<modus of seasonal WL change [const season random comb file]
    double changeVal; ///<value of the parameter to change (add to) after 20 years
    int Migration;   ///<How many seeds per species arrive annually?
    double salt; ///<salt level on plot

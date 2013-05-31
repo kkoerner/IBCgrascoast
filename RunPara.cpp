@@ -7,9 +7,9 @@
 #include "RunPara.h"
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 //---------------------------------------------------------------------------
 //#pragma package(smart_init)
-using namespace std;
 
 SRunPara SRunPara::RunPara=SRunPara();
 //-------------------------------------------------------------------
@@ -20,9 +20,9 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/PftTraits2304.txt"),
-  species("M"),WaterLevel(0),WLsigma(0),WLseason("const"),changeVal(0),
-  Migration(0),Aampl(0),Bampl(0),cv_res(0){}
-  WLseason("file"),PftFile("Input/PftTraits2304.txt"){}
+  species("M"),WaterLevel(0),WLsigma(0),changeVal(0),
+  Migration(0),Aampl(0),Bampl(0),cv_res(0),
+  WLseason("file"){}
 
 /**
 \note  es fehlen: CellNum,NPft
@@ -53,12 +53,31 @@ std::string SRunPara::asString(){
 void SRunPara::setRunPara(std::string def){
   stringstream dummi; dummi<<def;
   string d;
+  using namespace std;
 //  dummi.clear();
 //  dummi>>Version;  //forum entries suggest BB6-Bug here
                      //probably BB can't cope with enums
-  dummi>>d;Version=atoi(d.c_str());
-  dummi>>d;AboveCompMode=atoi(d.c_str());
-  dummi>>d;BelowCompMode=atoi(d.c_str());
+  dummi>>d;
+  switch(atoi(d.c_str())){
+  case 0: Version=version1;break;
+  case 1:Version=version2;break;
+  case 2:Version=version3;break;
+  default:break;
+  }
+  dummi>>d;//AboveCompMode=atoi(d.c_str());
+  switch(atoi(d.c_str())){
+  case 0: AboveCompMode=sym;break;
+  case 1: AboveCompMode=asympart;break;
+  case 2: AboveCompMode=asymtot;break;
+  default:break;
+  }
+  dummi>>d;//BelowCompMode=atoi(d.c_str());
+  switch(atoi(d.c_str())){
+  case 0: BelowCompMode=sym;break;
+  case 1: BelowCompMode=asympart;break;
+  case 2: BelowCompMode=asymtot;break;
+  default:break;
+  }
   dummi>> GridSize; CellNum=GridSize;
   dummi>> Tmax>> torus;
   dummi>>mort_seeds>> EstabRamet>>mort_base>>LitterDecomp>>DiebackWinter;

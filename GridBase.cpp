@@ -859,8 +859,8 @@ void CGrid::InitSeeds(SPftTraits* traits, int n,double estab)
 //---------------------------------------------------------------------------
 void CGrid::InitSeeds(SPftTraits* traits, int n,int x, int y,double estab)
 {
-   using CEnvir::nrand;using SRunPara::RunPara;
-   int SideCells=RunPara.CellNum;
+//   using CEnvir::nrand;using SRunPara::RunPara;
+   int SideCells=SRunPara::RunPara.CellNum;
    if (estab==0) estab=traits->pEstab;
    CCell* cell = CellList[x*SideCells+y];
 
