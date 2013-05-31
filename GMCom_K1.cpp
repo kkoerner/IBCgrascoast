@@ -109,8 +109,8 @@ int NCut2 =0;            ///<2nd mowing management
 
   On an 1.28 by 1.28cm square grid 10 for each of 28 PFTs
   (parameterized according to real species) are initiated.
-  Successively several constant water levels (-60,-45,-30,..,15cm)
-  are tested for 100 years (5 repititions). Salinity is zero/constant.
+  One environmental setting is tested for 100 years (1 repitition).
+  Salinity is zero/constant.
   No block design.
 
   \par Parameters
@@ -119,6 +119,7 @@ int NCut2 =0;            ///<2nd mowing management
    -# Migration (amount of annual seed rain) <0>
    -# grazing probability = Dist Area Year (Trampling) <0>
    -# NCut (cutting) <0>
+   -# WaterLevel <-60>
 
   \par Input
    -species definitions
@@ -138,7 +139,7 @@ int main(int argc, char* argv[])
   SRunPara::RunPara.WaterLevel=-60; //start-WL   100
   SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
-  int nruns=5;//3
+  int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
   int management=0;CEnvir::SimNr=0;
   //sim-loop
@@ -149,8 +150,9 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
     SRunPara::RunPara.DistAreaYear=atof(argv[3]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[4]); //number of cuttings
+    SRunPara::RunPara.WaterLevel=atoi(argv[5]); //number of cuttings
   }
-  do{
+
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
       cout<<"new Environment...\n";
@@ -180,10 +182,8 @@ int main(int argc, char* argv[])
 
     Envir->SimNr++;
     }//end run
-    SRunPara::RunPara.WaterLevel+=15;//15cm weniger für nächste Sim
-    if(SRunPara::RunPara.WaterLevel> 15) endsim=true;
-  }while(!endsim);//end sim
-   //delete static pointer vectors
+
+    //delete static pointer vectors
   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)
     delete SPftTraits::PftList[i];
   for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
