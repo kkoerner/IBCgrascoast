@@ -118,7 +118,7 @@ if (false)
  CEnvir::AddLogEntry(CEnvir::RunNr,filename);
  CEnvir::AddLogEntry(CEnvir::year,filename);
  CEnvir::AddLogEntry(CEnvir::week,filename);
- CEnvir::AddLogEntry(CWaterGridEnvir::salinity,filename);
+ CEnvir::AddLogEntry(CWaterGridEnvir::getSAL(),filename);
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
  CEnvir::AddLogEntry(GetMass(),filename);    //biomass
@@ -164,7 +164,7 @@ double CWaterPlant::RootGrow(double rres){
             *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
    double grow=max(0.0,Assim_root-Resp_root);
    //salinity dieback
-   if (this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)<1.0)
+   if (this->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL())<1.0)
      grow -=0.1*this->mroot;
    return grow;
 }
@@ -202,7 +202,7 @@ double CWaterPlant::rootEfficiency(){
  else retval=  max(min(depth,-wl)/depth,1e-10); //0.0
 
 //salt stress
- retval*=this->waterTraits->saltTolEffect(CWaterGridEnvir::salinity)
+ retval*=this->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL())
      * this->waterTraits->saltTolCosts();
  return retval;
 }
@@ -287,7 +287,7 @@ double CWaterCell::Germinate(){
    {
      CSeed* seed = SeedBankList[i];// *iter;
      if (CEnvir::rand01()>
-       ((CWaterSeed*)seed)->waterTraits->saltTolEffect(CWaterGridEnvir::salinity))
+       ((CWaterSeed*)seed)->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL()))
        seed->remove=true;
    }
    this->RemoveSeeds();
