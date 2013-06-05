@@ -264,14 +264,16 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
  environmental conditions (WaterLevel) is changed.
 
  Migration, additional Winter mortality and salt-toxidity are implemented.
-\todo add additional Winter mortality and salt-toxidity
 
  To allow a type to reestablish, once a year one Ind of each type is addad to
  the grid (individual drift / migration).
+
+ Grid is saved after init time of 20 years.
+
  \sa SRunPara::RunPara.WaterLevel
 */
 void CWaterGridEnvir::OneRun(){
-   int year_of_change=50;
+//   int year_of_change=50;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
 //   for (year=1; year<=5; ++year){
@@ -280,7 +282,7 @@ void CWaterGridEnvir::OneRun(){
       this->NewWeek();
       cout<<" y"<<year;
 
-  //drift of little individuals -anually-
+  //drift of few individuals -anually-
   if (SRunPara::RunPara.Migration>0){
     typedef map<string, int> mapType;
 
@@ -338,14 +340,24 @@ void CWaterGridEnvir::Winter(){
   //calculate additional mortality due to prolonged inundation (ditch breaching)
   //effected types: all non adapted to water and the other to smaller extend
    //mass removal and mortality in case of Disturbance
-   for (int i=0; i<PlantList.size(); ++i){
+   for (unsigned int i=0; i<PlantList.size(); ++i){
       ((CWaterPlant*)PlantList[i])->winterDisturbance(winterInundation);
    }
   CGrid::Winter(); //remove dead plants and calc winter dieback
 }//end winter() - winter mortality
 //------------------------------------------------------------------------------
 /**
-    \param file file name of source file
+ *   Get weekly weather conditions from file.
+ *
+ *   The file consists of 31 rows with 3 columns plus header,
+ *   each row containing Water level saturation and salinity
+ *   for each of 30 weeks plus winter conditions.
+ *
+ *   The data of one year is collected and stored. Current values
+ *   can be accessed via the functions getWL(), getSAT(), getSAL()
+ *   and the variable winterInundation.
+ *
+ *     \param file file name of source file
 */
 void CWaterGridEnvir::getEnvirCond(string file){
   weeklyWL.clear();weeklySAL.clear();weeklySAT.clear();

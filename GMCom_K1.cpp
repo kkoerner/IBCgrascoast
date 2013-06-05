@@ -123,7 +123,8 @@ int main(int argc, char* argv[])
   SRunPara::RunPara.WLseason="file";
   int nruns=5;//3
   /// 0-abandoned; 1-grazing; 2-mowing
-  int management=0;CEnvir::SimNr=0;
+  //int management=0;
+  CEnvir::SimNr=0;
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
