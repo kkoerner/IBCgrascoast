@@ -44,7 +44,7 @@ protected:
 
 public:
    //Input Files
-   static char* NamePftFile;   ///< Filename of PftTrait-File
+   static string NamePftFile;   ///< Filename of PftTrait-File
    static string NameBResFile; ///< Filename of Belowground-Resource-File
    static string NameSimFile;  ///< Filename of Simulation-File
 

@@ -271,7 +271,7 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
  \sa SRunPara::RunPara.WaterLevel
 */
 void CWaterGridEnvir::OneRun(){
-   int year_of_change=50;
+ //  int year_of_change=50;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
 //   for (year=1; year<=5; ++year){
@@ -417,7 +417,10 @@ void CWaterGridEnvir::genSeasonWL()
 */
 void CWaterGridEnvir::genConstWL()
 {
+//   weeklyWL.clear();weeklyWL.assign(30,0);
    weeklyWL.clear();weeklyWL.assign(30,0);
+   weeklySAL.clear();weeklySAL.assign(30,0);
+   weeklySAT.clear();weeklySAT.assign(30,0);
 
   for (unsigned int i=0; i<30; i++) weeklyWL[i]=SRunPara::RunPara.WaterLevel;
 }
@@ -452,10 +455,10 @@ void CWaterGridEnvir::SetCellResource(){
 
   //salinity
 //  salinity=SRunPara::SRunPara::RunPara.salt;
-  if (week==1)cout<<"\n";
-  cout<<"\n w"<<week<<" WL:"<<getWL()
-                    <<" Sat:"<<getSAT()
-                    <<" Sal:"<<getSAL();
+//  if (week==1) cout<<"\n";
+  cout<<"\n w"<<week<<" WL:" <<getWL();
+  cout              <<" Sat:"<<getSAT();
+  cout              <<" Sal:"<<getSAL();
 }
 
 //-------------------------------------------------------------

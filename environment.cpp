@@ -73,7 +73,7 @@ using namespace std;
 //   int CEnvir::NumPft=81;
 
    //Input Files
-   char* CEnvir::NamePftFile="Input\\PftTraits2304.txt";
+   string CEnvir::NamePftFile="Input\\PftTraits2304.txt";
    string CEnvir::NameBResFile="";
    string CEnvir::NameSimFile = "Input\\SimFileTest1.txt";  //file with simulation scenarios
 

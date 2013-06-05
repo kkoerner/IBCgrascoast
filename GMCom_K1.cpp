@@ -135,13 +135,14 @@ int NCut2 =0;            ///<2nd mowing management
   */
 int main(int argc, char* argv[])
 {
-  bool endsim=false;
-  SRunPara::RunPara.WaterLevel=-60; //start-WL   100
-  SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
+//  bool endsim=false;
+  SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
+  SRunPara::RunPara.Tmax=10;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
-  int management=0;CEnvir::SimNr=0;
+//  int management=0;
+  CEnvir::SimNr=0;
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
