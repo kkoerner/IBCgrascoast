@@ -236,7 +236,8 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass)
 {
 //   using CEnvir::nrand;using SRunPara::RunPara;
-   int x,y;
+   int x,y;//teste mal..
+   x=12;y=13;
    int SideCells=SRunPara::RunPara.CellNum;
 
    for (int i=0; i<n; ++i){
@@ -510,7 +511,6 @@ void CWaterGridEnvir::GetOutput(){
   A new Plant and a new Genet are defined and appended to the grid-wide lists
   (PlantList and GenetList).
 
-  \todo define a NULL-clone type
 */
 void CWaterGridEnvir::EstabLott_help(CSeed* seed){
 //  cout<<"estabLott_help - CWaterGridEnvir";

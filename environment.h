@@ -77,12 +77,7 @@ public:
    vector<int> ACover;     //!< mean above-ground resource availability [resource units per cm^2]
    vector<int> BCover;     //!< mean below-ground resource availability [resource units per cm^2]
    map<string,double> PftCover;  //!< current Grid-cover of Pfts used
-//   int NPlants;            ///< Number of Plants on Grid
-//   int NdeadPlants;        ///< Number of dead Plants on Grid
-//   int CoveredCells;       ///< Number of Cells covered by plants on Grid
    double NCellsAcover;    ///< Number of Cells shaded by plants on ground
-//   double MeanShannon;     ///< mean Shannon Diversity
-//   double Mortalitaetsrate;///< mortality rate
 
    //Functions
    CEnvir();
@@ -101,7 +96,7 @@ public:
    inline static int Round(const double& a){return (int)floor(a+0.5);};
 
    ///get a uniformly distributed random number (0-n)
-   inline static int nrand(int n){return (int)combinedLCG()*n;};
+   inline static int nrand(int n){return rand01()*n;};
    //   inline static int nrand(int n){return RandNumGen.rand_int32()/(double)ULONG_MAX*n;};
 
    ///get a uniformly distributed random number (0-1)
@@ -170,7 +165,7 @@ class CClonalGridEnvir: public CEnvir, public CGridclonal{
    static map<string,SclonalTraits*> ClLinkList;  //!< links of Pfts(SclonalTraits) used
 protected:
 public:
-  static char* NameClonalPftFile; ///< Filename of clonal Pft-File
+  static string NameClonalPftFile; ///< Filename of clonal Pft-File
   static string NameClonalOutFile; ///< Filename of clonal Output-File
   static int clonaltype;          ///< current clonal type (number in List)
   static int Pfttype;             ///< current Pft-Type (number in List)

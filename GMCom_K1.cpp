@@ -9,6 +9,8 @@ experiments.
 //#include <vcl.h>
 #include <iostream>
 #include <sstream>
+#include <ctime>
+
 //#include "TimeUtils.h"
 
 //#pragma hdrstop
@@ -135,6 +137,8 @@ int NCut2 =0;            ///<2nd mowing management
   */
 int main(int argc, char* argv[])
 {
+    initLCG(time(NULL), 3487234); // 3487234 ist 'zufällig' gewählt
+
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=10;//100;//Laufzeit

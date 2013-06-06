@@ -94,10 +94,8 @@ using namespace std;
 
 
 //---------------------------------------------------------------------------
-CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
-//  CoveredCells(0),//MeanShannon(0),
-  //NCellsAcover(0),//Mortalitaetsrate(0),
-  init(1),endofrun(false)
+CEnvir::CEnvir():
+  endofrun(false),init(1)
 {
    ResetT();
    ReadLandscape();
@@ -105,10 +103,8 @@ CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
    BCover.assign(SRunPara::RunPara.GetSumCells(),0);
 }
 //---------------------------------------------------------------------------
-CEnvir::CEnvir(string id)://NdeadPlants(0),NPlants(0),
-//  CoveredCells(0),//MeanShannon(0),
-//  NCellsAcover(0),//Mortalitaetsrate(0),
-  init(1),endofrun(false)
+CEnvir::CEnvir(string id):
+  endofrun(false),init(1)
 {
 //read file
  string dummi=(string)"Save/E_"+id+".sav";
@@ -174,7 +170,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   //ist position gültig?, wenn nicht -- Abbruch
   if (!SimFile.good()) return -1;
 
-  int version, acomp, bcomp;
+ // int version, acomp, bcomp;
    //RunNr=0; int dummi;
    //for (int i=0; i<SimNrMax; ++i)
 
@@ -195,7 +191,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       //trampling equals grazing
       SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb;
       //above- and belowground competition
-      acomp=1;bcomp=0;
+ //     acomp=1;bcomp=0;
       //--------------------------------
       //filenames
     string idstr= SRunPara::RunPara.getRunID();
@@ -445,7 +441,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
       //only if output once a year
    if(PftOutData.size()<x) return -1;
    double sum=0;
-   for (int i= (PftOutData.size()-x);i<PftOutData.size();i++)
+   for (unsigned int i= (PftOutData.size()-x);i<PftOutData.size();i++)
     if (PftOutData[i]->PFT.find(pft)!=PftOutData[i]->PFT.end())
     {
      SPftOut::SPftSingle* entry
@@ -461,7 +457,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
    /// \var char* CClonalGridEnvir::NameClonalPftFile
    /// \since 2010-07-06 slightly changed clonal traits
    ///
-   char* CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.explodat.txt";
+   string CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.explodat.txt";
 //   char* CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.txt";
    string CClonalGridEnvir::NameClonalOutFile="Output\\clonalOut.txt";
    int CClonalGridEnvir::clonaltype=0;
@@ -475,7 +471,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
      map<string,SclonalTraits*>();
    //   int CClonalGridEnvir::sim=0;
 //------------------------------------------------------------------------------
-CClonalGridEnvir::CClonalGridEnvir():CGridclonal(),CEnvir()
+CClonalGridEnvir::CClonalGridEnvir():CEnvir(),CGridclonal()
 {
    ReadLandscape();
 }
@@ -521,7 +517,7 @@ belonging to one task.
    \autor KK
    \date  120905
 */
-CClonalGridEnvir::CClonalGridEnvir(string id):CGridclonal(id),CEnvir(id)
+CClonalGridEnvir::CClonalGridEnvir(string id):CEnvir(id),CGridclonal(id)
 {
   //here re-eval clonal PFTFile
   string dummi=(string)"Save/E_"+id+".sav";
@@ -599,8 +595,8 @@ void CClonalGridEnvir::InitRun(){
   \todo put this function in an extra file together with other adaptable functions
 */
 void CClonalGridEnvir::InitInds(){
-  SclonalTraits* cltraits=SclonalTraits::clonalTraits[clonaltype];
-     SPftTraits* traits=SPftTraits::PftList[Pfttype];
+//  SclonalTraits* cltraits=SclonalTraits::clonalTraits[clonaltype];
+//     SPftTraits* traits=SPftTraits::PftList[Pfttype];
   //non-clonal plants
    int Pfttypebegin=0;//(StrToInt(Form1->Edit13->Text))-1;
    int Pfttypeend=80; //(StrToInt(Form1->Edit14->Text))-1;
@@ -657,7 +653,7 @@ void CClonalGridEnvir::InitInds(string file){
     else{
        SclonalTraits* cltraits=NULL;//=SclonalTraits::clonalTraits[Cltype];
        //...
-       for(int i=0;i<SclonalTraits::clonalTraits.size();i++){
+       for(unsigned int i=0;i<SclonalTraits::clonalTraits.size();i++){
          if (SclonalTraits::clonalTraits[i]->name==Cltype){
            cltraits=SclonalTraits::clonalTraits[i];break;
          }
@@ -701,8 +697,8 @@ bool CClonalGridEnvir::InitInd(string def){
                   stress,dead,generation,genetnb,spacerl,spacerl2grow);
     //set Genet
     CGenet* genet=NULL;
-    for (int i=0; i<GenetList.size();i++){
-      if (GenetList[i]->number=genetnb)genet=GenetList[i];
+    for (unsigned int i=0; i<GenetList.size();i++){
+      if (GenetList[i]->number==genetnb)genet=GenetList[i];
     }
     if (!genet) {
       CGenet::staticID=max(CGenet::staticID,genetnb);
@@ -998,9 +994,9 @@ void CClonalGridEnvir::clonalOutput(){
 */
 void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
 {
-   int pft, df;
+ //  int pft, df;
    string pft_name;
-   double mean, prop_PFT;
+   double  prop_PFT;//mean,
 
    SPftOut*  PftWeek =new SPftOut();
 
