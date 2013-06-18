@@ -772,6 +772,7 @@ void CClonalGridEnvir::OneYear(){
    do{
    //for (week=1;week<=WeeksPerYear; ++week){
      OneWeek();
+     fflush(NULL);//write immediately on console
      //exit conditions
       exitConditions();
       if (endofrun)break;
