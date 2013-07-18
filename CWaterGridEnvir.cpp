@@ -729,6 +729,9 @@ void CWaterGridEnvir::InitInds(string file,int n){
      traits->SeedMass=traits->m0;
 //     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
      cltraits->sdSpacerlength=cltraits->meanSpacerlength;
+     //\todo test reduced RAR (moderate root efficiency)
+      traits->RAR=0.5;
+
     //namen und IDs
     traits->name=cltraits->name=wtraits->name=dummi2;
     traits->TypeID=dummi1;

@@ -1,15 +1,15 @@
 //---------------------------------------------------------------------------
 
 
-#pragma hdrstop
+//#pragma hdrstop
 
 #include "CObject.h"
 
 //---------------------------------------------------------------------------
 
-#pragma package(smart_init)
+//#pragma package(smart_init)
 
-string CObject::type(){
+std::string CObject::type(){
         return "CObject";
 }
 

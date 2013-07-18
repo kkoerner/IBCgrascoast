@@ -252,11 +252,11 @@ void CEnvir::WriteGridComplete(bool allYears)
      GridOutFile<<"\n";
    }
 
-   vector<SGridOut>::size_type i=0;
-   if (!allYears)i= GridOutData.size()-1;
-   for (i; i<GridOutData.size(); ++i){
-      GridOutFile<<SimNr<<'\t'<<RunNr<<'\t'<<i //<<'\t'<<GridOutData[i]->week
-                 <<'\t'<<GridOutData[i]->totmass
+ //  vector<SGridOut>::size_type i=0;
+   for (vector<SGridOut>::size_type i=0; i<GridOutData.size(); i++){
+	   if (!allYears)i= GridOutData.size();
+     GridOutFile<<SimNr<<'\t'<<RunNr<<'\t'<<i //<<'\t'<<GridOutData[i]->week
+                 <<'\t'<<GridOutData.at(i)->totmass
                  <<'\t'<<GridOutData[i]->Nind
                  <<'\t'<<GridOutData[i]->above_mass
                  <<'\t'<<GridOutData[i]->below_mass

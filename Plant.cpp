@@ -233,13 +233,24 @@ void CPlant::Grow2()         //grow plant one timestep
 {
    double dm_shoot, dm_root,alloc_shoot;
    double LimRes, ShootRes, RootRes, VegRes;
+   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
 
    /********************************************/
    /*  dm/dt = growth*(c*m^p - m^q / m_max^r)  */
    /********************************************/
+//calculate maintenance costs
+   double Resp_shoot=Traits->SLA
+//               Traits->LMR*Traits->Gmax  //? entferne den Exponenten
+               *pow(Traits->LMR,p)*Traits->Gmax
+               *pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
+   double Resp_root=Traits->Gmax*Traits->RAR
+            *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
 
+   double AU=max(0.0,Auptake-Resp_shoot);//(Resp_shoot+Resp_root)
+   double BU=max(0.0,Auptake-Resp_root);//(Resp_shoot+Resp_root)
    //which resource is limiting growth ?
-   LimRes=min(Buptake,Auptake);   //two layers
+   LimRes=min(BU,AU);   //two layers
+//   LimRes=min(Buptake,Auptake);   //two layers
    VegRes=ReproGrow(LimRes);
 
    //allocation to shoot and root growth
@@ -266,13 +277,9 @@ void CPlant::Grow2()         //grow plant one timestep
      dm/dt = growth*(c*m^p - m^q / m_max^r)
 */
 double CPlant::ShootGrow(double shres){
-   double Assim_shoot, Resp_shoot;
-   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+   double Assim_shoot;
    Assim_shoot=Traits->growth*min(shres,Traits->Gmax*Ash_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-   Resp_shoot=Traits->growth*Traits->SLA
-              *pow(Traits->LMR,p)*Traits->Gmax
-              *pow(mshoot,q)/pow(Traits->MaxMass*0.5,r);       //respiration proportional to mshoot^2
-   return max(0.0,Assim_shoot-Resp_shoot);
+    return Assim_shoot;
 }
 /**
     root growth
@@ -280,13 +287,10 @@ double CPlant::ShootGrow(double shres){
     dm/dt = growth*(c*m^p - m^q / m_max^r)
 */
 double CPlant::RootGrow(double rres){
-   double Assim_root, Resp_root;
-   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+   double Assim_root;
    Assim_root=Traits->growth*min(rres,Traits->Gmax*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-   Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
-            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
 
-   return max(0.0,Assim_root-Resp_root);
+   return Assim_root;
 }
 
 /**
