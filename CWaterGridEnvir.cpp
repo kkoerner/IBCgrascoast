@@ -519,7 +519,6 @@ void CWaterGridEnvir::GetOutput(){
   A new Plant and a new Genet are defined and appended to the grid-wide lists
   (PlantList and GenetList).
 
-  \todo define a NULL-clone type
 */
 void CWaterGridEnvir::EstabLott_help(CSeed* seed){
 //  cout<<"estabLott_help - CWaterGridEnvir";

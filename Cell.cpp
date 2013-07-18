@@ -124,7 +124,6 @@ void CCell::RemoveSeeds()
   Updates Numbers of Plant functional traits on grid
   (refreshes NPftA and NPftB)
 
-  \todo adapt for map  -done
 */
 void CCell::GetNPft()
 {
@@ -273,7 +272,6 @@ void CCell::BelowComp()
   \param layer    above(1)- or below(2)ground
   \param version  one of [0,1,2]
   \since revision
-  \todo adapt for map-version
 */
 double CCell::prop_res(const string type,const int layer,const int version)const{
    switch (version){
