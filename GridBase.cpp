@@ -159,7 +159,7 @@ void getTargetCell(int& xx,int& yy,const float mean,const float sd,double cellsc
 int CGrid::DispersSeeds(CPlant* plant)
 {
    int x=plant->getCell()->x, y=plant->getCell()->y, NSeeds;
-   double dist, direction;
+   //double dist;//, direction;
    int nb_LDDseeds=0;
 
    NSeeds=plant->GetNSeeds();
@@ -195,7 +195,7 @@ void CGrid::CoverCells()
 {
    int xmin, xmax, ymin, ymax;
    int index;
-   double dist,Radius;
+  // double dist,Radius;
    int xhelp, yhelp;
 //   using SRunPara::RunPara;
 
@@ -344,7 +344,7 @@ void CGrid::DistribResource()
 void CGrid::EstabLottery()
 {
    double sum=0;
-   int index=0;
+ //  int index=0;
 //   using SRunPara::RunPara;
    map<string,double> PftEstabProb;//=map<string,int>(0);
    map<string,int> PftNSeedling;

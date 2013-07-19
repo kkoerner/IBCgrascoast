@@ -100,7 +100,7 @@ Overload CPlant::Grow2() for additional Effect of WaterLevel.
 */
 void CWaterPlant::Grow2()
 {
-double oldmass=this->GetMass();
+//double oldmass=this->GetMass();
  //standard growth
  CPlant::Grow2();
  //detailed output - for grid plots
@@ -108,10 +108,10 @@ double oldmass=this->GetMass();
 // if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
-if (false)
+//if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 //if (CEnvir::year==21&CEnvir::week<10)
-//if (true)
+if (true)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);
@@ -121,7 +121,8 @@ if (false)
  CEnvir::AddLogEntry(CWaterGridEnvir::getSAL(),filename);
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
- CEnvir::AddLogEntry(GetMass(),filename);    //biomass
+ CEnvir::AddLogEntry(CPlant::GetMass(),filename);    //biomass
+ CEnvir::AddLogEntry(this->GetBMSpacer(),filename);    //biomass
 // CEnvir::AddLogEntry(GetMass()-oldmass,filename);
  CEnvir::AddLogEntry(this->mRepro,filename); //growing seed mass
 
@@ -144,6 +145,13 @@ if (false)
  //CEnvir::AddLogEntry("\n",filename);
 }
 }//end Grow2
+double CWaterPlant::RootCosts(){
+  double p_depth= this->getDepth();
+  double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+  return    Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
+          *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
+}
+
 /**
     root growth
 
@@ -156,13 +164,11 @@ if (false)
     \since 05/03/2013 NEW:dieback of roots due to salinity; negative output possible
 */
 double CWaterPlant::RootGrow(double rres){
-   double Assim_root, Resp_root;
+   double Assim_root;
    double p_depth= this->getDepth();
    double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_root=Traits->growth*min(rres,Traits->Gmax*p_depth/50.0*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-   Resp_root=Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
-            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
-   double grow=max(0.0,Assim_root-Resp_root);
+   double grow=Assim_root;
    //salinity dieback
    if (this->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL())<1.0)
      grow -=0.1*this->mroot;

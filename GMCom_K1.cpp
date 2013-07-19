@@ -38,6 +38,8 @@ Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 This code simulates pft-related wetland-grassland dynamics for different
 environmental conditions --develloping process----
 
+One run (100 years) for one environmental setting. No temporal env. change.
+
 See also: publications of May(2008) and Steinhauer(2008)
 
 \par Type (function, class, unit, form, ...):

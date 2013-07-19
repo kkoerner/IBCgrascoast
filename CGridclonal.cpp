@@ -177,7 +177,7 @@ int CGridclonal::DispersSeeds(CPlant* plant)
 //   using CEnvir::Round;using SRunPara::RunPara;
    int px=plant->getCell()->x, py=plant->getCell()->y;
    int NSeeds=0;
-   double dist=0, direction=0;
+  // double dist=0;//, direction=0;
    double rnumber=0;
    int nb_LDDseeds=0;
    int SideCells=SRunPara::RunPara.CellNum;

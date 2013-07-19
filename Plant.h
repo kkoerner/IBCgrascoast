@@ -67,9 +67,16 @@ class CPlant : public CObject
 {
 protected:
    CCell* cell;      ///<cell where it sits
+   ///reproductive growth
    virtual double ReproGrow(double uptake);
+   ///individual shoot growth
    virtual double ShootGrow(double shres);
+   ///individual root growth
    virtual double RootGrow(double rres);
+   ///shoot maintanance costs
+   virtual double ShootCosts();
+   ///root maintanance costs
+   virtual double RootCosts();
 
 public:
    SPftTraits* Traits;///<PFT Traits

@@ -80,7 +80,7 @@ double CCell::Germinate()
       {
          //make a copy in seedling list
          SeedlingList.push_back(seed);//new CSeed(*seed));
-         int dummi=seed->Traits->TypeID-1;
+ //        int dummi=seed->Traits->TypeID-1;
          PftNSeedling[seed->pft()]++;
          seed->remove=true;
          sumseedmass+=seed->mass;

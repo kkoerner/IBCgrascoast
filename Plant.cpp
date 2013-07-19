@@ -209,7 +209,7 @@ double CPlant::ReproGrow(double uptake){
        (mRepro<=Traits->AllocSeed*mshoot)){
    //test for hapaxantic type
    //fruit only, if biomass-threshold (80%) is crossed
-      if(Traits->MaxAge<5 & this->mshoot<Traits->MaxMass*0.5*0.8)
+      if((Traits->MaxAge<5) & (this->mshoot<Traits->MaxMass*0.5*0.8))
         return uptake;
       SeedRes =uptake*Traits->AllocSeed;
       VegRes  =uptake*(1-Traits->AllocSeed);
@@ -233,28 +233,30 @@ void CPlant::Grow2()         //grow plant one timestep
 {
    double dm_shoot, dm_root,alloc_shoot;
    double LimRes, ShootRes, RootRes, VegRes;
-   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
 
    /********************************************/
    /*  dm/dt = growth*(c*m^p - m^q / m_max^r)  */
    /********************************************/
 //calculate maintenance costs
-   double Resp_shoot=Traits->SLA
-//               Traits->LMR*Traits->Gmax  //? entferne den Exponenten
-               *pow(Traits->LMR,p)*Traits->Gmax
-               *pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
-   double Resp_root=Traits->Gmax*Traits->RAR
-            *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
+   double Resp_shoot=ShootCosts();
+   double Resp_root=RootCosts();
+   double AU=max(0.0,Auptake-(Resp_shoot+Resp_root));//(Resp_shoot+Resp_root)
+   double BU=max(0.0,Buptake-(Resp_shoot+Resp_root));//(Resp_shoot+Resp_root)
+   string filename=CEnvir::NameLogFile;
+   CEnvir::AddLogEntry(Auptake,filename);
+   CEnvir::AddLogEntry(Buptake,filename);
+   CEnvir::AddLogEntry(Resp_shoot+Resp_root,filename);
 
-   double AU=max(0.0,Auptake-Resp_shoot);//(Resp_shoot+Resp_root)
-   double BU=max(0.0,Auptake-Resp_root);//(Resp_shoot+Resp_root)
+
    //which resource is limiting growth ?
    LimRes=min(BU,AU);   //two layers
 //   LimRes=min(Buptake,Auptake);   //two layers
    VegRes=ReproGrow(LimRes);
+   CEnvir::AddLogEntry(LimRes-VegRes,filename);//Repro-costs
 
    //allocation to shoot and root growth
    alloc_shoot= Buptake/(Buptake+Auptake); //allocation coefficient
+   CEnvir::AddLogEntry(alloc_shoot,filename);
 
    ShootRes=alloc_shoot*VegRes;
    RootRes =VegRes-ShootRes;
@@ -267,9 +269,29 @@ void CPlant::Grow2()         //grow plant one timestep
 
    mshoot+=dm_shoot;
    mroot+=dm_root;
+   CEnvir::AddLogEntry(dm_shoot,filename);
+   CEnvir::AddLogEntry(dm_root,filename);
 
-   if (stressed())++stress;
+//   if (stressed())++stress;
+//new stress definition
+   if (AU*BU==0)++stress;//Maintanance exceeds Uptake
    else if (stress>0) --stress;
+}
+///shoot maintanance costs
+double CPlant::ShootCosts(){
+  double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+  return Traits->SLA
+	//               Traits->LMR*Traits->Gmax  //? entferne den Exponenten
+	*pow(Traits->LMR,p)*Traits->Gmax
+	*pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
+
+}
+///root maintanance costs
+double CPlant::RootCosts(){
+  double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
+  return Traits->Gmax*Traits->RAR
+	*pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
+
 }
 /**
      shoot growth
