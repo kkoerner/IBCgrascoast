@@ -308,7 +308,7 @@ cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl
 //      if (year==year_of_change) SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
 
 //file output
-      if (true)//(year>=20)
+      if (false)//(true)//(year>=20)
       {
         WriteGridComplete(false);//report last year
         WriteSurvival();
@@ -670,8 +670,8 @@ void CWaterGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-  InitInds("Input\\RSpec28S.txt"); //all species simultanously
-//  InitInds("Input\\RSpec20.txt",SimNr);
+//  InitInds("Input\\RSpec28S.txt"); //all species simultanously
+  InitInds("Input\\RSpec28S.txt",SimNr);
 
 }
 /**
@@ -685,7 +685,7 @@ void CWaterGridEnvir::InitRun(){
   \param n initiate only n'th species for monoculture exps
 */
 void CWaterGridEnvir::InitInds(string file,int n){
-  const int no_init_seeds=10;//10;
+  const int no_init_seeds=1;//10;
   //Open InitFile,
   ifstream InitFile(file.c_str());
   if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
@@ -746,7 +746,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
     traits->print();cltraits->print();wtraits->print();
 
     // initialization
-    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/2.0); //com out
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/10.0); // /2.0 com out
 //    InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
 
     PftInitList[traits->name]+=no_init_seeds;

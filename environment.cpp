@@ -266,9 +266,9 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->bresmean
                  <<'\t'<<GridOutData[i]->shannon
                  <<'\t'<<GetMeanShannon(10)//25 nach 100J
-                 <<'\t'<<GridOutData[i]->PftCount
-                 <<'\t'<<GetMeanNPFT(10)
-                 <<'\t'<<GridOutData[i]->cutted
+                 <<'\t'<<GridOutData.at(i)->PftCount
+                 <<'\t'<<"NaN"//GetMeanNPFT(10)
+                 <<'\t'<<0.0//GridOutData[i]->cutted
                  <<"\n";
    }
    GridOutFile.close();
@@ -745,15 +745,15 @@ void CClonalGridEnvir::OneRun(){
       OneYear();
 //      if (year%10==1){//(year==11||year==31){ modulo
 //        WriteSurvival();
-        WriteGridComplete(false);//report last year
+//        WriteGridComplete(false);//report last year
 //        clonalOutput();
-        WriteSurvival();
+//        WriteSurvival();
 //      }
    //save grid
-      if (year==5) { ///<\todo save after init time
-        stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
-        this->Save(v.str());
-      }
+ //     if (year==5) { ///<\todo save after init time
+ //       stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
+ //       this->Save(v.str());
+ //     }
       if (endofrun)break;
 
    }while(year<SRunPara::RunPara.Tmax);//years

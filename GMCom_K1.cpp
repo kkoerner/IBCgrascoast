@@ -38,7 +38,7 @@ Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 This code simulates pft-related wetland-grassland dynamics for different
 environmental conditions --develloping process----
 
-One run (100 years) for one environmental setting. No temporal env. change.
+sukzessive runs for single PfT - one type runs as single plant for 2 years
 
 See also: publications of May(2008) and Steinhauer(2008)
 
@@ -143,12 +143,12 @@ int main(int argc, char* argv[])
 
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=100;//100;//Laufzeit
+  SRunPara::RunPara.Tmax=2;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
 //  int management=0;
-  CEnvir::SimNr=0;
+  CEnvir::SimNr=11;//0;//0 is Phragmites
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
@@ -158,7 +158,10 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.DistAreaYear=atof(argv[3]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[4]); //number of cuttings
     SRunPara::RunPara.WaterLevel=atoi(argv[5]); //number of cuttings
+//    CEnvir::SimNr=atoi(argv[6]);//id of species
   }
+  //Run-loop
+  while(CEnvir::SimNr<28){ //15Runs per Sim
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
@@ -172,13 +175,13 @@ int main(int argc, char* argv[])
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
-    strd<<"Output\\Mix_Grid_log_"<<idstr
+    strd<<"Output\\Mix_Grid_log_"<<idstr<<"_"<<CEnvir::SimNr
       <<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<"_"<<CEnvir::SimNr
       <<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<"_"<<CEnvir::SimNr
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
     SRunPara::RunPara.print();
@@ -187,9 +190,9 @@ int main(int argc, char* argv[])
 
       delete Envir;
 
-    Envir->SimNr++;
     }//end run
-
+    CEnvir::SimNr++;
+  }//end simNr
     //delete static pointer vectors
   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)
     delete SPftTraits::PftList[i];
