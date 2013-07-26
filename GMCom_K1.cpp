@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
 
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=2;//100;//Laufzeit
+  SRunPara::RunPara.Tmax=10;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 //    CEnvir::SimNr=atoi(argv[6]);//id of species
   }
   //Run-loop
-  while(CEnvir::SimNr<28){ //15Runs per Sim
+  while(CEnvir::SimNr<=28){ //15Runs per Sim
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
@@ -175,15 +175,18 @@ int main(int argc, char* argv[])
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
-    strd<<"Output\\Mix_Grid_log_"<<idstr<<"_"<<CEnvir::SimNr
+    strd<<"Output\\Mix_Grid_log_"<<idstr//<<"_"<<CEnvir::SimNr
       <<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<"_"<<CEnvir::SimNr
+    strd.str("");strd<<"Output\\Mon_gridO_"<<idstr//<<"_"<<CEnvir::SimNr
       <<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<"_"<<CEnvir::SimNr
+    strd.str("");strd<<"Output\\Mon_typeO_"<<idstr//<<"_"<<CEnvir::SimNr
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
+    strd.str("");strd<<"Output\\Mon_ClonO_"<<idstr//<<"_"<<CEnvir::SimNr
+      <<".txt";
+    Envir->NameClonalOutFile= strd.str();
     SRunPara::RunPara.print();
  //-----------------
       Run();

@@ -771,9 +771,12 @@ void CClonalGridEnvir::OneYear(){
    //for (week=1;week<=WeeksPerYear; ++week){
      OneWeek();
 //detailed documentation
+ //    cout<<"writing grid..\n";
              WriteGridComplete(false);//report last year
              //WritePftComplete();
-             clonalOutput();
+   //          cout<<"writing clonal Info..\n";
+            clonalOutput();
+ //           cout<<"..done\n";
 
      fflush(NULL);//write immediately on console
      //exit conditions
@@ -984,7 +987,9 @@ void CClonalGridEnvir::clonalOutput(){
 //        <<GetNPlants()<<"\t"
         <<ClonWeek->NclonalPlants<<"\t"   //GetNclonalPlants()
         <<ClonWeek->MclonalPlants<<"\t"
-        <<ClonWeek->NGenets              //GetNMotherPlants()
+        <<ClonWeek->NGenets<<"\t"              //GetNMotherPlants()
+        <<ClonWeek->MSeed<<"\t"
+        <<ClonWeek->NSpacer
         <<endl;    //schreibt z.b: 1 4
 //    }
     clonOut.close();
