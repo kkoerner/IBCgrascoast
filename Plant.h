@@ -73,7 +73,7 @@ protected:
    virtual double ShootGrow(double shres);
    ///individual root growth
    virtual double RootGrow(double rres);
-   ///shoot maintanance costs
+  ///shoot maintanance costs
    virtual double ShootCosts();
    ///root maintanance costs
    virtual double RootCosts();

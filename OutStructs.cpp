@@ -37,5 +37,6 @@ SGridOut::SGridOut():week(CEnvir::week),//GetT()),
 //-------------------------------------------------------
 SClonOut::SClonOut():week(CEnvir::week),
   MclonalPlants(0),MeanGeneration(0),MeanGenetsize(0),
-  MPlants(0),NclonalPlants(0),NGenets(0),NPlants(0){}
+  MPlants(0),NclonalPlants(0),NGenets(0),NPlants(0),NSpacer(0),NSeed(0),
+  MSeed(0){}
 //eof----------------------------------------------------------------

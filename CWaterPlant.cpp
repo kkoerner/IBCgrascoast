@@ -108,10 +108,10 @@ void CWaterPlant::Grow2()
 // if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
-//if (false)
+if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 //if (CEnvir::year==21&CEnvir::week<10)
-if (true)
+//if (true)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);

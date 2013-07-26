@@ -254,7 +254,7 @@ void CEnvir::WriteGridComplete(bool allYears)
 
  //  vector<SGridOut>::size_type i=0;
    for (vector<SGridOut>::size_type i=0; i<GridOutData.size(); i++){
-	   if (!allYears)i= GridOutData.size();
+	   if (!allYears)i= GridOutData.size()-1;
      GridOutFile<<SimNr<<'\t'<<RunNr<<'\t'<<i //<<'\t'<<GridOutData[i]->week
                  <<'\t'<<GridOutData.at(i)->totmass
                  <<'\t'<<GridOutData[i]->Nind
@@ -370,8 +370,7 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
           it != PftWeek->PFT.end(); ++it)
     {
      SPftOut::SPftSingle*  Pft =it->second;
-
-     SurvOutFile<<simnr<<'\t'<<runnr<<'\t'<<year;
+     SurvOutFile<<simnr<<'\t'<<runnr<<'\t'<<this->GetT();//year*30+week;
      SurvOutFile<<'\t'<<Pft->shootmass;//type's AGbiomass
      SurvOutFile<<'\t'<<Pft->Nind;//number ramets
      SurvOutFile<<'\t'<<Pft->cover;//cover of type
@@ -747,7 +746,6 @@ void CClonalGridEnvir::OneRun(){
 //        WriteSurvival();
 //        WriteGridComplete(false);//report last year
 //        clonalOutput();
-//        WriteSurvival();
 //      }
    //save grid
  //     if (year==5) { ///<\todo save after init time
@@ -772,6 +770,11 @@ void CClonalGridEnvir::OneYear(){
    do{
    //for (week=1;week<=WeeksPerYear; ++week){
      OneWeek();
+//detailed documentation
+             WriteGridComplete(false);//report last year
+             //WritePftComplete();
+             clonalOutput();
+
      fflush(NULL);//write immediately on console
      //exit conditions
       exitConditions();
@@ -808,15 +811,14 @@ void CClonalGridEnvir::OneWeek(){
       SeedMortWinter();    //winter seed mortality
    }
 
-   if (week==20){        //general output
+   if (true){//(week==20){        //general output
       GetOutput();   //calculate output variables
    }
-   if (week==30){
+   if (true){//(week==30){
       //get cutted biomass
       GetOutputCutted();
       //clonal output
-      // comment out since 11/11/17
-      //      GetClonOutput();   //calculate output variables
+      GetClonOutput();   //calculate output variables
    }
 }//end CClonalGridEnvir::OneWeek()
 //---------------------------------------------------------------------------
@@ -835,7 +837,7 @@ int CClonalGridEnvir::exitConditions()
      int NClPlants=GetNclonalPlants();
 
 //    if no more individuals existing
-     if ((NPlants + NClPlants)==0)
+     if ((NPlants + NClPlants)>5000)//==0)
      {
         endofrun=true;
         return currTime; //extinction time
@@ -1011,7 +1013,7 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
       if (!plant->dead){
 //following lines adapted from Internet
 // http://stackoverflow.com/questions/936999/what-is-the-default-constructor-for-c-pointer
-//CHANGED BY ME
+//CHANGED BY KK
         map<string,SPftOut::SPftSingle*>::const_iterator pos = PftWeek->PFT.find(pft_name);
         SPftOut::SPftSingle* mi;
         if (pos==PftWeek->PFT.end())
@@ -1118,6 +1120,20 @@ void CClonalGridEnvir::GetClonOutput()//PftOut& PftData, SGridOut& GridData)
     ClonWeek->NGenets=GetNMotherPlants();
     ClonWeek->MeanGeneration=GetNGeneration();
     ClonWeek->NPlants=GetNPlants();
+    //only for testing in Comtess version
+    int Nspac=0;double Mseed=0;
+    for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+    {
+      CPlant* plant = *iplant;
+      //only if its a clonal plant
+      if ((!plant->dead)&& (((CclonalPlant*)plant)->growingSpacerList).size()>0 ) Nspac++;
+      if (!plant->dead) Mseed += plant->mRepro ;
+    }
+
+    ClonWeek->NSpacer=Nspac;
+    ClonWeek->MSeed=Mseed;//addiere mSeed aller Inds
+//end only for testing comtess version
+
 
    ClonOutData.push_back(ClonWeek);
 

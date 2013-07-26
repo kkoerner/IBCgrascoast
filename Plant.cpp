@@ -12,7 +12,7 @@
 //---------------------------------------------------------------------------
 SPftTraits::SPftTraits():TypeID(999),name("default"),N0(1),MaxAge(100),
   AllocSeed(0.05),LMR(0),m0(0),MaxMass(0),SeedMass(0),Dist(0),
-  pEstab(0.5),Gmax(0),memory(0),SLA(0),palat(0),RAR(1),growth(0.1),//.25
+  pEstab(0.5),Gmax(0),memory(0),SLA(0),palat(0),RAR(1),growth(0.25),//.25
   mThres(0.2),Dorm(1),FlowerWeek(16),DispWeek(20)
 {}//end constructor
 //---------------------------------------------------------------------------
@@ -238,25 +238,20 @@ void CPlant::Grow2()         //grow plant one timestep
    /*  dm/dt = growth*(c*m^p - m^q / m_max^r)  */
    /********************************************/
 //calculate maintenance costs
-   double Resp_shoot=ShootCosts();
-   double Resp_root=RootCosts();
-   double AU=max(0.0,Auptake-(Resp_shoot+Resp_root));//(Resp_shoot+Resp_root)
-   double BU=max(0.0,Buptake-(Resp_shoot+Resp_root));//(Resp_shoot+Resp_root)
    string filename=CEnvir::NameLogFile;
-   CEnvir::AddLogEntry(Auptake,filename);
-   CEnvir::AddLogEntry(Buptake,filename);
-   CEnvir::AddLogEntry(Resp_shoot+Resp_root,filename);
+//   CEnvir::AddLogEntry(Auptake,filename);
+//   CEnvir::AddLogEntry(Buptake,filename);
 
 
    //which resource is limiting growth ?
-   LimRes=min(BU,AU);   //two layers
-//   LimRes=min(Buptake,Auptake);   //two layers
+//   LimRes=min(BU,AU);   //two layers
+   LimRes=min(Buptake,Auptake);   //two layers
    VegRes=ReproGrow(LimRes);
-   CEnvir::AddLogEntry(LimRes-VegRes,filename);//Repro-costs
+//   CEnvir::AddLogEntry(LimRes-VegRes,filename);//Repro-costs
 
    //allocation to shoot and root growth
    alloc_shoot= Buptake/(Buptake+Auptake); //allocation coefficient
-   CEnvir::AddLogEntry(alloc_shoot,filename);
+//   CEnvir::AddLogEntry(alloc_shoot,filename);
 
    ShootRes=alloc_shoot*VegRes;
    RootRes =VegRes-ShootRes;
@@ -269,12 +264,12 @@ void CPlant::Grow2()         //grow plant one timestep
 
    mshoot+=dm_shoot;
    mroot+=dm_root;
-   CEnvir::AddLogEntry(dm_shoot,filename);
-   CEnvir::AddLogEntry(dm_root,filename);
+//   CEnvir::AddLogEntry(dm_shoot,filename);
+//   CEnvir::AddLogEntry(dm_root,filename);
 
-//   if (stressed())++stress;
+   if (stressed())++stress;
 //new stress definition
-   if (AU*BU==0)++stress;//Maintanance exceeds Uptake
+//   if (AU*BU==0)++stress;//Maintanance exceeds Uptake
    else if (stress>0) --stress;
 }
 ///shoot maintanance costs
@@ -299,9 +294,13 @@ double CPlant::RootCosts(){
      dm/dt = growth*(c*m^p - m^q / m_max^r)
 */
 double CPlant::ShootGrow(double shres){
-   double Assim_shoot;
+   double Assim_shoot, Resp_shoot;
+   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_shoot=Traits->growth*min(shres,Traits->Gmax*Ash_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-    return Assim_shoot;
+   Resp_shoot=Traits->growth*Traits->SLA
+              *pow(Traits->LMR,p)*Traits->Gmax
+              *pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
+   return max(0.0,Assim_shoot-Resp_shoot);
 }
 /**
     root growth
@@ -309,10 +308,13 @@ double CPlant::ShootGrow(double shres){
     dm/dt = growth*(c*m^p - m^q / m_max^r)
 */
 double CPlant::RootGrow(double rres){
-   double Assim_root;
+ double Assim_root, Resp_root;
+   double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_root=Traits->growth*min(rres,Traits->Gmax*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
+   Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
+            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
 
-   return Assim_root;
+   return max(0.0,Assim_root-Resp_root);
 }
 
 /**

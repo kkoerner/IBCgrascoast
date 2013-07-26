@@ -81,6 +81,9 @@ struct SClonOut
    double MclonalPlants;          //!< total biomass clonal plants
    double MeanGenetsize;          ///< mean size of genets
    double MeanGeneration;         ///< mean number of generations
+   int NSpacer;
+   int NSeed;
+   double MSeed;
    SClonOut();
 };
 #endif

@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
 //  int management=0;
-  CEnvir::SimNr=11;//0;//0 is Phragmites
+  CEnvir::SimNr=0;//0;//0 is Phragmites
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources

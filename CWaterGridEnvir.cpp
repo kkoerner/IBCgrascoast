@@ -685,7 +685,7 @@ void CWaterGridEnvir::InitRun(){
   \param n initiate only n'th species for monoculture exps
 */
 void CWaterGridEnvir::InitInds(string file,int n){
-  const int no_init_seeds=1;//10;
+  const int no_init_seeds=2;//10;
   //Open InitFile,
   ifstream InitFile(file.c_str());
   if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
