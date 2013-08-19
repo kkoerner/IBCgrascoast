@@ -271,7 +271,7 @@ double CPlant::ShootGrow(double shres){
    Assim_shoot=Traits->growth*min(shres,Traits->Gmax*Ash_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
    Resp_shoot=Traits->growth*Traits->SLA
               *pow(Traits->LMR,p)*Traits->Gmax
-              *pow(mshoot,q)/pow(Traits->MaxMass*0.5,r);       //respiration proportional to mshoot^2
+              *pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
    return max(0.0,Assim_shoot-Resp_shoot);
 }
 /**
@@ -284,7 +284,7 @@ double CPlant::RootGrow(double rres){
    double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_root=Traits->growth*min(rres,Traits->Gmax*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
    Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
-            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
+            *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
 
    return max(0.0,Assim_root-Resp_root);
 }
