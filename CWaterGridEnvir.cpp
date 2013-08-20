@@ -279,7 +279,7 @@ void CWaterGridEnvir::OneRun(){
 //   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
    while(year<SRunPara::RunPara.Tmax){
       this->NewWeek();
-      cout<<" y"<<year;
+//      cout<<" y"<<year;
 
   //drift of little individuals -anually-
   if (SRunPara::RunPara.Migration>0){
@@ -291,7 +291,7 @@ void CWaterGridEnvir::OneRun(){
        for (std::map<const string,long>::iterator it = PftInitList.begin();
             it != PftInitList.end(); ++it)
       {
-cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl;
+//cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl;
         InitSeeds(it->first,
           SRunPara::RunPara.Migration,
           this->getPftLink(it->first)->pEstab );
@@ -314,7 +314,7 @@ cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl
         WriteSurvival();
       }
    //save grid after init time
-      if (year==20) {
+      if (false){//(year==20) {
         stringstream v; v<<"B"<<CEnvir::SimNr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
@@ -457,9 +457,9 @@ void CWaterGridEnvir::SetCellResource(){
   //salinity
 //  salinity=SRunPara::SRunPara::RunPara.salt;
 //  if (week==1) cout<<"\n";
-  cout<<"\n w"<<week<<" WL:" <<getWL();
-  cout              <<" Sat:"<<getSAT();
-  cout              <<" Sal:"<<getSAL();
+//  cout<<"\n w"<<week<<" WL:" <<getWL();
+//  cout              <<" Sat:"<<getSAT();
+//  cout              <<" Sal:"<<getSAL();
 }
 
 //-------------------------------------------------------------
@@ -689,7 +689,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
   //Open InitFile,
   ifstream InitFile(file.c_str());
   if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
-  cout<<"InitFile: "<<file<<endl;
+//  cout<<"InitFile: "<<file<<endl;
   string line;
   getline(InitFile,line);//skip header line
   //skip first lines if only one Types should be initiated
@@ -729,6 +729,9 @@ void CWaterGridEnvir::InitInds(string file,int n){
      traits->SeedMass=traits->m0;
 //     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
      cltraits->sdSpacerlength=cltraits->meanSpacerlength;
+     //\todo test reduced RAR (moderate root efficiency)
+      traits->RAR=0.5;
+
     //namen und IDs
     traits->name=cltraits->name=wtraits->name=dummi2;
     traits->TypeID=dummi1;
@@ -740,14 +743,14 @@ void CWaterGridEnvir::InitInds(string file,int n){
     SclonalTraits::clonalTraits.push_back(cltraits);
     SWaterTraits::PFTWaterList.push_back(wtraits);
     //print imported trait combination
-    traits->print();cltraits->print();wtraits->print();
+//    traits->print();cltraits->print();wtraits->print();
 
     // initialization
-    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/2.0); //com out
+    InitWaterInds(traits,cltraits,wtraits,no_init_seeds,traits->MaxMass/10.0); // /2.0 com out
 //    InitWaterSeeds(traits,cltraits,wtraits,no_init_seeds);
 
     PftInitList[traits->name]+=no_init_seeds;
-    cout<<" init "<<no_init_seeds<<" seeds of Pft: "<<dummi2<<endl;
+//    cout<<" init "<<no_init_seeds<<" seeds of Pft: "<<dummi2<<endl;
 
     if (n>-1) SRunPara::RunPara.species=dummi2;
     if(!InitFile.good()||n>-1) {

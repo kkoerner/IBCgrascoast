@@ -152,7 +152,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   //Open SimFile,
   ifstream SimFile(NameSimFile.c_str());
   if (!SimFile.good()) {cerr<<("Fehler beim Öffnen SimFile");exit(3); }
-  cout<<"SimFile: "<<NameSimFile<<endl;
+//  cout<<"SimFile: "<<NameSimFile<<endl;
   int lpos=pos;
 
   if (pos==0){  //read header
@@ -206,7 +206,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       <<".txt";
     NameSurvOutFile= strd.str();
 
-      SRunPara::RunPara.print();
+ //     SRunPara::RunPara.print();
   return SimFile.tellg();
 }//end  CEnvir::GetSim
 //------------------------------------------------------------------------------
@@ -629,7 +629,7 @@ void CClonalGridEnvir::InitInds(string file){
   //Open InitFile,
   ifstream InitFile(file.c_str());
   if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
-  cout<<"InitFile: "<<file<<endl;
+//  cout<<"InitFile: "<<file<<endl;
   string line;
   getline(InitFile,line);//skip header line
   int dummi1; string dummi2; int PFTtype; string Cltype;
@@ -709,9 +709,7 @@ bool CClonalGridEnvir::InitInd(string def){
     plant=tplant;
   }
   PlantList.push_back(plant);
-  cout<<"L: ClonalPlant "<<plant->asString()<<endl;
-//  cout<<"Init "<<type<<" at "<<x<<":"<<y
-//      <<" ("<<mshoot<<", "<<mroot<<", "<<mrepro<<", "<<stress<<", "<<dead<<")\n";
+//  cout<<"L: ClonalPlant "<<plant->asString()<<endl;
   return true;
 }//<init of one ind based on saved data
 //------------------------------------------------------------------------------
@@ -750,7 +748,7 @@ void CClonalGridEnvir::OneRun(){
         WriteSurvival();
 //      }
    //save grid
-      if (year==5) { ///<\todo save after init time
+      if (false){// (year==5) { ///<\todo save after init time
         stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }

@@ -141,16 +141,14 @@ int main(int argc, char* argv[])
 
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=100;//100;//Laufzeit
+  SRunPara::RunPara.Tmax=20;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
-//  int management=0;
   CEnvir::SimNr=0;
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    //SRunPara::RunPara.species=argv[2];  //init types
     SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
     SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
     SRunPara::RunPara.DistAreaYear=atof(argv[3]); //trampling
@@ -160,13 +158,10 @@ int main(int argc, char* argv[])
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
-      cout<<"new Environment...\n";
+//      cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
       Init();
-//      if (SRunPara::RunPara.species.length()<2)endsim=true;
 //-----------------
-//    //simNr
-//    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
@@ -179,9 +174,15 @@ int main(int argc, char* argv[])
     strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
-    SRunPara::RunPara.print();
+ //   SRunPara::RunPara.print();
  //-----------------
       Run();
+
+      //Application output:
+      cout<<Envir->year
+    		  <<"\t"<<Envir->GridOutData.back()->PftCount
+    		  <<"\t"<<Envir->GridOutData.back()->shannon
+    		  <<"\t"<<Envir->GridOutData.back()->above_mass;
 
       delete Envir;
 

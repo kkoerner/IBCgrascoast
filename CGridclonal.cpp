@@ -359,8 +359,9 @@ void CGridclonal::EstabLottery()
   PftNSeedling.clear();
 }//end CGridclonal::EstabLottery()
 
+/**obsolete with watergrid simulations*/
 void CGridclonal::EstabLott_help(CSeed* seed){
-cout<<"estabLott_help - CGridClonal";
+//cout<<"estabLott_help - CGridClonal";
                   CPlant* plant;
                   if (seed->type()=="CSeed")
                   {
