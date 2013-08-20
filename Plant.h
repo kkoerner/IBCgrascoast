@@ -73,10 +73,6 @@ protected:
    virtual double ShootGrow(double shres);
    ///individual root growth
    virtual double RootGrow(double rres);
-  ///shoot maintanance costs
-   virtual double ShootCosts();
-   ///root maintanance costs
-   virtual double RootCosts();
 
 public:
    SPftTraits* Traits;///<PFT Traits

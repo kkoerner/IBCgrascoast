@@ -19,8 +19,6 @@ class CWaterPlant:public CclonalPlant
 //   virtual double comp_coef(const int layer,const int symmetry)const;
 /// individuel root growth
    virtual double RootGrow(double rres);
-   ///root maintanance costs
-   virtual double RootCosts();
 
 public:
    SWaterTraits* waterTraits;                ///<traits of water preferences

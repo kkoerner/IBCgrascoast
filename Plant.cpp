@@ -272,22 +272,6 @@ void CPlant::Grow2()         //grow plant one timestep
 //   if (AU*BU==0)++stress;//Maintanance exceeds Uptake
    else if (stress>0) --stress;
 }
-///shoot maintanance costs
-double CPlant::ShootCosts(){
-  double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
-  return Traits->SLA
-	//               Traits->LMR*Traits->Gmax  //? entferne den Exponenten
-	*pow(Traits->LMR,p)*Traits->Gmax
-	*pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
-
-}
-///root maintanance costs
-double CPlant::RootCosts(){
-  double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
-  return Traits->Gmax*Traits->RAR
-	*pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
-
-}
 /**
      shoot growth
 
@@ -312,7 +296,7 @@ double CPlant::RootGrow(double rres){
    double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_root=Traits->growth*min(rres,Traits->Gmax*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
    Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
-            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
+            *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
 
    return max(0.0,Assim_root-Resp_root);
 }

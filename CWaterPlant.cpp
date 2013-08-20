@@ -145,12 +145,6 @@ if (false)
  //CEnvir::AddLogEntry("\n",filename);
 }
 }//end Grow2
-double CWaterPlant::RootCosts(){
-  double p_depth= this->getDepth();
-  double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
-  return    Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
-          *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
-}
 
 /**
     root growth
@@ -164,11 +158,13 @@ double CWaterPlant::RootCosts(){
     \since 05/03/2013 NEW:dieback of roots due to salinity; negative output possible
 */
 double CWaterPlant::RootGrow(double rres){
-   double Assim_root;
+   double Assim_root,Resp_root;
    double p_depth= this->getDepth();
    double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_root=Traits->growth*min(rres,Traits->Gmax*p_depth/50.0*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-   double grow=Assim_root;
+   Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
+            *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
+   double grow=max(0.0,Assim_root-Resp_root);
    //salinity dieback
    if (this->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL())<1.0)
      grow -=0.1*this->mroot;
