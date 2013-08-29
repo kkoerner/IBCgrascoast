@@ -443,7 +443,8 @@ bool CGrid::Disturb()
       if (CEnvir::rand01()<SRunPara::RunPara.GrazProb){
          Grazing();
       }
-      if (CEnvir::rand01()<SRunPara::RunPara.DistProb()){
+      if (true){  //weekly trampling
+      //(CEnvir::rand01()<SRunPara::RunPara.DistProb()){
          Trampling();
       }
       if (CEnvir::rand01()<SRunPara::RunPara.BelGrazProb){
