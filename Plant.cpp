@@ -432,13 +432,15 @@ void CPlant::Decompose()
 ///not used
 ///
 double CPlant::Radius_shoot(){
-   return sqrt(Traits->SLA*pow(Traits->LMR*mshoot,2.0/3.0)/Pi);
+//   return sqrt(Traits->SLA*pow(Traits->LMR*mshoot,2.0/3.0)/Pi);
+   return sqrt(Area_shoot()/Pi);
 }
 //-----------------------------------------------------------------------------
 ///not used
 ///
 double CPlant::Radius_root(){
-   return sqrt(pow(Traits->RAR*mroot,2.0/3.0)/Pi);
+//	   return sqrt(pow(Traits->RAR*mroot,2.0/3.0)/Pi);
+	   return sqrt(Area_root()/Pi);
 }
 //-----------------------------------------------------------------------------
 double CPlant::Area_shoot(){
@@ -450,9 +452,11 @@ Calculates the circular root area, i.e. Root-ZOI.
 
 \return RootArea of ZOI
 \date 12/01/04 revised for integrating root depth
+\date 13/08/30 redone as old version
+
 */
 double CPlant::Area_root(){
-  return pow(Traits->RAR*mroot,2.0/3.0);
+  return Traits->RAR*pow(mroot,2.0/3.0);
 }
 //-----------------------------------------------------------------------------
 /*
