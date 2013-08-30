@@ -103,6 +103,7 @@ public:
    int Age;        ///< age of (established) plant in years (ageing in winter)
 
 //   int LimitRes;   //!< limiting resource: 1->above, 2->below 0->equal (not used)
+   double mort_base; //!< pft-density - based base mortality (annually updated in CEnvir::GetOutput())
 
    //functions
    //! constructor for plant objects

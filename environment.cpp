@@ -1042,6 +1042,31 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
          prop_PFT=(double) it->second->Nind/PlantList.size();
          GridWeek->shannon+=(-1)*prop_PFT*log(prop_PFT);
       }
+
+      //update plants' mort_base value
+      for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
+         CPlant* plant = *iplant;
+     if (plant->dead==false){
+         pft_name=plant->pft();
+         if (PftWeek->PFT.find(pft_name)==PftWeek->PFT.end()){cerr<<"wrong pft: "<<pft_name;exit(3);}
+ //based on Abundance.. 1+(NInd(PFT)/maxnIndPFT)
+         //0.007*0.5*([1-2]) meanly resulting in 0.007
+      double abundance=PftWeek->PFT.find(pft_name)->second->Nind;
+      double m_area_root=plant->Traits->RAR*
+			  pow(plant->Traits->MaxMass*0.25,2.0/3.0);
+      double m_area_shoot=plant->Traits->SLA*
+		      pow(plant->Traits->LMR*plant->Traits->MaxMass*0.25,2.0/3.0);//mean shoot area;
+
+      double max_abundance=
+    		  (double)SRunPara::RunPara.GridSize*SRunPara::RunPara.GridSize/
+    		  //area per medium plant (min of above-and belowground)
+    		  min(m_area_root,//mean root area
+    				  m_area_shoot);
+      plant->mort_base=0.007*
+      	pow(1+(abundance/(double)max_abundance),2);
+ //     cout<<plant->mort_base<<" ";
+     }}
+
 ///\todo cover mit Funktion find()  füllen -- da sonst evtl adressierungsfehler
 //      it->second->cover=PftCover[it->first];
       GridWeek->totmass+=it->second->totmass;
