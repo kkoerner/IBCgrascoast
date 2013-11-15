@@ -314,10 +314,10 @@ cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl
         WriteSurvival();
       }
    //save grid after init time
-      if (year==20) {
-        stringstream v; v<<"B"<<CEnvir::SimNr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
-        this->Save(v.str());
-      }
+//      if (false)//(year==20) {
+//        std::stringstream v; v<<"B"<<CEnvir::SimNr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
+//        this->Save(v.str());
+//      }
    //if all done
       if (endofrun)break;
    }//years
@@ -671,7 +671,7 @@ void CWaterGridEnvir::InitRun(){
 
   //set initial plants on grid...
 //  InitInds("Input\\RSpec28S.txt"); //all species simultanously
-  InitInds("Input\\RSpec28S.txt",SimNr);
+  InitInds("Input\\RSpec59WP3_131114.txt",SimNr);
 
 }
 /**

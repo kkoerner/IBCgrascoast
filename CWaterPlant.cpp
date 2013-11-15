@@ -162,7 +162,7 @@ double CWaterPlant::RootGrow(double rres){
    double p_depth= this->getDepth();
    double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_root=Traits->growth*min(rres,Traits->Gmax*p_depth/50.0*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
-   Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
+   Resp_root=Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
             *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
    double grow=max(0.0,Assim_root-Resp_root);
    //salinity dieback

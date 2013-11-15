@@ -145,10 +145,10 @@ int main(int argc, char* argv[])
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=10;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
-  int nruns=1;//3
+  int nruns=10;//3
   /// 0-abandoned; 1-grazing; 2-mowing
 //  int management=0;
-  CEnvir::SimNr=0;//0;//0 is Phragmites
+  CEnvir::SimNr=0;//0;//0 is Phragmites (first line in PFTdefinition file)
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 //    CEnvir::SimNr=atoi(argv[6]);//id of species
   }
   //Run-loop
-  while(CEnvir::SimNr<=28){ //15Runs per Sim
+  while(CEnvir::SimNr<=54){ //28//15Runs per Sim
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
