@@ -137,7 +137,7 @@ int NCut2 =0;            ///<2nd mowing management
 int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 ist 'zufällig' gewählt
-
+//RSpec59WP3_131114.txt
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=50;//100;//Laufzeit
@@ -154,6 +154,7 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
     SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
+    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
   }
 
     //Run-loop

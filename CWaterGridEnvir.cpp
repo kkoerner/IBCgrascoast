@@ -423,7 +423,11 @@ void CWaterGridEnvir::genConstWL()
    weeklySAL.clear();weeklySAL.assign(30,0);
    weeklySAT.clear();weeklySAT.assign(30,0);
 
-  for (unsigned int i=0; i<30; i++) weeklyWL[i]=SRunPara::RunPara.WaterLevel;
+  for (unsigned int i=0; i<30; i++) {
+	  weeklyWL[i]=SRunPara::RunPara.WaterLevel;
+	  weeklySAL[i]=SRunPara::RunPara.salt;
+//	  weeklySAT[i]=SRunPara::RunPara.sat;
+  }
 }
 
 
@@ -670,7 +674,8 @@ void CWaterGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-  InitInds("Input\\RSpec28S.txt"); //all species simultanously
+  InitInds("Input\\RSpec59WP3_131114.txt"); //all species simultanously
+//  InitInds("Input\\RSpec28S.txt"); //all species simultanously
 //  InitInds("Input\\RSpec20.txt",SimNr);
 
 }

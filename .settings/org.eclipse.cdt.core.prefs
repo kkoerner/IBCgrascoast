@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.839527521/PATH/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.839527521/PATH/operation=replace
+environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.839527521/PATH/value=C\:\\MinGW\\bin;C\:/Programme/Java/jre7/bin/client;C\:/Programme/Java/jre7/bin;C\:/Programme/Java/jre7/lib/i386;C\:\\WINDOWS\\system32;C\:\\WINDOWS;C\:\\WINDOWS\\System32\\Wbem;C\:\\Programme\\doxygen\\bin;C\:\\Programme\\MMQSub;C\:\\Programme\\TortoiseSVN\\bin;C\:\\Dokumente und Einstellungen\\KatrinK\\Lokale Einstellungen\\Anwendungsdaten\\Smartbar\\Application\\;C\:\\Dokumente und Einstellungen\\KatrinK
+environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.839527521/append=true
+environment/project/cdt.managedbuild.config.gnu.mingw.exe.debug.839527521/appendContributed=true
