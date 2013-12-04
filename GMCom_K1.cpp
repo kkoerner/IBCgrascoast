@@ -183,7 +183,7 @@ int main(int argc, char* argv[])
       cout<<Envir->year
     		  <<"\t"<<Envir->GridOutData.back()->PftCount
     		  <<"\t"<<Envir->GridOutData.back()->shannon
-    		  <<"\t"<<Envir->GridOutData.back()->above_mass;
+    		  <<"\t"<<Envir->GridOutData.back()->above_mass<<endl<<flush;
 
       delete Envir;
 

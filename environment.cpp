@@ -793,7 +793,7 @@ void CClonalGridEnvir::OneWeek(){
 
    PlantLoop();            //Growth, Dispersal, Mortality
 
-   if (year>1) Disturb();  //grazing and disturbance
+   if (year>1&&year<SRunPara::RunPara.Tmax) Disturb();  //grazing and disturbance
 
    RemovePlants();         //remove trampled plants
 
