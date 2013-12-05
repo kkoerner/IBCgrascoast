@@ -313,8 +313,8 @@ double CPlant::RootGrow(double rres){
 bool CPlant::stressed(){
 //   return (Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
 //       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax);
-   return (Auptake<minresA())
-       || (Buptake<minresB());
+   return (Auptake/2.0<minresA())
+       || (Buptake/2.0<minresB());
 }
 
 //-----------------------------------------------------------------------------
