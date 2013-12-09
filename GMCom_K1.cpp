@@ -142,6 +142,7 @@ int main(int argc, char* argv[])
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=50;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
+  SRunPara::RunPara.CutLeave=15;
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
   CEnvir::SimNr=0;

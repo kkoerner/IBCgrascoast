@@ -312,6 +312,7 @@ void CWaterGridEnvir::OneRun(){
       {
         WriteGridComplete(false);//report last year
         WriteSurvival();
+ //       WriteClonalOutput();
       }
    //save grid after init time
       if (false){//(year==20) {

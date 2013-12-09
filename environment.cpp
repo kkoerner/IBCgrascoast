@@ -244,10 +244,11 @@ void CEnvir::WriteGridComplete(bool allYears)
      GridOutFile<<"Sim\tRun\tTime\t"
               <<"totMass\tNInd\t"
               <<"abovemass\tbelowmass\t"
-              <<"pcBare\t"
+              <<"pcBare\tpcBareSoil\t"
               <<"mean_WL\tmean_bres\t"
               <<"shannon\tmeanShannon\t"
-              <<"NPFT\tmeanNPFT\tCutted"
+              <<"NPFT\tmeanNPFT\tCutted\t"
+              <<"aLitter\tbLitter"
               ;
      GridOutFile<<"\n";
    }
@@ -261,6 +262,7 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->above_mass
                  <<'\t'<<GridOutData[i]->below_mass
                  <<'\t'<<GridOutData[i]->bareGround
+                 <<'\t'<<GridOutData[i]->bareSoil
 //                 <<'\t'<<GridOutData[i]->aresmean
                  <<'\t'<<GridOutData[i]->WaterLevel
                  <<'\t'<<GridOutData[i]->bresmean
@@ -269,6 +271,8 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->PftCount
                  <<'\t'<<GetMeanNPFT(10)
                  <<'\t'<<GridOutData[i]->cutted
+                 <<'\t'<<GridOutData[i]->above_litter
+                 <<'\t'<<GridOutData[i]->below_litter
                  <<"\n";
    }
    GridOutFile.close();
@@ -808,7 +812,8 @@ void CClonalGridEnvir::OneWeek(){
 
    if (week==20){        //general output
       GetOutput();   //calculate output variables
-   }
+//      GetClonOutput();   //calculate output variables
+     }
    if (week==30){
       //get cutted biomass
       GetOutputCutted();
@@ -957,7 +962,7 @@ void CClonalGridEnvir::setCover(){
 }
 
 //---------------------------------------------------------------------------
-void CClonalGridEnvir::clonalOutput(){
+void CClonalGridEnvir::WriteClonalOutput(){
     //write data in the clonalOut file
     ofstream clonOut(NameClonalOutFile.c_str(),ios_base::app);
 //    {
@@ -996,7 +1001,7 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
  //  int pft, df;
    string pft_name;
    double  prop_PFT;//mean,
-
+   double aLitter, bLitter;
    SPftOut*  PftWeek =new SPftOut();
 
    SGridOut* GridWeek=new SGridOut();
@@ -1019,8 +1024,14 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
         ++mi->Nind;
         mi->shootmass+=plant->mshoot;
         mi->rootmass+=plant->mroot;
+      }//plant alive
+      else{
+    	  aLitter+=plant->mshoot+plant->mRepro;
+    	  bLitter+=plant->mroot;
       }
    }
+   GridWeek->above_litter=aLitter;
+   GridWeek->below_litter=bLitter;
    //calculate mean values
    typedef map<string, SPftOut::SPftSingle*> mapType;
 
@@ -1118,6 +1129,8 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
 //      CoveredCells=((NCellsAcover)/(SRunPara::RunPara.GetSumCells()))*100;
 //    }
     GridWeek->bareGround=1.0- (double(NCellsAcover)/
+       (SRunPara::RunPara.GetSumCells()));//bare ground
+    GridWeek->bareSoil=1.0- (double(this->GetRootedSoilarea())/
        (SRunPara::RunPara.GetSumCells()));//bare ground
 
    PftOutData.push_back(PftWeek);

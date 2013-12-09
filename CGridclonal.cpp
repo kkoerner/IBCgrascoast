@@ -581,6 +581,26 @@ int CGridclonal::GetCoveredCells()//count covered cells
    }//for all cells
    return NCellsAcover;
 }//end CGridclonal::GetCoveredCells()
+
+//------------------------------------------------------------------------------
+/**
+  Counts a cell covered if the list of belowground ZOIs has length >0.
+
+  \note Call the function after updating weekly ZOIs
+  in function CGrid::CoverCells()
+
+  \return the number of rooted soil cells on grid
+*/
+int CGridclonal::GetRootedSoilarea()//count covered cells
+{
+   int NCellsBcover=0;
+   const int sumcells=SRunPara::RunPara.GetSumCells(); //hopefully faster
+   for (int i=0; i<sumcells; ++i)
+   {
+      if (CellList[i]->BelowPlantList.size()>0) NCellsBcover++;
+   }//for all cells
+   return NCellsBcover;
+}//end CGridclonal::GetRootedSoilarea()
 //------------------------------------------------------------------------------
 double CGridclonal::GetNGeneration() //calculate the mean generations per genet
 {

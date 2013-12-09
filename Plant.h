@@ -150,9 +150,9 @@ public:
    virtual void Grow2(); //!< shoot-root resource allocation and plant growth in two layers
    virtual bool stressed();///< return true if plant is stressed
 /// lower threshold of aboveground resource uptake (light stress thresh.)
-   virtual double minresA(){return Traits->mThres*Ash_disc*Traits->Gmax*2;}
+   virtual double minresA(){return Traits->mThres*Ash_disc*Traits->Gmax;}
 /// lower threshold of belowground resource uptake (nutrient stress thresh.)
-   virtual double minresB(){return Traits->mThres*Art_disc*Traits->Gmax*2;}
+   virtual double minresB(){return Traits->mThres*Art_disc*Traits->Gmax;}
    void DecomposeDead();     //!< calculate mass shrinkage of dead plants
    void Kill();  //!< Mortality due to resource shortage or at random
 
