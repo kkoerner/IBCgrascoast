@@ -443,7 +443,8 @@ bool CGrid::Disturb()
       if (CEnvir::rand01()<SRunPara::RunPara.GrazProb){
          Grazing();
       }
-      if (CEnvir::rand01()<SRunPara::RunPara.DistProb()){
+      if (true){  //weekly trampling
+      //(CEnvir::rand01()<SRunPara::RunPara.DistProb()){
          Trampling();
       }
       if (CEnvir::rand01()<SRunPara::RunPara.BelGrazProb){
@@ -716,13 +717,14 @@ void CGrid::Trampling()
    double radius=10.0;                 //radius of disturbance [cm]
    double Apatch=(Pi*radius*radius);   //area of patch [cm²]
    //number of gaps
-   int NTrample=floor(SRunPara::RunPara.AreaEvent
+   double NTrample=(SRunPara::RunPara.AreaEvent
 		   *SRunPara::RunPara.GridSize*SRunPara::RunPara.GridSize/
                       Apatch);
    //area of patch [cell number]
    Apatch/=SRunPara::RunPara.CellScale()*SRunPara::RunPara.CellScale();
-
-   for (int i=0; i<NTrample; ++i){
+//apply probability if ntrample<1
+   if ( NTrample<1 && CEnvir::rand01()<NTrample) NTrample++;
+   for (int i=1; i<NTrample; ++i){
       //get random center of disturbance
       xcell=CEnvir::nrand(SRunPara::RunPara.CellNum);
       ycell=CEnvir::nrand(SRunPara::RunPara.CellNum);

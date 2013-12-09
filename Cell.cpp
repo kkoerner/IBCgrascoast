@@ -275,19 +275,25 @@ void CCell::BelowComp()
 */
 double CCell::prop_res(const string type,const int layer,const int version)const{
    switch (version){
-     case 0:  return 1;
+     case 0:  return 1;break;
      case 1:  if (layer==1){
          map<string,int>::const_iterator noa =PftNIndA.find(type);
          if (noa!=PftNIndA.end())
-          return 1.0/sqrt(noa->second);
+             return 1.0/sqrt(noa->second);
+//              return 1.0/(noa->second);
         }
               if (layer==2){
          map<string,int>::const_iterator nob =PftNIndB.find(type);
          if (nob!=PftNIndB.end())
-          return 1.0/sqrt(nob->second);
+            return 1.0/sqrt(nob->second);
+//         // return 1.0/(nob->second);
+
         }
+        break;
      case 2:  if (layer==1)return NPftA/(1.0+NPftA);
               if (layer==2)return NPftB/(1.0+NPftB);
+              break;
+
      default: cerr<<"CCell::prop_res() - wrong input";exit(3);
    }
    return -1; //should not be reached

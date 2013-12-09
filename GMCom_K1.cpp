@@ -130,7 +130,6 @@ int NCut2 =0;            ///<2nd mowing management
   \par Output
    -annual grid information
    -annual type information
-   -saved grid after x years of init time (x=20)
 
   \author KK
   \date 13/05/29
@@ -138,10 +137,10 @@ int NCut2 =0;            ///<2nd mowing management
 int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 ist 'zufällig' gewählt
-
+//RSpec59WP3_131114.txt
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=20;//100;//Laufzeit
+  SRunPara::RunPara.Tmax=50;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
@@ -151,9 +150,11 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
     SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
     SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
-    SRunPara::RunPara.DistAreaYear=atof(argv[3]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[4]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[5]); //number of cuttings
+//    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
+    SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
+    SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
+    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
+    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
   }
 
     //Run-loop
@@ -182,7 +183,7 @@ int main(int argc, char* argv[])
       cout<<Envir->year
     		  <<"\t"<<Envir->GridOutData.back()->PftCount
     		  <<"\t"<<Envir->GridOutData.back()->shannon
-    		  <<"\t"<<Envir->GridOutData.back()->above_mass;
+    		  <<"\t"<<Envir->GridOutData.back()->above_mass<<endl<<flush;
 
       delete Envir;
 
