@@ -675,7 +675,9 @@ void CWaterGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-  InitInds("Input\\RSpec59WP3_131114.txt"); //all species simultanously
+
+  InitInds(CEnvir::NamePftFile); //all species simultanously
+//  InitInds("Input\\RSpec59WP3_131114.txt"); //all species simultanously
 //  InitInds("Input\\RSpec28S.txt"); //all species simultanously
 //  InitInds("Input\\RSpec20.txt",SimNr);
 

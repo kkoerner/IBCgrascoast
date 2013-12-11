@@ -138,6 +138,7 @@ int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 ist 'zufällig' gewählt
 //RSpec59WP3_131114.txt
+    CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=50;//100;//Laufzeit
