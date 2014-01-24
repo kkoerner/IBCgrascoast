@@ -28,6 +28,7 @@ class CGrid
 {
    map<string,long>* LDDSeeds; ///< list of seeds to dispers per LDD; has to be managed manually
    double cutted_BM;  ///< biomass removed by mowing
+   double grazed_BM;  ///< biomass removed by grazing (aboveground)
 
 protected:
 //   double mort_seeds;    //!< annual seed mortality  (constant)
@@ -90,6 +91,8 @@ public:
    void GetPftNSeed(vector<int>&);
    void resetCuttedBM(){cutted_BM=0;};
    double getCuttedBM(){return cutted_BM;};
+   void resetGrazedBM(){grazed_BM=0;};
+   double getGrazedBM(){return grazed_BM;};
 
    double GetTotalAboveMass();
    double GetTotalBelowMass();

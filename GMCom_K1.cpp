@@ -141,9 +141,9 @@ int main(int argc, char* argv[])
     CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=50;//100;//Laufzeit
+  SRunPara::RunPara.Tmax=100;//100;//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
-  SRunPara::RunPara.CutLeave=15;
+ // SRunPara::RunPara.CutLeave=15;
   int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
   CEnvir::SimNr=0;
@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
   }
 
     //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
+    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
 //      cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
       Init();
@@ -207,15 +207,14 @@ int main(int argc, char* argv[])
 */
 void Init(){
       Envir->InitRun();
-//      SRunPara::RunPara.meanBRes=200;
 }
 //------------------------------------------------
 /**\brief one run of simulation
 
 Core function is like CClonalGridEnvir::OneRun().
 The changes are
- #1 after 20 years the management changes
- #2 every year one little Individual of each Type arrives/establishes
+ #1 after init time the management might change
+ #2 every year one unspecified migration occurs
     to prevent species loss
 
 */

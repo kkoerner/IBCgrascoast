@@ -403,7 +403,7 @@ void CGridclonal::RametEstab(CclonalPlant* plant)
    {
       CclonalPlant* Ramet = plant->growingSpacerList[f];
       if (Ramet->SpacerlengthToGrow<=0){//return;
-/// \todo hier boundary-Kontrolle einfügen
+
 
         int x=CEnvir::Round(Ramet->xcoord/SRunPara::RunPara.CellScale());
         int y=CEnvir::Round(Ramet->ycoord/SRunPara::RunPara.CellScale());

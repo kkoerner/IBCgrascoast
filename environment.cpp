@@ -246,8 +246,8 @@ void CEnvir::WriteGridComplete(bool allYears)
               <<"abovemass\tbelowmass\t"
               <<"pcBare\tpcBareSoil\t"
               <<"mean_WL\tmean_bres\t"
-              <<"shannon\tmeanShannon\t"
-              <<"NPFT\tmeanNPFT\tCutted\t"
+              <<"shannon\t"
+              <<"NPFT\tCutted\tGrazed\t"
               <<"aLitter\tbLitter"
               ;
      GridOutFile<<"\n";
@@ -267,10 +267,9 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->WaterLevel
                  <<'\t'<<GridOutData[i]->bresmean
                  <<'\t'<<GridOutData[i]->shannon
-                 <<'\t'<<GetMeanShannon(10)//25 nach 100J
                  <<'\t'<<GridOutData[i]->PftCount
-                 <<'\t'<<GetMeanNPFT(10)
-                 <<'\t'<<GridOutData[i]->cutted
+                  <<'\t'<<GridOutData[i]->cutted
+                 <<'\t'<<GridOutData[i]->grazed
                  <<'\t'<<GridOutData[i]->above_litter
                  <<'\t'<<GridOutData[i]->below_litter
                  <<"\n";
@@ -817,6 +816,8 @@ void CClonalGridEnvir::OneWeek(){
    if (week==30){
       //get cutted biomass
       GetOutputCutted();
+      //get grazed biomass
+      GetOutputGrazed();
       //clonal output
       // comment out since 11/11/17
       //      GetClonOutput();   //calculate output variables
@@ -833,12 +834,15 @@ void CClonalGridEnvir::OneWeek(){
 */
 int CClonalGridEnvir::exitConditions()
 {
-     int currTime=GetT();
+
+	int currTime=GetT();
      int NPlants=GetNPlants();//+GetNclonalPlants();
      int NClPlants=GetNclonalPlants();
-
+//if (year<=1)return 0; //do not stop in first year
+     //     int NPFTs=this->PftOutData.back()->PFT.size();
 //    if no more individuals existing
      if ((NPlants + NClPlants)==0)
+//     if (NPFTs==0)
      {
         endofrun=true;
         return currTime; //extinction time
@@ -918,10 +922,9 @@ double CClonalGridEnvir::getTypeCover(const string type)const{
 }
 
 /**
-  \todo ermittle cover für alle typen auf dem Grid
+  ermittle cover für alle typen auf dem Grid
   (dazu evtl neue klassenvariable deklarieren)
   dazu cover der einzelnen Typen in das aktuelle PFTOut eintragen
-   -- Funktion z.Zt. auskommentiert
 
   \bug double PftCover muss mit 0 initialisiert werden
   \warning PftCover is very time consuming
@@ -933,10 +936,6 @@ void CClonalGridEnvir::setCover(){
     ACover.at(i)=getGridACover(i);
     BCover[i]   =getGridBCover(i);
   }
-//  if(this->PftOutData.size()>0){
-//    typedef map<string, SPftOut::SPftSingle*> mapType;
-//    for(mapType::const_iterator it = PftWeek->PFT.begin();
-//          it != PftWeek->PFT.end(); ++it)
   if (week==20){
     typedef map<string, long> mapType;
     for(mapType::const_iterator it = this->PftInitList.begin();
@@ -946,19 +945,6 @@ void CClonalGridEnvir::setCover(){
           this->PftCover[it->first]=getTypeCover(it->first);
     }
    }//end if week=20
-    //  }//end if output size >0
-  //  if (week==WeeksPerYear){
-//    PftCover.clear(); //new year
-//    for(int i=0;i<sum;i++){
-//      for(mapType::const_iterator it = PftInitList.begin();
-//          it != PftInitList.end(); ++it)
-//      {
-//         //addiere den type-cover der aktuellen Zelle
-//         PftCover[it->first]+=getTypeCover(i,it->first);
-//      }
-
-//    }
-//  }//end if at end of year
 }
 
 //---------------------------------------------------------------------------
@@ -1144,6 +1130,13 @@ void CClonalGridEnvir::GetOutputCutted(){
    SGridOut* GridWeek=GridOutData.back();
    //store cutted biomass and reset value for next mowing
    GridWeek->cutted=this->getCuttedBM();this->resetCuttedBM();
+
+}
+//---------------------------------------------------------------------------
+void CClonalGridEnvir::GetOutputGrazed(){
+   SGridOut* GridWeek=GridOutData.back();
+   //store cutted biomass and reset value for next mowing
+   GridWeek->grazed=this->getGrazedBM();this->resetGrazedBM();
 
 }
 //---------------------------------------------------------------------------

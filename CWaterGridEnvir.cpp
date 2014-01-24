@@ -267,9 +267,11 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
  Migration, additional Winter mortality and salt-toxidity are implemented.
 \todo add additional Winter mortality and salt-toxidity
 
- To allow a type to reestablish, once a year one Ind of each type is addad to
+ To allow a type to reestablish, once a year a specific number of Individuals
+ of each type is addad to
  the grid (individual drift / migration).
  \sa SRunPara::RunPara.WaterLevel
+ \sa SRunPara::RunPara.Migration
 */
 void CWaterGridEnvir::OneRun(){
  //  int year_of_change=50;
@@ -287,7 +289,7 @@ void CWaterGridEnvir::OneRun(){
 
  //      for_each(PftInitList.begin(),PftInitList.end(),InitWaterSeeds);     //funkt nicht
 
-      //streue für jeden Typ einen Samen aufs Grid
+      //streue für jeden Typ "SRunPara::RunPara.Migration" Samen aufs Grid
        for (std::map<const string,long>::iterator it = PftInitList.begin();
             it != PftInitList.end(); ++it)
       {
@@ -594,11 +596,6 @@ void CWaterGridEnvir::SetMeanWaterLevel(double val=0){
    double diff=val-curr_mLevel;
    //for each cell: add difference
    ChangeMeanWaterLevel(diff);
-   //   long ncells= SRunPara::RunPara.GetSumCells();
-//   for (int i=0; i<ncells; ++i){
-//      CWaterCell* cell = CellList[i];
-//      cell->SetWaterLevel(cell->GetWaterLevel()+diff);
-//   }//end for
 }//end SetMeanWaterLevel
 
 //---------------------------------------------------------------------------
@@ -640,6 +637,10 @@ double SWaterTraits::saltTolEffect(double salinity){
 } // salt tolerance effect
 
 //---------------------------------------------------------------------------
+/**
+ * obsolete
+ * @param file not used
+ */
 void SWaterTraits::ReadWaterStrategy(char* file)
 {
   string name;SWaterTraits* temp=new SWaterTraits;
@@ -768,6 +769,9 @@ void CWaterGridEnvir::InitInds(string file,int n){
 }//initialization based on file
 
 //---------------------------------------------------------------------------
+/**
+ * send trait information to std::out
+ */
 void SWaterTraits::print(){
    std::cout<<"\nWater Type: "<<this->name;
    std::cout<<"\n  assimBelWL: "<<this->assimBelWL;
