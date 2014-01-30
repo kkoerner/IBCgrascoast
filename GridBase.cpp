@@ -508,6 +508,7 @@ void CGrid::Grazing()
          ++i;
       }
    }
+   this->grazed_BM+=MassRemoved;//report grazed biomass
 }//end CGrid::Grazing()
 //-----------------------------------------------------------------------------
 /**

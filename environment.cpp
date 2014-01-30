@@ -987,7 +987,7 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
  //  int pft, df;
    string pft_name;
    double  prop_PFT;//mean,
-   double aLitter, bLitter;
+   double aLitter=0, bLitter=0;
    SPftOut*  PftWeek =new SPftOut();
 
    SGridOut* GridWeek=new SGridOut();
