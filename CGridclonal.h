@@ -57,6 +57,7 @@ public:
    int GetNMotherPlants();   ///< number of living genets
    int GetNdeadPlants();     ///< number of dead plants
    int GetCoveredCells();    ///< number of cells covered
+   int GetRootedSoilarea();    ///< number of cells covered
    double GetNGeneration();  ///< number of Generations
 };
 //---------------------------------------------------------------------------

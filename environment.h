@@ -207,7 +207,8 @@ public:
 //  void InitSeeds(int); ///<Initialization of seeds on grid
 //  void InitSeeds(string, int n, int x=-1, int y=-1);
   void GetOutputCutted(); ///<get anually cutted biomass (after week 22)
-  void clonalOutput();   ///< write clonal results collected last
+  void GetOutputGrazed(); ///<get anually grazed biomass (after week 22)
+  void WriteClonalOutput();   ///< write clonal results collected last
   virtual int exitConditions(); ///< get exit conditions //first implemented by Ines
    ///\name Functions to get Acover and Bcover of cells.
    /** It is assumed that coordinates/indices match grid size.

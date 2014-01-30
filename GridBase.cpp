@@ -11,7 +11,7 @@
 #include <map>
 #include <algorithm>
 //---------------------------------------------------------------------------
-CGrid::CGrid():cutted_BM(0)
+CGrid::CGrid():cutted_BM(0),grazed_BM(0)
 {
    SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
@@ -26,7 +26,7 @@ CGrid::CGrid():cutted_BM(0)
 \warning does not initiate pft definitions.
 this had to be done at least vie prior dummi grid
 */
-CGrid::CGrid(string id):cutted_BM(0)
+CGrid::CGrid(string id):cutted_BM(0),grazed_BM(0)
 {
    SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
@@ -508,6 +508,7 @@ void CGrid::Grazing()
          ++i;
       }
    }
+   this->grazed_BM+=MassRemoved;//report grazed biomass
 }//end CGrid::Grazing()
 //-----------------------------------------------------------------------------
 /**
