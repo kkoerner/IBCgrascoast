@@ -46,7 +46,10 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  void genConstWL();
  /// read annual environmental conditions from file
  void getEnvirCond(string file);
- /// inundation time in winter season \[weeks\] 0..12
+ /// annual seed rain
+ void seedrain();
+
+	/// inundation time in winter season \[weeks\] 0..12
  int winterInundation;
 protected:
  void DistribResource();    ///<water impact on ressource allocation

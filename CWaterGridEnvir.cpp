@@ -7,7 +7,7 @@
 #include "CWaterPlant.h"
 #include <iomanip>
 #include <sstream>
-extern const int Tinit;
+//extern const int Tinit;
 
    map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=
      map<string,SWaterTraits*>();
@@ -259,6 +259,28 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    }
 
 }
+
+/**
+ * Organizes local seed rain of regional source.
+ * Every year before first week the same number of seeds (SRunPara::RunPara.Migraion)
+ * for each PFT is randomly set on grid.
+ */
+void CWaterGridEnvir::seedrain() {
+	//      cout<<" y"<<year;
+	//drift of little individuals -anually-
+	if (SRunPara::RunPara.Migration > 0) {
+		typedef map<string, int> mapType;
+		//streue für jeden Typ "SRunPara::RunPara.Migration" Samen aufs Grid
+		for (std::map<const string, long>::iterator it = PftInitList.begin();
+				it != PftInitList.end(); ++it) {
+			//cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl;
+			InitSeeds(it->first, SRunPara::RunPara.Migration,
+					this->getPftLink(it->first)->pEstab);
+		}
+	} //if migration
+//	return it;
+}
+
 //------------------------------------------------------------------------------
 /**
  Runs once for the Water Grid Environment. After an init phase of x years
@@ -274,41 +296,26 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
  \sa SRunPara::RunPara.Migration
 */
 void CWaterGridEnvir::OneRun(){
-int year_of_change=Tinit;//use of extern Tinit (set in main.cpp)
+   int year_of_change=SRunPara::RunPara.Tinit;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
-//   for (year=1; year<=5; ++year){
-//   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
    while(year<SRunPara::RunPara.Tmax){
       this->NewWeek();
 //      cout<<" y"<<year;
 
   //drift of little individuals -anually-
-  if (SRunPara::RunPara.Migration>0){
-    typedef map<string, int> mapType;
+	seedrain();
 
- //      for_each(PftInitList.begin(),PftInitList.end(),InitWaterSeeds);     //funkt nicht
+  //-apply salt toxidicy effect
 
-      //streue für jeden Typ "SRunPara::RunPara.Migration" Samen aufs Grid
-       for (std::map<const string,long>::iterator it = PftInitList.begin();
-            it != PftInitList.end(); ++it)
-      {
-//cout<<"Migration: "<<SRunPara::RunPara.Migration<<" seeds of "<< it->first<<endl;
-        InitSeeds(it->first,
-          SRunPara::RunPara.Migration,
-          this->getPftLink(it->first)->pEstab );
-      }
 
-}//if migration
+  //aprupt climate change (WL)
+  if (year==year_of_change)
+	  SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
+
 //--------------------
       OneYear();
 //--------------------
-//-apply salt toxidicy effect
-
-
-//aprupt climate change (WL)
-//      if (year==year_of_change) SRunPara::RunPara.WaterLevel+=SRunPara::RunPara.changeVal;
-
 //file output
       if (true)//(year>=20)
       {
@@ -317,18 +324,13 @@ int year_of_change=Tinit;//use of extern Tinit (set in main.cpp)
  //       WriteClonalOutput();
       }
    //save grid after init time
-      if (year==year_of_change){//save after init time for block design
+      if (year==false){//year_of_change){//save after init time for block design
         stringstream v; v<<"B"<<SRunPara::RunPara.getRunID()<<setw(2)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
    //if all done
       if (endofrun)break;
    }//years
-//   //save grid at end of run
-//   stringstream v; v<<"B"<<CEnvir::SimNr<<setw(3)<<setfill('0')<<CEnvir::RunNr<<"E"<<CEnvir::SimNr;
-//   this->Save(v.str());
-//WL zurücksetzen
-//    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
      SRunPara::RunPara.WaterLevel=WLstart;
 }  // end OneSim
 //------------------------------------------------------------------------------

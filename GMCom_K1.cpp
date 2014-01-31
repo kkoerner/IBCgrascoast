@@ -12,10 +12,6 @@ experiments.
 #include <sstream>
 #include <ctime>
 
-//#include "TimeUtils.h"
-
-//#pragma hdrstop
-
 //the only information the GUI needs from the model
 #include "environment.h"
 #include "CWaterGridEnvir.h"
@@ -99,16 +95,12 @@ see additional page for solved and unsolved bugs
 //---------------------------------------------------------------------------
 CWaterGridEnvir* Envir;   ///<environment in which simulations are run
 using namespace std;
-//#pragma argsused
 
 void Init();
 void Run();
-double GrazProb2=0;      ///<2nd grazing probability
-double DistAreaYear2=0;  ///<2nd trampling intensity
-int NCut2 =0;            ///<2nd mowing management
-const int Tinit=100;
-const int Tmax=200;
-const int nruns=10;//3//10
+const int Tinit=25;//100;
+const int Tmax=50;//200;
+const int nruns=3;//3//10
 //-----------------------
 /**
   Design of the main trunk version of the IBC-grass_coast model:
@@ -141,13 +133,12 @@ const int nruns=10;//3//10
 int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 ist 'zufällig' gewählt
-//RSpec59WP3_131114.txt
     CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
-//  bool endsim=false;
-  SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=Tmax;//100;250//Laufzeit
+  SRunPara::RunPara.Tmax=Tmax;//run time
+  SRunPara::RunPara.Tinit=Tinit;//init time
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
-  int deltaWL=-20;
+  SRunPara::RunPara.changeVal=-20;
+  int WLset=0;//originally set WL
   // SRunPara::RunPara.CutLeave=15;
   /// 0-abandoned; 1-grazing; 2-mowing
   CEnvir::SimNr=0;
@@ -159,7 +150,8 @@ int main(int argc, char* argv[])
 //    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
     SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
+    WLset=atoi(argv[6]); //Water Level set
+    SRunPara::RunPara.WaterLevel=WLset; //
     SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
 //    SRunPara::RunPara.changeVal=atoi(argv[8]);
   }else exit(99);
@@ -169,9 +161,6 @@ int main(int argc, char* argv[])
         //erstes Grid und Kontrolle
         cout<<"start master Environment...\n";
          //---------------
-      Envir=new CWaterGridEnvir(); //generate control grid
-      Init();
-      CEnvir::ResetT();
 //-----------------
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
@@ -187,24 +176,31 @@ int main(int argc, char* argv[])
     Envir->NameSurvOutFile= strd.str();
  //   SRunPara::RunPara.print();
  //-----------------
-    //do simulations specified in input-file
-    do{ //one run per grid - block-design
-           Run();
+    //use env params as set in argv
+    do{ //one run per grid and deltaWL setting
+//        SRunPara::RunPara.WaterLevel+=deltaWL; //set changed conditions
+        Envir->SimNr=100+SRunPara::RunPara.changeVal;
 
-      //Application output:
-      cout<<Envir->year
-    		  <<"\t"<<Envir->GridOutData.back()->PftCount
-    		  <<"\t"<<Envir->GridOutData.back()->shannon
-    		  <<"\t"<<Envir->GridOutData.back()->above_mass<<endl<<flush;
-      //lade hier gespeicherte Version
-      stringstream v; v<<"B"<<idstr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
-      delete Envir; Envir=new CWaterGridEnvir(v.str());
-      SRunPara::RunPara.WaterLevel+=deltaWL; //set changed conditions
-      deltaWL+=10;//change for next setting
-  //  lpos=Envir->GetSim(lpos);
+      //changing conditions
+      SRunPara::RunPara.Tinit=Tinit;//init time
+      Envir=new CWaterGridEnvir(); //generate control grid
+      Init(); CEnvir::ResetT();
+      Run();
+      delete Envir;
 
-      Envir->SimNr++;
-    }while(deltaWL<=20);//stop if WL increase is more than 20cm
+      //constant conditions (2nd control)
+      SRunPara::RunPara.Tinit=Tmax;//init time
+      SRunPara::RunPara.WaterLevel=WLset+SRunPara::RunPara.changeVal; //set 2nd control WL
+      Envir->SimNr+=1000;//to identify controls
+      Envir=new CWaterGridEnvir(); //generate control grid
+      Init(); CEnvir::ResetT();
+      Run();
+      delete Envir;
+      Envir->SimNr-=1000;//reset SimNr
+      SRunPara::RunPara.WaterLevel=WLset;//reset base WL
+
+      SRunPara::RunPara.changeVal+=10;//change for next setting
+     }while(SRunPara::RunPara.changeVal<=20);//stop if WL increase is more than 20cm
   }//end run
 
     //delete static pointer vectors
@@ -212,13 +208,10 @@ int main(int argc, char* argv[])
     delete SPftTraits::PftList[i];
   for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
     delete SclonalTraits::clonalTraits[j];
-//   string dummi;
-//   cin>>dummi;
   return 0;
 }//end main
 //---------------------------------------------------------------------------
-/**
-      high belowground ressources
+/**\brief initiate one run
 */
 void Init(){
       Envir->InitRun();

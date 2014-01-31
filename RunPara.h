@@ -38,6 +38,7 @@ public:
    int CellNum; //!< side length in cells
    bool torus; //!< boundary behavior
    int	Tmax;  //!< simulation time
+   int	Tinit;  //!< initialization time
    int	NPft;   ///< number of plant functional types
    double mort_seeds;     //!< seed mortality per year (in winter)
    double DiebackWinter;  //!< portion of aboveground biomass to be removed in winter
