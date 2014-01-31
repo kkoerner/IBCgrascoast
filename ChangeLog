@@ -1,0 +1,22 @@
+2014-01-31  KatrinK  <KatrinK@KatrinK>
+
+	* GMCom_K1_BlockDesign.cppo: Removed.
+	* GMCom_K1_BlockDesign.cpp: New file.
+	* Output\Mix_gridO__R100_0_0_0_3_WL-10_S0.txt: New file.
+	* Output\Mix_typeO__R100_0_0_0_3_WL-10_S0.txt: New file.
+	* .cproject: 
+	* .project: 
+	* .settings\org.eclipse.cdt.managedbuilder.core.prefs: 
+	* CObject.cpp (type): get rid of warning
+	* CWaterGridEnvir.cpp (CWaterGridEnvir::WLinkList): 
+	(CWaterGridEnvir): 
+	(CWaterGridEnvir::CWaterGridEnvir): some doc
+	(OneRun): 
+	(CWaterGridEnvir::OneRun): get extern Tinit value - doesn't work; save grid after init Time
+	(Winter): 
+	(CWaterGridEnvir::Winter): get rid of warning
+	(InitInds): 
+	(CWaterGridEnvir::InitInds): get rid of warning
+	* environment.cpp (OneRun): 
+	(CClonalGridEnvir::OneRun): no sense
+	* GMCom_K1.cpp (main): set Block design

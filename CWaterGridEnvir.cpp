@@ -7,7 +7,7 @@
 #include "CWaterPlant.h"
 #include <iomanip>
 #include <sstream>
-
+extern const int Tinit;
 
    map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=
      map<string,SWaterTraits*>();
@@ -32,7 +32,7 @@ CWaterGridEnvir::CWaterGridEnvir(string id):CClonalGridEnvir(id)
  ifstream loadf(dummi.c_str());
  string d; getline(loadf,d);
  int x=0,y=0;int xmax=SRunPara::RunPara.CellNum-1;
-   //load cells..
+   //!load cells..
    //loop over cell entries
    do{
      loadf>>x>>y;
@@ -46,7 +46,7 @@ CWaterGridEnvir::CWaterGridEnvir(string id):CClonalGridEnvir(id)
      }
 
    }while(!(x==xmax&&y==xmax));
-   //load Plants..
+   //!load Plants..
    int num;
  loadf>>d>>d>>d>>num;getline(loadf,d);
  cout<<"lade "<<num<<"plant individuals.."<<endl;
@@ -274,7 +274,7 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
  \sa SRunPara::RunPara.Migration
 */
 void CWaterGridEnvir::OneRun(){
- //  int year_of_change=50;
+int year_of_change=Tinit;//use of extern Tinit (set in main.cpp)
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
 //   for (year=1; year<=5; ++year){
@@ -317,8 +317,8 @@ void CWaterGridEnvir::OneRun(){
  //       WriteClonalOutput();
       }
    //save grid after init time
-      if (false){//(year==20) {
-        stringstream v; v<<"B"<<CEnvir::SimNr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
+      if (year==year_of_change){//save after init time for block design
+        stringstream v; v<<"B"<<SRunPara::RunPara.getRunID()<<setw(2)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
    //if all done
@@ -342,7 +342,7 @@ void CWaterGridEnvir::Winter(){
   //calculate additional mortality due to prolonged inundation (ditch breaching)
   //effected types: all non adapted to water and the other to smaller extend
    //mass removal and mortality in case of Disturbance
-   for (int i=0; i<PlantList.size(); ++i){
+   for (unsigned int i=0; i<PlantList.size(); ++i){
       ((CWaterPlant*)PlantList[i])->winterDisturbance(winterInundation);
    }
   CGrid::Winter(); //remove dead plants and calc winter dieback
@@ -703,7 +703,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
   getline(InitFile,line);//skip header line
   //skip first lines if only one Types should be initiated
   if (n>-1) for (int x=0;x<n;x++)getline(InitFile,line);
-  int dummi1; string dummi2; int PFTtype; string Cltype;
+  int dummi1; string dummi2; string Cltype;
   do{
   //erstelle neue traits
     SPftTraits* traits=new SPftTraits();

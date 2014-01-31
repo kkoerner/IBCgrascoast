@@ -8,6 +8,7 @@ experiments.
 //---------------------------------------------------------------------------
 //#include <vcl.h>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <ctime>
 
@@ -23,7 +24,7 @@ experiments.
 
 \author
 Felix May (basic model, ZOI) and Ines Steinhauer (clonal option),
-Katrin Koerner (revision and rebuilt Felix' grazing experiments)
+Katrin Koerner (COMTESS functionality)
 
 
 \date 2008-02-13 (original model)
@@ -105,6 +106,9 @@ void Run();
 double GrazProb2=0;      ///<2nd grazing probability
 double DistAreaYear2=0;  ///<2nd trampling intensity
 int NCut2 =0;            ///<2nd mowing management
+const int Tinit=100;
+const int Tmax=200;
+const int nruns=10;//3//10
 //-----------------------
 /**
   Design of the main trunk version of the IBC-grass_coast model:
@@ -141,10 +145,10 @@ int main(int argc, char* argv[])
     CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=100;//100;250//Laufzeit
+  SRunPara::RunPara.Tmax=Tmax;//100;250//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
- // SRunPara::RunPara.CutLeave=15;
-  int nruns=1;//3//10
+  int deltaWL=-20;
+  // SRunPara::RunPara.CutLeave=15;
   /// 0-abandoned; 1-grazing; 2-mowing
   CEnvir::SimNr=0;
   //sim-loop
@@ -157,40 +161,51 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
     SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
     SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
-  }
+//    SRunPara::RunPara.changeVal=atoi(argv[8]);
+  }else exit(99);
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
-//      cout<<"new Environment...\n";
-      Envir=new CWaterGridEnvir();
+        //erstes Grid und Kontrolle
+        cout<<"start master Environment...\n";
+         //---------------
+      Envir=new CWaterGridEnvir(); //generate control grid
       Init();
+      CEnvir::ResetT();
 //-----------------
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
-    strd<<"Output\\Mix_Grid_log_"<<idstr
+    strd<<"Output\\Mix_Grid_log_"<<idstr<<"_"<<Envir->RunNr
       <<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<"_"<<Envir->RunNr
       <<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<"_"<<Envir->RunNr
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
  //   SRunPara::RunPara.print();
  //-----------------
-      Run();
+    //do simulations specified in input-file
+    do{ //one run per grid - block-design
+           Run();
 
       //Application output:
       cout<<Envir->year
     		  <<"\t"<<Envir->GridOutData.back()->PftCount
     		  <<"\t"<<Envir->GridOutData.back()->shannon
     		  <<"\t"<<Envir->GridOutData.back()->above_mass<<endl<<flush;
+      //lade hier gespeicherte Version
+      stringstream v; v<<"B"<<idstr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
+      delete Envir; Envir=new CWaterGridEnvir(v.str());
+      SRunPara::RunPara.WaterLevel+=deltaWL; //set changed conditions
+      deltaWL+=10;//change for next setting
+  //  lpos=Envir->GetSim(lpos);
 
-      delete Envir;
-
-    Envir->SimNr++;
-    }//end run
+      Envir->SimNr++;
+    }while(deltaWL<=20);//stop if WL increase is more than 20cm
+  }//end run
 
     //delete static pointer vectors
   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)

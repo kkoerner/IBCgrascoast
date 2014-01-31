@@ -752,7 +752,7 @@ void CClonalGridEnvir::OneRun(){
 //      }
    //save grid
       if (false){// (year==5) { ///<\todo save after init time
-        stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
+        stringstream v; v<<"B"<<std::setw(3)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
       if (endofrun)break;
