@@ -98,8 +98,8 @@ using namespace std;
 
 void Init();
 void Run();
-const int Tinit=25;//100;
-const int Tmax=50;//200;
+const int Tinit=100;//100;
+const int Tmax=200;//200;
 const int nruns=3;//3//10
 //-----------------------
 /**
@@ -141,7 +141,6 @@ int main(int argc, char* argv[])
   int WLset=0;//originally set WL
   // SRunPara::RunPara.CutLeave=15;
   /// 0-abandoned; 1-grazing; 2-mowing
-  CEnvir::SimNr=0;
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
@@ -158,9 +157,7 @@ int main(int argc, char* argv[])
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
-        //erstes Grid und Kontrolle
-        cout<<"start master Environment...\n";
-         //---------------
+    	  SRunPara::RunPara.changeVal=-20;
 //-----------------
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
@@ -168,10 +165,10 @@ int main(int argc, char* argv[])
     strd<<"Output\\Mix_Grid_log_"<<idstr<<"_"<<Envir->RunNr
       <<".txt";
     Envir->NameLogFile=strd.str();     // clear stream
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<"_"<<Envir->RunNr
+    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr<<"_"//<<Envir->RunNr
       <<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<"_"<<Envir->RunNr
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr<<"_"//<<Envir->RunNr
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
  //   SRunPara::RunPara.print();
@@ -182,6 +179,7 @@ int main(int argc, char* argv[])
         Envir->SimNr=100+SRunPara::RunPara.changeVal;
 
       //changing conditions
+      cout<<"changing conditions: SimNr "<<Envir->SimNr<<endl;
       SRunPara::RunPara.Tinit=Tinit;//init time
       Envir=new CWaterGridEnvir(); //generate control grid
       Init(); CEnvir::ResetT();
@@ -189,9 +187,10 @@ int main(int argc, char* argv[])
       delete Envir;
 
       //constant conditions (2nd control)
+      Envir->SimNr+=1000;//to identify controls
+      cout<<"control conditions: SimNr "<<Envir->SimNr<<endl;
       SRunPara::RunPara.Tinit=Tmax;//init time
       SRunPara::RunPara.WaterLevel=WLset+SRunPara::RunPara.changeVal; //set 2nd control WL
-      Envir->SimNr+=1000;//to identify controls
       Envir=new CWaterGridEnvir(); //generate control grid
       Init(); CEnvir::ResetT();
       Run();
