@@ -100,7 +100,7 @@ void Init();
 void Run();
 const int Tinit=100;//100;
 const int Tmax=100;//200;
-const int nruns=1;//3//10
+int nruns=1;//3//10
 //-----------------------
 /**
   Design of the main trunk version of the IBC-grass_coast model:
@@ -138,6 +138,7 @@ int main(int argc, char* argv[])
   SRunPara::RunPara.Tinit=Tinit;//init time
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   SRunPara::RunPara.changeVal=5;
+  SRunPara::RunPara.Migration=0;
   int WLset=0;//originally set WL
   // SRunPara::RunPara.CutLeave=15;
   /// 0-abandoned; 1-grazing; 2-mowing
@@ -177,7 +178,7 @@ int main(int argc, char* argv[])
     do{ //one run per grid and deltaWL setting
 //        SRunPara::RunPara.WaterLevel+=deltaWL; //set changed conditions
         Envir->SimNr=100+SRunPara::RunPara.changeVal;
-        SRunPara::RunPara.Migration+=SRunPara::RunPara.changeVal; //set 2nd control WL
+        SRunPara::RunPara.Migration=SRunPara::RunPara.changeVal; //set 2nd control WL
 
       //sown conditions
       cout<<"changing conditions: SimNr "<<Envir->SimNr<<endl;
