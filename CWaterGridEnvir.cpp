@@ -686,6 +686,26 @@ void CWaterGridEnvir::InitRun(){
 
 }
 /**
+ * Setting for management: 'Sewing on bare ground'
+ *
+ * grasland for fodder ('Country Energy 2024')
+ *  - 70% Lolium perenne
+ *  - 20% Phleum pratentse
+ *  - 10% Poa pratsis
+ */
+void CWaterGridEnvir::sew(){
+
+	//ploughing
+	resetGrid();
+    //sewing on bare ground
+	//rec: 30 kg/ha i.e. 3g/m² -->4920mg seeds on plot (128 by 128cells)
+	InitSeeds("Lolmprnn",1750);//3444mg á 1.97mg
+	InitSeeds("Phlmprtn",1700);//984mg á 0.58mg
+	InitSeeds("Ppratnss",1820);//492mg á 0.27mg
+
+}//Initialization of individuals on grid
+
+/**
   this function reads a file, introduces PFTs and initializes seeds on grid
   after file data.
 

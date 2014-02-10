@@ -99,8 +99,8 @@ using namespace std;
 void Init();
 void Run();
 const int Tinit=100;//100;
-const int Tmax=200;//200;
-const int nruns=3;//3//10
+const int Tmax=100;//200;
+const int nruns=1;//3//10
 //-----------------------
 /**
   Design of the main trunk version of the IBC-grass_coast model:
@@ -137,14 +137,14 @@ int main(int argc, char* argv[])
   SRunPara::RunPara.Tmax=Tmax;//run time
   SRunPara::RunPara.Tinit=Tinit;//init time
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
-  SRunPara::RunPara.changeVal=-20;
+  SRunPara::RunPara.changeVal=5;
   int WLset=0;//originally set WL
   // SRunPara::RunPara.CutLeave=15;
   /// 0-abandoned; 1-grazing; 2-mowing
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
+    nruns=atoi(argv[2]);  //init types
     SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
 //    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
     SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
-    	  SRunPara::RunPara.changeVal=-20;
+    	  SRunPara::RunPara.changeVal=0;
 //-----------------
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
@@ -177,29 +177,30 @@ int main(int argc, char* argv[])
     do{ //one run per grid and deltaWL setting
 //        SRunPara::RunPara.WaterLevel+=deltaWL; //set changed conditions
         Envir->SimNr=100+SRunPara::RunPara.changeVal;
+        SRunPara::RunPara.Migration+=SRunPara::RunPara.changeVal; //set 2nd control WL
 
-      //changing conditions
+      //sown conditions
       cout<<"changing conditions: SimNr "<<Envir->SimNr<<endl;
       SRunPara::RunPara.Tinit=Tinit;//init time
       Envir=new CWaterGridEnvir(); //generate control grid
       Init(); CEnvir::ResetT();
+      Envir->sew();//ploughing and sewing
       Run();
       delete Envir;
 
-      //constant conditions (2nd control)
+      //control conditions (2nd control)
       Envir->SimNr+=1000;//to identify controls
       cout<<"control conditions: SimNr "<<Envir->SimNr<<endl;
-      SRunPara::RunPara.Tinit=Tmax;//init time
-      SRunPara::RunPara.WaterLevel=WLset+SRunPara::RunPara.changeVal; //set 2nd control WL
+ //     SRunPara::RunPara.Tinit=Tmax;//init time
       Envir=new CWaterGridEnvir(); //generate control grid
       Init(); CEnvir::ResetT();
       Run();
       delete Envir;
       Envir->SimNr-=1000;//reset SimNr
-      SRunPara::RunPara.WaterLevel=WLset;//reset base WL
+//      SRunPara::RunPara.WaterLevel=WLset;//reset base WL
 
-      SRunPara::RunPara.changeVal+=10;//change for next setting
-     }while(SRunPara::RunPara.changeVal<=20);//stop if WL increase is more than 20cm
+      SRunPara::RunPara.changeVal+=5;//change for next setting
+     }while(SRunPara::RunPara.changeVal<=25);//stop if WL increase is more than 20cm
   }//end run
 
     //delete static pointer vectors

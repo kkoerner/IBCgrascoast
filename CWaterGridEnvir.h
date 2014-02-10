@@ -79,6 +79,7 @@ double getWL(); ///<get current water level
  void CellsInit();
  virtual void InitRun();///<Init current run
  virtual void InitInds();///<Initialization of individuals on grid
+ void sew();///<Initialization of individuals on grid
 // virtual void InitInds(string file);///<initialization of inds based on file data
 // virtual void InitSeeds(string, int);
   virtual void InitInds(string file,int n=-1);///<initialization of inds based on file data
