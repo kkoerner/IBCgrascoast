@@ -8,6 +8,11 @@
 //---------------------------------------------------------------------------
 class SWaterTraits;
 class CWaterPlant;
+/**
+ * weekly 'climate' condition on plot.
+ * 'winter' is wetness of following winter season.
+ */
+struct SWeeklyWeather{int year,week;double airzone,saturation;int winter;};
 ///  Envir-Class for Water-stresds scenarios
 /**
  This class is an Envir-class, i.e. weekly functions are scheduled here and
@@ -55,6 +60,8 @@ protected:
  virtual void Winter();
 
 public:
+ static string NameWeatherFile;  ///< Filename of Simulation-File
+
  /// plot's salinity level
  /**
    Global salinity value for the whole grid. Function CWaterPlant::rootEfficiency
