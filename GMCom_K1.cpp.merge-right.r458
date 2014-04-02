@@ -11,6 +11,8 @@ experiments.
 #include <sstream>
 #include <ctime>
 
+//#include "TimeUtils.h"
+
 //#pragma hdrstop
 
 //the only information the GUI needs from the model
@@ -35,8 +37,6 @@ Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 \par Verbal description of what the code does:
 This code simulates pft-related wetland-grassland dynamics for different
 environmental conditions --develloping process----
- - Water level is constant
- - 5 repeated runs
 
 See also: publications of May(2008) and Steinhauer(2008)
 
@@ -107,28 +107,42 @@ double DistAreaYear2=0;  ///<2nd trampling intensity
 int NCut2 =0;            ///<2nd mowing management
 //-----------------------
 /**
-   the new water ressource environment can be tested here
+  Design of the main trunk version of the IBC-grass_coast model:
 
-  teste 'reale' Arten -
-  \depreciated jede Art ein Jahr: wie entwickeln sich die Keimlinge, entstehen Rameten / neue Keimlinge?
+  On an 1.28 by 1.28cm square grid 10 for each of 28 PFTs
+  (parameterized according to real species) are initiated.
+  One environmental setting is tested for 100 years (1 repitition).
+  Salinity is zero/constant.
+  No block design.
 
+  \par Parameters
+  facultative program parameters are:
+   -# belowground resource supply <100>
+   -# Migration (amount of annual seed rain) <0>
+   -# grazing probability = Dist Area Year (Trampling) <0>
+   -# NCut (cutting) <0>
+   -# WaterLevel <-60>
 
-  \par Parameters  GrazProb, Trampling(=Grazprob), NCut
+  \par Input
+   -species definitions
+   -no sim file
+
+  \par Output
+   -annual grid information
+   -annual type information
+
   \author KK
-  \date 12/01/26
+  \date 13/05/29
   */
 int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 ist 'zufällig' gewählt
 //RSpec59WP3_131114.txt
-CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
-//CEnvir::NamePFTFile="Input\\RSpec28S.txt";
-  bool endsim=false;
-  SRunPara::RunPara.WaterLevel=-60; //start-WL   100
-  SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
-  SRunPara::RunPara.WLseason="file";
-  int nruns=5;//3
-
+//  bool endsim=false;
+  SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
+  SRunPara::RunPara.Tmax=50;//100;//Laufzeit
+  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
+  int nruns=1;//3
   /// 0-abandoned; 1-grazing; 2-mowing
   CEnvir::SimNr=0;
   //sim-loop
@@ -142,8 +156,9 @@ CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
     SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
     SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
   }
+
     //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
+    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
 //      cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
       Init();
@@ -190,14 +205,15 @@ CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
 */
 void Init(){
       Envir->InitRun();
+//      SRunPara::RunPara.meanBRes=200;
 }
 //------------------------------------------------
 /**\brief one run of simulation
 
 Core function is like CClonalGridEnvir::OneRun().
 The changes are
- #1 after init time the management might change
- #2 every year one unspecified migration occurs
+ #1 after 20 years the management changes
+ #2 every year one little Individual of each Type arrives/establishes
     to prevent species loss
 
 */

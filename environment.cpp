@@ -73,7 +73,7 @@ using namespace std;
 //   int CEnvir::NumPft=81;
 
    //Input Files
-   string CEnvir::NamePftFile="Input\\PftTraits2304.txt";
+   string CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
    string CEnvir::NameBResFile="";
    string CEnvir::NameSimFile = "Input\\SimFileTest1.txt";  //file with simulation scenarios
 
@@ -94,10 +94,8 @@ using namespace std;
 
 
 //---------------------------------------------------------------------------
-CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
-//  CoveredCells(0),//MeanShannon(0),
-  //NCellsAcover(0),//Mortalitaetsrate(0),
-  init(1),endofrun(false)
+CEnvir::CEnvir():
+  endofrun(false),init(1)
 {
    ResetT();
    ReadLandscape();
@@ -105,10 +103,8 @@ CEnvir::CEnvir()://NdeadPlants(0),NPlants(0),
    BCover.assign(SRunPara::RunPara.GetSumCells(),0);
 }
 //---------------------------------------------------------------------------
-CEnvir::CEnvir(string id)://NdeadPlants(0),NPlants(0),
-//  CoveredCells(0),//MeanShannon(0),
-//  NCellsAcover(0),//Mortalitaetsrate(0),
-  init(1),endofrun(false)
+CEnvir::CEnvir(string id):
+  endofrun(false),init(1)
 {
 //read file
  string dummi=(string)"Save/E_"+id+".sav";
@@ -156,7 +152,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   //Open SimFile,
   ifstream SimFile(NameSimFile.c_str());
   if (!SimFile.good()) {cerr<<("Fehler beim Öffnen SimFile");exit(3); }
-  cout<<"SimFile: "<<NameSimFile<<endl;
+//  cout<<"SimFile: "<<NameSimFile<<endl;
   int lpos=pos;
 
   if (pos==0){  //read header
@@ -174,7 +170,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
   //ist position gültig?, wenn nicht -- Abbruch
   if (!SimFile.good()) return -1;
 
-  int version, acomp, bcomp;
+ // int version, acomp, bcomp;
    //RunNr=0; int dummi;
    //for (int i=0; i<SimNrMax; ++i)
 
@@ -195,7 +191,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       //trampling equals grazing
       SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb;
       //above- and belowground competition
-      acomp=1;bcomp=0;
+ //     acomp=1;bcomp=0;
       //--------------------------------
       //filenames
     string idstr= SRunPara::RunPara.getRunID();
@@ -210,7 +206,7 @@ int CClonalGridEnvir::GetSim(const int pos,string file){
       <<".txt";
     NameSurvOutFile= strd.str();
 
-      SRunPara::RunPara.print();
+ //     SRunPara::RunPara.print();
   return SimFile.tellg();
 }//end  CEnvir::GetSim
 //------------------------------------------------------------------------------
@@ -248,10 +244,11 @@ void CEnvir::WriteGridComplete(bool allYears)
      GridOutFile<<"Sim\tRun\tTime\t"
               <<"totMass\tNInd\t"
               <<"abovemass\tbelowmass\t"
-              <<"pcBare\t"
+              <<"pcBare\tpcBareSoil\t"
               <<"mean_WL\tmean_bres\t"
-              <<"shannon\tmeanShannon\t"
-              <<"NPFT\tmeanNPFT\tCutted"
+              <<"shannon\t"
+              <<"NPFT\tCutted\tGrazed\t"
+              <<"aLitter\tbLitter"
               ;
      GridOutFile<<"\n";
    }
@@ -265,14 +262,16 @@ void CEnvir::WriteGridComplete(bool allYears)
                  <<'\t'<<GridOutData[i]->above_mass
                  <<'\t'<<GridOutData[i]->below_mass
                  <<'\t'<<GridOutData[i]->bareGround
+                 <<'\t'<<GridOutData[i]->bareSoil
 //                 <<'\t'<<GridOutData[i]->aresmean
                  <<'\t'<<GridOutData[i]->WaterLevel
                  <<'\t'<<GridOutData[i]->bresmean
                  <<'\t'<<GridOutData[i]->shannon
-                 <<'\t'<<GetMeanShannon(10)//25 nach 100J
                  <<'\t'<<GridOutData[i]->PftCount
-                 <<'\t'<<GetMeanNPFT(10)
-                 <<'\t'<<GridOutData[i]->cutted
+                  <<'\t'<<GridOutData[i]->cutted
+                 <<'\t'<<GridOutData[i]->grazed
+                 <<'\t'<<GridOutData[i]->above_litter
+                 <<'\t'<<GridOutData[i]->below_litter
                  <<"\n";
    }
    GridOutFile.close();
@@ -445,7 +444,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
       //only if output once a year
    if(PftOutData.size()<x) return -1;
    double sum=0;
-   for (int i= (PftOutData.size()-x);i<PftOutData.size();i++)
+   for (unsigned int i= (PftOutData.size()-x);i<PftOutData.size();i++)
     if (PftOutData[i]->PFT.find(pft)!=PftOutData[i]->PFT.end())
     {
      SPftOut::SPftSingle* entry
@@ -461,7 +460,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
    /// \var char* CClonalGridEnvir::NameClonalPftFile
    /// \since 2010-07-06 slightly changed clonal traits
    ///
-   char* CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.explodat.txt";
+   string CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.explodat.txt";
 //   char* CClonalGridEnvir::NameClonalPftFile="Input\\clonalTraits.txt";
    string CClonalGridEnvir::NameClonalOutFile="Output\\clonalOut.txt";
    int CClonalGridEnvir::clonaltype=0;
@@ -475,7 +474,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
      map<string,SclonalTraits*>();
    //   int CClonalGridEnvir::sim=0;
 //------------------------------------------------------------------------------
-CClonalGridEnvir::CClonalGridEnvir():CGridclonal(),CEnvir()
+CClonalGridEnvir::CClonalGridEnvir():CEnvir(),CGridclonal()
 {
    ReadLandscape();
 }
@@ -521,7 +520,7 @@ belonging to one task.
    \autor KK
    \date  120905
 */
-CClonalGridEnvir::CClonalGridEnvir(string id):CGridclonal(id),CEnvir(id)
+CClonalGridEnvir::CClonalGridEnvir(string id):CEnvir(id),CGridclonal(id)
 {
   //here re-eval clonal PFTFile
   string dummi=(string)"Save/E_"+id+".sav";
@@ -599,8 +598,8 @@ void CClonalGridEnvir::InitRun(){
   \todo put this function in an extra file together with other adaptable functions
 */
 void CClonalGridEnvir::InitInds(){
-  SclonalTraits* cltraits=SclonalTraits::clonalTraits[clonaltype];
-     SPftTraits* traits=SPftTraits::PftList[Pfttype];
+//  SclonalTraits* cltraits=SclonalTraits::clonalTraits[clonaltype];
+//     SPftTraits* traits=SPftTraits::PftList[Pfttype];
   //non-clonal plants
    int Pfttypebegin=0;//(StrToInt(Form1->Edit13->Text))-1;
    int Pfttypeend=80; //(StrToInt(Form1->Edit14->Text))-1;
@@ -633,7 +632,7 @@ void CClonalGridEnvir::InitInds(string file){
   //Open InitFile,
   ifstream InitFile(file.c_str());
   if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
-  cout<<"InitFile: "<<file<<endl;
+//  cout<<"InitFile: "<<file<<endl;
   string line;
   getline(InitFile,line);//skip header line
   int dummi1; string dummi2; int PFTtype; string Cltype;
@@ -657,7 +656,7 @@ void CClonalGridEnvir::InitInds(string file){
     else{
        SclonalTraits* cltraits=NULL;//=SclonalTraits::clonalTraits[Cltype];
        //...
-       for(int i=0;i<SclonalTraits::clonalTraits.size();i++){
+       for(unsigned int i=0;i<SclonalTraits::clonalTraits.size();i++){
          if (SclonalTraits::clonalTraits[i]->name==Cltype){
            cltraits=SclonalTraits::clonalTraits[i];break;
          }
@@ -701,8 +700,8 @@ bool CClonalGridEnvir::InitInd(string def){
                   stress,dead,generation,genetnb,spacerl,spacerl2grow);
     //set Genet
     CGenet* genet=NULL;
-    for (int i=0; i<GenetList.size();i++){
-      if (GenetList[i]->number=genetnb)genet=GenetList[i];
+    for (unsigned int i=0; i<GenetList.size();i++){
+      if (GenetList[i]->number==genetnb)genet=GenetList[i];
     }
     if (!genet) {
       CGenet::staticID=max(CGenet::staticID,genetnb);
@@ -713,9 +712,7 @@ bool CClonalGridEnvir::InitInd(string def){
     plant=tplant;
   }
   PlantList.push_back(plant);
-  cout<<"L: ClonalPlant "<<plant->asString()<<endl;
-//  cout<<"Init "<<type<<" at "<<x<<":"<<y
-//      <<" ("<<mshoot<<", "<<mroot<<", "<<mrepro<<", "<<stress<<", "<<dead<<")\n";
+//  cout<<"L: ClonalPlant "<<plant->asString()<<endl;
   return true;
 }//<init of one ind based on saved data
 //------------------------------------------------------------------------------
@@ -754,7 +751,7 @@ void CClonalGridEnvir::OneRun(){
         WriteSurvival();
 //      }
    //save grid
-      if (year==5) { ///<\todo save after init time
+      if (false){// (year==5) { ///<\todo save after init time
         stringstream v; v<<"B"<<setw(3)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
@@ -776,6 +773,7 @@ void CClonalGridEnvir::OneYear(){
    do{
    //for (week=1;week<=WeeksPerYear; ++week){
      OneWeek();
+     fflush(NULL);//write immediately on console
      //exit conditions
       exitConditions();
       if (endofrun)break;
@@ -813,10 +811,13 @@ void CClonalGridEnvir::OneWeek(){
 
    if (week==20){        //general output
       GetOutput();   //calculate output variables
-   }
+//      GetClonOutput();   //calculate output variables
+     }
    if (week==30){
       //get cutted biomass
       GetOutputCutted();
+      //get grazed biomass
+      GetOutputGrazed();
       //clonal output
       // comment out since 11/11/17
       //      GetClonOutput();   //calculate output variables
@@ -833,12 +834,15 @@ void CClonalGridEnvir::OneWeek(){
 */
 int CClonalGridEnvir::exitConditions()
 {
-     int currTime=GetT();
+
+	int currTime=GetT();
      int NPlants=GetNPlants();//+GetNclonalPlants();
      int NClPlants=GetNclonalPlants();
-
+//if (year<=1)return 0; //do not stop in first year
+     //     int NPFTs=this->PftOutData.back()->PFT.size();
 //    if no more individuals existing
      if ((NPlants + NClPlants)==0)
+//     if (NPFTs==0)
      {
         endofrun=true;
         return currTime; //extinction time
@@ -933,10 +937,6 @@ void CClonalGridEnvir::setCover(){
     ACover.at(i)=getGridACover(i);
     BCover[i]   =getGridBCover(i);
   }
-//  if(this->PftOutData.size()>0){
-//    typedef map<string, SPftOut::SPftSingle*> mapType;
-//    for(mapType::const_iterator it = PftWeek->PFT.begin();
-//          it != PftWeek->PFT.end(); ++it)
   if (week==20){
     typedef map<string, long> mapType;
     for(mapType::const_iterator it = this->PftInitList.begin();
@@ -946,23 +946,10 @@ void CClonalGridEnvir::setCover(){
           this->PftCover[it->first]=getTypeCover(it->first);
     }
    }//end if week=20
-    //  }//end if output size >0
-  //  if (week==WeeksPerYear){
-//    PftCover.clear(); //new year
-//    for(int i=0;i<sum;i++){
-//      for(mapType::const_iterator it = PftInitList.begin();
-//          it != PftInitList.end(); ++it)
-//      {
-//         //addiere den type-cover der aktuellen Zelle
-//         PftCover[it->first]+=getTypeCover(i,it->first);
-//      }
-
-//    }
-//  }//end if at end of year
 }
 
 //---------------------------------------------------------------------------
-void CClonalGridEnvir::clonalOutput(){
+void CClonalGridEnvir::WriteClonalOutput(){
     //write data in the clonalOut file
     ofstream clonOut(NameClonalOutFile.c_str(),ios_base::app);
 //    {
@@ -995,13 +982,14 @@ void CClonalGridEnvir::clonalOutput(){
   calculate Output-variables and store in intern 'database'
 
   changed in Version 100715 - for  type-flexible Output
+  \since 131220 Population-density dependent base mortality (used?)
 */
 void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
 {
-   int pft, df;
+ //  int pft, df;
    string pft_name;
-   double mean, prop_PFT;
-
+   double  prop_PFT;//mean,
+   double aLitter=0, bLitter=0;
    SPftOut*  PftWeek =new SPftOut();
 
    SGridOut* GridWeek=new SGridOut();
@@ -1024,8 +1012,14 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
         ++mi->Nind;
         mi->shootmass+=plant->mshoot;
         mi->rootmass+=plant->mroot;
+      }//plant alive
+      else{
+    	  aLitter+=plant->mshoot+plant->mRepro;
+    	  bLitter+=plant->mroot;
       }
    }
+   GridWeek->above_litter=aLitter;
+   GridWeek->below_litter=bLitter;
    //calculate mean values
    typedef map<string, SPftOut::SPftSingle*> mapType;
 
@@ -1047,6 +1041,31 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
          prop_PFT=(double) it->second->Nind/PlantList.size();
          GridWeek->shannon+=(-1)*prop_PFT*log(prop_PFT);
       }
+
+      //update plants' mort_base value
+      for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
+         CPlant* plant = *iplant;
+     if (plant->dead==false){
+         pft_name=plant->pft();
+         if (PftWeek->PFT.find(pft_name)==PftWeek->PFT.end()){cerr<<"wrong pft: "<<pft_name;exit(3);}
+ //based on Abundance.. 1+(NInd(PFT)/maxnIndPFT)
+         //0.007*0.5*([1-2]) meanly resulting in 0.007
+      double abundance=PftWeek->PFT.find(pft_name)->second->Nind;
+      double m_area_root=plant->Traits->RAR*
+			  pow(plant->Traits->MaxMass*0.25,2.0/3.0);
+      double m_area_shoot=plant->Traits->SLA*
+		      pow(plant->Traits->LMR*plant->Traits->MaxMass*0.25,2.0/3.0);//mean shoot area;
+
+      double max_abundance=
+    		  (double)SRunPara::RunPara.GridSize*SRunPara::RunPara.GridSize/
+    		  //area per medium plant (min of above-and belowground)
+    		  min(m_area_root,//mean root area
+    				  m_area_shoot);
+      plant->mort_base=0.007*
+      	pow(1+(abundance/(double)max_abundance),2);
+ //     cout<<plant->mort_base<<" ";
+     }}
+
 ///\todo cover mit Funktion find()  füllen -- da sonst evtl adressierungsfehler
 //      it->second->cover=PftCover[it->first];
       GridWeek->totmass+=it->second->totmass;
@@ -1099,6 +1118,8 @@ void CClonalGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
 //    }
     GridWeek->bareGround=1.0- (double(NCellsAcover)/
        (SRunPara::RunPara.GetSumCells()));//bare ground
+    GridWeek->bareSoil=1.0- (double(this->GetRootedSoilarea())/
+       (SRunPara::RunPara.GetSumCells()));//bare ground
 
    PftOutData.push_back(PftWeek);
    GridWeek->PftCount=PftSurvival(); //get PFT results
@@ -1111,6 +1132,13 @@ void CClonalGridEnvir::GetOutputCutted(){
    SGridOut* GridWeek=GridOutData.back();
    //store cutted biomass and reset value for next mowing
    GridWeek->cutted=this->getCuttedBM();this->resetCuttedBM();
+
+}
+//---------------------------------------------------------------------------
+void CClonalGridEnvir::GetOutputGrazed(){
+   SGridOut* GridWeek=GridOutData.back();
+   //store cutted biomass and reset value for next mowing
+   GridWeek->grazed=this->getGrazedBM();this->resetGrazedBM();
 
 }
 //---------------------------------------------------------------------------

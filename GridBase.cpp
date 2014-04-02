@@ -11,7 +11,7 @@
 #include <map>
 #include <algorithm>
 //---------------------------------------------------------------------------
-CGrid::CGrid():cutted_BM(0)
+CGrid::CGrid():cutted_BM(0),grazed_BM(0)
 {
    SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
@@ -26,7 +26,7 @@ CGrid::CGrid():cutted_BM(0)
 \warning does not initiate pft definitions.
 this had to be done at least vie prior dummi grid
 */
-CGrid::CGrid(string id):cutted_BM(0)
+CGrid::CGrid(string id):cutted_BM(0),grazed_BM(0)
 {
    SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
@@ -436,6 +436,8 @@ void CGrid::SeedMortAge()
    NEW: additionally calculate the effect of belowground herbivory
 
    NEW: additionally calculate the effect of cutting after May(Jan 2010)
+   
+   \since 131220 trampling is weekly proportion of area 
 */
 bool CGrid::Disturb()
 {
@@ -443,7 +445,8 @@ bool CGrid::Disturb()
       if (CEnvir::rand01()<SRunPara::RunPara.GrazProb){
          Grazing();
       }
-      if (CEnvir::rand01()<SRunPara::RunPara.DistProb()){
+      if (true){  //weekly trampling
+      //(CEnvir::rand01()<SRunPara::RunPara.DistProb()){
          Trampling();
       }
       if (CEnvir::rand01()<SRunPara::RunPara.BelGrazProb){
@@ -507,6 +510,7 @@ void CGrid::Grazing()
          ++i;
       }
    }
+   this->grazed_BM+=MassRemoved;//report grazed biomass
 }//end CGrid::Grazing()
 //-----------------------------------------------------------------------------
 /**
@@ -707,6 +711,8 @@ void CGrid::GrazingBelGr(const int mode)
     \par revision
   Let ZOI be defined by a list sorted after ascending distance to center instead
   of searching a square defined by maximum radius.
+  
+  \since 131220 if NTrample<1 --> stochastic
 */
 void CGrid::Trampling()
 {
@@ -716,13 +722,14 @@ void CGrid::Trampling()
    double radius=10.0;                 //radius of disturbance [cm]
    double Apatch=(Pi*radius*radius);   //area of patch [cm²]
    //number of gaps
-   int NTrample=floor(SRunPara::RunPara.AreaEvent
+   double NTrample=(SRunPara::RunPara.AreaEvent
 		   *SRunPara::RunPara.GridSize*SRunPara::RunPara.GridSize/
                       Apatch);
    //area of patch [cell number]
    Apatch/=SRunPara::RunPara.CellScale()*SRunPara::RunPara.CellScale();
-
-   for (int i=0; i<NTrample; ++i){
+//apply probability if ntrample<1
+   if ( NTrample<1 && CEnvir::rand01()<NTrample) NTrample++;
+   for (int i=1; i<NTrample; ++i){
       //get random center of disturbance
       xcell=CEnvir::nrand(SRunPara::RunPara.CellNum);
       ycell=CEnvir::nrand(SRunPara::RunPara.CellNum);

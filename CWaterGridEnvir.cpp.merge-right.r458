@@ -236,7 +236,8 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
    SWaterTraits* wtraits,const int n,double mass)
 {
 //   using CEnvir::nrand;using SRunPara::RunPara;
-   int x,y;
+   int x,y;//teste mal..
+   x=12;y=13;
    int SideCells=SRunPara::RunPara.CellNum;
 
    for (int i=0; i<n; ++i){
@@ -264,18 +265,14 @@ void CWaterGridEnvir::InitWaterInds(SPftTraits* traits,SclonalTraits* cltraits,
  environmental conditions (WaterLevel) is changed.
 
  Migration, additional Winter mortality and salt-toxidity are implemented.
+\todo add additional Winter mortality and salt-toxidity
 
- To allow a type to reestablish, once a year a specific number of Individuals
- of each type is addad to
+ To allow a type to reestablish, once a year one Ind of each type is addad to
  the grid (individual drift / migration).
-
- Grid is saved after init time of 20 years.
-
  \sa SRunPara::RunPara.WaterLevel
- \sa SRunPara::RunPara.Migration
 */
 void CWaterGridEnvir::OneRun(){
-//   int year_of_change=50;
+ //  int year_of_change=50;
    double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
 //   for (year=1; year<=5; ++year){
@@ -284,13 +281,13 @@ void CWaterGridEnvir::OneRun(){
       this->NewWeek();
 //      cout<<" y"<<year;
 
-  //drift of few individuals -anually-
+  //drift of little individuals -anually-
   if (SRunPara::RunPara.Migration>0){
     typedef map<string, int> mapType;
 
  //      for_each(PftInitList.begin(),PftInitList.end(),InitWaterSeeds);     //funkt nicht
 
-      //streue für jeden Typ "SRunPara::RunPara.Migration" Samen aufs Grid
+      //streue für jeden Typ einen Samen aufs Grid
        for (std::map<const string,long>::iterator it = PftInitList.begin();
             it != PftInitList.end(); ++it)
       {
@@ -315,10 +312,9 @@ void CWaterGridEnvir::OneRun(){
       {
         WriteGridComplete(false);//report last year
         WriteSurvival();
- //       WriteClonalOutput();
       }
    //save grid after init time
-      if (year==20) {
+      if (false){//(year==20) {
         stringstream v; v<<"B"<<CEnvir::SimNr<<setw(2)<<setfill('0')<<CEnvir::RunNr;
         this->Save(v.str());
       }
@@ -343,24 +339,14 @@ void CWaterGridEnvir::Winter(){
   //calculate additional mortality due to prolonged inundation (ditch breaching)
   //effected types: all non adapted to water and the other to smaller extend
    //mass removal and mortality in case of Disturbance
-   for (unsigned int i=0; i<PlantList.size(); ++i){
+   for (int i=0; i<PlantList.size(); ++i){
       ((CWaterPlant*)PlantList[i])->winterDisturbance(winterInundation);
    }
   CGrid::Winter(); //remove dead plants and calc winter dieback
 }//end winter() - winter mortality
 //------------------------------------------------------------------------------
 /**
- *   Get weekly weather conditions from file.
- *
- *   The file consists of 31 rows with 3 columns plus header,
- *   each row containing Water level saturation and salinity
- *   for each of 30 weeks plus winter conditions.
- *
- *   The data of one year is collected and stored. Current values
- *   can be accessed via the functions getWL(), getSAT(), getSAL()
- *   and the variable winterInundation.
- *
- *     \param file file name of source file
+    \param file file name of source file
 */
 void CWaterGridEnvir::getEnvirCond(string file){
   weeklyWL.clear();weeklySAL.clear();weeklySAT.clear();
@@ -474,10 +460,10 @@ void CWaterGridEnvir::SetCellResource(){
 
   //salinity
 //  salinity=SRunPara::SRunPara::RunPara.salt;
-  if (week==1)cout<<"\n";
-  cout<<"\n w"<<week<<" WL:"<<getWL()
-                    <<" Sat:"<<getSAT()
-                    <<" Sal:"<<getSAL();
+//  if (week==1) cout<<"\n";
+//  cout<<"\n w"<<week<<" WL:" <<getWL();
+//  cout              <<" Sat:"<<getSAT();
+//  cout              <<" Sal:"<<getSAL();
 }
 
 //-------------------------------------------------------------
@@ -607,6 +593,11 @@ void CWaterGridEnvir::SetMeanWaterLevel(double val=0){
    double diff=val-curr_mLevel;
    //for each cell: add difference
    ChangeMeanWaterLevel(diff);
+   //   long ncells= SRunPara::RunPara.GetSumCells();
+//   for (int i=0; i<ncells; ++i){
+//      CWaterCell* cell = CellList[i];
+//      cell->SetWaterLevel(cell->GetWaterLevel()+diff);
+//   }//end for
 }//end SetMeanWaterLevel
 
 //---------------------------------------------------------------------------
@@ -648,10 +639,6 @@ double SWaterTraits::saltTolEffect(double salinity){
 } // salt tolerance effect
 
 //---------------------------------------------------------------------------
-/**
- * obsolete
- * @param file not used
- */
 void SWaterTraits::ReadWaterStrategy(char* file)
 {
   string name;SWaterTraits* temp=new SWaterTraits;
@@ -687,9 +674,8 @@ void CWaterGridEnvir::InitRun(){
   resetGrid();
 
   //set initial plants on grid...
-
-  InitInds(CEnvir::NamePftFile); //all species simultanously
-//  InitInds("Input\\RSpec59WP3_131114.txt"); //all species simultanously
+  InitInds("Input\\RSpec59WP3_131114.txt"); //all species simultanously
+//  InitInds("Input\\RSpec28S.txt"); //all species simultanously
 //  InitInds("Input\\RSpec20.txt",SimNr);
 
 }
@@ -708,7 +694,7 @@ void CWaterGridEnvir::InitInds(string file,int n){
   //Open InitFile,
   ifstream InitFile(file.c_str());
   if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
-  cout<<"InitFile: "<<file<<endl;
+//  cout<<"InitFile: "<<file<<endl;
   string line;
   getline(InitFile,line);//skip header line
   //skip first lines if only one Types should be initiated
@@ -779,9 +765,6 @@ void CWaterGridEnvir::InitInds(string file,int n){
 }//initialization based on file
 
 //---------------------------------------------------------------------------
-/**
- * send trait information to std::out
- */
 void SWaterTraits::print(){
    std::cout<<"\nWater Type: "<<this->name;
    std::cout<<"\n  assimBelWL: "<<this->assimBelWL;

@@ -68,7 +68,8 @@ static double getSAT();///<get current soil saturation
 double getWL(); ///<get current water level
 
   CWaterGridEnvir():WaterFlow(no),winterInundation(0){CellsInit();
- cout<<"\nCWaterGrid() ";};
+// cout<<"\nCWaterGrid() ";
+  };
   CWaterGridEnvir(string id); ///< load from file(s)
   ~CWaterGridEnvir();
  ///initialization of grid cells - no functionality

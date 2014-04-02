@@ -109,7 +109,8 @@ void SPftTraits::print(){
 CPlant::CPlant(double x, double y, SPftTraits* Traits):
   xcoord(x),ycoord(y),Traits(Traits),mshoot(Traits->m0),mroot(Traits->m0),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),Age(0)
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
+  Age(0),mort_base(0.007)
 {
 //   mRepro=0;
 
@@ -123,7 +124,8 @@ CPlant::CPlant(SPftTraits* Traits, CCell* cell,
      int stress, bool dead):
   xcoord(0),ycoord(0),Traits(Traits),mshoot(mshoot),mroot(mroot),
   Aroots_all(0),Aroots_type(0),mRepro(mrepro),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(dead),remove(false),stress(stress),cell(NULL),Age(0)
+  Auptake(0),Buptake(0),dead(dead),remove(false),stress(stress),cell(NULL),
+  Age(0),mort_base(0.007)
 {
   if (mshoot==0)this->mshoot=Traits->m0;
   if (mroot==0)this->mroot=Traits->m0;
@@ -150,7 +152,8 @@ CPlant::CPlant(CSeed* seed):
   xcoord(seed->xcoord),ycoord(seed->ycoord),Traits(seed->Traits),
   mshoot(seed->Traits->m0),mroot(seed->Traits->m0),cell(NULL),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),Age(0)
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),
+  Age(0),mort_base(0.007)
 {
    //establish this plant on cell
    setCell(seed->getCell());
@@ -271,7 +274,7 @@ double CPlant::ShootGrow(double shres){
    Assim_shoot=Traits->growth*min(shres,Traits->Gmax*Ash_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
    Resp_shoot=Traits->growth*Traits->SLA
               *pow(Traits->LMR,p)*Traits->Gmax
-              *pow(mshoot,q)/pow(Traits->MaxMass*0.5,r);       //respiration proportional to mshoot^2
+              *pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
    return max(0.0,Assim_shoot-Resp_shoot);
 }
 /**
@@ -284,7 +287,7 @@ double CPlant::RootGrow(double rres){
    double p=2.0/3.0, q=2.0, r=4.0/3.0; //exponents for growth function
    Assim_root=Traits->growth*min(rres,Traits->Gmax*Art_disc);    //growth limited by maximal resource per area -> similar to uptake limitation
    Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
-            *pow(mroot,q)/pow(Traits->MaxMass*0.5,r);  //respiration proportional to root^2
+            *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
 
    return max(0.0,Assim_root-Resp_root);
 }
@@ -310,8 +313,8 @@ double CPlant::RootGrow(double rres){
 bool CPlant::stressed(){
 //   return (Auptake<Traits->mThres*Ash_disc*Traits->Gmax)
 //       || (Buptake<Traits->mThres*Art_disc*Traits->Gmax);
-   return (Auptake<minresA())
-       || (Buptake<minresB());
+   return (Auptake/2.0<minresA())
+       || (Buptake/2.0<minresB());
 }
 
 //-----------------------------------------------------------------------------
@@ -320,6 +323,7 @@ void CPlant::Kill()
 //   double pmort;//,rnumber;
 
    //resource deficiency mortality  ; pmin->random background mortality
+   //use this->mort_base for bayer-style base mortality
    const double pmin=SRunPara::RunPara.mort_base;//0.007;
    double pmort= (double)stress/Traits->memory  + pmin;  //stress mortality + random background mortality
 //   rnumber = CEnvir::rand01();//(double )rand()/(RAND_MAX+1);
@@ -432,13 +436,15 @@ void CPlant::Decompose()
 ///not used
 ///
 double CPlant::Radius_shoot(){
-   return sqrt(Traits->SLA*pow(Traits->LMR*mshoot,2.0/3.0)/Pi);
+//   return sqrt(Traits->SLA*pow(Traits->LMR*mshoot,2.0/3.0)/Pi);
+   return sqrt(Area_shoot()/Pi);
 }
 //-----------------------------------------------------------------------------
 ///not used
 ///
 double CPlant::Radius_root(){
-   return sqrt(pow(Traits->RAR*mroot,2.0/3.0)/Pi);
+//	   return sqrt(pow(Traits->RAR*mroot,2.0/3.0)/Pi);
+	   return sqrt(Area_root()/Pi);
 }
 //-----------------------------------------------------------------------------
 double CPlant::Area_shoot(){
@@ -450,9 +456,11 @@ Calculates the circular root area, i.e. Root-ZOI.
 
 \return RootArea of ZOI
 \date 12/01/04 revised for integrating root depth
+\date 13/08/30 redone as old version
+
 */
 double CPlant::Area_root(){
-  return pow(Traits->RAR*mroot,2.0/3.0);
+  return Traits->RAR*pow(mroot,2.0/3.0);
 }
 //-----------------------------------------------------------------------------
 /*

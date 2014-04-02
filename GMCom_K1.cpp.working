@@ -9,7 +9,7 @@ experiments.
 //#include <vcl.h>
 #include <iostream>
 #include <sstream>
-#include <ctime>
+//#include "TimeUtils.h"
 
 //#pragma hdrstop
 
@@ -35,8 +35,6 @@ Katrin Koerner (revision and rebuilt Felix' grazing experiments)
 \par Verbal description of what the code does:
 This code simulates pft-related wetland-grassland dynamics for different
 environmental conditions --develloping process----
- - Water level is constant
- - 5 repeated runs
 
 See also: publications of May(2008) and Steinhauer(2008)
 
@@ -107,7 +105,7 @@ double DistAreaYear2=0;  ///<2nd trampling intensity
 int NCut2 =0;            ///<2nd mowing management
 //-----------------------
 /**
-   the new water ressource environment can be tested here
+  the new water ressource environment can be tested here
 
   teste 'reale' Arten -
   \depreciated jede Art ein Jahr: wie entwickeln sich die Keimlinge, entstehen Rameten / neue Keimlinge?
@@ -119,35 +117,33 @@ int NCut2 =0;            ///<2nd mowing management
   */
 int main(int argc, char* argv[])
 {
-    initLCG(time(NULL), 3487234); // 3487234 ist 'zufällig' gewählt
-//RSpec59WP3_131114.txt
-CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
-//CEnvir::NamePFTFile="Input\\RSpec28S.txt";
   bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //start-WL   100
   SRunPara::RunPara.Tmax=100;//40;//20Jahre Laufzeit
   SRunPara::RunPara.WLseason="file";
   int nruns=5;//3
-
   /// 0-abandoned; 1-grazing; 2-mowing
+  //int management=0;
   CEnvir::SimNr=0;
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
+    //SRunPara::RunPara.species=argv[2];  //init types
     SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
     SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
-//    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
-    SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
-    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
+    SRunPara::RunPara.DistAreaYear=atof(argv[3]); //trampling
+    SRunPara::RunPara.NCut=atoi(argv[4]); //number of cuttings
   }
+  do{
     //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
-//      cout<<"new Environment...\n";
+    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){ //15Runs per Sim
+      cout<<"new Environment...\n";
       Envir=new CWaterGridEnvir();
       Init();
+//      if (SRunPara::RunPara.species.length()<2)endsim=true;
 //-----------------
+//    //simNr
+//    Envir->SimNr=SRunPara::RunPara.WaterLevel+1000;
     //filenames
     string idstr= SRunPara::RunPara.getRunID();
     stringstream strd;
@@ -160,22 +156,18 @@ CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
     strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
- //   SRunPara::RunPara.print();
+    SRunPara::RunPara.print();
  //-----------------
       Run();
-
-      //Application output:
-      cout<<Envir->year
-    		  <<"\t"<<Envir->GridOutData.back()->PftCount
-    		  <<"\t"<<Envir->GridOutData.back()->shannon
-    		  <<"\t"<<Envir->GridOutData.back()->above_mass<<endl<<flush;
 
       delete Envir;
 
     Envir->SimNr++;
     }//end run
-
-    //delete static pointer vectors
+    SRunPara::RunPara.WaterLevel+=15;//5cm weniger für nächste Sim
+    if(SRunPara::RunPara.WaterLevel> 15) endsim=true;
+  }while(!endsim);//end sim
+   //delete static pointer vectors
   for (unsigned int i=0;i<SPftTraits::PftList.size();i++)
     delete SPftTraits::PftList[i];
   for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
@@ -190,14 +182,15 @@ CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
 */
 void Init(){
       Envir->InitRun();
+//      SRunPara::RunPara.meanBRes=200;
 }
 //------------------------------------------------
 /**\brief one run of simulation
 
 Core function is like CClonalGridEnvir::OneRun().
 The changes are
- #1 after init time the management might change
- #2 every year one unspecified migration occurs
+ #1 after 20 years the management changes
+ #2 every year one little Individual of each Type arrives/establishes
     to prevent species loss
 
 */

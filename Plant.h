@@ -103,6 +103,7 @@ public:
    int Age;        ///< age of (established) plant in years (ageing in winter)
 
 //   int LimitRes;   //!< limiting resource: 1->above, 2->below 0->equal (not used)
+   double mort_base; //!< pft-density - based base mortality (annually updated in CEnvir::GetOutput())
 
    //functions
    //! constructor for plant objects
@@ -149,9 +150,9 @@ public:
    virtual void Grow2(); //!< shoot-root resource allocation and plant growth in two layers
    virtual bool stressed();///< return true if plant is stressed
 /// lower threshold of aboveground resource uptake (light stress thresh.)
-   virtual double minresA(){return Traits->mThres*Ash_disc*Traits->Gmax*2;}
+   virtual double minresA(){return Traits->mThres*Ash_disc*Traits->Gmax;}
 /// lower threshold of belowground resource uptake (nutrient stress thresh.)
-   virtual double minresB(){return Traits->mThres*Art_disc*Traits->Gmax*2;}
+   virtual double minresB(){return Traits->mThres*Art_disc*Traits->Gmax;}
    void DecomposeDead();     //!< calculate mass shrinkage of dead plants
    void Kill();  //!< Mortality due to resource shortage or at random
 
