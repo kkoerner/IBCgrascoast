@@ -11,9 +11,11 @@
 
    map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=
      map<string,SWaterTraits*>();
-   vector<double> CWaterGridEnvir::weeklyWL=vector<double>();
-   vector<double> CWaterGridEnvir::weeklySAL=vector<double>();
-   vector<double> CWaterGridEnvir::weeklySAT=vector<double>();
+   string CWaterGridEnvir::NameWeatherFile="Input/hist_plot_1123_.env";
+   vector<SWeeklyWeather*> CWaterGridEnvir::WeatherCond=vector<SWeeklyWeather*>();
+//vector<double> CWaterGridEnvir::weeklyWL=vector<double>();
+//   vector<double> CWaterGridEnvir::weeklySAL=vector<double>();
+//   vector<double> CWaterGridEnvir::weeklySAT=vector<double>();
 // double CWaterGridEnvir::salinity=0;
 //---------------------------------------------------------------------------
 void CWaterGridEnvir::CellsInit(){
@@ -363,8 +365,9 @@ void CWaterGridEnvir::Winter(){
  *     \param file file name of source file
 */
 void CWaterGridEnvir::getEnvirCond(string file){
-  weeklyWL.clear();weeklySAL.clear();weeklySAT.clear();
-   ifstream EnvFile;
+//  weeklyWL.clear();weeklySAL.clear();weeklySAT.clear();
+
+	ifstream EnvFile;
    //open parameter file
      EnvFile.open(file.c_str());
 //   ifstream PftFile(SRunPara::RunPara.PftFile);
@@ -373,29 +376,69 @@ void CWaterGridEnvir::getEnvirCond(string file){
    getline(EnvFile,line1); //ignore header
    //*******************
     //loop for all weeks
-   for (int lweek=0; lweek<30; ++lweek){
-      int wl,sal,sat;
-      //read plant parameter from inputfile
-      EnvFile>>wl>>sat>>sal;
-      weeklyWL.push_back(wl);
-      weeklySAL.push_back(sal);
-      weeklySAT.push_back(sat);
-   }
-  EnvFile>>winterInundation;//get winter inundation weeks in last line
+//   for (int lweek=0; lweek<30; ++lweek){
+do{
+	   int wl,sal,sat;
+	   SWeeklyWeather* env= new SWeeklyWeather();
+      //read plant parameter from input file
+      EnvFile>>env->year>>env->week
+             >>env->airzone>>env->saturation
+             >>env->winter;
+      env->salinity=0;
+      WeatherCond.push_back(env);
+   }while(EnvFile.good());
+//  EnvFile>>winterInundation;//get winter inundation weeks in last line
 }
+/**
+ * return function of salinity.
+ * if date exceeds length of data...
+ * replicate last year?
+ * (it is assumed the file ends with full year)
+ * @return current salinity value
+ */
 double CWaterGridEnvir::getSAL(){
-  return weeklySAL.at(week-1);
+    unsigned int time=CEnvir::GetT();
+    if(time>=WeatherCond.size()){
+    	time=(WeatherCond.size()-1)-(WeeksPerYear-week);
+    }
+	return WeatherCond.at(time)->salinity;
+//	return weeklySAL.at(week-1);
 }//<get current salinity
+/**
+ * return function of saturation.
+ * if date exceeds length of data...
+ * replicate last year?
+ * (it is assumed the file ends with full year)
+ * @return current saturation value
+ */
 double CWaterGridEnvir::getSAT(){
-  return weeklySAT.at(week-1);
+    unsigned int time=CEnvir::GetT();
+    if(time>=WeatherCond.size()){
+    	time=(WeatherCond.size()-1)-(WeeksPerYear-week);
+    }
+	return WeatherCond.at(time)->saturation;
+//  return weeklySAT.at(week-1);
 }//<get current soil saturation
+
+/**
+ * return function of water level (aerated root zone).
+ * if date exceeds length of data...
+ * replicate last year?
+ * (it is assumed the file ends with full year)
+ * @return current water level value (air filled pore volume in cm)
+ */
 double CWaterGridEnvir::getWL(){
-  return weeklyWL.at(week-1);
+    unsigned int time=CEnvir::GetT()-1;
+    if(time>=WeatherCond.size()){
+    	time=(WeatherCond.size()-1)-(WeeksPerYear-week);
+    }
+	return WeatherCond.at(time)->airzone;
+//  return weeklyWL.at(week-1);
 }//<get current water level
 
 /**
   \warning this work only with 30 weeks a year
-*/
+* /
 void CWaterGridEnvir::genAutokorrWL(double hurst)
 {
   weeklyWL.clear();weeklyWL.assign(33,0);
@@ -416,31 +459,36 @@ void CWaterGridEnvir::genAutokorrWL(double hurst)
     D/=2;d/=2;
   }
 }
-/**
-  \warning this work only with 30 weeks a year
 */
+/**
+ * generate seasonal water level change
+  \warning resource leakage possible
+  this work only with 30 weeks a year
+* /
 void CWaterGridEnvir::genSeasonWL()
 {
-  weeklyWL.clear();weeklyWL.assign(30,0);
+  WeatherCond.clear();weeklyWL.assign(30,0);
   double mean=SRunPara::RunPara.WaterLevel;
   double sigma=SRunPara::RunPara.WLsigma; //5;//
   for (unsigned int i=0; i<30; i++)
     weeklyWL[i]=mean+sigma*cos(i/2.0/Pi);
 }
+*/
 /**
+ * generate constant water level change
+  \warning resource leakage possible
   \warning this work only with 30 weeks a year
 */
 void CWaterGridEnvir::genConstWL()
 {
 //   weeklyWL.clear();weeklyWL.assign(30,0);
-   weeklyWL.clear();weeklyWL.assign(30,0);
-   weeklySAL.clear();weeklySAL.assign(30,0);
-   weeklySAT.clear();weeklySAT.assign(30,0);
+   WeatherCond.clear();WeatherCond.assign(30,new SWeeklyWeather());
 
   for (unsigned int i=0; i<30; i++) {
-	  weeklyWL[i]=SRunPara::RunPara.WaterLevel;
-	  weeklySAL[i]=SRunPara::RunPara.salt;
-//	  weeklySAT[i]=SRunPara::RunPara.sat;
+	  WeatherCond[i]->airzone=SRunPara::RunPara.WaterLevel;
+	  WeatherCond[i]->salinity=SRunPara::RunPara.salt;
+	  WeatherCond[i]->saturation=SRunPara::RunPara.sat;
+	  WeatherCond[i]->winter=0;
   }
 }
 
@@ -455,15 +503,19 @@ void CWaterGridEnvir::SetCellResource(){
   //  ChangeMeanWaterLevel(5);
   if (week==1)//generate new year's WaterLevels
   {
+	  /* //currently disabled options: 'random' and 'season'
     if(SRunPara::RunPara.WLseason=="random")
     // generate autocorrelated Wl-series
     genAutokorrWL(0.1);
     else if(SRunPara::RunPara.WLseason=="season")
     // generate seasonal Wl-series
     genSeasonWL();
-    else if(SRunPara::RunPara.WLseason=="file")
+    else
+    */
+    	if(SRunPara::RunPara.WLseason=="file")
     // generate seasonal Wl-series
-    getEnvirCond((string)"Input\\env_con.txt");
+      getEnvirCond(NameWeatherFile);
+//    getEnvirCond((string)"Input\\env_con.txt");
     else
 //if(SRunPara::RunPara.WLseason=="const")
     // generate const Wl-series
@@ -474,7 +526,7 @@ void CWaterGridEnvir::SetCellResource(){
 
   //salinity
 //  salinity=SRunPara::SRunPara::RunPara.salt;
-  if (week==1)cout<<"\n";
+  if (week==1)cout<<year<<"\n\n"<<flush;
   cout<<"\n w"<<week<<" WL:"<<getWL()
                     <<" Sat:"<<getSAT()
                     <<" Sal:"<<getSAL();

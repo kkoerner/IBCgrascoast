@@ -11,8 +11,10 @@ class CWaterPlant;
 /**
  * weekly 'climate' condition on plot.
  * 'winter' is wetness of following winter season.
+ * \sa genAutokorrWL(), genSeasonWL(), genConstWL(),getEnvirCond()
+ *
  */
-struct SWeeklyWeather{int year,week;double airzone,saturation;int winter;};
+struct SWeeklyWeather{int year,week;double airzone,saturation,salinity;int winter;};
 ///  Envir-Class for Water-stresds scenarios
 /**
  This class is an Envir-class, i.e. weekly functions are scheduled here and
@@ -36,13 +38,9 @@ class CWaterGridEnvir: public CClonalGridEnvir{
  void DispSeeds_help(CPlant* plant,CCell* cell);    ///<clonal version
  virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant);
 // virtual CclonalPlant* newSpacer(int x,int y, CclonalPlant* plant);
- ///weekly water levels
- /**2^5 for generating autocorellation
- \sa genAutokorrWL()
- */
- static vector<double> weeklyWL;
- static vector<double> weeklySAL;///< weekly salinity levels
- static vector<double> weeklySAT;///< weekly soil saturation levels
+// static vector<double> weeklyWL;
+// static vector<double> weeklySAL;///< weekly salinity levels
+// static vector<double> weeklySAT;///< weekly soil saturation levels
  /// generate autocorrelated Wl-series
  void genAutokorrWL(double hurst);
  /// generate seasonal Wl-series
@@ -61,6 +59,7 @@ protected:
 
 public:
  static string NameWeatherFile;  ///< Filename of Simulation-File
+ static vector<SWeeklyWeather*> WeatherCond;
 
  /// plot's salinity level
  /**

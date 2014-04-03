@@ -180,7 +180,10 @@ CEnvir::NamePftFile="Input\\RSpec59WP3_131114.txt";
     delete SPftTraits::PftList[i];
   for (unsigned int j=0;j<SclonalTraits::clonalTraits.size();j++)
     delete SclonalTraits::clonalTraits[j];
-//   string dummi;
+  for (unsigned int k=0;k<CWaterGridEnvir::WeatherCond.size();k++)
+    delete CWaterGridEnvir::WeatherCond[k];
+
+  //   string dummi;
 //   cin>>dummi;
   return 0;
 }//end main

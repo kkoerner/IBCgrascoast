@@ -1,0 +1,10 @@
+20	31
+Input\RSpec59WP3_131114.txt
+Input\clonalTraits.explodat.txt
+1	1	0	128	100	1	0.5	1	0.007	0.5	0.5
+Res: 	100	200
+Grazing:	0	0.5	0.5
+BGHerb:	0	0	0	1	0
+Cutting:	0	10
+Trampling:	0	0	0	0
+Input/PftTraits2304.txt

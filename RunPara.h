@@ -103,7 +103,7 @@ public:
    double changeVal; ///<value of the parameter to change (add to) after 20 years
    int Migration;   ///<How many seeds per species arrive annually?
    double salt; ///<salt level on plot
-
+   double sat;///<saturation of water
 
    SRunPara();
    void print();    ///<print RunPara - parameters
