@@ -19,31 +19,33 @@ struct SPftOut
      double cover;
      int Nind;        //!< population size
      int Nseeds;       //!< number of seeds
-     SPftSingle();
+     long LDDseeds[5]; //!< number of outside the grid in distance classes
+
+     //can be activated as needed:
+     //  --be careful to update constructors and destructors as well
+     //   double meanmass;  //!< mean individual mass
+     //   double ssmass;   //!< sum of squares of individual masses (for calculation of std)
+     //   double sdmass;   //!< standard deviation (std) of individual masses
+     //   double alloc;    //!< mean allocation coefficient
+     //   double stress;   //!< mean stress counter
+     //   double Ashoot;   //!< shoot area [cm²]
+     //   double Aroot;    //!< root area  [cm²]
+     //   double repromass; //!< reproductive mass (which can be cobverted to seeds
+     //   int Ash_disc;     //!< discrete shoot area (in #cells covered instead of cm²)
+     //   int Art_disc;     //!< discrete root area (in #cells covered instead of cm²)
+     //   int NPlants;              ///< nb non-clonal plants
+     //   int NclonalPlants;       ///< nb clonal plants
+     //   int NGenets;             ///< Number of living genets
+     //   double MPlants;          //!< total biomass non-clonal plants
+     //   double MclonalPlants;          //!< total biomass clonal plants
+     //   double MeanGenetsize;          ///< mean size of genets
+     //   double MeanGeneration;         ///< mean number of generations
+    SPftSingle();
      ~SPftSingle(){};
    };
 
    int week;                  //!< week of the year (1-30)
-//   vector<SPftSingle*> PFT;    //!< list of active PFTs
    map<string,SPftSingle*> PFT;                 //!< list of active PFTs
-//   vector<string> PFT;
-//   vector<double> totmass;
-//   vector<double> shootmass;
-//   vector<double> rootmass;
-//   vector<int> Nind;        //!< population size
-//   vector<int> Nseeds;       //!< number of seeds
-//can be activated as needed:
-//  --be careful to update constructors and destructors as well
-//   vector<double> meanmass;  //!< mean individual mass
-//   vector<double> ssmass;   //!< sum of squares of individual masses (for calculation of std)
-//   vector<double> sdmass;   //!< standard deviation (std) of individual masses
-//   vector<double> alloc;    //!< mean allocation coefficient
-//   vector<double> stress;   //!< mean stress counter
-//   vector<double> Ashoot;   //!< shoot area [cm²]
-//   vector<double> Aroot;    //!< root area  [cm²]
-//   vector<double> repromass; //!< reproductive mass (which can be cobverted to seeds
-//   vector<int> Ash_disc;     //!< discrete shoot area (in #cells covered instead of cm²)
-//   vector<int> Art_disc;     //!< discrete root area (in #cells covered instead of cm²)
    SPftOut();
    ~SPftOut();
 };
@@ -68,15 +70,7 @@ struct SGridOut
    double bareSoil;      ///< portion bare soil
    double above_litter;    ///< aboveground litter DW
    double below_litter;    ///< belowground litter DW
-   SGridOut();
-};
-
-//---------------------------------------------------------------------------
-
-//! Structure with output data for clonal plants
-struct SClonOut
-{
-   int week;                 //!< week of the year (1-30)
+   //clonal..
    int NPlants;              ///< nb non-clonal plants
    int NclonalPlants;       ///< nb clonal plants
    int NGenets;             ///< Number of living genets
@@ -84,6 +78,7 @@ struct SClonOut
    double MclonalPlants;          //!< total biomass clonal plants
    double MeanGenetsize;          ///< mean size of genets
    double MeanGeneration;         ///< mean number of generations
-   SClonOut();
+   SGridOut();
 };
+
 #endif

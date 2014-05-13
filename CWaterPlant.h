@@ -2,16 +2,16 @@
 /**\file classes and functions related to water ressources*/
 #ifndef CWaterPlantH
 #define CWaterPlantH
-//class CclonalPlant; class CclonalSeed;
-#include "clonalPlant.h"
-#include "CclonalSeed.h"
+//class CclonalPlant; class CSeed;
+#include "Plant.h"
+#include "CSeed.h"
 class SWaterTraits; class CWaterSeed;
 /** \brief water dependent plants
 
  \author KK
  \date 2011/10/6 COMTESS version
 */
-class CWaterPlant:public CclonalPlant
+class CWaterPlant:public CPlant
 {
 //protected:
   virtual void Grow2();
@@ -20,7 +20,7 @@ class CWaterPlant:public CclonalPlant
    virtual double RootGrow(double rres);
 
 public:
-   SWaterTraits* waterTraits;                ///<traits of water preferences
+//   SWaterTraits* waterTraits;                ///<traits of water preferences
    //Constructors
    ///make a plant from a seed object
    CWaterPlant(CWaterSeed* seed);
@@ -30,12 +30,12 @@ public:
 //   CWaterPlant(double mass, SPftTraits* traits,
 //      SclonalTraits* clonalTraits,
 //      SWaterTraits* waterTraits, CCell* cell);
-   CWaterPlant(SPftTraits* PlantTraits, SclonalTraits* clonalTraits,SWaterTraits* waterTraits,CCell* cell,
+   CWaterPlant(SWaterTraits* traits,CCell* cell,
      double mshoot=0,double mroot=0,double mrepro=0,
      int stress=0,bool dead=false,int generation=1,int genetnb=0,
      double spacerl=0,double spacerl2grow=0);
      ///upgrade clonal plant
-   CWaterPlant(CclonalPlant* clplant, SWaterTraits* waterTraits);
+   CWaterPlant(CPlant* clplant);//, SWaterTraits* waterTraits
    virtual ~CWaterPlant(){};  //!<destructor
    void print_type();
    virtual string asString(); ///<report plant's status
@@ -56,7 +56,7 @@ public:
   void winterDisturbance(int weeks_of_dist);
   
    virtual string type();  ///<say what you are
-   virtual string pft();   ///<say what a pft you are
+//   virtual string pft();   ///<say what a pft you are
 
 };
 //---------------------------------------------------------------------------
@@ -65,22 +65,22 @@ public:
    \author KK
    \since 2011/10/06 COMTESS version
 */
-class CWaterSeed: public CclonalSeed
+class CWaterSeed: public CSeed
 {
 public:
-SWaterTraits* waterTraits; ///<clonal traits
+//SWaterTraits* waterTraits; ///<clonal traits
 //Konstruktoren
 
 ///for initialzation
-CWaterSeed(double estab, SPftTraits* traits,
-      SclonalTraits* clonalTraits,
+CWaterSeed(double estab,// SPftTraits* traits,
+    //  SclonalTraits* clonalTraits,
       SWaterTraits* waterTraits, CCell* cell);
 ///seed set
 CWaterSeed(CWaterPlant* plant,CCell* cell);
 virtual ~CWaterSeed(){};//destructor
 
 virtual string type(); ///<say what you are
-virtual string pft(); ///<say what you are
+//virtual string pft(); ///<say what you are
 
 };
 

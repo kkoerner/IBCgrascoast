@@ -6,18 +6,17 @@
 #include <sstream>
 //---------------------------------------------------------------------------
 #include "Cell.h"
-#include "GridBase.h"
-#include "environment.h"
-//#pragma hdrstop
+//#include "CGrid.h"
+#include "CEnvir.h"
 
 //-----------------------------------------------------------------------------
-CCell::CCell(const unsigned int xx,const unsigned int yy){
-  CCell(xx,yy,0,0);
-  const unsigned int index=xx*SRunPara::RunPara.CellNum+yy;
-  AResConc=CEnvir::AResMuster.at(index);
-  BResConc=CEnvir::BResMuster[index];
-}
-//-----------------------------------------------------------------------------
+/**
+ * constructor
+ * @param xx x-coordinate on grid
+ * @param yy y-coordinate on grid
+ * @param ares aboveground resources
+ * @param bres belowground resources
+ */
 CCell::CCell(const unsigned int xx,const unsigned int yy, double ares, double bres)
 :x(xx),y(yy),AResConc(ares),BResConc(bres),NPftA(0),NPftB(0),
 occupied(false),PlantInCell(NULL)
@@ -27,12 +26,19 @@ occupied(false),PlantInCell(NULL)
    SeedBankList.clear();
    SeedlingList.clear();
 
- //  using SRunPara::RunPara;
    PftNIndA.clear();
    PftNIndB.clear();
    PftNSeedling.clear();
+
+   
+   const unsigned int index=xx*SRunPara::RunPara.CellNum+yy;
+   AResConc=CEnvir::AResMuster.at(index);
+   BResConc=CEnvir::BResMuster[index];
 }
 //---------------------------------------------------------------------------
+/**
+ * reset cell properties
+ */
 void CCell::clear(){
    AbovePlantList.clear();
    BelowPlantList.clear();
@@ -47,6 +53,9 @@ void CCell::clear(){
    occupied=(false);PlantInCell=(NULL);
 }
 //---------------------------------------------------------------------------
+/**
+ * destructor
+ */
 CCell::~CCell()
 {
    for (unsigned int i=0; i<SeedBankList.size();i++) delete SeedBankList[i];
@@ -57,15 +66,23 @@ CCell::~CCell()
    PftNSeedling.clear();
 }
 //---------------------------------------------------------------------------
-///not used
-///
+/**
+ * Set cell resources
+ *
+ * @param Ares aboveground
+ * @param Bres belowground
+ */
 void CCell::SetResource(double Ares, double Bres)
 {
    double SideLength=SRunPara::RunPara.CellScale();
-   AResConc=Ares*(SideLength*SideLength);       //resource units per cell
+   AResConc=Ares*(SideLength*SideLength);       //resource units per cell (usually 1)
    BResConc=Bres*(SideLength*SideLength);
 }//end setResource
 //---------------------------------------------------------------------------
+/**
+ * Germination on cell.
+ * @return biomass of germinated seeds
+ */
 double CCell::Germinate()
 {
    //double rnum;
@@ -80,7 +97,7 @@ double CCell::Germinate()
       {
          //make a copy in seedling list
          SeedlingList.push_back(seed);//new CSeed(*seed));
-         int dummi=seed->Traits->TypeID-1;
+         //int dummi=seed->Traits->TypeID-1;
          PftNSeedling[seed->pft()]++;
          seed->remove=true;
          sumseedmass+=seed->mass;
@@ -187,11 +204,11 @@ int CCell::getCover(const int layer)const{
     //Felix...
     //return AbovePlantList.back()->Traits->TypeID;
     //Ines...
-    string typ=AbovePlantList.back()->type();
-    if(typ=="CPlant")return 102;
+    bool clonal=AbovePlantList.back()->Traits->clonal; //>type();
+    if(clonal)return 102;
 //    else return 101;
     //end Ines / revision variant:
-    return (((CclonalPlant*)AbovePlantList.back())->getGenet()->number%20)*2+1;
+    return (AbovePlantList.back()->getGenet()->number%20)*2+1;
   }else{ //if layer==2
     if (BelowPlantList.empty())return 0;
     if (BelowPlantList.back()->dead)return 98;
@@ -310,13 +327,11 @@ void CCell::print_map(map<string,int> &mymap){
    }
 }
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-#include "CWaterPlant.h"
 
 /**
 report cell's content without plants
 
-\autor KK
+\author KK
 \date 1209xx
 */
 std::string CCell::asString(){
@@ -340,6 +355,8 @@ dummi<<"\nCE";
 return dummi.str();
 }//return content for file saving
 
+//---------------------------------------------------------------------------
+#include "CWaterPlant.h"
 //! Konstruktor
 CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy):
   CCell(xx,yy),WaterLevel(0){
@@ -378,18 +395,21 @@ void CWaterCell::BelowComp()
 
    //1. sum of resource requirement
    for (plant_iter iter=BelowPlantList.begin(); iter!=BelowPlantList.end(); ++iter){
-      CPlant* plant=*iter;
+      CWaterPlant* plant= (CWaterPlant*)*iter;
+ //cout<<plant->type()<<endl;
+      double dTre=plant->getDepth() * plant->rootEfficiency();
       comp_tot+=plant->comp_coef(2,symm)
-               *plant->getDepth() * ((CWaterPlant*) plant)->rootEfficiency()
+               *dTre
                *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
-       max_depth_eff=max( max_depth_eff,plant->getDepth()
-                    * ((CWaterPlant*) plant)->rootEfficiency());
+       max_depth_eff=max( max_depth_eff,dTre);
    }
    //2. distribute resources
    for (plant_iter iter=BelowPlantList.begin(); iter!=BelowPlantList.end(); ++iter){
-      CPlant* plant=*iter;
+	      CWaterPlant* plant= (CWaterPlant*)*iter;
+	 //cout<<plant->type()<<endl;
+	      double dTre=plant->getDepth() * plant->rootEfficiency();
       comp_c=plant->comp_coef(2,symm)
-              *plant->getDepth() * ((CWaterPlant*) plant)->rootEfficiency()
+              *dTre
               *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
       plant->Buptake+=BResConc/50.0* max_depth_eff
                         * comp_c /comp_tot;
@@ -405,8 +425,14 @@ report cell's content without plants
 */
 std::string CWaterCell::asString(){
 return CCell::asString();
-}//return content for file saving
+} //return content for file saving
 
+/**
+ * initiate cells on grid
+ */
+CWaterCell::CWaterCell():
+		  CCell(0,0),WaterLevel(0) {
+}
 //-eof---------------------------------------------------------------------
 
 

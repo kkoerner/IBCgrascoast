@@ -1,3 +1,10 @@
+28.4.2014
+Update 2.0
+-reduce number of hierarchie levels
+-restructure file input 
+ (one file for simulation definition and one file for PFT definition)
+
+
 17:51 22.05.2013
 Wechsel zu Eclipse
 

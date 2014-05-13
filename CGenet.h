@@ -5,17 +5,20 @@
 #ifndef CGenetH
 #define CGenetH
 
-#include "clonalPlant.h"
-//---------------------------------------------------------------------------
-/**\brief a genet consists of several ramets
+#include "Plant.h"
+#include <vector>
+using namespace std;
 
-   \since clonal version
-*/
+class CPlant;
+//---------------------------------------------------------------------------
+/**
+ * Class organizing ramets of a genet.
+ */
 class CGenet
 {
 public:
    static int staticID;
-   vector<CclonalPlant*> AllRametList;  ///<list of ramets
+   vector<CPlant*> AllRametList;  ///<list of ramets
    int number;                         ///<ID of genet
 
    CGenet():number(++staticID){};
@@ -24,6 +27,11 @@ public:
    void ResshareA();     ///< share above-ground resources
    void ResshareB();     ///< share below-ground resources
 };
+class CPlant;
+/**\brief a genet consists of several ramets
+
+   \since clonal version
+*/
 //---------------------------------------------------------------------------
 #endif
 

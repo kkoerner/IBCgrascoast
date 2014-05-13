@@ -4,7 +4,7 @@
 //---------------------------------------------------------------------------
 #include "plant.h"
 #include "CSeed.h"
-#include "CclonalSeed.h"
+//#include "CclonalSeed.h"
 #include <algorithm>
 #include <map>
 //#include <string>
@@ -62,15 +62,15 @@ public:
    int NPftB;
 
 //   int *PftNclonalSeedling; ///<array of clonal seedling number of each PFT -not used
-    CCell(const unsigned int xx,const unsigned int yy);
-    CCell(const unsigned int xx,const unsigned int yy, double ares, double bres); //!< Konstruktor
-   virtual ~CCell(); //!< Destruktor
+//    CCell(const unsigned int xx,const unsigned int yy);
+    CCell(const unsigned int xx,const unsigned int yy, double ares=0, double bres=0); //!< Konstruktor
+   virtual ~CCell(); //!< Destructor
 
-   void clear();
-   void SetResource(double Ares, double Bres);
-   virtual double Germinate();
-   void RemoveSeedlings();
-   void RemoveSeeds();
+   void clear();///<reset
+   void SetResource(double Ares, double Bres);///<set resources
+   virtual double Germinate();///<on-cell germination
+   void RemoveSeedlings();///<remove dead seedlings
+   void RemoveSeeds();///<remove dead seeds
    void GetNPft();     //!< calculates number of individuals of each PFT
    //! competition function for size symmetric above-ground resource competition
    /*! function is overwritten if inherited class with different competitive
@@ -82,7 +82,6 @@ public:
    virtual void BelowComp();
 
    ///portion cell resources the plant is gaining
-//   double prop_res(const int type,const int layer,const int version)const;
    double prop_res(const string type,const int layer,const int version)const;
 
    void SortTypeID();  //!< sort individuals after PFT ID

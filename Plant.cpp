@@ -4,156 +4,71 @@
 #include <sstream>
 
 #include "Plant.h"
-#include "environment.h"
+#include "CEnvir.h"
 //---------------------------------------------------------------------------
 
-//#pragma package(smart_init)
-
-//---------------------------------------------------------------------------
-SPftTraits::SPftTraits():TypeID(999),name("default"),N0(1),MaxAge(100),
-  AllocSeed(0.05),LMR(0),m0(0),MaxMass(0),SeedMass(0),Dist(0),
-  pEstab(0.5),Gmax(0),memory(0),SLA(0),palat(0),RAR(1),growth(0.25),//.25
-  mThres(0.2),Dorm(1),FlowerWeek(16),DispWeek(20)
-{}//end constructor
-//---------------------------------------------------------------------------
-///not used
-///
-void SPftTraits::SetDefault(){
-        TypeID=1;name="PFT1";N0=20;
-        MaxAge=100;
-        AllocSeed=0.05;
-        LMR=1;
-        m0=1;MaxMass=5000;SeedMass=1;
-        Dist=0.1;
-        pEstab=0.5;
-        Gmax=60;
-        memory=2;
-        SLA=1;
-        palat=1;
-        RAR=1;
-        growth=0.25;
-        mThres=0.2;
-        Dorm=1;
-        FlowerWeek=16;DispWeek=20;
-}//end setDefault
-//------------------------------------------------------------------------------
-vector<SPftTraits*> SPftTraits::PftList;//(CRunPara::RunPara.NPft,new SPftTraits);
-//int SPftTraits::NPft=81;
-void SPftTraits::ReadPftStrategy(char* file)
-{
-//open parameter file
-   string sfile=file;   ifstream PftFile;
-   //open parameter file
-   //if (file=="")
-	   sfile=(SRunPara::RunPara.PftFile);
-   PftFile.open(sfile.c_str());
-//   ifstream PftFile(SRunPara::RunPara.PftFile);
-   if (!PftFile.good()) {std::cerr<<("Fehler beim Öffnen PftFile");exit(3); }
-   string line1;
-   getline(PftFile,line1);
-   //*******************
-
-    //loop for all plant types
-   for (int pft=0; pft<SRunPara::RunPara.NPft; ++pft){
-      int dummi;SPftTraits* temp =new SPftTraits;
-      //read plant parameter from inputfile
-      PftFile>>temp->TypeID
-             >>temp->name
-             >>dummi//temp->yearstart
-             >>temp->N0
-             >>temp->MaxAge
-             >>temp->AllocSeed
-             >>temp->LMR
-             >>temp->m0
-             >>temp->MaxMass
-             >>temp->SeedMass
-             >>temp->Dist
-             >>temp->pEstab
-             >>temp->Gmax
-             >>temp->memory
-             >>temp->SLA
-             >>temp->palat
-             >>temp->RAR
-             >>temp->growth
-             >>temp->mThres
-             >>temp->Dorm
-             >>temp->FlowerWeek
-             >>temp->DispWeek
-             ;
-     PftList.push_back(temp);
-   }
-   PftFile.close();
-}//end ReadPftStrategy
-//---------------------------------------------------------------------------
-void SPftTraits::print(){
-  std::cout<<"\nBase type:"<<this->name;
-  std::cout<<"\n  AllocSeed:"<<this->AllocSeed;
-  std::cout<<"\n  Weeks: Flower"<<this->FlowerWeek;
-  std::cout<<"\tDisp "<<this->DispWeek;
-  std::cout<<"\n  mSeed:"<<this->SeedMass;
-  std::cout<<"\n  Dist:"<<this->Dist;
-  std::cout<<"\n  Dorm:"<<this->Dorm;
-  std::cout<<"\n  Gmax:"<<this->Gmax;
-  std::cout<<"\tgrowth:"<<this->growth;
-  std::cout<<"\n  MaxAge:"<<this->MaxAge;
-  std::cout<<"\n  LMR:"<<this->LMR;
-  std::cout<<"\n  MaxMass:"<<this->MaxMass;
-  std::cout<<"\tm0:"<<this->m0;
-  std::cout<<"\n  SLA:"<<this->SLA;
-  std::cout<<"\tpalat:"<<this->palat;
-  std::cout<<"\n  pEstab:"<<this->pEstab;
-  std::cout<<"\n  RAR:"<<this->RAR<<endl;
-
-}//print base traits
-//---------------------------------------------------------------------------
+/**
+ * constructor - without specific properties
+ */
 CPlant::CPlant(double x, double y, SPftTraits* Traits):
-  xcoord(x),ycoord(y),Traits(Traits),mshoot(Traits->m0),mroot(Traits->m0),
+  xcoord(x),ycoord(y),Traits(Traits),Age(0),mshoot(Traits->m0),mroot(Traits->m0),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
   Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
-  Age(0),mort_base(0.007)
+  mort_base(0.007),
+    mReproRamets(0),Spacerlength(0),Spacerdirection(0),
+  Generation(1),SpacerlengthToGrow(0),genet(NULL)
+  
 {
-//   mRepro=0;
-
-// //   Allometrics();
-//   Ash_disc=0;
-//   Art_disc=0;
+	   growingSpacerList.clear();
 }
 //-----------------------------------------------------------------------------
+/**
+ * constructor - given constitution
+ */
 CPlant::CPlant(SPftTraits* Traits, CCell* cell,
      double mshoot, double mroot, double mrepro,
-     int stress, bool dead):
-  xcoord(0),ycoord(0),Traits(Traits),mshoot(mshoot),mroot(mroot),
+     int stress, bool dead,
+     int generation,int genetnb,
+          double spacerl,double spacerl2grow):
+  xcoord(0),ycoord(0),Traits(Traits),Age(0),mshoot(mshoot),mroot(mroot),
   Aroots_all(0),Aroots_type(0),mRepro(mrepro),Ash_disc(0),Art_disc(0),
   Auptake(0),Buptake(0),dead(dead),remove(false),stress(stress),cell(NULL),
-  Age(0),mort_base(0.007)
+  mort_base(0.007),
+  genet(NULL),mReproRamets(0),
+  Spacerlength(0),Spacerdirection(0),Generation(generation),
+  SpacerlengthToGrow(0)//keine vordefinierten Eigenschaften
 {
+	  setCell(cell);
+	  if (cell){
+	    xcoord=(cell->x*SRunPara::RunPara.CellScale());
+	    ycoord=(cell->y*SRunPara::RunPara.CellScale());
+	  }
+	  growingSpacerList.clear();
+   //define spacer (with random direction)
+   if (spacerl>0){
+     CPlant* spacer=new CPlant(0,0,this);
+     spacer->Spacerlength=spacerl;
+     spacer->SpacerlengthToGrow=spacerl2grow;
+     spacer->Spacerdirection=2*Pi*CEnvir::rand01();
+     this->growingSpacerList.push_back(spacer);
+   }
   if (mshoot==0)this->mshoot=Traits->m0;
-  if (mroot==0)this->mroot=Traits->m0;
-  setCell(cell);
-  if (cell){
-    xcoord=(cell->x*SRunPara::RunPara.CellScale());
-    ycoord=(cell->y*SRunPara::RunPara.CellScale());
-  }
 }
 //-----------------------------------------------------------------------------
-/*
-CPlant::CPlant(SPftTraits* traits,CCell* cell,
-     double mshoot, double mroot, double mrepro, int stress, bool dead)
-:CPlant(traits,cell){
-  this->mshoot=mshoot;
-  this->mroot=mroot;
-  this->mRepro=mrepro;
-  this->stress=stress;
-  this->dead=dead;
-}
-*/
-//-----------------------------------------------------------------------------
+/**
+ * constructor - germination
+ *
+ * If a seed germinates, the new plant inherits its parameters.
+ * Genet has to be defined externally.
+ */
 CPlant::CPlant(CSeed* seed):
-  xcoord(seed->xcoord),ycoord(seed->ycoord),Traits(seed->Traits),
-  mshoot(seed->Traits->m0),mroot(seed->Traits->m0),cell(NULL),
+  xcoord(seed->xcoord),ycoord(seed->ycoord),Age(0),Traits(seed->Traits),
+  mshoot(seed->Traits->m0),mroot(seed->Traits->m0),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
   Auptake(0),Buptake(0),dead(false),remove(false),stress(0),
-  Age(0),mort_base(0.007)
+  mort_base(0.007), 
+  mReproRamets(0),Spacerlength(0),Spacerdirection(0),
+  Generation(1),SpacerlengthToGrow(0),genet(NULL)
 {
    //establish this plant on cell
    setCell(seed->getCell());
@@ -162,27 +77,84 @@ CPlant::CPlant(CSeed* seed):
      ycoord=(cell->y*SRunPara::RunPara.CellScale());
    }
    
-//   mRepro=0;
-
-// //   Allometrics();
-//   Ash_disc=0;
-//   Art_disc=0;
+   growingSpacerList.clear();
 }
 //-----------------------------------------------------------------------------
+/**
+  Clonal Growth - The new Plant inherits its parameters from 'plant'.
+  Genet is the same as for plant, Generation is by one larger than
+  that of plant.
+
+  \note For clonal growth:
+  cell has to be set and plant has to be added to genet list
+  when ramet establishes.
+
+  \since revision
+*/
+CPlant::CPlant(double x, double y, CPlant* plant):
+  xcoord(x),ycoord(y),Traits(plant->Traits),Age(0),
+  mshoot(plant->Traits->m0),mroot(plant->Traits->m0),
+  Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
+  mReproRamets(0),Spacerlength(0),Spacerdirection(0),mort_base(0.007),
+  Generation(plant->Generation+1),SpacerlengthToGrow(0),genet(plant->genet)
+{
+   growingSpacerList.clear();
+//  this->Generation=plant->Generation+1;
+}//<clonal growth constructor
+//---------------------------------------------------------------------------
+/**
+ * destructor
+ * TODO use iterators instead
+ */
 CPlant::~CPlant(){
-//  cout<<'~'<<type();
+    for (unsigned int i=0;i<growingSpacerList.size();++i)
+      delete growingSpacerList[i];
+    growingSpacerList.clear();
 }
+//---------------------------------------------------------------------------
+///set genet and add ramet to its list
+void CPlant::setGenet(CGenet* genet){
+  if (this->genet==NULL){
+    this->genet=genet;
+    this->genet->AllRametList.push_back(this);
+  }
+}//end setGenet
+//---------------------------------------------------------------------------
+
 //--SAVE-----------------------------------------------------------------------
-string CPlant::asString(){
-std::stringstream dummi;
+/**
+  plant report (incl. clonal information)
+
+  \note direction not reportet; mReproRamets not reportet - weekly transfered
+   directly to Spacerlength
+  \author KK
+  \date 120905
+*/
+string CPlant::asString() {
+	std::stringstream dummi;
 //coordinates +type
-dummi<<"\n"<<xcoord<<"\t"<<ycoord<<"\t"<<this->pft();
+	dummi << "\n" << xcoord << "\t" << ycoord << "\t" << this->pft();
 //biomasses dead? - state variables
-dummi<<'\t'<<mshoot<<'\t'<<mroot<<'\t'<<mRepro<<'\t'<<stress<<'\t'<<dead;
-return dummi.str();
+	dummi << '\t' << mshoot << '\t' << mroot << '\t' << mRepro << '\t' << stress
+			<< '\t' << dead;
+// generation number and genet-ID
+	if (this->Traits->clonal) {
+		dummi << "\t" << Generation << '\t' << genet->number;
+		// Spacerinfo Length and Length-to-grow  (only for first spacer)
+		if (growingSpacerList.size() > 0)
+			dummi << '\t' << this->growingSpacerList[0]->Spacerlength << '\t'
+					<< this->growingSpacerList[0]->SpacerlengthToGrow;
+	}
+	return dummi.str();
 } //<report plant's status
 //-----------------------------------------------------------------------------
 
+/**
+ * join cell to plant object
+ *
+ * \param
+ */
 void CPlant::setCell(CCell* cell){
    if (this->cell==NULL&&cell!=NULL){
      this->cell=cell;
@@ -194,12 +166,17 @@ void CPlant::setCell(CCell* cell){
 string CPlant::type(){
         return "CPlant";
 }
+/**
+ * Say, what PFT you are
+ * @return PFT name
+ */
 string CPlant::pft(){
         return this->Traits->name;
 }   //say what a pft you are
 
+
 //---------------------------------------------------------------------------
-///
+/*//
 /// \return uptake portion available for vegetative growth
 /// \since 13/03/08 hapaxanth types fruit above biomass threshold 80%
 ///
@@ -219,10 +196,94 @@ double CPlant::ReproGrow(double uptake){
        //reproductive growth
       dm_seeds=max(0.0,Traits->growth*SeedRes);
       mRepro+=dm_seeds;
+    */
+/**
+ * Growth of reproductive organs (seeds and spacer).
+ *
+ * Function adapted to annual plants with AllocSeed of 1.
+ * @param uptake Resource uptake of plant object.
+ * @return resources available for individual needs.
+ * \author FM, IS adapted by HP
+ */
+double CPlant::ReproGrow(double uptake) {
+	double SpacerRes, SeedRes, VegRes, dm_seeds, dummy1;
+	//fixed Proportion of resource to seed production
+	if (mRepro <= Traits->AllocSeed * mshoot)  //calculate mRepro for every week
+	{
+		SeedRes = uptake * Traits->AllocSeed;
+		SpacerRes = uptake * Traits->AllocSpacer;
+
+		int pweek = CEnvir::week;
+
+		//during the seed-production-weeks
+		if ((pweek >= Traits->FlowerWeek) && (pweek < Traits->DispWeek)) {
+			//seed production
+			dm_seeds = max(0.0, Traits->growth * SeedRes);
+			mRepro += dm_seeds;
+
+			//clonal growth
+			dummy1 = max(0.0, min(SpacerRes, uptake - SeedRes)); // for large AllocSeed, ressources may be < SpacerRes, then only take remaining ressources
+			mReproRamets += max(0.0, Traits->growth * dummy1);
+			VegRes = uptake - SeedRes - dummy1;
+
+	    } else {
+			VegRes = uptake - SpacerRes;
+			mReproRamets += max(0.0, Traits->growth * SpacerRes);
+	    }
+
+	} else
+		VegRes = uptake;
+	return VegRes;
+} //end reprogrow
+//-----------------------------------------------------------------------------
+/**
+ * Growth of the spacer.
+ */
+void CPlant::SpacerGrow()
+{
+   double mGrowSpacer=0;
+   int SpacerListSize=this->growingSpacerList.size();
+
+   if (SpacerListSize==0)return;
+   if ((mReproRamets>0))
+   {
+      mGrowSpacer=(mReproRamets/SpacerListSize);//resources for one spacer
+
+      for (int g=0; g<(SpacerListSize); g++)
+      {  //loop for all growing Spacer of one plant
+         CPlant* Spacer = this->growingSpacerList[g];
+
+         double lengthtogrow=Spacer->SpacerlengthToGrow;
+         lengthtogrow-=(mGrowSpacer/Traits->mSpacer); //spacer growth
+         Spacer->SpacerlengthToGrow=max(0.0,lengthtogrow);
+
+         //Estab for all growing Spacers in the last week of the year
+         if ((CEnvir::week==CEnvir::WeeksPerYear)
+           && (Spacer->SpacerlengthToGrow>0))
+         {
+             double direction=Spacer->Spacerdirection;
+             double complDist=Spacer->Spacerlength;//should be positive
+             double dist=(complDist-Spacer->SpacerlengthToGrow);
+             double CmToCell=1.0/SRunPara::RunPara.CellScale();
+             int x2=CEnvir::Round(this->cell->x+cos(direction)*dist*CmToCell);
+             int y2=CEnvir::Round(this->cell->y+sin(direction)*dist*CmToCell);
+
+             /// \todo change boundary conditions
+             //Boundary conditions (types MUST match exactly)
+             Boundary(x2,y2);
+//             CGrid::Boundary(x2,y2);
+
+             //beachte dass CellNum nicht immer == CellSize
+             Spacer->xcoord=x2/CmToCell;
+             Spacer->ycoord=y2/CmToCell;
+             Spacer->SpacerlengthToGrow=0;
+         }  //end if pweek==WeeksPerYear
+      }   //end List of Spacers
+
    }
-   else VegRes=uptake;
-   return VegRes;
-}//end reprogrow
+   mReproRamets=0;
+} //end SpacerGrow
+
 //-----------------------------------------------------------------------------
 /**
   two-layer growth
@@ -316,8 +377,10 @@ bool CPlant::stressed(){
    return (Auptake/2.0<minresA())
        || (Buptake/2.0<minresB());
 }
-
 //-----------------------------------------------------------------------------
+/**
+ * Kill plant depending on stress level and base mortality. Stochastic process.
+ */
 void CPlant::Kill()
 {
 //   double pmort;//,rnumber;
@@ -330,6 +393,9 @@ void CPlant::Kill()
    if (CEnvir::rand01()<pmort) dead=true;
 }
 //-----------------------------------------------------------------------------
+/**
+ * Litter decomposition with deletion at 10mg.
+ */
 void CPlant::DecomposeDead()
 {
    const double minmass=10; // mass at which dead plants are removed
@@ -366,6 +432,22 @@ int CPlant::GetNSeeds()
       }
    }
    return NSeeds;
+}
+//------------------------------------------------
+/**
+returns the number of new spacer to set: currently
+ - 1 if there are clonal-growth-resources and spacer-lisdt is empty, and
+ - 0 otherwise
+\return the number of new spacer to set
+Unlike CPlant::GetNSeeds() no resources are reset due to ongoing growth
+*/
+int CPlant::GetNRamets()
+{
+   if ((mReproRamets>0)
+         &&(!dead)
+         &&(growingSpacerList.size()==0))
+         return 1;
+   return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -405,7 +487,7 @@ double CPlant::RemoveRootMass(const double prop_remove){
 /**
   Calculate Winter dieback of plant and increase plant's age by one.
 
-  Dieback factor is 0.5 (aboveground biomass only).
+  Dieback factor is SRunPara::RunPara.DiebackWinter (0.5, aboveground biomass only).
   Reproductive mass is set to zero.
 */
 void CPlant::WinterLoss()
@@ -416,22 +498,7 @@ void CPlant::WinterLoss()
    //ageing
    Age++;
 }//end WinterLoss
-//-----------------------------------------------------------------------------
-//double CPlant::GetMass()
-//{
-//   return mshoot+mroot+mRepro;
-//}
-//-----------------------------------------------------------------------------
-/*
-void CPlant::Decompose()
-{
-   double rate=0.5;
 
-    mRepro=0;
-    mshoot=rate*mshoot;
-    mroot=rate*mroot;
-}
-*/
 //-----------------------------------------------------------------------------
 ///not used
 ///
@@ -460,25 +527,21 @@ Calculates the circular root area, i.e. Root-ZOI.
 
 */
 double CPlant::Area_root(){
-  return Traits->RAR*pow(mroot,2.0/3.0);
+//  if(mroot==0)cerr<<"Area_root: mroot is zero";
+	return Traits->RAR*pow(mroot,2.0/3.0);
 }
-//-----------------------------------------------------------------------------
-/*
-void CPlant::Allometrics()
-{
-   double p=2.0/3.0;
-
-   double Ashoot=Traits->SLA*pow(Traits->LMR*mshoot,p);
-   double Aroot=Traits->RAR*pow(mroot,p);
-
-   rsh=sqrt(Ashoot/Pi);
-   rrt=sqrt(Aroot/Pi);
-}
-*/
 //-----------------------------------------------------------------------------
 /**
-  \since revision
-*/
+ * Competitive strength of plant.
+ * @param layer above- (1) or belowground (2) ZOI
+ * @param symmetry Symmetry of competition
+ * (symmetric, partial asymmetric, complete asymmetric )
+ * \sa SRunPara::RunPara.AboveCompMode
+ * \sa SRunPara::RunPara.BelowCompMode
+ *
+ * @return competitive strength
+ * \since revision
+ */
 double CPlant::comp_coef(const int layer, const int symmetry)const{
    switch (symmetry){
      case 1: if (layer==1) return Traits->Gmax;//CompPowerA();

@@ -2,29 +2,23 @@
     \brief functions of class CGenet
 */
 //---------------------------------------------------------------------------
-//#pragma hdrstop
 
 #include "CGenet.h"
-
+#include "cmath"
 //---------------------------------------------------------------------------
-
-//#pragma package(smart_init)
-//----------------------------------------------------------------------------
 int CGenet::staticID=0;
 /// Calculate the mean of the uptakes of one genet and save this
 /// as the uptake for each plant of this genet.
-///
-/// to be transfered
 ///
 void CGenet::ResshareA()
 {
   double sumAuptake=0;
   double MeanAuptake=0;
-  const int listsize=AllRametList.size();
+  const int listsize=this->AllRametList.size();
   for (int m=0; m<listsize;m++)//for all ramets of the genet
   {
        double AddtoSum=0;
-       CclonalPlant* Ramet =(CclonalPlant*) AllRametList[m];
+       CPlant* Ramet = AllRametList[m];
        double minres= Ramet->minresA();
        //Uptake - the min resources that the plant need
        AddtoSum=max(0.0,Ramet->Auptake-minres);
@@ -43,8 +37,6 @@ void CGenet::ResshareA()
 /// Calculate the mean of the uptakes of one genet and save this
 /// as the uptake for each plant of this genet.
 ///
-/// to be transfered
-///
 void CGenet::ResshareB()
 {
  double sumBuptake=0;
@@ -52,7 +44,7 @@ void CGenet::ResshareB()
     for (unsigned int m=0; m<AllRametList.size();m++)//for all ramets of the genet
     {
        double AddtoSum=0;
-       CclonalPlant* Ramet =AllRametList[m];
+       CPlant* Ramet =AllRametList[m];
 //       double minres= Ramet->Traits->mThres*Ramet->Art_disc*Ramet->Traits->Gmax*2;
        double minres= Ramet->minresB();
        //Uptake - the min resources that the plant need
