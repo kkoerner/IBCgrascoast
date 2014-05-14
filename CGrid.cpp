@@ -48,18 +48,18 @@ void CGrid::CellsInit()
 {
 //   using SRunPara::RunPara;
    int index;const unsigned int SideCells=SRunPara::RunPara.CellNum;
-   CellList.assign((SideCells*SideCells),new CCELL());// = new (CCELL* [SideCells*SideCells]);
+//   CellList.assign((SideCells*SideCells),new CCELL());// = new (CCELL* [SideCells*SideCells]);
 
-/*
+
    for (int x=0; x<SideCells; x++){
       for (int y=0; y<SideCells; y++){
          index=x*SideCells+y;
          CCELL* cell = new CCELL(x,y,
                  CEnvir::AResMuster[index],CEnvir::BResMuster[index]);
-         CellList[index]=cell;
+         CellList.push_back(cell);
      }
   }
-*/
+
 }//end CellsInit
 //---------------------------------------------------------------------------
 /**
@@ -78,7 +78,7 @@ void CGrid::resetGrid(){
    PlantList.clear();
 //Genet list..
    for(unsigned int i=0;i<GenetList.size();i++) delete GenetList[i];
-   GenetList.clear();CGenet::staticID=0;
+   GenetList.clear();CGenet::setStaticId(0);
    //init LDD seeds
    LDDSeeds->clear(); //right or resource leck?
    for (map<string, SPftTraits*>::const_iterator it = SPftTraits::PftLinkList.begin(); it!= SPftTraits::PftLinkList.end(); ++it){
@@ -107,7 +107,9 @@ CGrid::~CGrid()
    CellList.clear();
    //TODO here: delete LDD-seed list
    for(unsigned int i=0;i<GenetList.size();i++) delete GenetList[i];
-   GenetList.clear();CGenet::staticID=0;
+   GenetList.clear();CGenet::setStaticId(0);
+
+   delete this->LDDSeeds;
 }//end ~CGrid
 //---------------------------------------------------------------------------
 /**
@@ -291,7 +293,7 @@ void CGrid::DispersRamets(CPlant* plant)
          Boundary(x,y);   //periodic boundary condition
 
          // save dist and direction in the plant
-         CPlant *Spacer=new CPlant(x/CmToCell,y/CmToCell,plant);
+         CPlant *Spacer=newSpacer(x/CmToCell,y/CmToCell,plant);
          Spacer->SpacerlengthToGrow=dist;
          Spacer->Spacerlength=dist;
          Spacer->Spacerdirection=direction;
@@ -312,9 +314,9 @@ void CGrid::DispersRamets(CPlant* plant)
 */
 void CGrid::CoverCells()
 {
-   int xmin, xmax, ymin, ymax;
+//   int xmin, xmax, ymin, ymax;
    int index;
-   double dist,Radius;
+//   double dist,Radius;
    int xhelp, yhelp;
 
    double CellScale=SRunPara::RunPara.CellScale();
@@ -437,12 +439,11 @@ void CGrid::DistribResource()
 	int sumc=CellList.size();//SRunPara::RunPara.GetSumCells();
    for (int i=0; i<sumc; ++i){  //loop for all cells
 	   CCELL* cell = CellList[i];
-	   if ((i%100)==1) cout<<"  Comp cell "<<i;
+//	   if ((i%10)==0) cout<<"  Comp cell "<<i;
       cell->GetNPft();
 
       cell->AboveComp();
       cell->BelowComp();
-//      cout<<"."<<flush;
    } //for all cells
    Resshare();  // resource sharing between connected ramets
 }//end distribResource
@@ -853,7 +854,7 @@ double getMortBelGraz(double fraction, double thresh)
 */
 void CGrid::GrazingBelGr(const int mode)
 {
-  bool HetFlag=SRunPara::RunPara.HetBG;  //!< true for heterogenous belowground herbivory
+  //bool HetFlag=SRunPara::RunPara.HetBG;  //!< true for heterogenous belowground herbivory
   if (mode==0){
     for (plant_size i=0;i<PlantList.size();i++){
          CPlant* lplant=PlantList[i];

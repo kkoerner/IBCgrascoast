@@ -36,7 +36,7 @@ class CGrid
    double grazed_BM;  ///< biomass removed by grazing (aboveground)
    //clonal..
    void RametEstab(CPlant* plant);///< establish ramets
-   void EstabLott_help(CSeed* seed);
+   virtual void EstabLott_help(CSeed* seed);
 
 protected:
    ///List of Genets on Grid
@@ -56,6 +56,9 @@ protected:
    //! distributes resource to each plant --> calls competition functions
    virtual void DistribResource();
    void Resshare();                     ///< share ressources among connected ramets
+   ///virually generate new spacer
+   virtual CPlant* newSpacer(int x,int y, CPlant* plant){
+     return new CPlant(x,y,plant);};
 
 //   virtual void DispersSeeds(CPlant* plant);        //!<  seed dispersal
    virtual int DispersSeeds(CPlant* plant);        //!<  seed dispersal

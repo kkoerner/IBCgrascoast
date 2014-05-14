@@ -5,8 +5,8 @@
 #ifndef CGenetH
 #define CGenetH
 
-#include "Plant.h"
 #include <vector>
+//#include "Plant.h"
 using namespace std;
 
 class CPlant;
@@ -16,22 +16,29 @@ class CPlant;
  */
 class CGenet
 {
+	   static int staticID;
 public:
-   static int staticID;
    vector<CPlant*> AllRametList;  ///<list of ramets
    int number;                         ///<ID of genet
 
    CGenet():number(++staticID){};
-   ~CGenet(){};
+   virtual ~CGenet(){};
    virtual double GetMass();///< return BM of Genet
    void ResshareA();     ///< share above-ground resources
    void ResshareB();     ///< share below-ground resources
-};
-class CPlant;
-/**\brief a genet consists of several ramets
 
-   \since clonal version
-*/
+	int getNumber() const {
+		return number;
+	}
+
+	static int getStaticId() {
+		return staticID;
+	}
+
+	static void setStaticId(int staticId=0) {
+		staticID = staticId;
+	}
+};
 //---------------------------------------------------------------------------
 #endif
 

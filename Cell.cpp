@@ -392,6 +392,7 @@ void CWaterCell::BelowComp()
    }
    int symm=1; if (SRunPara::RunPara.BelowCompMode==asympart) symm=2;
    double comp_tot=0, comp_c=0, max_depth_eff=0;
+//   cout<<"Cell "<<this->x<<":"<<this->y<<" - "<<BelowPlantList.size()<<" Inds\n"<<flush;
 
    //1. sum of resource requirement
    for (plant_iter iter=BelowPlantList.begin(); iter!=BelowPlantList.end(); ++iter){

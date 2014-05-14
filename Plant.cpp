@@ -9,6 +9,8 @@
 
 /**
  * constructor - without specific properties
+ *
+ * \note cell has to be set externally (from grid level)
  */
 CPlant::CPlant(double x, double y, SPftTraits* Traits):
   xcoord(x),ycoord(y),Traits(Traits),Age(0),mshoot(Traits->m0),mroot(Traits->m0),
@@ -53,19 +55,20 @@ CPlant::CPlant(SPftTraits* Traits, CCell* cell,
      this->growingSpacerList.push_back(spacer);
    }
   if (mshoot==0)this->mshoot=Traits->m0;
+  if (mroot==0)this->mroot=Traits->m0;
 }
 //-----------------------------------------------------------------------------
 /**
  * constructor - germination
  *
  * If a seed germinates, the new plant inherits its parameters.
- * Genet has to be defined externally.
+ * \note Genet has to be defined externally.
  */
 CPlant::CPlant(CSeed* seed):
   xcoord(seed->xcoord),ycoord(seed->ycoord),Age(0),Traits(seed->Traits),
   mshoot(seed->Traits->m0),mroot(seed->Traits->m0),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
-  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),
+  Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
   mort_base(0.007), 
   mReproRamets(0),Spacerlength(0),Spacerdirection(0),
   Generation(1),SpacerlengthToGrow(0),genet(NULL)
@@ -106,6 +109,7 @@ CPlant::CPlant(double x, double y, CPlant* plant):
 /**
  * destructor
  * TODO use iterators instead
+ * TODO remove plant from Genet list
  */
 CPlant::~CPlant(){
     for (unsigned int i=0;i<growingSpacerList.size();++i)

@@ -1,3 +1,55 @@
+2014-05-14  KatrinK  <KatrinK@VEGLAP-01>
+some debugging and delete obsolete files
+	* CclonalSeed.cpp: Removed.
+	* CclonalSeed.h: Removed.
+	* CGridclonal.cpp: Removed.
+	* CGridclonal.h: Removed.
+	* clonalPlant.cpp: Removed.
+	* clonalPlant.h: Removed.
+	* clonalTraits.cpp: Removed.
+	* clonalTraits.h: Removed.
+	* environment.cpp: Removed.
+	* environment.h: Removed.
+	* GMCom_K1_BlockDesign.cppo: Removed.
+	* GridBase.cpp: Removed.
+	* GridBase.h: Removed.
+	* IBC-grass.cpp: Removed.
+	* Cell.cpp (BelowComp): 
+	(CWaterCell::BelowComp): 
+	* Cell.h (~CWaterCell): 
+	(CWaterCell): 
+	* CEnvir.cpp: 
+	* CGenet.cpp: 
+	* CGenet.h (CGenet): 
+	(~CGenet): 
+	(CGenet.getNumber): 
+	(CGenet.getStaticId): 
+	(CGenet.setStaticId): 
+	* CGrid.cpp (CellsInit): 
+	(CGrid::CellsInit): 
+	(resetGrid): 
+	(CGrid::resetGrid): 
+	(~CGrid): 
+	(CGrid::~CGrid): 
+	(DispersRamets): 
+	(CGrid::DispersRamets): 
+	(CoverCells): 
+	(CGrid::CoverCells): 
+	(DistribResource): 
+	(CGrid::DistribResource): 
+	(GrazingBelGr): 
+	(CGrid::GrazingBelGr): 
+	* CGrid.h (CGrid): 
+	(CGrid.newSpacer): add to make new spacer of type CWaterPlant
+	* CGridEnvir.cpp (InitInd): 
+	(CGridEnvir::InitInd): 
+	* CWaterGridEnvir.cpp (CWaterGridEnvir::OneRun): add File Output
+	(DistribResource): 
+	(CWaterGridEnvir::DistribResource): 
+	* GMCom_K1.cpp (main): 
+	* Plant.cpp (CPlant): 
+	(CPlant::CPlant): 
+	(~CPlant): 
 2014-05-07  KatrinK  <KatrinK@VEGLAP-01>
 Model documentation and adapt SimFile structure
 	* Doc\IBC-Grass_2x\ \(Custom\).png: New file.

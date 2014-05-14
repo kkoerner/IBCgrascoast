@@ -171,6 +171,8 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
     SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
   }
+  //      //change gridsize
+     SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50;//default: 100
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
@@ -187,9 +189,12 @@ int main(int argc, char* argv[])
     strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
       <<".txt";
     Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+    strd.str("");strd<<"Output\\Mix_survO_"<<idstr
       <<".txt";
     Envir->NameSurvOutFile= strd.str();
+    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+      <<".txt";
+    Envir->NamePftOutFile= strd.str();
  //   SRunPara::RunPara.print();
  //-----------------
       Run();

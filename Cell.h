@@ -104,7 +104,7 @@ public:
 //    CCell(xx,yy,ares,bres); //!< Konstruktor
 
  CWaterCell();
- ~CWaterCell(){};
+ virtual ~CWaterCell(){};
     //! competition function for size symmetric below-ground resource competition
    /*! function is overwritten if inherited class with different competitive
      size-asymmetry of niche differentiation is used*/

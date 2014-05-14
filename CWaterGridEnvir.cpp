@@ -214,6 +214,8 @@ void CWaterGridEnvir::OneRun(){
   //drift of little individuals -anually- (see OneWeek)
 //--------------------
       OneYear();
+      WriteOFiles(); //to be adapted
+
 //--------------------
 //-apply salt toxidicy effect
 
@@ -441,8 +443,10 @@ void CWaterGridEnvir::DistribResource(){
    //collect resouces according to local competition
    CGrid::DistribResource();
    //for each cell: coorect for water conditions
-   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
-      if (!(*iplant)->dead)((CWaterPlant*) (*iplant))->DistrRes_help();
+   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
+      if ((*iplant)->type()!="CWaterPlant") cout<<" Distrib Res "<<flush;
+	   if (!(*iplant)->dead)((CWaterPlant*) (*iplant))->DistrRes_help();
+   }
 
    Resshare();  // resource sharing betwen connected ramets
 }

@@ -189,7 +189,7 @@ bool CGridEnvir::InitInd(string def){
     if (GenetList[i]->number==genetnb)genet=GenetList[i];
   }
   if (!genet) {
-    CGenet::staticID=max(CGenet::staticID,genetnb);
+    CGenet::setStaticId(max(CGenet::getStaticId(),genetnb));
     genet=new CGenet();genet->number=genetnb;
     GenetList.push_back(genet);
   }

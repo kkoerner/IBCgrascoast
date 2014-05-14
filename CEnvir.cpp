@@ -29,11 +29,11 @@ using namespace std;
    string CEnvir::NameLogFile="Output\\LogUpSc.log";
    string CEnvir::NameClonalOutFile="Output\\clonalOut.txt";
 
-   string SSR::NameLDDFile1= "Output\\SeedOut1_2.csv";
-   string SSR::NameLDDFile2= "Output\\SeedOut2_3.csv";
-   string SSR::NameLDDFile3= "Output\\SeedOut4_5.csv";
-   string SSR::NameLDDFile4= "Output\\SeedOut9_10.csv";
-   string SSR::NameLDDFile5= "Output\\SeedOut19_20.csv";
+   string SSR::NameLDDFile1= "Output\\SeedOut1_2.txt";
+   string SSR::NameLDDFile2= "Output\\SeedOut2_3.txt";
+   string SSR::NameLDDFile3= "Output\\SeedOut4_5.txt";
+   string SSR::NameLDDFile4= "Output\\SeedOut9_10.txt";
+   string SSR::NameLDDFile5= "Output\\SeedOut19_20.txt";
 
    int CEnvir::NRep=1;        //!> number of replications -> read from SimFile;
    int CEnvir::SimNr=0;
