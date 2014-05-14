@@ -6,27 +6,30 @@
 
 #include "RunPara.h"
 #include <iostream>
-#include <sstream>
 #include <cstdlib>
+#include <sstream>
 //---------------------------------------------------------------------------
 //#pragma package(smart_init)
+//Input Files
+   std::string SRunPara::NamePftFile="Input\\PftTraits.experiment.txt"; // trait file for experiment species
+   std::string SRunPara::NameSimFile = "Input\\SimFile.txt";  //file with simulation scenarios
 
 SRunPara SRunPara::RunPara=SRunPara();
 //-------------------------------------------------------------------
 SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym),
   mort_base(0.007),LitterDecomp(0.5),DiebackWinter(0.5),EstabRamet(1),
-  GridSize(128),CellNum(128),Tmax(10),NPft(81),GrazProb(0),PropRemove(0.5),BitSize(0.5),
+  GridSize(100),CellNum(100),Tmax(10),NPft(81),GrazProb(0),PropRemove(0.5),BitSize(0.5),MassUngraz(15300),
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0),mort_seeds(0.5),meanARes(100),meanBRes(100),
-  PftFile("Input/PftTraits2304.txt"),
+  PftFile("Input/PftTraits2304.txt"),SeedInput(0),SeedRainType(0),
   species("M"),WaterLevel(0),WLsigma(0),changeVal(0),
-  Migration(0),Aampl(0),Bampl(0),cv_res(0),
+  Migration(0),Aampl(0),Bampl(0),//cv_res(0),
   WLseason("file"){}
 
 /**
 \note  es fehlen: CellNum,NPft
-\autor KK
+\author KK
 \date  120831
 */
 std::string SRunPara::asString(){
@@ -47,7 +50,7 @@ std::string SRunPara::asString(){
  //     <<"\nspecies:\t"<<species   <<"\nWaterLevel:\t"<<WaterLevel
  //     <<"\nWLseason:\t"<<WLseason <<"\nWLsigma:\t"<<WLsigma
  //     <<"\nchangeVal:\t"<<changeVal<<"\n Migration:\t"<<Migration
-      <<"\n"<<PftFile;
+      <<"\n"<<SRunPara::NamePftFile;
  return mystream.str();
 }//end print
 void SRunPara::setRunPara(std::string def){

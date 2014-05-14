@@ -1,21 +1,22 @@
 /**\file
    \brief functions of class CGrid
 */
-
 //#pragma package(smart_init)
 //#pragma hdrstop
-#define CCELL CWaterCell //CCell for old version
-#include "GridBase.h"
-#include "environment.h"
+
+#include "CGrid.h"
+#include "CEnvir.h"
 #include <iostream>
 #include <map>
 #include <algorithm>
 //---------------------------------------------------------------------------
+/**
+ * constructor
+ */
 CGrid::CGrid():cutted_BM(0),grazed_BM(0)
 {
-   SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
-   LDDSeeds = new map<string,long>;
+   LDDSeeds = new map<string,LDD_Dist>;
    //generate ZOIBase...
    ZOIBase.assign(SRunPara::RunPara.GetSumCells(),0);
    for (unsigned int i=0;i<ZOIBase.size();i++) ZOIBase[i]=i;
@@ -23,15 +24,14 @@ CGrid::CGrid():cutted_BM(0),grazed_BM(0)
 }
 //---------------------------------------------------------------------------
 /**
-\warning does not initiate pft definitions.
-this had to be done at least vie prior dummi grid
-*/
+ * constructor - load..
+ * @param id
+ */
 CGrid::CGrid(string id):cutted_BM(0),grazed_BM(0)
 {
-   SPftTraits::ReadPftStrategy(); //get list of available Strategies
    CellsInit();
 
-   LDDSeeds = new map<string,long>;
+   LDDSeeds = new map<string,LDD_Dist>;
    //generate ZOIBase...
    ZOIBase.assign(SRunPara::RunPara.GetSumCells(),0);
    for (unsigned int i=0;i<ZOIBase.size();i++) ZOIBase[i]=i;
@@ -47,19 +47,19 @@ CGrid::CGrid(string id):cutted_BM(0),grazed_BM(0)
 void CGrid::CellsInit()
 {
 //   using SRunPara::RunPara;
-   int index;int SideCells=SRunPara::RunPara.CellNum;
-   CellList = new (CCELL* [SideCells*SideCells]);
-//     CellList = new (CWaterCell* [SideCells*SideCells]);
+   int index;const unsigned int SideCells=SRunPara::RunPara.CellNum;
+//   CellList.assign((SideCells*SideCells),new CCELL());// = new (CCELL* [SideCells*SideCells]);
+
 
    for (int x=0; x<SideCells; x++){
       for (int y=0; y<SideCells; y++){
          index=x*SideCells+y;
          CCELL* cell = new CCELL(x,y,
-//         CWaterCell* cell = new CWaterCell(x,y,
                  CEnvir::AResMuster[index],CEnvir::BResMuster[index]);
-         CellList[index]=cell;
+         CellList.push_back(cell);
      }
   }
+
 }//end CellsInit
 //---------------------------------------------------------------------------
 /**
@@ -67,8 +67,8 @@ void CGrid::CellsInit()
 */
 void CGrid::resetGrid(){
 //cells...
-   for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCELL* cell = CellList[i];
+   for (int i=0; i<CellList.size(); ++i){
+	   CCELL* cell = CellList[i];
       cell->clear();
    }
 //plants...
@@ -76,8 +76,23 @@ void CGrid::resetGrid(){
       delete *iplant;
    }
    PlantList.clear();
+//Genet list..
+   for(unsigned int i=0;i<GenetList.size();i++) delete GenetList[i];
+   GenetList.clear();CGenet::setStaticId(0);
+   //init LDD seeds
+   LDDSeeds->clear(); //right or resource leck?
+   for (map<string, SPftTraits*>::const_iterator it = SPftTraits::PftLinkList.begin(); it!= SPftTraits::PftLinkList.end(); ++it){
+      for (int d=0; d<NDistClass; ++d)
+         (*LDDSeeds)[it->first].NSeeds[d] = 0;
+   }
+
 }
 //---------------------------------------------------------------------------
+/**
+  CGrid destructor
+
+  \todo delete LDD seed list, resource leck else
+*/
 CGrid::~CGrid()
 {
    for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
@@ -85,30 +100,76 @@ CGrid::~CGrid()
       delete plant;
    }; PlantList.clear();
 
-   for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCELL* cell = CellList[i];
-//      CWaterCell* cell = CellList[i];
+   for (int i=0; i<CellList.size(); ++i){
+	   CCELL* cell = CellList[i];
       delete cell;
    }
-   delete[] CellList;
+   CellList.clear();
+   //TODO here: delete LDD-seed list
+   for(unsigned int i=0;i<GenetList.size();i++) delete GenetList[i];
+   GenetList.clear();CGenet::setStaticId(0);
+
+   delete this->LDDSeeds;
 }//end ~CGrid
 //---------------------------------------------------------------------------
 /**
+  File saving the entire clonal grid for later reload.
+
+  \note not included: LDD-Seed list ; genet info - IDs are included in ramets
+  \author KK
+  \date 120831
+*/
+void CGrid::Save(string fname){
+//open file..
+   ofstream SaveFile(fname.c_str());
+  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+  cout<<"SaveFile: "<<fname<<endl;
+//write..
+
+//Cells (without Plants, with seeds)
+//  SaveFile<<"\nNumber of Cells\t"<<SRunPara::RunPara.GetSumCells() <<endl;
+  for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i)  //loop for all cells
+     SaveFile<<CellList[i]->asString();
+
+//Plants
+  SaveFile<<"\nNumber of Plants\t"<<this->PlantList.size();
+  for (int i=0; i<this->PlantList.size(); ++i)  //loop for all cells
+//    SaveFile<<"\nPlant "<<i;//Plant->asString()
+     SaveFile<<PlantList[i]->asString();
+//genet information
+  SaveFile<<"\nNumber of Genets\t"<<this->GetNMotherPlants();
+
+}  // file save of entire grid
+//-----------------------------------------------------------------------------
+/**
+  The clonal version of PlantLoop additionally to the CGrid-version
+  disperses and grows the clonal ramets
   Growth (resource allocation and vegetative growth), seed dispersal and
   mortality of plants.
 */
 void CGrid::PlantLoop()
 {
-   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
+   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+   {
       CPlant* plant = *iplant;
-      if (!plant->dead){
-        plant->Grow2();
-        if (CEnvir::week>plant->Traits->DispWeek) DispersSeeds(plant);
-        plant->Kill();
+      if (!plant->dead)
+      {
+         plant->Grow2();
+         if ((plant->Traits->clonal))//>type() == "CclonalPlant"))//only if its a clonal plant
+         {
+            //ramet dispersal in every week
+            DispersRamets(plant);
+            //if the plant has a growing spacer - grow it
+            plant->SpacerGrow();
+         }
+         //seed dispersal (clonal and non-clonal seeds)
+         if (CEnvir::week>plant->Traits->DispWeek)
+              DispersSeeds(plant);
+         plant->Kill();
       }
       plant->DecomposeDead();
    }
-}
+}//plant loop
 //-----------------------------------------------------------------------------
 /**
   lognormal dispersal kernel
@@ -134,7 +195,6 @@ void getTargetCell(int& xx,int& yy,const float mean,const float sd,double cellsc
    double mu=log(mean)-0.5*sigma;
    double dist=exp(CEnvir::normrand(mu,sigma));//RandNumGen.normal
    if (cellscale==0)cellscale= SRunPara::RunPara.CellScale();
-//   double CellScale=SRunPara::RunPara.CellScale();
    double CmToCell=1.0/cellscale;
 
    //direction uniformly distributed
@@ -143,7 +203,6 @@ void getTargetCell(int& xx,int& yy,const float mean,const float sd,double cellsc
    yy=CEnvir::Round(yy+sin(direction)*dist*CmToCell);
 }
 //-----------------------------------------------------------------------------
-//bool Emmigrates(int& xx, int& yy);
 /**
   Function disperses the seeds produced by a plant when seeds are to be
   released (at dispersal time - SclonalTraits::DispWeek).
@@ -158,12 +217,18 @@ void getTargetCell(int& xx,int& yy,const float mean,const float sd,double cellsc
   */
 int CGrid::DispersSeeds(CPlant* plant)
 {
-   int x=plant->getCell()->x, y=plant->getCell()->y, NSeeds;
-   double dist, direction;
+   int px=plant->getCell()->x, py=plant->getCell()->y;
+   int NSeeds=0;
+   double dist=0, direction=0;
+   double rnumber=0;
    int nb_LDDseeds=0;
+   int SideCells=SRunPara::RunPara.CellNum;
 
    NSeeds=plant->GetNSeeds();
-   for (int j=0; j<NSeeds; ++j){
+
+   for (int j=0; j<NSeeds; ++j)
+   {
+         int x=px, y=py; //remember the parent's position
          //negative exponential dispersal kernel
          //dist=RandNumGen->exponential(1/(plant->DispDist*100));   //m -> cm
 
@@ -172,20 +237,76 @@ int CGrid::DispersSeeds(CPlant* plant)
            plant->Traits->Dist*100,        //m -> cm
            plant->Traits->Dist*100);       //mean = std (simple assumption)
          //export LDD-seeds
-         if (SRunPara::RunPara.torus){Boundary(x,y);}
-         else if (Emmigrates(x,y)) {nb_LDDseeds++;continue;}
+         if (Emmigrates(x, y)) {
+			nb_LDDseeds++;
+			//Calculate distance between (x,y) and grid-center
+			int test = SRunPara::RunPara.GridSize / 2;
+			dist = Distance(x, y, SRunPara::RunPara.GridSize / 2,
+					SRunPara::RunPara.GridSize / 2);
+			dist = dist / 100;  //convert to m
 
-         CCELL* cell = CellList[x*SRunPara::RunPara.CellNum+y];
+			if ((dist > 1) && (dist <= 2))
+				++(*LDDSeeds)[plant->pft()].NSeeds[0];
+			else if ((dist > 2) && (dist <= 3))
+				++(*LDDSeeds)[plant->pft()].NSeeds[1];
+			else if ((dist > 4) && (dist <= 5))
+				++(*LDDSeeds)[plant->pft()].NSeeds[2];
+			else if ((dist > 9) && (dist <= 10))
+				++(*LDDSeeds)[plant->pft()].NSeeds[3];
+			else if ((dist > 19) && (dist <= 20))
+				++(*LDDSeeds)[plant->pft()].NSeeds[4];
+
+			if (!SRunPara::RunPara.torus) continue;//skip seed for absorbing boundaries
+			else Boundary(x,y); //recalc position
+		}
+
+         CCELL* cell = CellList[x*SideCells+y];
          new CSeed(plant,cell);
-      }//for NSeeds
-      return nb_LDDseeds;
+   }//for NSeeds
+   return nb_LDDseeds;
 }//end DispersSeeds
 //---------------------------------------------------------------------------
+void CGrid::DispersRamets(CPlant* plant)
+{
+   double CmToCell=1.0/SRunPara::RunPara.CellScale();
+//   using CEnvir::Round;
+
+   if (plant->Traits->clonal)//type() == "CclonalPlant")//only if its a clonal plant
+   {
+        //dispersal
+        for (int j=0; j<plant->GetNRamets(); ++j)
+        {
+         double dist=0, direction;//, rdist;
+         double mean, sd, mu, sigma; //parameters for lognormal dispersal kernel
+
+         //normal distribution for spacer length
+         mean=plant->Traits->meanSpacerlength;   //cm
+         sd  =plant->Traits->sdSpacerlength;     //mean = std (simple assumption)
+
+         while (dist<=0) dist=CEnvir::normrand(mean,sd);
+         //direction uniformly distributed
+         direction=2*Pi*CEnvir::rand01();
+         int x=CEnvir::Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
+         int y=CEnvir::Round(plant->getCell()->y+sin(direction)*dist*CmToCell);
+
+         /// \todo change boundary conditions
+         Boundary(x,y);   //periodic boundary condition
+
+         // save dist and direction in the plant
+         CPlant *Spacer=newSpacer(x/CmToCell,y/CmToCell,plant);
+         Spacer->SpacerlengthToGrow=dist;
+         Spacer->Spacerlength=dist;
+         Spacer->Spacerdirection=direction;
+         plant->growingSpacerList.push_back(Spacer);
+      }//end for NRamets
+  }  //end for if it a clonal plant
+}//end CGridclonal::DispersRamets()
+//--------------------------------------------------------------------------
 /**
   This function calculates ZOI of all plants on grid.
   Each grid-cell gets a list
   of plants influencing the above- (alive and dead individuals) and
-  belowgroud (alive plants only) layers.
+  belowground (alive plants only) layers.
 
   \par revision
   Let ZOI be defined by a list sorted after ascending distance to center instead
@@ -193,11 +314,10 @@ int CGrid::DispersSeeds(CPlant* plant)
 */
 void CGrid::CoverCells()
 {
-   int xmin, xmax, ymin, ymax;
+//   int xmin, xmax, ymin, ymax;
    int index;
-   double dist,Radius;
+//   double dist,Radius;
    int xhelp, yhelp;
-//   using SRunPara::RunPara;
 
    double CellScale=SRunPara::RunPara.CellScale();
    double CellArea=CellScale*CellScale;
@@ -240,6 +360,7 @@ void CGrid::CoverCells()
      }// for <Amax
    }//end of plant loop
 }
+
 //---------------------------------------------------------------------------
 /**
   Function calculates the interaction intensity (root density)
@@ -261,11 +382,8 @@ void CGrid::CalcRootInteraction(){
   and PftNIndB are evaluated and up to date.
 */
 void CGrid::CalcRootInteraction(CPlant * plant){
-//   using SRunPara::RunPara;
    double CellScale=SRunPara::RunPara.CellScale();
    double CellArea=CellScale*CellScale;
-//   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
-//        CPlant* plant = *iplant;
      double Aroot=plant->Area_root()/CellArea;
      plant->Art_disc=floor(plant->Area_root())+1;
      plant->Aroots_all=0;
@@ -286,7 +404,6 @@ void CGrid::CalcRootInteraction(CPlant * plant){
         plant->Aroots_all  += cell->BelowPlantList.size();
         plant->Aroots_type += cell->PftNIndB[plant->pft()];
      }
-//   }
 }
 //---------------------------------------------------------------------------
 /**
@@ -297,8 +414,8 @@ void CGrid::CalcRootInteraction(CPlant * plant){
 void CGrid::ResetWeeklyVariables()
 {
    //loop for all cells
-   for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCELL* cell = CellList[i];
+   for (int i=0; i<CellList.size(); ++i){
+	   CCELL* cell = CellList[i];
       cell->AbovePlantList.clear();
       cell->BelowPlantList.clear();
       cell->RemoveSeedlings(); //remove seedlings and pft-counter
@@ -309,25 +426,48 @@ void CGrid::ResetWeeklyVariables()
       //reset weekly variables
       plant->Auptake=0;plant->Buptake=0;
       plant->Ash_disc=0;plant->Art_disc=0;
-//      plant->Allometrics();
    }
 }
 
 //---------------------------------------------------------------------------
 /**
-  distribute local resources according to local competition
-
+  Distributes local resources according to local competition
+  and shares them between connected ramets of clonal genets.
 */
 void CGrid::DistribResource()
 {
-   for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
-      CCELL* cell = CellList[i];
+	int sumc=CellList.size();//SRunPara::RunPara.GetSumCells();
+   for (int i=0; i<sumc; ++i){  //loop for all cells
+	   CCELL* cell = CellList[i];
+//	   if ((i%10)==0) cout<<"  Comp cell "<<i;
       cell->GetNPft();
 
       cell->AboveComp();
       cell->BelowComp();
    } //for all cells
+   Resshare();  // resource sharing between connected ramets
 }//end distribResource
+//----------------------------------------------------------------------------
+/**
+  Resource sharing between connected ramets on grid.
+*/
+void CGrid::Resshare() // resource sharing
+{
+      for (unsigned int i=0; i<GenetList.size();i++)
+      {
+         CGenet* Genet = GenetList[i];
+         if (Genet->AllRametList.size()>1)//!Genet->AllRametList.empty())
+         {
+            CPlant* plant=Genet->AllRametList.front();
+            if (plant->Traits->clonal //type()=="CclonalPlant"
+                 &&plant->Traits->Resshare==true)
+            {//only betwen connected ramets
+               Genet->ResshareA();  //above ground
+               Genet->ResshareB();  // below ground
+            } //if Resshare true
+         }//if genet>0
+      }//for...
+}//end CGridclonal::Resshare()
 
 //-----------------------------------------------------------------------------
 /**
@@ -340,22 +480,51 @@ void CGrid::DistribResource()
   I tried to make function faster skipping the seed-pft-collecting
   cumulative lists, but that possibly leads to pseudo-endless loops if
   seedling-number per cell is too high
+
+  For each plant ramets establish and
+  for each grid cell seeds from seed bank germinate and establish.
+  Seedlings that do not establish will die.
+
+  -# ramets establish if goal is reached (RametEstab())
+  -# seeds establish from the seed bank during
+    germination time (weeks 1-3, 22-25).
+  -# seedlings that fail to establish will die
+
+  \todo find a faster algorithm for choosing the winning seedling
 */
 void CGrid::EstabLottery()
 {
-   double sum=0;
-   int index=0;
-//   using SRunPara::RunPara;
+  //Ramet establishment for all Plants
+   int PlantListsize=PlantList.size();
+   for (int z=0; z<PlantListsize;z++)  //for all Plants (befor Rametestab)
+   {
+      CPlant* plant=PlantList[z];
+      if ((plant->Traits->clonal) //>type() != "CPlant")
+    		  &&(!plant->dead))
+      {//only if its a clonal plant
+         RametEstab(plant);
+      }
+   }//for all plants
+
+//for Seeds (for clonal and non-klonal plants)
    map<string,double> PftEstabProb;//=map<string,int>(0);
    map<string,int> PftNSeedling;
+   int gweek=CEnvir::week;
 
-      for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
-         CCELL* cell = CellList[i];
-         if ((cell->getCover(1)==0) && (!cell->SeedBankList.empty())){  //germination if cell is uncovered
+   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))
+   { //establishment only between week 1-4 and 21-25
+     double sum=0;
 
-            sum=cell->Germinate();
-
-            //relative probability for establishment for all Pfts (cumulated)
+     for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i)
+     {  //loop for all cells
+        CCell* cell = CellList[i];
+        if ((cell->AbovePlantList.empty())
+            && (!cell->SeedBankList.empty())
+            && (!cell->occupied))
+        {  //germination if cell is uncovered
+          sum=cell->Germinate();
+          if (sum>0){//if seeds germinated...
+//-----------------------------------------------------------------
             typedef map<string,int> mapType;
             for(mapType::const_iterator it = cell->PftNSeedling.begin();
               it != cell->PftNSeedling.end(); ++it)
@@ -365,12 +534,10 @@ void CGrid::EstabLottery()
               if (itr != cell->PftNSeedling.end()) {
                 PftEstabProb[pft]=
                   (double) itr->second
-                  *CClonalGridEnvir::getPftLink(pft)->SeedMass;
+                  *SPftTraits::getPftLink(pft)->SeedMass;
                 PftNSeedling[pft]=itr->second;//(cell->PftNSeedling[pft]);
               }
             }//for each type
-
-            if (!cell->SeedlingList.empty()){
             //chose seedling that establishes at random
             double rnum=CEnvir::rand01()*sum;  //random double between 0 and sum of seed mass
             for(mapType::const_iterator it = cell->PftNSeedling.begin();
@@ -383,12 +550,11 @@ void CGrid::EstabLottery()
                 random_shuffle(cell->SeedlingList.begin(),
                    partition(cell->SeedlingList.begin(),cell->SeedlingList.end(),
                    bind2nd(mem_fun(&CSeed::SeedOfType),pft)));
+//                   bind(SeedOfType,_1,pft)));
                 //Was, wenn keine Seedlings(typ==pft) gefunden werden (sollte nicht passieren)?
                 //etabliere jetzt das erste Element der Liste
                 CSeed* seed = cell->SeedlingList.front();
-                CPlant* plant = new CPlant(seed);
-                plant->setCell(cell);
-                PlantList.push_back(plant);
+                EstabLott_help(seed);
                 cell->PftNSeedling[pft]--;
                 continue; //if established, go to next cell
               }//if rnum<
@@ -397,16 +563,115 @@ void CGrid::EstabLottery()
               }   //und gehe zum nächsten Typ
             }//for all types in list
             cell->RemoveSeedlings();
-            }//if seedlings in cell
-         }//seeds in cell
-      }//for all cells
-}//end CGrid::EstabLottery()
+         }//if seedlings in cell
+      }//seeds in cell
+    }//for all cells
+  }//if between week 1-4 and 21-25
+  PftEstabProb.clear();
+  PftNSeedling.clear();
+}//end CGridclonal::EstabLottery()
+
+/**
+ * Establish new genet.
+ * @param seed seed which germinates.
+ */
+void CGrid::EstabLott_help(CSeed* seed) {
+//cout<<"estabLott_help - CGridClonal";
+	CPlant* plant;
+	CPlant* tempPlant = new CPlant(seed);
+
+	CGenet *Genet = new CGenet();
+	GenetList.push_back(Genet);
+
+	tempPlant->setGenet(Genet);
+	plant = tempPlant;
+	PlantList.push_back(plant);
+
+}
 //-----------------------------------------------------------------------------
-///\todo warum seed->Survive nicht angewendet?
+/**
+  Establishment of ramets. If spacer is readily grown tries to settle on
+  current cell.
+  If it is already occupied it finds a new goal nearby.
+  If the cell is empty, the ramet establishes:
+  cell information is set and the ramet is added to the global plant list,
+  the genet's ramet list as well as erased
+  from the spacer list of the mother plant.
+*/
+void CGrid::RametEstab(CPlant* plant)
+{
+ //  using CEnvir::rand01;
+   int RametListSize=plant->growingSpacerList.size();
+
+   if (RametListSize==0)return;
+   for (int f=0; f<(RametListSize);f++)    //loop for all Ramets of one plant
+   {
+      CPlant* Ramet = plant->growingSpacerList[f];
+      if (Ramet->SpacerlengthToGrow<=0){//return;
+/// \todo hier boundary-Kontrolle einfügen
+
+        int x=CEnvir::Round(Ramet->xcoord/SRunPara::RunPara.CellScale());
+        int y=CEnvir::Round(Ramet->ycoord/SRunPara::RunPara.CellScale());
+
+        //find the number of the cell in the List with x,y
+        CCell* cell=CellList[x*SRunPara::RunPara.CellNum+y];
+
+        if ((!cell->occupied))
+        {  //establish if cell is not central point of another plant
+           Ramet->getGenet()->AllRametList.push_back(Ramet);
+           Ramet->setCell(cell);
+
+           PlantList.push_back(Ramet);
+           //delete from list but not the element itself
+           plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f);
+           //establishment success
+           if(CEnvir::rand01()<(1.0-SRunPara::RunPara.EstabRamet)) Ramet->dead=true; //tag:SA
+        }//if cell ist not occupied
+        else //find another random cell in the area around
+        {
+           if (CEnvir::week<CEnvir::WeeksPerYear)
+           {
+             int factorx;int factory;
+             do{
+             factorx=CEnvir::nrand(5)-2;
+             factory=CEnvir::nrand(5)-2;
+             }while(factorx==0&&factory==0);
+
+             double dist=Distance(factorx,factory);
+             double direction=acos(factorx/dist);
+             double cellscale=SRunPara::RunPara.CellScale();
+             int x=CEnvir::Round((Ramet->xcoord+factorx)/cellscale);
+             int y=CEnvir::Round((Ramet->ycoord+factory)/cellscale);
+
+             /// \todo change boundary conditions
+             Boundary(x,y);
+
+             //new position, dist and direction
+             Ramet->xcoord=x*cellscale; Ramet->ycoord=y*cellscale;
+             Ramet->SpacerlengthToGrow=dist;
+             Ramet->Spacerlength=dist;
+             Ramet->Spacerdirection=direction;
+           }
+           if (CEnvir::week==CEnvir::WeeksPerYear)
+           {
+             //delete element - ramet dies unestablished
+             delete Ramet;
+             plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f); //delete
+           }
+        }//else
+      }//end if pos reached
+   }//loop for all Ramets
+}//end CGridclonal::RametEstab()
+//-----------------------------------------------------------------------------
+
+/**
+ * seedling mortality
+ * \todo warum seed->Survive nicht angewendet?
+ */
 void CGrid::SeedMortAge()
 {
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
-      CCELL* cell = CellList[i];
+	   CCELL* cell = CellList[i];
       for (seed_iter iter=cell->SeedBankList.begin();
          iter!=cell->SeedBankList.end(); ++iter){
          CSeed* seed = *iter;
@@ -477,7 +742,8 @@ void CGrid::Grazing()
 {
    int    SumCells     =SRunPara::RunPara.GetSumCells();
    double CellScale    =SRunPara::RunPara.CellScale();
-   double ResidualMass =15300*SumCells*CellScale*CellScale*0.0001;
+//   double ResidualMass =15300*SumCells*CellScale*CellScale*0.0001;
+   double ResidualMass =SRunPara::RunPara.MassUngraz*SumCells*CellScale*CellScale*0.0001;
    double MaxMassRemove, TotalAboveMass, MassRemoved=0;
    double grazprob;
 
@@ -522,16 +788,16 @@ void CGrid::Cutting()
 {
    CPlant* pPlant;
 
-//   double mass_cut = SRunPara::RunPara.CutMass;
-   double height_cut = SRunPara::RunPara.CutLeave;
+   //   double mass_cut = SRunPara::RunPara.CutMass;
+      double height_cut = SRunPara::RunPara.CutLeave;
    double mass_removed=0;
 
    for (plant_size i=0; i<PlantList.size();i++){
          pPlant = PlantList[i];
-//         if (pPlant->mshoot/(pPlant->Traits->LMR*pPlant->Traits->LMR) > mass_cut){
-         if (pPlant->getHeight() > height_cut){
-//            double to_leave= mass_cut*(pPlant->Traits->LMR*pPlant->Traits->LMR);
-            double to_leave= pPlant->mshoot* height_cut/pPlant->getHeight();
+         //         if (pPlant->mshoot/(pPlant->Traits->LMR*pPlant->Traits->LMR) > mass_cut){
+                  if (pPlant->getHeight() > height_cut){
+         //            double to_leave= mass_cut*(pPlant->Traits->LMR*pPlant->Traits->LMR);
+                     double to_leave= pPlant->mshoot* height_cut/pPlant->getHeight();
             //doc biomass removed
             mass_removed+= pPlant->mshoot-to_leave+pPlant->mRepro;
             pPlant->mshoot = to_leave;
@@ -588,7 +854,7 @@ double getMortBelGraz(double fraction, double thresh)
 */
 void CGrid::GrazingBelGr(const int mode)
 {
-  bool HetFlag=SRunPara::RunPara.HetBG;  //!< true for heterogenous belowground herbivory
+  //bool HetFlag=SRunPara::RunPara.HetBG;  //!< true for heterogenous belowground herbivory
   if (mode==0){
     for (plant_size i=0;i<PlantList.size();i++){
          CPlant* lplant=PlantList[i];
@@ -600,15 +866,15 @@ void CGrid::GrazingBelGr(const int mode)
 //    for (plant_size i=0;i<PlantList.size();i++)
 //      oldMroot[PlantList[i]]=PlantList[i]->mroot;
 //partition of Plants left and right of grid
-    plant_iter LeftPlants=
-    partition(PlantList.begin(),PlantList.end(),mem_fun(&CPlant::is_left));
-    vector<CPlant*> leftPlantList(LeftPlants,PlantList.end());
+//    plant_iter LeftPlants=
+//    partition(PlantList.begin(),PlantList.end(),mem_fun(&CPlant::is_left));
+//    vector<CPlant*> leftPlantList(LeftPlants,PlantList.end());
     //get ranking list of aboveground types after aboveground biomass
     map<string,double> aboveDom;
 
     vector<CPlant*> PlantsToGraze=PlantList;
 ///!
-    if (HetFlag) PlantsToGraze=leftPlantList; //!should only one half of grid be grazed?
+//    if (HetFlag) PlantsToGraze=leftPlantList; //!should only one half of grid be grazed?
     for (plant_size i=0;i<PlantsToGraze.size();i++)
       if (!PlantsToGraze[i]->dead) aboveDom[PlantsToGraze[i]->pft()]+=PlantsToGraze[i]->mshoot;
 
@@ -718,12 +984,13 @@ void CGrid::Trampling()
    double radius=10.0;                 //radius of disturbance [cm]
    double Apatch=(Pi*radius*radius);   //area of patch [cm²]
    //number of gaps
-   double NTrample=(SRunPara::RunPara.AreaEvent
+   int NTrample=floor(SRunPara::RunPara.AreaEvent
 		   *SRunPara::RunPara.GridSize*SRunPara::RunPara.GridSize/
                       Apatch);
    //area of patch [cell number]
    Apatch/=SRunPara::RunPara.CellScale()*SRunPara::RunPara.CellScale();
-//apply probability if ntrample<1
+
+   //apply probability if ntrample<1
    if ( NTrample<1 && CEnvir::rand01()<NTrample) NTrample++;
    for (int i=1; i<NTrample; ++i){
       //get random center of disturbance
@@ -763,17 +1030,24 @@ void CGrid::RemovePlants()
 }
 //-----------------------------------------------------------------------------
 /**
-remove a plant from gridcell and deletes it
-
-\todo move to CPlant
+  Delete a plant from the grid and it's references in genet list and grid cell.
 */
 void CGrid::DeletePlant(CPlant* plant1)
 {
+      CGenet *Genet=plant1->getGenet();
+      //search ramet in list and erase
+      for (unsigned int j=0;j<Genet->AllRametList.size();j++)
+      {
+        CPlant* Ramet;
+        Ramet=Genet->AllRametList[j];
+        if (plant1==Ramet)
+          Genet->AllRametList.erase(Genet->AllRametList.begin()+j);
+      }//for all ramets
    plant1->getCell()->occupied=false;
    plant1->getCell()->PlantInCell = NULL;
 
    delete plant1;
-}
+} //end CGridclonal::DeletePlant
 //-----------------------------------------------------------------------------
 void CGrid::Winter()
 {
@@ -788,7 +1062,7 @@ void CGrid::SeedMortWinter()
 {
 //   double rnumber;
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){  //loop for all cells
-      CCELL* cell = CellList[i];
+	   CCELL* cell = CellList[i];
       for (seed_iter iter=cell->SeedBankList.begin(); iter!=cell->SeedBankList.end(); ++iter){
          CSeed* seed = *iter;
          if ((CEnvir::rand01()<SRunPara::RunPara.mort_seeds)){
@@ -801,6 +1075,48 @@ void CGrid::SeedMortWinter()
    }// for all cells
 }//end CGrid::SeedMortWinter()
 //---------------------------------------------------------------------------
+/**
+  Set a number of randomly distributed clonal Plants (CclonalPlant)
+  of a specific trait-combination on the grid.
+
+  \param traits   CPftTraits of the plants to be set
+  \param cltraits SclonalTraits of the plants to be set
+  \param n        number of Individuals to be set
+*/
+void CGrid::InitClonalPlants(
+  SPftTraits* traits,const int n)
+//,SclonalTraits* cltraits
+{
+   //using CEnvir::nrand;using SRunPara::RunPara;
+   int  x, y;
+   int SideCells=SRunPara::RunPara.CellNum;
+   CCELL* cell;
+
+   for (int h=0; h<n; h++)
+   {
+      do{
+        x=CEnvir::nrand(SideCells);
+        y=CEnvir::nrand(SideCells);
+        cell = CellList[x*SideCells+y];
+      }while (cell->occupied);
+      if (!cell->occupied)
+      {
+         CPlant *myplant = new CPlant(
+              traits,cell);//,cltraits
+
+         CGenet *Genet= new CGenet();
+//         Genet->number=GenetList.size();
+         GenetList.push_back(Genet);
+         myplant->setGenet(Genet);
+
+         myplant->mshoot=myplant->Traits->MaxMass/2.0;
+         myplant->mroot=myplant->Traits->MaxMass/2.0;
+
+         PlantList.push_back(myplant);
+      } //if cell not occupied
+   } //for all n
+}//end CGridclonal::clonalPlantsInit()
+//-----------------------------------------------------------------------------
 /**
   Set a number of randomly distributed Plants (CPlant) of a specific
   trait-combination on the grid.
@@ -830,11 +1146,34 @@ void CGrid::InitPlants(SPftTraits* traits,const int n)
    }
 }//end CGrid::PlantsInit()
 //-----------------------------------------------------------------------------
-//void CGrid::InitSeeds(const string  PftName,const int n,int x, int y,double estab)
-//{
-//     InitSeeds(getPftLink(PftName),n,x,y); //com out
-//
-//}
+/**
+  Set a number of randomly distributed clonal Seeds (CclonalSeed) of a specific
+  trait-combination on the grid.
+
+  \param traits   SPftTraits of the seeds to be set
+  \param cltraits SclonalTraits of the seeds to be set
+  \param n        number of seeds to be set
+  \param estab    seed establishment (CSeed) - default is 1
+  \since 2010-09-10 estab rate for seeds can be modified (default is 1.0)
+
+*/
+void CGrid::InitClonalSeeds(
+  SPftTraits* traits,const int n,double estab)
+//,SclonalTraits* cltraits
+{ //init clonal seeds in random cells
+//   using CEnvir::nrand;using SRunPara::RunPara;
+   int x,y;
+   int SideCells=SRunPara::RunPara.CellNum;
+
+   for (int i=0; i<n; ++i){
+        x=CEnvir::nrand(SideCells);
+        y=CEnvir::nrand(SideCells);
+
+        CCELL* cell = CellList[x*SideCells+y];
+        new CSeed(estab,traits,cell);//cltraits,
+   }
+} //end CGridclonal::clonalSeedsInit()
+//-----------------------------------------------------------------------------
 /**
   Set a number of randomly distributed Seeds (CSeed) of a specific
   trait-combination on the grid.
@@ -865,7 +1204,7 @@ void CGrid::InitSeeds(SPftTraits* traits, int n,int x, int y,double estab)
 //   using CEnvir::nrand;using SRunPara::RunPara;
    int SideCells=SRunPara::RunPara.CellNum;
    if (estab==0) estab=traits->pEstab;
-   CCell* cell = CellList[x*SideCells+y];
+   CCELL* cell = CellList[x*SideCells+y];
 
    //random initial conditions
      for (int i=0; i<n; ++i){
@@ -888,14 +1227,18 @@ void CGrid::SetCellResource()
 //   using SRunPara::RunPara;
 
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCELL* cell = CellList[i];
-      cell->AResConc=max(0.0,
+	   CCELL* cell = CellList[i];
+      cell->SetResource(
+      //cell->AResConc=
+    		  max(0.0,
          (-1.0)*SRunPara::RunPara.Aampl*cos(2.0*Pi*gweek/(double)CEnvir::WeeksPerYear)
-         +CEnvir::AResMuster[i]);
-      cell->BResConc=max(0.0,
+         +CEnvir::AResMuster[i]),//;
+     // cell->BResConc=
+    		  max(0.0,
     		  SRunPara::RunPara.Bampl
     		  *sin(2.0*Pi*gweek/(double)CEnvir::WeeksPerYear)
-         +CEnvir::BResMuster[i]);
+         +CEnvir::BResMuster[i])
+         );
    }
 }//end SetCellResource
 //-----------------------------------------------------------------------------
@@ -949,6 +1292,7 @@ bool Emmigrates(int& xx, int& yy)
    return false;
 }
 //---------------------------------------------------------------------------
+/*
 ///manipulates vector with individual numbers of each PFT
 ///\param[out] PftData list of numbers of various Pfts on grid
 void CGrid::GetPftNInd(vector<int>& PftData)
@@ -959,16 +1303,21 @@ void CGrid::GetPftNInd(vector<int>& PftData)
 }
 //---------------------------------------------------------------------------
 ///manipulates vector with seed numbers of each PFT
+/**
+ *
+ * @param PftData
+ * /
 void CGrid::GetPftNSeed(vector<int>& PftData)
 {
    for (int i=0; i<SRunPara::RunPara.GetSumCells(); ++i){
-      CCELL* cell = CellList[i];
+      CCell* cell = CellList[i];
       for (seed_iter iter=cell->SeedBankList.begin(); iter!=cell->SeedBankList.end(); ++iter){
          CSeed* seed = *iter;
          ++PftData[seed->Traits->TypeID-1];
       }
    }
 }
+*/
 //---------------------------------------------------------------------------
 /**
   \return sum of all plants' aboveground biomass (shoot and fruit)
@@ -997,450 +1346,139 @@ double CGrid::GetTotalBelowMass()
    }
    return below_mass;
 }
-
-
-
-//--documentation Felix' peper version-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
-\page ODDbase ODD-Description of the basic model
-
-The model description follows the ODD protocol (overview,
-design concepts, details) for describing individualbased
-models (Grimm et al. 2006).
-
-\section Purpose
-The model is designed to evaluate the response of plant
-functional type (PFT) diversity towards grazing under
-different local environmental conditions and differentiated
-assumptions about plant-plant competition.
-
-\section variables State variables and scales
-The model includes the entities seeds, individual plants
-and grid cells (Table 1). Seeds are described by the state
-variables position, age, and mass. Plant individuals are
-characterized by their position, the mass of three plant
-compartments (shoot, root and reproductive mass), the
-duration of resource stress exposure, and they are classified
-as a certain PFT with specific trait attribute parameters
-(Table 3). In a simplified model version only two plant
-compartments, vegetative and reproductive mass, are taken
-into consideration. Spatially, plants are described by their
-‘zone-of-influence’ (ZOI), i.e. a circular area around
-their location (Schwinning and Weiner 1998, Weiner et
-al. 2001). Within this area the individual can acquire
-resources and if the ZOIs of neighbouring plants overlap,
-the individuals will only compete for resources in the
-overlapping area. For the three compartment model
-version we consider two independent ZOIs for a plant’s
-shoot and root, representing above- and below-ground
-resource uptake and competition. The ZOIs radii are
-determined from the biomass of the corresponding plant
-compartment.
-
-In order to simplify spatial calculations of resource
-competition, ZOIs are projected onto a grid of discrete
-cells. Grid cells represent 1 cm2. The state of a grid cell is
-defined by two resource availabilities, above and below
-ground (in the simplified model version, only one resource
-is considered). The size of the modelled arena was
-128 by 128 cm. To avoid edge effects, periodic boundary
-conditions were used, i.e. the grid essentially was a torus.
-A model’s time step corresponds to one week; a vegetation
-period consisted of 30 weeks per year, and simulations
-were run for 100 years.
-
-\section sced Process overview and scheduling
-The processes resource competition, plant growth and
-plant mortality are considered within each week of the
-vegetation period. Seed dispersal and seedling establishment
-are limited to certain weeks of the year (Table 2).
-Grazing events occur randomly with a fixed probability
-which is constant for all weeks. Two processes, winter
-dieback of above-ground biomass and mortality of seeds
-are only considered once a year, at the end of the
-vegetation period (Fig. A1 in Supplementary material
-Appendix 1). Plant's state variables are synchronously
-updated within the subroutines for growth, mortality,
-grazing and winter dieback, i.e. changes to state variables
-are updated only after all model entities have been
-processed (Grimm and Railsback 2005).
-
-\section emergence Design concepts: emergence
-All features observed at the community level, such as
-community composition and diversity, emerged from
-individual plant-plant interactions, grazing effects at the
-individual scale, and resource availabilities.
-
-\section adapt Design concepts: adaptation
-In the submodel representing plant growth, aboveand
-below-ground competition, plants adaptively allocate
-resources to shoot and root growth in order to balance
-the uptake of above- and below-ground resources (see
-\ref growth "Submodel: plant growth and mortality").
-
-\section interact Design concepts: interactions
-Competitive interactions between plant individuals were
-described using the ZOI approach.
-
-\section stoch Design concepts: stochasticity
-Seed dispersal and establishment, as well as mortality of
-seeds and plants are modelled stochastically to include
-demographic noise. Grazing events occur randomly during
-the vegetation period and the affected plants are chosen
-randomly, but the individual’s probability of being grazed
-depends on plant traits (see Submodel: grazing).
-
-\section obs Design concepts: observation
-See section 'Design and analysis of simulation experiments'.[not in doc here]
-
-\section init Initialization
-Initially, ten seedlings of all 81 PFTs (see section Plant traits
-and PFT parameterisation) with their respective seedling
-mass were randomly distributed over the grid. Their
-germination probability was set to 1.0 to assure equal
-initial population sizes of all PFTs. A spatially and
-temporally homogenous distribution of resources (both
-above- and below-ground) was used in all simulation
-experiments.
-
-\section Input
-The model does not include any external input of driving
-environmental variables.
-
-\section comp Submodel: competition
-Following the ZOI approach, plants compete for resources
-in a circular area around their central location point. To
-relate plant mass to the area covered (Ashoot), we extended
-the allometric relation used by (Weiner et al. 2001)
-
- \f{eqnarray*}{
-        A_shoot &=& c_shoot \times (f_leaf \times m_shoot)^{2/3} (1)\\
-   \f}
-
-where cshoot is a constant ratio between leaf mass and ZOI
-area and mshoot is vegetative shoot mass (Tables 1, 2). The
-factor fleaf is introduced to describe different shoot
-geometries and is defined as the ratio between photosynthetically
-active (leaf) and inactive (stem) tissue (Fig. 1).
-
-Only the former is considered for the calculation of the
-ZOI size. These circular areas are projected onto a grid of
-discrete cells. Grid cells thus contain the information by
-which plants they are covered, so that resource competition
-can be calculated cell by cell. The resources within a cell are
-shared among plants according to their relative competitive
-effects (bi). The resource uptake (Dres) of plant i from a cell
-with resource availability (Rescell) covered by n plants is thus
-calculated as
-
-Dresi
-bi
-Xn
-j1
-bj
-Rescell (2)
-
-Calculating bi in different ways allows including different
-modes of competition (Weiner et al. 2001). We assume
-that the relative competitive ability of a plant is correlated
-with its maximum growth rate in the absence of resource
-competition. Therefore bi is proportional to maximum
-resource utilization per unit area covered (rumax, see
-Submodel: plant growth and mortality and Table 2). In
-the case of size-symmetric competition, bi simply equals
-rumax:
-
-birumax (3a)
-
-In the case of partially size-asymmetric competition bi is a
-function of plant mass and shoot geometry:
-
-birumaxmshootf1
-leaf : (3b)
-
-The inverse of fleaf is used, because plants with a lower
-fraction of leaf tissue are considered to be higher and thus
-show a higher competitive ability by overtopping other
-plants (Fig. 1). In this way, plants with equal rumax receive
-equal amounts of resources from one unit of area
-irrespective of their mass or height in the case of sizesymmetric
-competition, while larger and higher plants
-receive a higher share of resources in proportion to their
-shoot geometry traits in the case of partially asymmetric
-competition (Schwinning and Weiner 1998, Weiner et al.
-2001). The resource uptake of one plant within one week
-Figure 1. Illustration of the 'zone-of-influence' (ZOI) approach
-including above- and below-ground competition and different
-shoot geometries. Above- and below-ground 'zones-of-influence'
-are shown as light and dark grey circles, respectively. Stems and
-support tissue are represented as grey cylinders. Plant individuals
-compete for resources in the areas of overlap only (arrows indicate
-the area of above-ground competition). The plant to the left has a
-lower ratio of leaf mass to shoot mass (fleaf) and thus a smaller
-above-ground ZOI. In return its competitive ability for aboveground
-resources (light) is higher as it is able to shade the plant to
-the right.
-
-To include differences between intra- and interspecific
-competition, individuals of the same PFT are considered
-as conspecifics and those of different PFTs as heterospecifics.
-The relative competitive ability bi of one plant is
-then determined as a decreasing function of the number
-of plants belonging to the same PFT (nPFT) and covering
-the same cell:
-
-birumax 1
-ffinffiffiffiffiffiffiffiffi PFT
-p (3c)
-
-Equation 3c is used for size-symmetric competition
-instead of Eq. 3a. In the case of size asymmetry, plant
-mass and geometry are taken into consideration according
-to Eq. 3b. This approach represents a situation where
-intraspecific competition is increased relatively to interspecific
-competition and therefore implicitly includes niche
-differentiation of resource competition at the cell scale,
-which has been known as an important factor for species
-coexistence (Chesson 2000). In the model analysis,
-versions with and without niche differentiation were
-compared in order to test if this assumption for competition
-at the cell scale translates into a different behaviour at
-the community scale.
-
-\section growth Submodel: plant growth and mortality
-Plant growth only depends on the resources that the plant
-acquired during the current time step (Dres). In the absence
-of competition, plants show sigmoidal growth. Therefore
-we adapted the growth equation used by Weiner et al.
-(2001) to the description of plant geometry used here:
-
-Dmg
-
-Drescshootf leafrumaxm2
-shoot
-m4=3
-max
-
-(4)
-
-where g is a constant conversion rate between resource
-units and plant biomass and mmax is the maximum mass
-of shoot or root, respectively. In addition, the maximum
-amount of resources that is allocated to growth each week
-is limited by a maximum resource utilization rate given by
-rumax (resource units/cm2/week) multiplied by ZOI area
-(cm2). If Eq. 4 yields a negative result, Dm is set to zero
-and thus negative growth is prohibited.
-
-Growth of reproductive mass is restricted to the time
-between weeks 16 to 20. In this period, a constant fraction of
-the resources (5% for all PFTs) is allocated to growth of
-reproductive mass (Schippers et al. 2001), and reproductive
-mass is limited to 5% of shoot mass in total. The same
-resource conversion rate (g) is used for reproductive and
-vegetative biomass.
-
-For the two layer model version, Eq. 1.4 are applied to
-shoot and root ZOIs independently, with the difference
-that for root growth the factor fleaf is always one. We assume
-that the minimum uptake of above- and below-ground
-resources limits plant growth (Lehsten and Kleyer 2007),
-and introduced adaptive shoot/root allocation in a way that
-more resources are allocated to the growth of the plant
-compartment that harvests the limiting resource (Weiner
-2004). For resource partitioning, we adopt the model of
-Johnson (1985) and the fraction of resources allocated to
-shoot growth is calculated as
-
-ashoot
-DresB
-DresB DresA
-(5)
-
-where DresA is above-ground and DresB is below-ground
-resource uptake. To assure comparability between the one
-and two layer versions, the ‘value’ of resource units has to be
-doubled in the two layer version, as resources are shared
-between two plant compartments.
-
-Plants suffer resource stress if their resource uptake (in
-any layer) is below a fixed threshold fraction (thrmort) of
-their optimal uptake, which is calculated as maximum
-resource utilization (rumax) times ZOI area. That means
-each week the condition DresBthrmortrumaxAshoot/root
-is evaluated and if it is true either for shoot or root the plant
-is considered as stress-exposed during this week. Consecutive
-weeks of resource stress exposure (wstress) linearly
-increase the probability of death
-
-pmortpbase wstress
-survmax
-(6)
-
-where survmax is the maximum number of weeks a plant
-can survive under stress exposure and pbase is the
-stress independent background mortality of 0.7% per
-week corresponding to an annual mortality rate of 20%
-(Schippers et al. 2001).
-
-Dead plants do not grow and reproduce anymore, but
-they still can shade others and are therefore still considered
-for competition in the one layer model and for at least
-above-ground competition in the two layer model. Each
-week the mass of all dead plants is reduced by 50% and they
-are removed from the grid completely as soon as their total
-mass decreases below 10 mg.
-
-\section sprod Submodel: seed production, dispersal and establishment
-All plants disperse their seeds in week 21 each year. Seed
-number is determined by dividing reproductive mass by the
-mass of one seed (Schippers et al. 2001, Lehsten and Kleyer
-2007). For each seed, dispersal distance is drawn from a lognormal
-and direction from a uniform distribution (Stoyan
-and Wagner 2001). To avoid edge effects on the small scale
-investigated, periodic boundary conditions are used.
-
-Germination and seedling establishment are limited to
-four weeks in autumn directly after dispersal and four weeks
-in spring of the next year for all PFTs. In between, a winter
-mortality of 50% of seeds is assumed and all seeds which
-did not germinate in these two seasons are removed.
-
-Seedling recruitment is separated in two consecutive
-processes: (1) seed germination and (2) seedling competition.
-Germination is only allowed in grid cells that are not
-covered by any plant or not covered in the above-ground
-layer, respectively. In uncovered cells, seeds germinate with
-a fixed probability (pgerm) and are converted to seedlings. In
-each cell only a single plant is allowed to establish. Seedling
-competition is modelled as a weighted lottery, using seed
-mass as a measure of competitive ability between seedlings
-(Chesson and Warner 1981, Schippers et al. 2001). The
-seedling that is chosen for establishment is converted into a
-plant with a shoot (and root) mass equal to seed mass. All
-the other seedlings that germinated within the cell die and
-are removed from the grid.
-
-\section graz Submodel: grazing
-Grazing is modelled as partial removal of an individual’s
-above-ground biomass. The frequency of grazing is specified
-by a constant weekly probability (pgraz) of a grazing
-event. Grazing is a process that acts selectively towards
-trait attributes such as shoot size and tissue properties.
-Therefore, for each plant the susceptibility to grazing
-(sgraz) is calculated as a function of shoot size, geometry
-and PFT-specific palatability (palat).
-
-sgrazmshootf1
-leafpalat (7)
-
-The probability for each plant to be grazed within one week
-is derived by dividing individual susceptibilities by the
-current maximum individual susceptibility of all plants. All
-plants are checked for grazing in random order. In case a
-plant is grazed, 50% of its shoot mass and its complete
-reproductive mass are removed. The random choice of
-plants is repeated without replacement, until 50% of the
-total (above-ground) biomass on the whole grid has been
-removed. When all plants have been checked for grazing
-once, but less than 50% of the total above-ground biomass
-has been removed, grazing probabilities for all individuals
-are calculated once more based on Eq. 7 and the whole
-procedure is repeated until 50% of the total above-ground
-biomass has been removed or until a residual biomass is
-reached which is considered ungrazable. This fraction is set
-to 15 g m2 following (Schwinning and Parsons 1999).
-This allows a plant individual to be grazed never or several
-times during one week with a grazing event.
-
-In addition to stochastic grazing, each year at the end of
-the vegetation period 50% of the above-ground mass of all
-plant individuals is removed to mimic vegetation dieback in
-winter.
-
-\section traits Plant traits and PFT parameterisation
-The PFTs that are used in the model differ in their
-attributes for nine plant functional traits (Table 2). These
-are grouped into four trait syndromes based on well
-documented tradeoffs and trait correlations. The traits we
-chose comprise a subset of the 'common core list of plant
-traits', proposed by Weiher et al. (1999).
-
-The growth form of a plant is characterized by the ratio
-between leaf mass and total shoot mass (fleaf). Plants with a
-low fleaf use more biomass to build up support tissue (e.g.
-stems) instead of leave mass. Therefore this trait implicitly
-includes a tradeoff between plant height and leaf area or
-between competitive ability for light versus relative growth
-rate without competition, respectively (Fig. 1; Eq. 1, 3b).
-
-Maximum plant mass is the second trait that describes
-plant geometry and is positively related to actual plant
-mass, according to the sigmoidal growth equation (Eq. 4).
-In the two-layer version equal maximal masses for shoot
-and root are assumed. Individual susceptibility to grazing
-is modelled as a function of fleaf and mshoot (Eq. 7) as
-higher and larger plants tend to be more affected by
-grazing (Diaz et al. 2001).
-
-Maximum plant mass and individual seed mass are
-assumed to be positively correlated and combined within a
-trait syndrome (Eriksson and Jakobsson 1998). The welldocumented
-seed size versus seed number tradeoff emerges
-in our model, because PFTs with higher seed mass produce
-less seeds from the same amount of reproductive mass
-(Leishman 2001, Schippers et al. 2001, Westoby et al.
-2002). The disadvantage of a low seed number is balanced
-by the higher recruitment success of large seedlings, due to
-the weighted lottery of seedling competition and the higher
-initial mass of plants that germinated from large seeds
-(Jakobsson and Eriksson 2000). A negative correlation
-between seed mass and dispersal distance was assumed
-here, which is supported at least for wind-dispersed seeds
-(Jongejans and Schippers 1999). For simplicity, equal
-values are used for mean and standard deviation of the
-dispersal kernel assuming a higher variance for the dispersal
-distances of smaller seeds.
-
-The response of plants to different resource conditions is
-distinguished into categories reflecting the tradeoff between
-competitive ability and stress tolerance (Grime 2001).
-
-Maximum growth rate in resource-rich environments is
-given as the maximum resource utilization per shoot/root
-area (rumax), while stress resistance is specified by the
-maximal number of weeks a plant can survive under
-resource stress exposure (survmax). Accordingly, PFTs with
-high rumax feature a low stress resistance and vice versa.
-
-We distinguished two strategies of response to grazing:
-(1) grazing tolerance by fast re-growth of removed biomass
-and (2) grazing avoidance by low palatability through
-defence structures or secondary compounds (Bullock et al.
-2001). In our model, the relationship between leaf mass and
-leaf area is given by the parameter cshoot (Eq. 1). This
-parameter is functionally analogous to the specific leaf area
-(SLA), which was proposed by Westoby et al. (2002) as a
-key trait to characterize plant strategies. High SLA is related
-to high efficiency of light interception and fast growth,
-while leaves with low SLA show higher longevity, structural
-strength or high allocation to defensive compounds
-(Westoby et al. 2002). Accordingly, a high cshoot value for
-grazing tolerance versus a low value for grazing avoidance is
-used here. The positive effect of defence compounds is
-expressed as a low palatability (palat) and thus, a low
-susceptibility towards grazing (Eq. 7).
-
-For each of the four functional traits three attributes
-were distinguished. The parameter values used should
-represent the range of contrasting plant strategies with
-respect to resource response, competitive ability and
-grazing response that could potentially occur in grassland
-ecosystems. Combining all three attributes of all four
-functional traits allowed us to define 34 by 81 PFTs in total
-(Table 3).
-
-source: \ref bib "May et al. (2009)"
+  \return number of clonal plants on grid
 */
+int CGrid::GetNclonalPlants() //count clonal plants
+{
+  int NClonalPlants=0;
+  for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+  {
+    CPlant* plant = *iplant;
+    //only if its a clonal plant
+    if ((plant->Traits->clonal)//>type() == "CclonalPlant")
+    		&&(!plant->dead))
+    	NClonalPlants++;
+  }
+  return NClonalPlants;
+}//end CGridclonal::GetNclonalPlants()
+//-----------------------------------------------------------------------------
+/**
+ * TODO change meaning
+  \return number of non-clonal plants on grid
+
+*/
+int CGrid::GetNPlants() //count non-clonal plants
+{
+  int NPlants=0;
+  for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+  {
+    CPlant* plant = *iplant;
+    //only if its a non-clonal plant
+    if (!(plant->Traits->clonal)//>type() == "CPlant")
+    		&&(!plant->dead)) NPlants++;
+  }
+  return NPlants;
+}//end CGridclonal::GetNPlants()
+//-----------------------------------------------------------------------------
+/**
+  \return the number of genets with at least one ramet still alive
+*/
+int CGrid::GetNMotherPlants() //count genets
+{
+   int NMotherPlants=0;
+   if (GenetList.size()>0)
+   {
+      for (unsigned int i=0; i<GenetList.size();i++)
+      {
+         CGenet* Genet = GenetList[i];
+         if ((Genet->AllRametList.size()>0))
+         {
+            unsigned int g=0;
+            do {g++;} while (
+              (Genet->AllRametList[g-1]->dead)&&(g<Genet->AllRametList.size()));
+            if (!Genet->AllRametList[g-1]->dead) NMotherPlants++;
+         }//for all ramets
+      }//for all genets
+   }//if there are genets
+return NMotherPlants;
+}//end CGridclonal::GetNMotherPlants()
+//------------------------------------------------------------------------------
+/**
+  Counts a cell covered if the list of aboveground ZOIs has length >0.
+
+  \note Call the function after updating weekly ZOIs
+  in function CGrid::CoverCells()
+
+  \return the number of covered cells on grid
+*/
+int CGrid::GetCoveredCells()//count covered cells
+{
+   int NCellsAcover=0;
+   const int sumcells=SRunPara::RunPara.GetSumCells(); //hopefully faster
+   for (int i=0; i<sumcells; ++i)
+   {
+      if (CellList[i]->AbovePlantList.size()>0) NCellsAcover++;
+   }//for all cells
+   return NCellsAcover;
+}//end CGridclonal::GetCoveredCells()
+//------------------------------------------------------------------------------
+/**
+  Counts a cell covered if the list of belowground ZOIs has length >0.
+
+  \note Call the function after updating weekly ZOIs
+  in function CGrid::CoverCells()
+
+  \return the number of rooted soil cells on grid
+*/
+int CGrid::GetRootedSoilarea()//count covered cells
+{
+   int NCellsBcover=0;
+   const int sumcells=SRunPara::RunPara.GetSumCells(); //hopefully faster
+   for (int i=0; i<sumcells; ++i)
+   {
+      if (CellList[i]->BelowPlantList.size()>0) NCellsBcover++;
+   }//for all cells
+   return NCellsBcover;
+}//end CGridclonal::GetRootedSoilarea()
+
+//------------------------------------------------------------------------------
+/**
+ * calculate the mean number of generations per genet
+ * @return mean number of generations per genet
+ */
+double CGrid::GetNGeneration()
+{
+   double SumGeneration=0;
+   double Sum=0;
+   double highestGeneration;
+   double MeanGeneration=0;
+
+   if (GenetList.size()>0)
+   {
+      for (unsigned int i=0; i<GenetList.size();i++)
+      {
+         CGenet* Genet;
+         Genet = GenetList[i];
+         if ((Genet->AllRametList.size()>0))
+         {
+            highestGeneration=0;
+            for (unsigned int j=0;j<Genet->AllRametList.size();j++)
+            {
+               CPlant* Ramet;
+               Ramet=Genet->AllRametList[j];
+               highestGeneration=max(highestGeneration,double (Ramet->Generation));
+            }
+            SumGeneration+=highestGeneration;
+            Sum++;
+         }//if genet has ramets
+      }//for all ramets
+      if (Sum>0) MeanGeneration=(SumGeneration/Sum);
+      //else MeanGeneration=0;
+   }
+   return MeanGeneration;
+}//end CGridclonal::GetNGeneration()
+
 //-eof--------------------------------------------------------------------------
 

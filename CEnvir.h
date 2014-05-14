@@ -5,21 +5,29 @@
 #ifndef environmentH
 #define environmentH
 
-#include "GridBase.h"
-#include "CGridclonal.h"
-//#include "CWaterGrid.h"
-
+#include "CGrid.h"
 #include "OutStructs.h"
+
 #include <vector>
 #include <fstream>
 #include "LCG.h"
 
-//#include "rng.h"
+struct SSR {
+	   static map<string,double> PftSeedRainList; ///<seed rain list
+	      static string NameLDDFile1;   ///< Filename of Seed-Output
+	      static string NameLDDFile2;   ///< Filename of Seed-Output
+	      static string NameLDDFile3;   ///< Filename of Seed-Output
+	      static string NameLDDFile4;   ///< Filename of Seed-Output
+	      static string NameLDDFile5;   ///< Filename of Seed-Output
+//	protected:
+	   int NPftSeedSize[3];                  //!< number of PFTs with small, medium, large seeds
+	   int NPftClonal[2];                  //!< number of non-clonal and clonal PFTs
+	   void GetNPftSeedsize(); //!< count number of PFTs with small, medium an large seeds
+	   void GetNPftSeedClonal(); //!< count number of nonclonal and clonal PFTs
 
-// class KW_RNG::RNG;
 
-//#include "LCG.h"
-//---------------------------------------------------------------------------
+   };
+
 //---------------------------------------------------------------------------
 /// virtual Basic Results Class with general static simulation parameters
 /** The class contains
@@ -41,25 +49,22 @@ class CEnvir{
 protected:
    map<string,int> PftSurvTime;    //!< array for survival times of PFTs [years];
    static map<string,long> PftInitList;  //!< list of Pfts used
-
 public:
-   //Input Files
-   static string NamePftFile;   ///< Filename of PftTrait-File
-   static string NameBResFile; ///< Filename of Belowground-Resource-File
-   static string NameSimFile;  ///< Filename of Simulation-File
+///seed rain struct
+SSR SeedRainGr;
+   //   static string NameInitFile; ///< Filename of initial PFT file
+//   static string NameClonalPftFile; ///< Filename of clonal Pft-File
 
    //Output Files
    static string NamePftOutFile;   ///< Filename of Pft-Output
    static string NameGridOutFile;  ///< Filename of Grid-Output
-//   static char* NameSurvOutFile;   ///< Filename of Survival-Output
    static string NameSurvOutFile;   ///< Filename of Survival-Output
    static string NameLogFile;      ///< Filename of Log-Entries
+   static string NameClonalOutFile; ///< Filename of clonal Output-File
 
-//   static int NumPft;              ///<Number of Plant functional Types
+
    static vector<double> AResMuster;     //!< mean above-ground resource availability [resource units per cm^2]
    static vector<double> BResMuster;     //!< mean below-ground resource availability [resource units per cm^2]
-//   static KW_RNG::RNG RandNumGen;   //!< random number generator
-//   static RNG RandNumGen;   //!< random number generator
 
    static int week;        ///< current week (0-30)
    static int year;        ///< current year
@@ -68,10 +73,12 @@ public:
    static int SimNr;       ///< simulation-ID
    static int RunNr;       ///< repitition number
 
-   bool endofrun;
+   bool endofrun;			///<end of simulation reached? (flag)
    int init;               ///< flag for simulation issue (init time)
    vector<SPftOut*> PftOutData;   //!< Vector for Pft output data
    vector<SGridOut*> GridOutData;  //!< Vector for Grid output data
+   //annual Results variables -clonal
+ //  vector<SClonOut*>  ClonOutData; ///< Vector of clonal Output data
 
   //result variables - non-clonal
    vector<int> ACover;     //!< mean above-ground resource availability [resource units per cm^2]
@@ -86,63 +93,76 @@ public:
 
    //! read in fractal below-ground resource distribution (not used)
    static void ReadLandscape();
+   ///reads simulation environment from file
+   int GetSim(const int pos=0,string file=SRunPara::NameSimFile);
    /// returns absolute time horizon
    static int GetT(){return (year-1)*WeeksPerYear+week;};
    /// reset time
    static void ResetT(){ year=1;week=0;};
    /// set new week
    static void NewWeek(){week++;if (week>WeeksPerYear){week=1;year++;};};
+
+   /**
+    * \name math and random help functions
+    */
+   ///@{
    ///round a double value
    inline static int Round(const double& a){return (int)floor(a+0.5);};
-
    ///get a uniformly distributed random number (0-n)
-   inline static int nrand(int n){return rand01()*n;};
-   //   inline static int nrand(int n){return RandNumGen.rand_int32()/(double)ULONG_MAX*n;};
-
+   inline static int nrand(int n){return combinedLCG()*n;};
    ///get a uniformly distributed random number (0-1)
    inline static double rand01(){return combinedLCG();};//RandNumGen.rand_halfclosed01()
-
    ///get a uniformly distributed random number (0-1)
    inline static double normrand(double mean,double sd){return normcLCG(mean,sd);};//RandNumGen.rand_halfclosed01()
-
-   //   ///get a uniformly distributed random number (0-1)
-//   inline static double rand01(){return combinedLCG();};
-//   inline static int nrand(int n){return (int)(combinedLCG()*n);};
-
+   ///@}
+/**
+ * \name core simulation functions (virtual)
+ * Functions needed for simulation runs.
+ * To be defined in inheriting classes.
+ */
+///@{
    virtual void InitRun();   ///<init a new run
-   virtual void clearResults(); ///<reset result storage
+//  virtual void clearResults(); ///<reset result storage
    virtual void OneWeek()=0;  //!< calls all weekly processes
    virtual void OneYear()=0; ///<runs one year in default mode
    virtual void OneRun()=0;  ///<runs one simulation run in default mode
    ///collect and write Output to an output-file
    virtual void GetOutput()=0;//PftOut& PftData, GridOut& GridData)=0;
    virtual void Save(string ID)=0;//<save current grid state
-   virtual void Load(string ID)=0;//<load previosly saved grid
    //! returns number of surviving PFTs
    /*! a PFT is condsidered as a survivor if individuals or
         at least seeds are still there
    */
    virtual int PftSurvival()=0;
-
+///@}
+/**
+ * \name File Output
+ */
+///@{
+   void WriteOFiles();///<collect file output
    //! write suvival time of each PFT to the output file
    /*! For each scenario the year in which each PFT went extinct is written
      to the output file. If the year is equal to the simulation time the PFT survived
-     In addition the number or surviving PFTs and the mean shannon index of the last
+     In addition the number or surviving PFTs and the mean Shannon index of the last
      quarter of the simulation is saved to the file.
    */
    void WriteSurvival();
    ///write survival data while adding an index to the file name
    void WriteSurvival(string str);
    void WriteSurvival(int runnr, int simnr);
-   //! writes detailed data for the modelled community to output file
+   //! writes detailed data for the modeled community to output file
    void WriteGridComplete(bool allYears=true);
    //! writes detailed data for each PFT to output file
-   void WritePftComplete();
+   void WritePftComplete(bool allYears=true);
+   void WriteclonalOutput();   ///< write clonal results collected last
+   void WritePftSeedOutput();  ///< write ldd-seed information
    ///add string1 to file - for logging
    static void AddLogEntry(string,string);
    ///add string1 to file - for logging
    static void AddLogEntry(float,string);
-   /// get mean shannon diversity over several years
+///@}
+
+   /// get mean Shannon diversity over several years
    double GetMeanShannon(int years);
    /// get mean number of types
    double GetMeanNPFT(int years);
@@ -150,87 +170,7 @@ public:
    double GetMeanPopSize(string pft,int x);
       ///get current PopSize of type pft
    double GetCurrPopSize(string pft);
-//    ///get n'th plant type; return value equals 'err' if index is out of scope
-//   string getType(int n){string v="err"; if (n<this->PftInitList.size()) PftInitList;return v;};
+
 };
-//---------------------------------------------------------------------------
-/// simulation service class including grid-, result- and environmental information
-/**
-   The class collects simulation environment with clonal properties.
-   CGridclonal and CEnvir are connected, and some Clonal-specific
-   result-variables added.
-*/
-class CClonalGridEnvir: public CEnvir, public CGridclonal{
-   static map<string,SPftTraits*> PftLinkList;  //!< links of Pfts(SPftTrais) used
-   static map<string,SclonalTraits*> ClLinkList;  //!< links of Pfts(SclonalTraits) used
-protected:
-public:
-  static string NameClonalPftFile; ///< Filename of clonal Pft-File
-  static string NameClonalOutFile; ///< Filename of clonal Output-File
-  static int clonaltype;          ///< current clonal type (number in List)
-  static int Pfttype;             ///< current Pft-Type (number in List)
-//  static int sim;                 ///< current number of  repititions
-
-  //Constructors, Destructors ...
-  CClonalGridEnvir();
-  CClonalGridEnvir(string id); ///< load from file(s)
-  virtual ~CClonalGridEnvir();//delete clonalTraits;
-
-  //annual Results variables -clonal
-  vector<SClonOut*>  ClonOutData; ///< Vector of clonal Output data
-
-   ///get basic type according to string
-   static SPftTraits* getPftLink(string type);//{return PftLinkList.find(type)->second;};
-   static void addPftLink(string type,SPftTraits* link){PftLinkList[type]=link;};
-   ///get clonal type according to string
-   static SclonalTraits* getClLink(string type){return ClLinkList.find(type)->second;};
-   static void addClLink(string type,SclonalTraits* link){ClLinkList[type]=link;};
-  ///\name reimplemented Functions from CEnvir
-  //@{
-  void InitRun();   ///< from CEnvir
-  void OneYear();   ///< runs one year in default mode
-  void OneRun();    ///< runs one simulation run in default mode
-  void OneWeek();   //!< calls all weekly processes
-  virtual void Save(string ID);//<save current grid state
-  virtual void Load(string ID){};//<load previosly saved grid
-  int PftSurvival();    ///< from CEnvir
-  /// from CEnvir: collect and write general results
-  virtual void GetOutput();    //run in 20th week of year
-  void GetClonOutput(); //run in 30th week of year
-  //@}
-  //new...
-  ///reads simulation environment from file
-  int GetSim(const int pos=0,string file=NameSimFile);
-  void InitInds();///<Initialization of individuals on grid
-  void InitInds(string file);///<initialization of inds based on file data
-  virtual bool InitInd(string def);///<init of one ind based on saved data
-//  void InitSeeds(int); ///<Initialization of seeds on grid
-//  void InitSeeds(string, int n, int x=-1, int y=-1);
-  void GetOutputCutted(); ///<get anually cutted biomass (after week 22)
-  void GetOutputGrazed(); ///<get anually grazed biomass (after week 22)
-  void WriteClonalOutput();   ///< write clonal results collected last
-  virtual int exitConditions(); ///< get exit conditions //first implemented by Ines
-   ///\name Functions to get Acover and Bcover of cells.
-   /** It is assumed that coordinates/indices match grid size.
-       Functions have to be called after function CGrid::CoverCells and before
-       first function calling delete for established plants in the same week.
-       else undefined behavior including access violation is possible.
-
-     \note depends (at least) on an inherited subclass of CGrid
-   */
-   //@{
-   int getACover(int x, int y);
-   int getBCover(int x, int y);
-   double getTypeCover(const string type)const;
-   double getTypeCover(const int i, const string type)const;
-private:
-   int getGridACover(int i);
-   int getGridBCover(int i);
-   ///set cell state information
-   void setCover();
-   //@}
-};
-
-
 //---------------------------------------------------------------------------
 #endif

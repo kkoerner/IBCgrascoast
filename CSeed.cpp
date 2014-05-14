@@ -2,7 +2,7 @@
 //#pragma hdrstop
 
 #include "CSeed.h"
-#include "GridBase.h"//for CGrid::PftList[]
+#include "CGrid.h"//for CGrid::PftList[]
 //---------------------------------------------------------------------------
 
 //#pragma package(smart_init)

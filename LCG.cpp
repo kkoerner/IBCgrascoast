@@ -86,4 +86,41 @@ void initLCG(long init_s1, long init_s2)
     s1 = init_s1;
     s2 = init_s2;
 }
-//eof
+
+/**
+ *
+
+The Poisson distribution describes the probability of observing k events at a given length of time if the events occur independently at a constant rate lambda. It is often neccessary to simulate random variables with a Poisson distribution, especially in physics Monte Carlo simulations. Sadly most random number generators only give uniformly distributed random numbers, however using a uniform random number pU~U(0,1) one can calculate a Poisson distributed random number pPo~Po(lambda).
+
+The idea is simple, given lambda, calculate the cumulative probability S(n) of observing n or less events for all k>=0, and generate a uniform random number pU. The transformed random number is the first n for which pU >=S(n).
+
+This method is some times called the cumulant method and works for most probability distributions, but is most handy when calculating S(n) is easy. Using the Poisson distribution function the sum can be written as
+
+S(n)= Sum_k=0,n e-lambda lambda*n/k!
+
+In an implementation this way of calculating S(n) is slow, especially the factorial and exponent parts of the expression. To optimize one can use the iterative form of the distribution:
+
+P(n+1)= P(n)lambda/k   where   P(0)= e-lambda
+
+It is also clever to put an upper limit on k for the unlikely case that pU=1 or else one might get stuck in an infinite loop. If lambda is constant for many calls it might be a good idea to precalculate all S(n) and store them in a lookup table.
+
+Below is a C function that implements the idea. Note that you have to provide your own UniformRandomNumber(). (Code written by Inexpensive, free to use as you like)
+*/
+const int poissonLCG(const double lambda)
+{
+  int k=0;                          //Counter
+  const int max_k = 1000;           //k upper limit
+  double p = combinedLCG();         //uniform random number
+  double P = exp(-lambda);          //probability
+  double sum=P;                     //cumulant
+  if (sum>=p) return 0;             //done allready
+  for (k=1; k<max_k; ++k) {         //Loop over all k:s
+    P*=lambda/(double)k;            //Calc next prob
+    sum+=P;                         //Increase cumulant
+    if (sum>=p) break;              //Leave loop
+  }
+
+  return k;                         //return random number
+}
+
+ //eof
