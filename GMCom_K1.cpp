@@ -23,7 +23,7 @@ experiments.
  - Ines Steinhauer (clonal option),
  - Lina Weiss (sensitivity analysis, adoption to real communities, and validation),
  - Katrin Koerner (revision and rebuilt Felix' grazing experiments, and
-  belowground grazing option)
+  belowground grazing option, COMTESS)
 
 \par Verbal description of what the code does:
 The model describes the development of a community of
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
   }
   //      //change gridsize
-     SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50;//default: 100
+     SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=100;//default: 100
 
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
