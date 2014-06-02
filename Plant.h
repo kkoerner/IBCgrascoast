@@ -27,6 +27,7 @@ protected:
    virtual double ReproGrow(double uptake);
    virtual double ShootGrow(double shres);
    virtual double RootGrow(double rres);
+   virtual double dmGrow(double Assim, double Resp);
 //---
    ///helping function to set allocation to reproduction
 //   double ReproGrow(double uptake);

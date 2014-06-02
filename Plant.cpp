@@ -208,6 +208,7 @@ double CPlant::ReproGrow(double uptake){
  * @param uptake Resource uptake of plant object.
  * @return resources available for individual needs.
  * \author FM, IS adapted by HP
+  * \note no 'respiration' costs for reproduction
  */
 double CPlant::ReproGrow(double uptake) {
 	double SpacerRes, SeedRes, VegRes, dm_seeds, dummy1;
@@ -222,17 +223,17 @@ double CPlant::ReproGrow(double uptake) {
 		//during the seed-production-weeks
 		if ((pweek >= Traits->FlowerWeek) && (pweek < Traits->DispWeek)) {
 			//seed production
-			dm_seeds = max(0.0, Traits->growth * SeedRes);
+			dm_seeds = dmGrow( Traits->growth * SeedRes,0);//max(0.0, Traits->growth * SeedRes);
 			mRepro += dm_seeds;
 
 			//clonal growth
 			dummy1 = max(0.0, min(SpacerRes, uptake - SeedRes)); // for large AllocSeed, ressources may be < SpacerRes, then only take remaining ressources
-			mReproRamets += max(0.0, Traits->growth * dummy1);
+			mReproRamets += dmGrow( Traits->growth * dummy1,0);//max(0.0, Traits->growth * dummy1);
 			VegRes = uptake - SeedRes - dummy1;
 
 	    } else {
 			VegRes = uptake - SpacerRes;
-			mReproRamets += max(0.0, Traits->growth * SpacerRes);
+			mReproRamets += dmGrow(Traits->growth * SpacerRes,0);//max(0.0, Traits->growth * SpacerRes);
 	    }
 
 	} else
@@ -288,6 +289,18 @@ void CPlant::SpacerGrow()
    mReproRamets=0;
 } //end SpacerGrow
 
+/**
+ * Calculates net growth as difference of assimilation and respiration.
+ * Negative net growth is prohibited.
+ *
+ * @param Assim assimilated biomass
+ * @param Resp biomass costs
+ * @return net difference with zero minimum
+ */
+double CPlant::dmGrow(double Assim, double Resp)
+{
+	return max(0.0,Assim-Resp);
+}//dmGrow
 //-----------------------------------------------------------------------------
 /**
   two-layer growth
@@ -340,7 +353,7 @@ double CPlant::ShootGrow(double shres){
    Resp_shoot=Traits->growth*Traits->SLA
               *pow(Traits->LMR,p)*Traits->Gmax
               *pow(mshoot,q)/pow(Traits->MaxMass,r);       //respiration proportional to mshoot^2
-   return max(0.0,Assim_shoot-Resp_shoot);
+   return dmGrow(Assim_shoot,Resp_shoot);//max(0.0,Assim_shoot-Resp_shoot);
 }
 /**
     root growth
@@ -354,7 +367,7 @@ double CPlant::RootGrow(double rres){
    Resp_root=Traits->growth*Traits->Gmax*Traits->RAR
             *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
 
-   return max(0.0,Assim_root-Resp_root);
+   return dmGrow(Assim_root,Resp_root);//max(0.0,Assim_root-Resp_root);
 }
 
 /**

@@ -1,3 +1,15 @@
+2014-06-02  KatrinK  <KatrinK@VEGLAP-01>
+
+	* GMCom_K1.cpp: Removed. -renamed
+	* IBCgrass-coast_base.cpp: New file.
+	* Plant.cpp (ReproGrow): 
+	(CPlant::ReproGrow): 
+	(CPlant::dmGrow): new helping function
+	(ShootGrow): 
+	(RootGrow): 
+	(CPlant::ShootGrow): 
+	(CPlant::RootGrow): 
+	* Plant.h (CPlant): 
 2014-05-14  KatrinK  <KatrinK@VEGLAP-01>
 some debugging and delete obsolete files
 	* CclonalSeed.cpp: Removed.
