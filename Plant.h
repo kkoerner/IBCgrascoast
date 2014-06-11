@@ -3,7 +3,9 @@
 
 #include <math.h>
 #include "CObject.h"
+#include "CGenet.h"
 #include "RunPara.h"
+#include "SPftTraits.h"
 //#include "Seed.h"
 #include <vector>
 using namespace std;
@@ -15,53 +17,8 @@ const double Pi=3.14159265358979323846;
 
 //---------------------------------------------------------------------------
 //! Structure to store all PFT Parameters
-struct SPftTraits   //plant functional traits
-{
-   static vector<SPftTraits*> PftList;        //!< List for Pft parameters
-//   static map<string,SPftTraits*> PftList;        //!< List for Pft parameters
-   static void ReadPftStrategy(char* file="");    //!> read PFT parameters from the input file
 
-   int TypeID;     //!< PFT ID same number for all individuals of one PFT
-   string name;   ///< name of functional type
-   int N0;         ///< number of initial individuals
-   int MaxAge;     ///< maximum age of plants
-   double LMR;     //!< leaf mass ratio (LMR) (leaf mass per shoot mass) [0;1] 1 -> only leafs, 0 -> only stem
-   double SLA;     //!< specific leaf area (SLA) equal to cshoot in the model description (leaf area per leaf mass)
-   double RAR;     //!< root area ratio (root area per root mass) equal to croot in the model description
-   double m0;      ///< initial masses of root and shoot
-   double MaxMass; //!< maximum individual mass
-   double AllocSeed;  //!< constant proportion that is allocated to seeds between FlowerWeek and DispWeek
-   double SeedMass;   //!< Seed mass (mass of ONE seed)
-   double Dist;    //!< mean dispersal distance (and standard deviation of the dispersal kernel
-   int    Dorm;    //!< maximum seed longevity
-   double pEstab;  //!< annual probability of establishment
-
-   //! maximal resource utilization per ZOI area per time step
-   /*!< (optimum uptake for two layers : LimRes=2*Gmax)
-   (optimum uptake for one layer : LimRes=Gmax)
-   */
-   double Gmax;
-   //! above-ground competitive ability
-   inline double CompPowerA()const {return 1.0/LMR*Gmax;};
-   //! below-ground competitive ability
-   inline double CompPowerB()const {return Gmax;};
-    //! fraction of above-ground biomass removal if a plant is grazed
-   inline double GrazFac()const {return 1.0/LMR*palat;};
-
-   double palat;   //!< Palatability -> susceptability towards grazing
-   int    memory;    //!< equal to surv_max in the model description -> maximal time of survival under stress
-   double mThres;  //!< Fraction of maximum uptake that is considered as resource stress
-   double growth;  //!< concersion rate  resource -> biomass [mass/resource unit]
-   int    FlowerWeek; //!< week of start of seed production
-   int    DispWeek;   //!< week of seed dispersal (and end of seed production)
-   void SetDefault();   ///< set default trait values (eq. 'PFT1')
-   SPftTraits();
-   virtual ~SPftTraits(){};
-   void print();
-
-};
-//-----------------------------------------------
-class CSeed;class CCell;
+class CSeed;class CCell;class CGenet;
 //! Class that describes plant individuals
 class CPlant : public CObject
 {
@@ -73,6 +30,12 @@ protected:
    virtual double ShootGrow(double shres);
    ///individual root growth
    virtual double RootGrow(double rres);
+   virtual double dmGrow(double Assim, double Resp);
+//---
+   ///helping function to set allocation to reproduction
+//   double ReproGrow(double uptake);
+   double mReproRamets;                         ///<resources for ramet growth
+   CGenet* genet;                               ///<genet of the clonal plant
 
 public:
    SPftTraits* Traits;///<PFT Traits
@@ -104,29 +67,55 @@ public:
 
    int stress;     //!< counter for weeks with resource stress exposure
    int Age;        ///< age of (established) plant in years (ageing in winter)
+//--clonal..
+   vector<CPlant*> growingSpacerList;     ///<List of growing Spacer
+   double Spacerlength;                         ///<real spacer length
+   double Spacerdirection;                      ///<spacer direction
+   double SpacerlengthToGrow;                   ///<length to grow
+   int Generation;                              ///<clonal generation
 
 //   int LimitRes;   //!< limiting resource: 1->above, 2->below 0->equal (not used)
+   double mort_base; //!< pft-density - based base mortality (annually updated in CEnvir::GetOutput())
 
    //functions
-   //! constructor for plant objects
+//! constructor for plant objects
    CPlant(double x, double y,SPftTraits* Traits);
    CPlant(SPftTraits* Traits,CCell* cell,
      double mshoot=0, double mroot=0, double mrepro=0,
-     int stress=0, bool dead=false);
+     int stress=0, bool dead=false,
+     int generation=1,int genetnb=0,
+          double spacerl=0,double spacerl2grow=0);
+   //generation, genetnb,spacerl,spacerl2grow
    ///make a plant from a clonal-seed object
    CPlant(CSeed* seed);
    //! initalization of one plant
 //   CPlant(SPftTraits* traits,CCell* cell,
 //     double mshoot, double mroot, double mrepro, int stress, bool dead);
    virtual ~CPlant();  //!<destruktor
+   //constructors for plant objects
+   ///make a plant from a clonal-seed object
+//   CclonalPlant(CclonalSeed* seed);
+   ///clonal growth
+   CPlant(double x, double y, CPlant* plant);
+   ///keine vordefinierten Eigenschaften
+//   CclonalPlant(double x, double y, SPftTraits* PlantTraits);//, SclonalTraits* clonalTraits
+//   CclonalPlant(SPftTraits* PlantTraits, CCell* cell);//SclonalTraits* clonalTraits,
+//   CclonalPlant(SPftTraits* Traits,CCell* cell,
+//     double mshoot=0, double mroot=0, double mrepro=0,
+//     int stress=0, bool dead=false);
+//   virtual ~CclonalPlant();  //!<destructor
+
+//---admin
    virtual string type();  ///<say what you are
    virtual string pft();   ///<say what a pft you are
    virtual string asString(); ///<report plant's status
 //   void Allometrics(); //!< calculates ZOI areas (above and below) from shoot and root mass
-   double Area_shoot();
-   double Area_root();
-   double Radius_shoot();
-   double Radius_root();
+
+//-2nd order properties
+   double Area_shoot();  //!<ZOI area aboveground
+   double Area_root();   //!<ZOI area belowground
+   double Radius_shoot(); //!<ZOI radius aboveground
+   double Radius_root();  //!<ZOI radius belowground
 /// \brief get plant's height
 /// \param cheight mg vegetative plant mass per cm height
 /// \return plant height in cm
@@ -144,39 +133,55 @@ public:
 ///
 ///
   virtual double getDepth(double const cdepth = 4.0){   //6.5
-    return (mroot*this->Traits->RAR)/this->Area_root()*cdepth;};
+//if(this->Area_root()==0) std::cerr<<"GetDepth: Div by zero";
+	  return (mroot*this->Traits->RAR)/this->Area_root()*cdepth;};
+  ///corrective value for root uptake and competition
+  virtual double rootEfficiency(){return 1;};
+
 
    ///competition coefficient for a plant -needed for AboveComp and BelowComp
    virtual double comp_coef(const int layer,const int symmetry)const;
-   //! shoot-root resource allocation and plant growth in two layers (one-layer option obsolete now)
-   virtual void Grow2(); //!< shoot-root resource allocation and plant growth in two layers
    virtual bool stressed();///< return true if plant is stressed
 /// lower threshold of aboveground resource uptake (light stress thresh.)
-   virtual double minresA(){return Traits->mThres*Ash_disc*Traits->Gmax*2;}
+   virtual double minresA(){return Traits->mThres*Ash_disc*Traits->Gmax;}
 /// lower threshold of belowground resource uptake (nutrient stress thresh.)
-   virtual double minresB(){return Traits->mThres*Art_disc*Traits->Gmax*2;}
-   void DecomposeDead();     //!< calculate mass shrinkage of dead plants
+   virtual double minresB(){return Traits->mThres*Art_disc*Traits->Gmax;}
+
+   //! shoot-root resource allocation and plant growth in two layers (one-layer option obsolete now)
+   virtual void Grow2(); //!< shoot-root resource allocation and plant growth in two layers
    void Kill();  //!< Mortality due to resource shortage or at random
-
+   void DecomposeDead();     //!< calculate mass shrinkage of dead plants
    void WinterLoss(); //!< removal of above-ground biomass in winter
-
    double RemoveMass();  //!< removal of above-ground biomass by grazing
    /// removal of belowground biomass by grazing
    double RemoveRootMass(const double prop_remove=0.5);
 //   void Decompose();    //!< decomposition of dead plants (mass shrinkage)
 
+//getters and setters...
    void setCell(CCell* cell); ///<define cell for plant
    inline CCell* getCell(){return cell;};///<returns central cell
    virtual double GetMass(){return mshoot+mroot+mRepro;};//!< returns plant mass
    virtual int GetNSeeds();     //!< returns number of seeds of one plant individual
-   bool is_left(){return (this->xcoord < SRunPara::RunPara.CellNum/2);};
+
+//-----clonal...
+//   virtual string type();              ///<say what you are
+//   virtual string pft();   ///<say what a pft you are
+//   virtual string asString(); ///<report plant's status
+
+   ///set genet and add ramet to its list
+   void setGenet(CGenet* genet);
+   CGenet* getGenet(){return genet;};
+   void SpacerGrow();                  ///<spacer growth
+   virtual int GetNRamets();           ///<return number of ramets
+   virtual double GetBMSpacer();  ///<returns clonal mass
+
+
    //-----------------------------------------------------------------------------
+   //functions that are used for STL algorithms (sort + partition)
+
    //! return if plant should be removed (necessary to apply algorithms from STL)
    bool GetPlantRemove(){return (!this->remove);};
-//functions that are used for STL algorithms (sort + partition)
-   //-----------------------------------------------------------------------------
 
-   /// (necessary to apply algorithms from STL)
    /// sort plant individuals descending after shoot size * palatability
    static bool ComparePalat(const CPlant* plant1, const CPlant* plant2)
    {

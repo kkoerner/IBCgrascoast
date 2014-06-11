@@ -10,7 +10,7 @@ using namespace std;
 
 //---------------------------------------------------------------------------
 //! Enumeration type to specify size asymmetry/symmetry of competition
-enum CompMode {sym, asympart, asymtot, clonal1, clonal2, clonal3};
+enum CompMode {sym, asympart, asymtot};
 
 //! Enumeration type to specify the competition version describing interspecific niche differentiation
 /**
@@ -25,7 +25,12 @@ enum CompVersion {version1, version2, version3};
 struct SRunPara
 {
 public:
+   //Input Files
+   static std::string NamePftFile;   ///< Filename of PftTrait-File
+   static std::string NameSimFile;  ///< Filename of Simulation-File
+
 	static SRunPara RunPara;  //!> scenario parameters
+
    CompMode AboveCompMode;   //!<0 = symmetric; 1 = partial asymmetry; 2 = total asymmetry
    CompMode BelowCompMode;   //!<0 = symmetric; 1 = partial asymmetry; 2 = total asymmetry
    //!niche differentiation
@@ -55,6 +60,7 @@ public:
    double GrazProb;        //!< grazing probability per week
    double PropRemove;     //!< proportion of above ground mass removed by grazing
    double BitSize;   //!< Bit size of macro-herbivore
+   double MassUngraz;//!< biomass ungrazable 15300[mg DW/m²]
 ///@}
 
 /** @name BGHerbParam
@@ -91,10 +97,10 @@ public:
    inline double DistProb(){return DistAreaYear/AreaEvent/30.0;};
 ///@}
 
-   double cv_res;     //!< coefficient of resource variation between years (not used)
+//   double cv_res;     //!< coefficient of resource variation between years (not used)
    double Aampl;      //!< within year above-ground resource amplitude (not used)
    double Bampl;      //!<  within year above-ground resource amplitude (not used)
-   char* PftFile;     //!< File with PFT trait parameter in Folder "Input"
+   std::string PftFile;     //!< File with PFT trait parameter in Folder "Input"
    //reed mix exps
    double WaterLevel; ///<standard mean grid water level
    double WLsigma; ///<grid water level change 
@@ -104,7 +110,17 @@ public:
    int Migration;   ///<How many seeds per species arrive annually?
    double salt; ///<salt level on plot
 
+   double SeedInput;     //!< number of seeds introduced per PFT per year or seed mass introduced per PFT
+   int SeedRainType;  //!< mode of seed input: 0 - no seed rain;
+                      //!< 1 - SeedInput specifies total seed NUMBER + equal number of seeds for each PFT;
+                      //!< 2 - SeedInput specifies total seed MASS + equal number of seeds for each PFT;
+                      //!< 3 - SeedInput specifies total seed NUMBER + equal seed mass for each PFT;
+                      //!< 4 - SeedInput specifies total seed MASS + equal seed mass for each PFT;
+                      //!< 5 - SeedInput specifies total seed NUMBER + non-clonal plants get x-times more seeds than clonal plants
 
+                      //!< 99 - SeedInput specifies FACTOR for seed numbers in PftTraits-File
+                      //!< 111 - SeedInput specifies FACTOR for seed numbers in InitPFTdat-File
+ 
    SRunPara();
    void print();    ///<print RunPara - parameters
    string getRunID();///< string for file name generation

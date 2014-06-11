@@ -12,64 +12,64 @@ string CWaterPlant::type()
 {
         return "CWaterPlant";
 }
-///
-/// \return name of current pft
-///
-string CWaterPlant::pft(){
-//        string dummi=CclonalPlant::pft() + this->waterTraits->name;
-        string dummi=this->waterTraits->name;
-//       cout<<dummi;
-        return dummi;
-}   //say what a pft you are
 
 /// print traits
 void CWaterPlant::print_type(){
    cout<<"\nCoordinates "<<xcoord<<";"<<ycoord<<endl;
    this->Traits->print();
-   this->clonalTraits->print();
-   this->waterTraits->print();
+//   this->clonalTraits->print();
+//   this->waterTraits->print();
 }
 //---------------------------------------------------------------------------
-/***/
+/**
+ * constructor - germination
+ * @param seed seed that germinates
+ */
 CWaterPlant::CWaterPlant(CWaterSeed* seed)
-  :CclonalPlant(seed),
-  waterTraits(seed->waterTraits)
+  :CPlant(seed)
+//  ,waterTraits(seed->waterTraits)
 {
 //this->print_type();
 //cout<<"\n"<<this->pft()<<" Coords: "<<xcoord<<";"<<ycoord<<endl;
 }
 //---------------------------------------------------------------------------
-/***/
+/**
+ * constructor - clonal growth
+ * @param x
+ * @param y
+ * @param plant plant that has spacer
+ */
 CWaterPlant::CWaterPlant(double x, double y, CWaterPlant* plant)
-  :CclonalPlant(x,y,plant),
-  waterTraits(plant->waterTraits)
+  :CPlant(x,y,plant)
+//  ,waterTraits(plant->waterTraits)
 {
 //cout<<"\nnew Ramet "<<this->pft()<<": "<<x<<";"<<y<<endl;
 }
 //---------------------------------------------------------------------------
 /**
-initialization of adult plants
+constructor - initialization of adult plants
 \param mass initial biomass of Plant (above- + belowground)
 */
-CWaterPlant::CWaterPlant(SPftTraits* traits,
-      SclonalTraits* clonalTraits,
-      SWaterTraits* waterTraits, CCell* cell,
+CWaterPlant::CWaterPlant(SWaterTraits* traits,
+    //  SPftTraits* clonalTraits,
+     // SWaterTraits* waterTraits,
+      CCell* cell,
      double mshoot,double mroot,double mrepro,
      int stress,bool dead,int generation,int genetnb,
      double spacerl,double spacerl2grow):
-      CclonalPlant(traits,clonalTraits,cell,mshoot,mroot,mrepro,stress,dead,generation, genetnb,
-      spacerl,spacerl2grow),waterTraits(waterTraits)
+      CPlant((SPftTraits*)traits,cell,mshoot,mroot,mrepro,stress,dead,generation, genetnb,
+      spacerl,spacerl2grow)//,waterTraits(waterTraits)
 {
 }
 /**
 Copies the data from an existing CclonalPlant and appends water related traits.
 \note the original clonal plant is still existing.
 */
-CWaterPlant::CWaterPlant(CclonalPlant* clplant, SWaterTraits* waterTraits):
-      CclonalPlant(clplant->Traits,clplant->clonalTraits,clplant->getCell(),
+CWaterPlant::CWaterPlant(CPlant* clplant)://, SWaterTraits* waterTraits
+      CPlant(clplant->Traits,clplant->getCell(),
       clplant->mshoot,clplant->mroot,clplant->mRepro,clplant->stress,
       clplant->dead,clplant->Generation, //clplant->genetnb,
-      clplant->Spacerlength,clplant->SpacerlengthToGrow),waterTraits(waterTraits)
+      clplant->Spacerlength,clplant->SpacerlengthToGrow)//,waterTraits(waterTraits)
 {
 this->setGenet(clplant->getGenet());
 }
@@ -85,7 +85,7 @@ this->setGenet(clplant->getGenet());
 string CWaterPlant::asString(){
   std::stringstream dummi;
   // CclonalPlant part
-  dummi<<CclonalPlant::asString();
+  dummi<<CPlant::asString();
   return dummi.str();
 } //<report plant's status
 //---------------------------------------------------------------------------
@@ -166,7 +166,7 @@ double CWaterPlant::RootGrow(double rres){
             *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
    double grow=max(0.0,Assim_root-Resp_root);
    //salinity dieback
-   if (this->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL())<1.0)
+   if (((SWaterTraits*)this->Traits)->saltTolEffect(CWaterGridEnvir::getSAL())<1.0)
      grow -=0.1*this->mroot;
    return grow;
 }
@@ -194,18 +194,18 @@ double CWaterPlant::rootEfficiency(){
  double depth=this->getDepth();
  //a) logistic formula
 // ...
- //b) Wenn-Dann
- double retval=1.0, WLcost= this->waterTraits->assimAnoxWL;
+ //b) If .. then ..
+ double retval=1.0, WLcost= ((SWaterTraits*) this->Traits)->assimAnoxWL;
  //oxygen deficit
  //costs..
- if(this->waterTraits->assimAnoxWL>0.0)
+ if(((SWaterTraits*) this->Traits)->assimAnoxWL>0.0)
    retval= min(1.0,WLcost);  //0.5
  //effect..
  else retval=  max(min(depth,-wl)/depth,1e-10); //0.0
 
 //salt stress
- retval*=this->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL())
-     * this->waterTraits->saltTolCosts();
+ retval*=((SWaterTraits*) this->Traits)->saltTolEffect(CWaterGridEnvir::getSAL())
+     * ((SWaterTraits*) this->Traits)->saltTolCosts();
  return retval;
 }
 //-------------------------------------------------------------
@@ -221,7 +221,7 @@ no additional dieback at the moment
 */
 void CWaterPlant::winterDisturbance(int weeks_of_dist){
   double mortality=0;
-  int aThresh=2; if (this->waterTraits->assimAnoxWL>0) aThresh=8;
+  int aThresh=2; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0) aThresh=8;
   if (!dead){
     mortality=min(0.95, max(0,weeks_of_dist-aThresh)/4.0);
     if (CEnvir::rand01()<mortality) dead=true;
@@ -242,7 +242,7 @@ void CWaterPlant::DistrRes_help(){
  double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
 
  //.. aboveground
- if (!this->waterTraits->assimBelWL){
+ if (!((SWaterTraits*) this->Traits)->assimBelWL){
  // submersed plant parts dont assimilate
     this->Auptake*=min(1.0,max(0.0,1-(wl )/getHeight()));
  }
@@ -289,40 +289,42 @@ double CWaterCell::Germinate(){
    {
      CSeed* seed = SeedBankList[i];// *iter;
      if (CEnvir::rand01()>
-       ((CWaterSeed*)seed)->waterTraits->saltTolEffect(CWaterGridEnvir::getSAL()))
+       ((SWaterTraits*)((CWaterSeed*)seed)->Traits)->saltTolEffect(CWaterGridEnvir::getSAL()))
        seed->remove=true;
    }
    this->RemoveSeeds();
    return CCell::Germinate();
 }//end Germinate
 //---------------------------------------------------------------------------
-/***/
-CWaterSeed::CWaterSeed(double estab, SPftTraits* traits,
-      SclonalTraits* clonalTraits,
-      SWaterTraits* waterTraits, CCell* cell)
-  :CclonalSeed(estab,traits,clonalTraits,cell),
-  waterTraits(waterTraits)
+/**
+ * constructor
+ * @param estab
+ * @param traits
+ * @param waterTraits
+ * @param cell
+ */
+CWaterSeed::CWaterSeed(double estab, SWaterTraits* traits,
+    //  SclonalTraits* clonalTraits,
+    //  SWaterTraits* waterTraits,
+      CCell* cell)
+  :CSeed(estab,traits,cell)//,  waterTraits(waterTraits)
 {}
+
 //---------------------------------------------------------------------------
-/***/
+/**
+ * constructor
+ * @param plant
+ * @param cell
+ */
 CWaterSeed::CWaterSeed(CWaterPlant* plant,CCell* cell)
-  :CclonalSeed(plant,cell),
-  waterTraits(plant->waterTraits)
+  :CSeed(plant,cell)
+//,  waterTraits((SWaterTraits*)plant->Traits)
 {}
+
 //---------------------------------------------------------------------------
 string CWaterSeed::type()
 {
         return "CWaterSeed";
 }
-///
-/// \return current pft name
-///
-string CWaterSeed::pft(){
-//        string dummi=CclonalSeed::pft() + this->waterTraits->name;
-        string dummi=this->waterTraits->name;
-//       cout<<dummi;
-        return dummi;
-}   //say what a pft you are
 //---------------------------------------------------------------------------
 
-//#pragma package(smart_init)
