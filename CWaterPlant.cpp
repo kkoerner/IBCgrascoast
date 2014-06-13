@@ -165,9 +165,9 @@ double CWaterPlant::RootGrow(double rres){
    Resp_root=Traits->growth*Traits->Gmax*p_depth/50.0*Traits->RAR
             *pow(mroot,q)/pow(Traits->MaxMass,r);  //respiration proportional to root^2
    double grow=max(0.0,Assim_root-Resp_root);
-   //salinity dieback
-   if (((SWaterTraits*)this->Traits)->saltTolEffect(CWaterGridEnvir::getSAL())<1.0)
-     grow -=0.1*this->mroot;
+   //salinity dieback -source?
+ //  if (((SWaterTraits*)this->Traits)->saltTolEffect(CWaterGridEnvir::getSAL())<0.75)
+ //    grow -=0.1*this->mroot;
    return grow;
 }
 

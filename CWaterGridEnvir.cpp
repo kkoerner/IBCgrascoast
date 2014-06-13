@@ -517,26 +517,30 @@ for an adaptation to salt.
 \return fraction of uptake as costs for  adaptation. \[0 - 1\]
 
 \todo validate rule/values
-\date 13.3. set costs to 5/10% for med/well adapted spec (20/40% before)
+\date 13.3.13 set costs to 5/10% for med/well adapted spec (20/40% before)
+\date 12.6.14 obsolete, rules are driven by formula now in saltTolEffect()
 */
 double SWaterTraits::saltTolCosts(){
-  if (saltTol<2) return 1;
-  if (saltTol<=5) return 0.95;
-  return 0.9;
+//  if (saltTol<2) return 1;
+//  if (saltTol<=5) return 0.95;
+  return 1; //0.9;
 } // salt tolerance costs
 /**
-Translates Ellenberg Value saltTol to tolerance level of salt content.
+Translates Ellenberg Value saltTol to resource costs of salinity. High tolerance values
+lead to reduced resources at freshwater conditions but to more resources at saline conditions.
 
-\return fraction of uptake as loss due to salinity. \[1e-1 - 1\]
+\return fraction of uptake as loss due to salinity and adaptation. \[1e-1 - 1\]
 
 \todo validate rule/values
 */
 double SWaterTraits::saltTolEffect(double salinity){
- double min_lim=0.1;
-  if (saltTol<2)  {if (salinity<1.0) return 1.0;else return min_lim;}
-  if (saltTol<=5) {if(salinity<7.0) return 1.0;else return min_lim;}
-  if (saltTol>5)  {return 1.0;}
-  return min_lim;  //should not be reached
+// double min_lim=0.1;
+//  if (saltTol<2)  {if (salinity<1.0) return 1.0;else return min_lim;}
+//  if (saltTol<=5) {if(salinity<7.0) return 1.0;else return min_lim;}
+//  if (saltTol>5)  {return 1.0;}
+//  return min_lim;  //should not be reached
+return 1.0/(0.05*saltTol+1)-1.0/(5*saltTol)*salinity;
+
 } // salt tolerance effect
 
 //---------------------------------------------------------------------------
@@ -664,6 +668,11 @@ bool SWaterTraits::ReadWPFTDef(const string& file, int n) {
 	//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
 	     //\todo test reduced RAR (moderate root efficiency)
 	      traits->RAR=0.5;
+
+	      //correction for singleinds validation
+	      traits->growth*=SRunPara::RunPara.c_growth;
+	      traits->assimAnoxWL*=SRunPara::RunPara.c_anox;
+	      traits->saltTol*=SRunPara::RunPara.c_saladapt;
 
 	    //namen und IDs
 	    traits->name=dummi2;

@@ -109,6 +109,16 @@ public:
    double changeVal; ///<value of the parameter to change (add to) after 20 years
    int Migration;   ///<How many seeds per species arrive annually?
    double salt; ///<salt level on plot
+//   double th_saltdieback; //level of resource depletion, at which 10% root dieback occurs -no souce yet
+   /** @name ValiPftParam
+    *  parameters for validation of PFTs
+    *  \version coast_singleinds
+    */
+   ///@{
+   double c_growth;
+   double c_anox;
+   double c_saladapt;
+   ///@}
 
    double SeedInput;     //!< number of seeds introduced per PFT per year or seed mass introduced per PFT
    int SeedRainType;  //!< mode of seed input: 0 - no seed rain;

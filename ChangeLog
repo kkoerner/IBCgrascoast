@@ -1,3 +1,19 @@
+2014-06-13  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CWaterGridEnvir.cpp (saltTolCosts): disabled
+	(SWaterTraits::saltTolCosts): 
+	(saltTolEffect): apply new salt rules
+	(SWaterTraits::saltTolEffect): 
+	(ReadWPFTDef): change growth, anox and salttol- values for validation
+	(SWaterTraits::ReadWPFTDef): 
+	* CWaterPlant.cpp (RootGrow): apply new salt rules
+	(CWaterPlant::RootGrow): 
+	* IBCgrass-coast_singleinds.cpp (main): estab singleinds-validation approach 
+	* RunPara.cpp (SRunPara): new 3 corrective factors
+	(SRunPara::SRunPara): 
+	(getRunID): change Ofile names
+	(SRunPara::getRunID): 
+	* RunPara.h: see SRunPara constructor
 2014-06-02  KatrinK  <KatrinK@VEGLAP-01>
 
 	* GMCom_K1.cpp: Removed. -renamed

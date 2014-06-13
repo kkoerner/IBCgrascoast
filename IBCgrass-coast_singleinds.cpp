@@ -158,20 +158,21 @@ int main(int argc, char* argv[])
   SRunPara::RunPara.Tmax=3;//100;250//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
  // SRunPara::RunPara.CutLeave=15;
-  int nruns=3;//3//10
+  int nruns=5;//3//10
   /// 0-abandoned; 1-grazing; 2-mowing
   CEnvir::SimNr=0;
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
-    SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
-//    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
-    SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
-    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
-    SRunPara::NamePftFile=argv[8]; //pft parameter settings
+    SRunPara::RunPara.Migration=5;//atoi(argv[2]);  //init types
+    SRunPara::RunPara.GrazProb=atof(argv[2]); //grazing
+    SRunPara::RunPara.AreaEvent=SRunPara::RunPara.GrazProb/30.0;//atof(argv[4]); //trampling
+    SRunPara::RunPara.NCut=atoi(argv[3]); //number of cuttings
+    SRunPara::RunPara.WaterLevel=atoi(argv[4]); //number of cuttings
+    SRunPara::RunPara.salt=atof(argv[5]); //soil salinity
+    SRunPara::RunPara.c_growth=atof(argv[6]); //soil salinity
+    SRunPara::RunPara.c_anox=atof(argv[7]); //soil salinity
+    SRunPara::RunPara.c_saladapt=atof(argv[8]); //soil salinity
   }
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50;//default: 100
