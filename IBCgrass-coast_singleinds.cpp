@@ -164,15 +164,15 @@ int main(int argc, char* argv[])
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.Migration=5;//atoi(argv[2]);  //init types
+    SRunPara::RunPara.Migration=0;//atoi(argv[2]);  //init types; no additional seed rain here
     SRunPara::RunPara.GrazProb=atof(argv[2]); //grazing
     SRunPara::RunPara.AreaEvent=SRunPara::RunPara.GrazProb/30.0;//atof(argv[4]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[3]); //number of cuttings
     SRunPara::RunPara.WaterLevel=atoi(argv[4]); //number of cuttings
     SRunPara::RunPara.salt=atof(argv[5]); //soil salinity
-    SRunPara::RunPara.c_growth=atof(argv[6]); //soil salinity
-    SRunPara::RunPara.c_anox=atof(argv[7]); //soil salinity
-    SRunPara::RunPara.c_saladapt=atof(argv[8]); //soil salinity
+    SRunPara::RunPara.c_growth=atof(argv[6]); //corrfac growth parameter
+    SRunPara::RunPara.c_anox=atof(argv[7]); //corrfac oxygen depletion adaptation
+    SRunPara::RunPara.c_saladapt=atof(argv[8]); //corrfac salinity adaptation
   }
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50;//default: 100

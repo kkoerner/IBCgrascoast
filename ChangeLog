@@ -1,3 +1,7 @@
+2014-06-23  KatrinK  <KatrinK@VEGLAP-01>
+debugged: csal has almost no effect
+	* CWaterGridEnvir.h: sal-value now is double
+	* IBCgrass-coast_singleinds.cpp (main): 
 2014-06-13  KatrinK  <KatrinK@VEGLAP-01>
 
 	* CWaterGridEnvir.cpp (saltTolCosts): disabled

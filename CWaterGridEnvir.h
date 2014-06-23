@@ -191,7 +191,7 @@ struct SWaterTraits: public SPftTraits   //plant functional traits
    /// else it's efficiency is reduced by this value for all WL
    ///
    double assimAnoxWL;
-   int saltTol; ///< salt tolerance of species (Ellenberg salt value)
+   double saltTol; ///< salt tolerance of species (Ellenberg salt value)
    double saltTolCosts(); ///< salt tolerance costs
    double saltTolEffect(double salinity); ///< salt tolerance effect
 
