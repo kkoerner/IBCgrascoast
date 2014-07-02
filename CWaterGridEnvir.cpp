@@ -539,7 +539,8 @@ double SWaterTraits::saltTolEffect(double salinity){
 //  if (saltTol<=5) {if(salinity<7.0) return 1.0;else return min_lim;}
 //  if (saltTol>5)  {return 1.0;}
 //  return min_lim;  //should not be reached
-return 1.0/(0.05*saltTol+1)-1.0/(5*saltTol)*salinity;
+double dummi=1.0/(0.05*saltTol+1)-1.0/(5*saltTol+2)*salinity;
+	return dummi;
 
 } // salt tolerance effect
 

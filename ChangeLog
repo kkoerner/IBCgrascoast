@@ -1,3 +1,7 @@
+2014-07-02  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CWaterGridEnvir.cpp (saltTolEffect): error found and repaired
+	(SWaterTraits::saltTolEffect): 
 2014-06-23  KatrinK  <KatrinK@VEGLAP-01>
 debugged: csal has almost no effect
 	* CWaterGridEnvir.h: sal-value now is double
