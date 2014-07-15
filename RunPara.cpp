@@ -22,7 +22,7 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0),mort_seeds(0.5),meanARes(100),meanBRes(100),
-  PftFile("Input/PftTraits2304.txt"),SeedInput(0),SeedRainType(0),
+  PftFile("Input/RSpec59WP3_131114.txt"),SeedInput(0),SeedRainType(0),
   species("M"),WaterLevel(0),WLsigma(0),changeVal(0),
   Migration(0),Aampl(0),Bampl(0),//cv_res(0),
   WLseason("file"){}
@@ -116,7 +116,7 @@ string SRunPara::getRunID(){
       dummi<<"_R"<<this->meanBRes<<"_"<<Migration//species
 //           <<"_"<<this->WLseason
            <<"_"<<this->GrazProb
-          <<"_"<<this->AreaEvent
+ //         <<"_"<<this->AreaEvent
  //          <<"_"<<this->DistAreaYear
            <<"_"<<this->NCut
            <<"_WL"<<this->WaterLevel
