@@ -113,6 +113,10 @@ void SRunPara::print(){
 ///
 string SRunPara::getRunID(){
       stringstream dummi;
+      std::size_t pos1 = NamePftFile.find("/");
+      std::size_t pos2 = NamePftFile.find(".");
+      std::size_t length = NamePftFile.size();
+      string name=NamePftFile.substr(pos1+1,length-pos1-pos2);
       dummi<<"_R"<<this->meanBRes<<"_"<<Migration//species
 //           <<"_"<<this->WLseason
            <<"_"<<this->GrazProb
@@ -121,6 +125,7 @@ string SRunPara::getRunID(){
            <<"_"<<this->NCut
            <<"_WL"<<this->WaterLevel
            <<"_S"<<this->salt
+           <<"_"<<name
  //          <<"_"<<this->changeVal
 //           <<"_WLc"<<WLsigma
            ;

@@ -1,4 +1,13 @@
 2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
+apply changes for mcmc validation; 
+	* IBCgrass-coast_base.cpp: Removed.
+	* IBCgrass-coast_vali.cpp: New file.
+	setting: 1by1m 1run 51years migr5
+	* CEnvir.cpp (WriteOFiles): 
+	(CEnvir::WriteOFiles): output every 10 years
+	* RunPara.cpp (getRunID): 
+	(SRunPara::getRunID): filenames include pft parameter file name
+2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
 import changed salinity rules from singleinds branch
 	* CWaterGridEnvir.cpp (saltTolCosts): 
 	(saltTolEffect): 

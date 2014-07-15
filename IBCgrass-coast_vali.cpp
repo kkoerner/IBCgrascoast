@@ -120,11 +120,11 @@ double DistAreaYear2=0;  ///<2nd trampling intensity
 int NCut2 =0;            ///<2nd mowing management
 //-----------------------
 /**
-  Design of the main trunk version of the IBC-grass_coast model:
+  Design of the 'vali' version of the IBC-grass_coast model:
 
-  On an 1.28 by 1.28cm square grid 10 for each of 28 PFTs
+  On an 100 by 100cm square grid 10 for each of x PFTs
   (parameterized according to real species) are initiated.
-  One environmental setting is tested for 100 years (1 repitition).
+  One environmental setting is tested for 50 years (1 repitition).
   Salinity is zero/constant.
   No block design.
 
@@ -135,6 +135,7 @@ int NCut2 =0;            ///<2nd mowing management
    -# grazing probability = Dist Area Year (Trampling) <0>
    -# NCut (cutting) <0>
    -# WaterLevel <-60>
+   -# salinity (PSU)
 
   \par Input
    -species definitions
@@ -154,7 +155,7 @@ int main(int argc, char* argv[])
     SRunPara::NamePftFile="Input\\comtessKoerner_131114.txt";
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=100;//100;250//Laufzeit
+  SRunPara::RunPara.Tmax=51;//100;250//Laufzeit
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
  // SRunPara::RunPara.CutLeave=15;
   int nruns=1;//3//10
@@ -163,14 +164,15 @@ int main(int argc, char* argv[])
   //sim-loop
   if (argc>1){
     SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
-    SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
+    SRunPara::RunPara.Migration=5;//atoi(argv[2]);  //init types
+    SRunPara::RunPara.GrazProb=atof(argv[2]); //grazing
 //    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
-    SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
-    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
-  }
+    SRunPara::RunPara.AreaEvent=atof(argv[2])*0.2; //trampling
+    SRunPara::RunPara.NCut=atoi(argv[3]); //number of cuttings
+    SRunPara::RunPara.WaterLevel=atoi(argv[4]); //number of cuttings
+    SRunPara::RunPara.salt=atof(argv[5]); //soil salinity
+    SRunPara::NamePftFile=argv[6];
+}
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=100;//default: 100
 
