@@ -1,4 +1,9 @@
 2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
+some debugging (o-file naming)
+	* IBCgrass-coast_vali.cpp (main): 
+	* RunPara.cpp (getRunID): 
+	(SRunPara::getRunID): 
+2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
 apply changes for mcmc validation; 
 	* IBCgrass-coast_base.cpp: Removed.
 	* IBCgrass-coast_vali.cpp: New file.
