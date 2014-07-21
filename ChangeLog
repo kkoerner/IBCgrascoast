@@ -1,3 +1,9 @@
+2014-07-21  KatrinK  <KatrinK@VEGLAP-01>
+some debugging (PFT file ending)
+	* CWaterGridEnvir.cpp (ReadPFTDef): 
+	(SWaterTraits::ReadPFTDef_help): 
+	(SWaterTraits::ReadPFTDef): 
+	* CWaterGridEnvir.h: 
 2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
 some debugging (o-file naming)
 	* IBCgrass-coast_vali.cpp (main): 

@@ -200,6 +200,7 @@ struct SWaterTraits: public SPftTraits   //plant functional traits
    virtual ~SWaterTraits(){};///< destructor
    static void ReadPFTDef(const string& file, int n=-1);///< read PFT defs from file
    virtual void print();										///<print content to prompt
+	bool ReadPFTDef_help(ifstream& InitFile);
 };
 
 //---------------------------------------------------------------------------

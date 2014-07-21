@@ -613,6 +613,45 @@ void SWaterTraits::print(){
    <<endl;
 } //print water traits
 
+/**
+ *
+ * @param InitFile file stream with pft definition
+ * @return false if process failed
+ */
+bool SWaterTraits::ReadPFTDef_help(ifstream& InitFile) {
+	int dummi1; string dummi2;
+	//erstelle neue traits
+
+	// file structure
+	// [1] "ID"      "Species" "alSeed"   "LMR"     "maxMass" "mSeed" "Dist"
+	// [8] "pEstab"  "Gmax"    "SLA1"     "palat"   "memo"    "RAR"   "respAnox"
+	//[15] "PropSex" "meanSpacerLength" "Resshare" "mSpacer"
+	//get type definitions from file
+	InitFile >> dummi1;
+	InitFile >> dummi2;
+	InitFile >> MaxAge >> AllocSeed >> LMR >> m0
+			>> MaxMass >> SeedMass >> Dist
+			>> pEstab >> Gmax >> SLA >> palat
+			>> memory >> RAR >> growth >> mThres
+			>> clonal >> PropSex >> meanSpacerlength
+			>> sdSpacerlength >> Resshare >> // >> cltraits->mSpacer
+			AllocSpacer >> mSpacer;
+	InitFile >> assimAnoxWL >> saltTol;
+	//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
+	//\todo test reduced RAR (moderate root efficiency)
+	RAR = 0.5;
+	//namen und IDs
+	name = dummi2;
+	TypeID = dummi1;
+	if (dummi1<9999) return true;//if valid PFT
+	return false;
+}
+
+/**
+ *
+ * @param file
+ * @param n
+ */
 void SWaterTraits::ReadPFTDef(const string& file, int n) {
 	  //Open InitFile,
 	  ifstream InitFile(file.c_str());
@@ -622,37 +661,13 @@ void SWaterTraits::ReadPFTDef(const string& file, int n) {
 	  getline(InitFile,line);//skip header line
 	  //skip first lines if only one Types should be initiated
 	  if (n>-1) for (int x=0;x<n;x++)getline(InitFile,line);
-	  int dummi1; string dummi2; int PFTtype; string Cltype;
+	  // int PFTtype; string Cltype;
 	  do{
 	  //erstelle neue traits
-	    SWaterTraits* traits=new SWaterTraits();
-
-	// file structure
-	// [1] "ID"      "Species" "alSeed"   "LMR"     "maxMass" "mSeed" "Dist"
-	// [8] "pEstab"  "Gmax"    "SLA1"     "palat"   "memo"    "RAR"   "respAnox"
-	//[15] "PropSex" "meanSpacerLength" "Resshare" "mSpacer"
-	    //get type definitions from file
-	    InitFile>> dummi1;
-	    InitFile>>dummi2;
-		InitFile >> traits->MaxAge >> traits->AllocSeed >> traits->LMR
-				>> traits->m0 >> traits->MaxMass >> traits->SeedMass
-				>> traits->Dist >> traits->pEstab >> traits->Gmax >> traits->SLA
-				>> traits->palat >> traits->memory >> traits->RAR
-				>> traits->growth >> traits->mThres >> traits->clonal
-				>> traits->PropSex >> traits->meanSpacerlength
-				>> traits->sdSpacerlength >> traits->Resshare >> // >> cltraits->mSpacer
-				traits->AllocSpacer >> traits->mSpacer;
-		InitFile>> traits->assimAnoxWL
-	            >> traits->saltTol;
-	//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
-	     //\todo test reduced RAR (moderate root efficiency)
-	      traits->RAR=0.5;
-
-	    //namen und IDs
-	    traits->name=dummi2;
-	    traits->TypeID=dummi1;
+		  SWaterTraits* traits = new SWaterTraits();
+		  if(!traits->ReadPFTDef_help(InitFile)) continue;
 		//append to list..
-		SPftTraits::addPftLink(dummi2, traits);
+		SPftTraits::addPftLink(traits->name, traits);
 
 	  }while(!InitFile.eof());
 
