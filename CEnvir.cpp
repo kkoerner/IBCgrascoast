@@ -76,6 +76,32 @@ using namespace std;
    ACover.assign(SRunPara::RunPara.GetSumCells(),0);
    BCover.assign(SRunPara::RunPara.GetSumCells(),0);
 }
+ //------------------------------------------------------------------------------
+ CEnvir::CEnvir(const CEnvir& base):
+	 NCellsAcover(base.NCellsAcover),init(base.init),endofrun(base.endofrun) {
+	   ACover.assign(SRunPara::RunPara.GetSumCells(),0);
+	   BCover.assign(SRunPara::RunPara.GetSumCells(),0);
+       //copy history..
+       PftSurvTime=base.PftSurvTime;
+       for (unsigned int i=0;i<base.GridOutData.size();i++) GridOutData.push_back(new SGridOut(base.GridOutData[i]));
+       for (unsigned int i=0;i<base.PftOutData.size();i++)  PftOutData.push_back(new SPftOut(base.PftOutData[i]));
+
+ }
+
+ CEnvir& CEnvir::operator =(const CEnvir& base) {
+	  if(this!=&base){
+		  NCellsAcover=base.NCellsAcover;
+		  init=base.init;
+		  endofrun=base.endofrun;
+          PftSurvTime=base.PftSurvTime;
+	      for (unsigned int i=0;i<GridOutData.size();i++) delete GridOutData[i];
+	      for (unsigned int i=0;i<PftOutData.size();i++)  delete PftOutData[i];
+	      for (unsigned int i=0;i<base.GridOutData.size();i++) GridOutData.push_back(new SGridOut(base.GridOutData[i]));
+	      for (unsigned int i=0;i<base.PftOutData.size();i++)  PftOutData.push_back(new SPftOut(base.PftOutData[i]));
+
+	  }
+	  return this;
+}
 //------------------------------------------------------------------------------
 /**
  * destructor -
@@ -124,14 +150,6 @@ int CEnvir::GetSim(const int pos,string file){
   if (pos==0){  //read header
     string line,file_id; //file_id not used here
     getline(SimFile,line);
-    int tmax;//dummi
-    SimFile>>tmax>>file_id;
-    SRunPara::RunPara.Tmax=tmax;
-//    file_id.erase (file_id.begin(), file_id.begin()+1);
-//    file_id.erase (file_id.end()-1, file_id.end());
-
-    getline(SimFile,line);
-    getline(SimFile,line);
     lpos=SimFile.tellg();
   }
   SimFile.seekg(lpos);
@@ -144,7 +162,9 @@ int CEnvir::GetSim(const int pos,string file){
 
        SimFile>>SimNr
              >>SRunPara::RunPara.meanBRes
+             >>SRunPara::RunPara.Migration
               >>SRunPara::RunPara.GrazProb
+              >>SRunPara::RunPara.AreaEvent
               >>SRunPara::RunPara.NCut
               >>SRunPara::RunPara.WaterLevel
               >>SRunPara::RunPara.salt
@@ -156,27 +176,9 @@ int CEnvir::GetSim(const int pos,string file){
 
        //grazing intensity
        SRunPara::RunPara.PropRemove=0.5;
-       //trampling equals grazing
-       SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb;
        //above- and belowground competition
   //     acomp=1;bcomp=0;
       //--------------------------------
-      // set version and competition  modes - in this way because of enum types!
-       //filenames
-     string idstr= SRunPara::RunPara.getRunID();
-     stringstream strd;
-     strd<<"Output\\Mix_Grid_log_"<<idstr
-       <<".txt";
-     NameLogFile=strd.str();     // clear stream
-     strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
-       <<".txt";
-     NameGridOutFile=strd.str();
-     strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
-       <<".txt";
-     NameSurvOutFile= strd.str();
-
-     //Open InitFile,
-   	SPftTraits::ReadPFTDef(SRunPara::NamePftFile);
 
   //     SRunPara::RunPara.print();
    return SimFile.tellg();
@@ -680,6 +682,8 @@ double CEnvir::GetMeanNPFT(int years)
    }
    return sum/count;
 }
+
+
 //---------------------------------------------------------------------------
 /**
  * extract current population size

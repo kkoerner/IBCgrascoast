@@ -39,6 +39,108 @@ CGrid::CGrid(string id):cutted_BM(0),grazed_BM(0)
 }
 //-----------------------------------------------------------------------------
 /**
+ * copy constructor
+ * @param base object to copy
+ */
+CGrid::CGrid(const CGrid& base):cutted_BM(0),grazed_BM(0) {
+    //cells
+	int index;const unsigned int SideCells=SRunPara::RunPara.CellNum;
+	for (int x=0; x<SideCells; x++){
+	      for (int y=0; y<SideCells; y++){
+	         index= x *SideCells+y;
+	         CCELL* cell = new CCELL(base.CellList[index]);
+	         CellList.push_back(cell);
+	}}
+    //init LDD seeds
+	LDDSeeds = new map<string,LDD_Dist>;
+    for (map<string, SPftTraits*>::const_iterator it = SPftTraits::PftLinkList.begin(); it!= SPftTraits::PftLinkList.end(); ++it){
+       for (int d=0; d<NDistClass; ++d)
+          (*LDDSeeds)[it->first].NSeeds[d] = (*base.LDDSeeds)[it->first].NSeeds[d];
+    }
+	//plants...
+	for (plant_iter iplant=base.PlantList.begin(); iplant<base.PlantList.end(); ++iplant){
+	         CPlant* plant=new CPlant(iplant);
+	         //set Genet
+	         CGenet* genet=NULL;
+	         for (unsigned int i=0; i<GenetList.size();i++){
+	           if (GenetList[i]->number==(*iplant)->genet->number)genet=GenetList[i];
+	         }
+	         if (!genet) {
+	           CGenet::setStaticId(max(CGenet::getStaticId(),(*iplant)->genet->number));
+	           genet=new CGenet();genet->number=(*iplant)->genet->number;
+	           GenetList.push_back(genet);
+	         }
+	         plant->setGenet(genet);
+	         PlantList.push_back(plant);
+	}
+	//Genet list..see above
+
+}//copy constructor
+
+/**
+ * assignment operator
+ * @param base object to copy
+ * @return changed object
+ */
+CGrid& CGrid::operator =(const CGrid& base) {
+	if(this!=&base){
+		  //delete old object
+		//plants..
+		   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
+		      CPlant* plant = *iplant;
+		      delete plant;
+		   }; PlantList.clear();
+       //cells
+		   for (int i=0; i<CellList.size(); ++i){
+			   CCELL* cell = CellList[i];
+		      delete cell;
+		   }
+		   CellList.clear();
+		//genets
+		   for(unsigned int i=0;i<GenetList.size();i++) delete GenetList[i];
+		   GenetList.clear();//CGenet::setStaticId(0);
+        //LDDSeeds
+		   delete this->LDDSeeds;
+
+		//generate new object
+		    //cells
+			int index;const unsigned int SideCells=SRunPara::RunPara.CellNum;
+			for (int x=0; x<SideCells; x++){
+			      for (int y=0; y<SideCells; y++){
+			         index= x *SideCells+y;
+			         CCELL* cell = new CCELL(base.CellList[index]);
+			         CellList.push_back(cell);
+			}}
+		    //init LDD seeds
+			LDDSeeds = new map<string,LDD_Dist>;
+		    for (map<string, SPftTraits*>::const_iterator it = SPftTraits::PftLinkList.begin(); it!= SPftTraits::PftLinkList.end(); ++it){
+		       for (int d=0; d<NDistClass; ++d)
+		          (*LDDSeeds)[it->first].NSeeds[d] = (*base.LDDSeeds)[it->first].NSeeds[d];
+		    }
+			//plants...
+			for (plant_iter iplant=base.PlantList.begin(); iplant<base.PlantList.end(); ++iplant){
+			         CPlant* plant=new CPlant(iplant);
+			  	   //establish this plant on cell
+			  	   plant->setCell(CellList[ plant->xcoord *SideCells+plant->ycoord]);
+			         //set Genet
+			         CGenet* genet=NULL;
+			         for (unsigned int i=0; i<GenetList.size();i++){
+			           if (GenetList[i]->number==(*iplant)->genet->number)genet=GenetList[i];
+			         }
+			         if (!genet) {
+			           CGenet::setStaticId(max(CGenet::getStaticId(),(*iplant)->genet->number));
+			           genet=new CGenet();genet->number=(*iplant)->genet->number;
+			           GenetList.push_back(genet);
+			         }
+			         plant->setGenet(genet);
+			         PlantList.push_back(plant);
+			}
+			//Genet list..see above
+	  }
+	  return this;
+}//operator=
+//-----------------------------------------------------------------------------
+/**
   Initiate grid cells.
 
   \note call only once or delete cell objects before;
@@ -1478,7 +1580,7 @@ double CGrid::GetNGeneration()
       //else MeanGeneration=0;
    }
    return MeanGeneration;
-}//end CGridclonal::GetNGeneration()
+} //end CGridclonal::GetNGeneration()
 
 //-eof--------------------------------------------------------------------------
 

@@ -85,7 +85,9 @@ public:
    //generation, genetnb,spacerl,spacerl2grow
    ///make a plant from a clonal-seed object
    CPlant(CSeed* seed);
-   //! initalization of one plant
+   CPlant(const CPlant&);///<construct via copy object
+   CPlant& operator=(const CPlant&);///<copy object
+   // ! initalization of one plant
 //   CPlant(SPftTraits* traits,CCell* cell,
 //     double mshoot, double mroot, double mrepro, int stress, bool dead);
    virtual ~CPlant();  //!<destruktor

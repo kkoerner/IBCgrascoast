@@ -36,6 +36,8 @@ public:
      double spacerl=0,double spacerl2grow=0);
      ///upgrade clonal plant
    CWaterPlant(CPlant* clplant);//, SWaterTraits* waterTraits
+   CWaterPlant(const CWaterPlant&);///<construct via copy object
+   CWaterPlant& operator=(const CWaterPlant&);///<copy object
    virtual ~CWaterPlant(){};  //!<destructor
    void print_type();
    virtual string asString(); ///<report plant's status

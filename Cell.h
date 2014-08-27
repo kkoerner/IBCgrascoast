@@ -65,6 +65,8 @@ public:
 //    CCell(const unsigned int xx,const unsigned int yy);
     CCell(const unsigned int xx,const unsigned int yy, double ares=0, double bres=0); //!< Konstruktor
    virtual ~CCell(); //!< Destructor
+   CCell(const CCell&);///<construct via copy object
+   CCell& operator=(const CCell&);///<copy object
 
    void clear();///<reset
    void SetResource(double Ares, double Bres);///<set resources
@@ -103,6 +105,8 @@ public:
 //    CCell(xx,yy);
 //    CCell(xx,yy,ares,bres); //!< Konstruktor
 
+    CWaterCell(const CWaterCell&);///<construct via copy object
+    CWaterCell& operator=(const CWaterCell&);///<copy object
  CWaterCell();
  virtual ~CWaterCell(){};
     //! competition function for size symmetric below-ground resource competition

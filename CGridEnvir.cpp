@@ -93,6 +93,23 @@ SPftTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
   ReadLandscape();
 }
 //------------------------------------------------------------------------------
+CGridEnvir::CGridEnvir(const CGridEnvir& base):CEnvir(base),CGrid(base) {
+//no own variables
+}
+
+CGridEnvir& CGridEnvir::operator =(const CGridEnvir& base) {
+// no own variables
+	if(this!=&base){
+		  this=CEnvir::operator=(base);
+		  this=CGrid::operator=(base);
+		  //delete old object
+		  //generate new object
+
+	  }
+	  return this;
+
+}
+//------------------------------------------------------------------------------
 /**
  * destructor
  */
@@ -684,6 +701,5 @@ void CGridEnvir::SeedRain(){
        CGrid::InitClonalSeeds(pfttraits,nseeds2,pfttraits->pEstab);//,cltraits
    }
 }
-
 
 //eof

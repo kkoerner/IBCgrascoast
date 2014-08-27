@@ -37,6 +37,58 @@ occupied(false),PlantInCell(NULL)
 }
 //---------------------------------------------------------------------------
 /**
+ * copy constructor
+ *
+ * plants are set from outside
+ * @param base
+ */
+CCell::CCell(const CCell& base):
+		x(base.x),y(base.y),AResConc(base.AResConc),BResConc(base.BResConc),
+		NPftA(base.NPftA),NPftB(base.NPftB),occupied(false),PlantInCell(NULL) {
+	   AbovePlantList.clear();
+	   BelowPlantList.clear();
+	   SeedBankList.clear();
+	   for (unsigned int i=0; i<base.SeedBankList.size();i++)
+		   SeedBankList.push_back(new CSeed(base.SeedBankList[i]));
+
+	   SeedlingList.clear();
+
+	   PftNIndA.clear();
+	   PftNIndB.clear();
+	   PftNSeedling.clear();
+
+
+	   const unsigned int index=base.x*SRunPara::RunPara.CellNum+base.y;
+	   AResConc=CEnvir::AResMuster.at(index);
+	   BResConc=CEnvir::BResMuster[index];
+
+}
+
+CCell& CCell::operator =(const CCell& base) {
+	  if(this!=&base){
+//delete old data
+		   for (unsigned int i=0; i<SeedBankList.size();i++) delete SeedBankList[i];
+		   for (unsigned int i=0; i<SeedlingList.size();i++) delete SeedlingList[i];
+		   SeedBankList.clear();   SeedlingList.clear();
+		   AbovePlantList.clear();
+		   BelowPlantList.clear();
+		   PftNSeedling.clear();
+
+//set new data
+			x=base.x;y=base.y;AResConc=base.AResConc;BResConc=base.BResConc;
+			NPftA=base.NPftA;NPftB=base.NPftB;
+			occupied=false;PlantInCell=NULL;//plant set elswhere
+
+		   for (unsigned int i=0; i<base.SeedBankList.size();i++)
+			   SeedBankList.push_back(new CSeed(base.SeedBankList[i]));
+
+	  }
+	  return this;
+
+}
+
+//---------------------------------------------------------------------------
+/**
  * reset cell properties
  */
 void CCell::clear(){
@@ -372,6 +424,24 @@ CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy,
   double ares,double bres, double wl):CCell(xx,yy,ares,bres),WaterLevel(wl)
   {//cout<<"CWaterCell; ";
   }
+/**
+ * initiate cells on grid
+ */
+CWaterCell::CWaterCell():
+		  CCell(0,0),WaterLevel(0) {
+}
+
+CWaterCell::CWaterCell(const CWaterCell& base):CCell(base),WaterLevel(base.WaterLevel) {
+}
+
+CWaterCell& CWaterCell::operator =(const CWaterCell& base) {
+  if(this!=&base){
+	this->CCell::operator=(base);
+	WaterLevel=base.WaterLevel;
+  }
+  return this;
+
+}
 //-----------------------------------------------------------------------------
 /**
 BELOWground competition takes global information on symmetry and version to
@@ -428,12 +498,6 @@ std::string CWaterCell::asString(){
 return CCell::asString();
 } //return content for file saving
 
-/**
- * initiate cells on grid
- */
-CWaterCell::CWaterCell():
-		  CCell(0,0),WaterLevel(0) {
-}
 //-eof---------------------------------------------------------------------
 
 

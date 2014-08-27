@@ -74,6 +74,16 @@ CWaterPlant::CWaterPlant(CPlant* clplant)://, SWaterTraits* waterTraits
 this->setGenet(clplant->getGenet());
 }
 
+CWaterPlant::CWaterPlant(const CWaterPlant& base):CPlant(base) {
+}
+
+CWaterPlant& CWaterPlant::operator =(const CWaterPlant& base) {
+	  if(this!=&base){
+		this->CPlant::operator=(base);
+	  }
+	  return this;
+}
+
 //--SAVE-----------------------------------------------------------------------
 /**
   CWaterPlant-Version of plant report
@@ -324,5 +334,6 @@ string CWaterSeed::type()
 {
         return "CWaterSeed";
 }
+
 //---------------------------------------------------------------------------
 

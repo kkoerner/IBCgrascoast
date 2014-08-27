@@ -107,6 +107,62 @@ CPlant::CPlant(double x, double y, CPlant* plant):
 }//<clonal growth constructor
 //---------------------------------------------------------------------------
 /**
+ * copy constructor
+ *
+ * (assuming that max. one spacer exists at time)
+ *
+ * cell and genet have to be set from outside
+ * @param base plant to copy
+ */
+CPlant::CPlant(const CPlant& base):
+		  xcoord(base.xcoord),ycoord(base.ycoord),Traits(base.Traits),Age(base.Age),
+		  mshoot(base.mshoot),mroot(base.mroot),
+		  Aroots_all(0),Aroots_type(0),mRepro(base.mRepro),Ash_disc(0),Art_disc(0),
+		  Auptake(0),Buptake(0),dead(base.dead),remove(base.remove),stress(base.stress),cell(NULL),
+		  mReproRamets(base.mReproRamets),Spacerlength(base.Spacerlength),Spacerdirection(base.Spacerdirection),mort_base(base.mort_base),
+		  Generation(base.Generation),SpacerlengthToGrow(base.SpacerlengthToGrow),genet(NULL) {
+	 if(base.growingSpacerList.size())//if growing spacer (assuming that max. one spacer exists at time)
+	 {
+		 growingSpacerList.push_back(new CPlant(base.growingSpacerList.back()));
+	 }
+
+}
+/**
+ * assignment operator
+ *
+ * (assuming that max. one spacer exists at time)
+ *
+ * cell and genet have to be set from outside
+ * @param base plant to copy
+ * @return changed object
+ */
+CPlant& CPlant::operator =(const CPlant& base) {
+	  if(this!=&base){
+//delete old content
+		    for (unsigned int i=0;i<growingSpacerList.size();++i)
+		      delete growingSpacerList[i];
+		    growingSpacerList.clear();
+//generate new content
+			  xcoord=base.xcoord;ycoord=base.ycoord;
+			  Traits=base.Traits;Age=base.Age;
+			  mshoot=base.mshoot;mroot=base.mroot;
+			  Aroots_all=(0);Aroots_type=(0);mRepro=(base.mRepro);
+			  Ash_disc=(0);Art_disc=(0);Auptake=(0);Buptake=(0);
+			  dead=(base.dead);remove=(base.remove);stress=(base.stress);
+			  cell=(NULL);
+			  mReproRamets=(base.mReproRamets);Spacerlength=(base.Spacerlength);Spacerdirection=(base.Spacerdirection);
+			  mort_base=(base.mort_base);
+			  Generation=(base.Generation);SpacerlengthToGrow=(base.SpacerlengthToGrow);genet=(NULL);
+		 if(base.growingSpacerList.size())//if growing spacer (assuming that max. one spacer exists at time)
+		 {
+			 growingSpacerList.push_back(new CPlant(base.growingSpacerList.back()));
+		 }
+
+	  }
+	  return this;
+}
+//---------------------------------------------------------------------------
+/**
  * destructor
  * TODO use iterators instead
  * TODO remove plant from Genet list
@@ -570,7 +626,8 @@ double CPlant::comp_coef(const int layer, const int symmetry)const{
      default: cerr<<"CPlant::comp_coef() - wrong input"; exit(3);
    }
    return -1;  //should not be reached
-}//end comp_coef
+}  //end comp_coef
+
 //-eof----------------------------------------------------------------------------
 
 

@@ -98,6 +98,8 @@ public:
    CGrid(); //!< Konstruktor
    CGrid(string id); //!< Konstruktor for loading a file saved grid
    virtual ~CGrid();                 //!< Destruktor
+   CGrid(const CGrid&);///<construct via copy object
+   CGrid& operator=(const CGrid&);///<copy object
    virtual void resetGrid();
 
    //! initalization of plants

@@ -90,6 +90,8 @@ SSR SeedRainGr;
    CEnvir();
    CEnvir(string id);  ///<load saved parameter set and state info
    virtual ~CEnvir();
+   CEnvir(const CEnvir&);///<construct via copy object
+   CEnvir& operator=(const CEnvir&);///<copy object
 
    //! read in fractal below-ground resource distribution (not used)
    static void ReadLandscape();

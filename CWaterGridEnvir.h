@@ -118,6 +118,9 @@ double getWL(); ///<get current water level
   };
   CWaterGridEnvir(string id); ///< load from file(s)
   ~CWaterGridEnvir();
+  CWaterGridEnvir(const CWaterGridEnvir&);///<construct via copy object
+  CWaterGridEnvir& operator=(const CWaterGridEnvir&);///<copy object
+
  ///initialization of grid cells - no functionality
  void CellsInit();
  virtual void InitRun();///<Init current run

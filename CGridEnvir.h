@@ -26,6 +26,8 @@ public:
   CGridEnvir();
   CGridEnvir(string id); ///< load from file(s)
   virtual ~CGridEnvir();///<delete clonalTraits;
+  CGridEnvir(const CGridEnvir&);///<construct via copy object
+  CGridEnvir& operator=(const CGridEnvir&);///<copy object
 
   ///\name core simulating Functions
   ///@{

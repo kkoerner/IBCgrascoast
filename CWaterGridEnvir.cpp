@@ -60,6 +60,21 @@ CWaterGridEnvir::~CWaterGridEnvir(){
 //   delete[] CellList;
 
 }
+
+CWaterGridEnvir::CWaterGridEnvir(const CWaterGridEnvir& base):CGridEnvir(base) {
+this->
+}
+
+CWaterGridEnvir& CWaterGridEnvir::operator =(const CWaterGridEnvir& base) {
+  if(this!=&base){
+	  CGridEnvir::operator=(base);
+	  //delete old object
+	  //generate new object
+
+  }
+  return this;
+}
+
 //-Save.. and Load.. --------------------------------------------------------------------------
 /**
  Saves the current state of the grid and parameters.
@@ -483,6 +498,8 @@ void CWaterGridEnvir::ChangeMeanWaterLevel(double val=0){
       cell->SetWaterLevel(cell->GetWaterLevel()+val);
    }//end for
 }//end changeMeanWaterLevel
+
+
 //---------------------------------------------------------------------------
 /**
    Lowers or sinks all WaterLevel values at the same time.
