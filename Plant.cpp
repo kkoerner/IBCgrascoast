@@ -123,7 +123,7 @@ CPlant::CPlant(const CPlant& base):
 		  Generation(base.Generation),SpacerlengthToGrow(base.SpacerlengthToGrow),genet(NULL) {
 	 if(base.growingSpacerList.size())//if growing spacer (assuming that max. one spacer exists at time)
 	 {
-		 growingSpacerList.push_back(new CPlant(base.growingSpacerList.back()));
+		 growingSpacerList.push_back(new CPlant(*base.growingSpacerList.back()));
 	 }
 
 }
@@ -155,11 +155,11 @@ CPlant& CPlant::operator =(const CPlant& base) {
 			  Generation=(base.Generation);SpacerlengthToGrow=(base.SpacerlengthToGrow);genet=(NULL);
 		 if(base.growingSpacerList.size())//if growing spacer (assuming that max. one spacer exists at time)
 		 {
-			 growingSpacerList.push_back(new CPlant(base.growingSpacerList.back()));
+			 growingSpacerList.push_back(new CPlant(*base.growingSpacerList.back()));
 		 }
 
 	  }
-	  return this;
+	  return *this;
 }
 //---------------------------------------------------------------------------
 /**

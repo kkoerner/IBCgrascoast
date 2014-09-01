@@ -48,6 +48,9 @@ struct SPftOut
    map<string,SPftSingle*> PFT;                 //!< list of active PFTs
    SPftOut();
    ~SPftOut();
+   SPftOut(const SPftOut&);///<construct via copy object
+   SPftOut& operator=(const SPftOut&);///<copy object
+
 };
 //---------------------------------------------------------------------------
 

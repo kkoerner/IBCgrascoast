@@ -61,18 +61,31 @@ CWaterGridEnvir::~CWaterGridEnvir(){
 
 }
 
-CWaterGridEnvir::CWaterGridEnvir(const CWaterGridEnvir& base):CGridEnvir(base) {
-this->
+CWaterGridEnvir::CWaterGridEnvir(const CWaterGridEnvir& base):CGridEnvir(base),winterInundation(base.winterInundation)
+{
+//this->
 }
 
 CWaterGridEnvir& CWaterGridEnvir::operator =(const CWaterGridEnvir& base) {
   if(this!=&base){
 	  CGridEnvir::operator=(base);
-	  //delete old object
-	  //generate new object
+	  //for CWaterPlant
+	  vector<CPlant*> dummilist;
+		for (vector<CPlant*>::const_iterator iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
+		         CPlant* plant=*iplant;
+	  CWaterPlant* wplant = new CWaterPlant(plant);
+	  wplant->setCell(plant->getCell());
+	  DeletePlant( plant); //erase and delete old clonal plant
+	   wplant->getCell()->occupied=true;
+	   wplant->getCell()->PlantInCell = wplant;
+	   dummilist.push_back(wplant);           //append water plant
 
+		}
+		this->PlantList.clear();
+		for (vector<CPlant*>::const_iterator iplant=dummilist.begin(); iplant<dummilist.end(); ++iplant)
+		  PlantList.push_back(*iplant);
   }
-  return this;
+  return *this;
 }
 
 //-Save.. and Load.. --------------------------------------------------------------------------

@@ -83,9 +83,10 @@ using namespace std;
 	   BCover.assign(SRunPara::RunPara.GetSumCells(),0);
        //copy history..
        PftSurvTime=base.PftSurvTime;
-       for (unsigned int i=0;i<base.GridOutData.size();i++) GridOutData.push_back(new SGridOut(base.GridOutData[i]));
-       for (unsigned int i=0;i<base.PftOutData.size();i++)  PftOutData.push_back(new SPftOut(base.PftOutData[i]));
-
+       const vector<SGridOut*> a =base.GridOutData;
+       for (unsigned int i=0;i<a.size();i++) GridOutData.push_back(new SGridOut(*a[i]));
+       for (unsigned int i=0;i<base.PftOutData.size();i++)  PftOutData.push_back(new SPftOut(*base.PftOutData[i]));
+cout<<GridOutData.size()<<"(GridData) "<<PftOutData.size()<<"(PFT Data)\n";
  }
 
  CEnvir& CEnvir::operator =(const CEnvir& base) {
@@ -94,13 +95,14 @@ using namespace std;
 		  init=base.init;
 		  endofrun=base.endofrun;
           PftSurvTime=base.PftSurvTime;
-	      for (unsigned int i=0;i<GridOutData.size();i++) delete GridOutData[i];
-	      for (unsigned int i=0;i<PftOutData.size();i++)  delete PftOutData[i];
-	      for (unsigned int i=0;i<base.GridOutData.size();i++) GridOutData.push_back(new SGridOut(base.GridOutData[i]));
-	      for (unsigned int i=0;i<base.PftOutData.size();i++)  PftOutData.push_back(new SPftOut(base.PftOutData[i]));
+	      for (unsigned int i=0;i<GridOutData.size();i++) delete GridOutData[i];GridOutData.clear();
+	      for (unsigned int i=0;i<PftOutData.size();i++)  delete PftOutData[i];PftOutData.clear();
+	      for (unsigned int i=0;i<base.GridOutData.size();i++) GridOutData.push_back(new SGridOut(*base.GridOutData[i]));
+	      for (unsigned int i=0;i<base.PftOutData.size();i++)  PftOutData.push_back(new SPftOut(*base.PftOutData[i]));
+	      cout<<GridOutData.size()<<"(GridData) "<<PftOutData.size()<<"(PFT Data)\n";
 
 	  }
-	  return this;
+	  return *this;
 }
 //------------------------------------------------------------------------------
 /**
@@ -143,13 +145,14 @@ void CEnvir::ReadLandscape(){
 */
 int CEnvir::GetSim(const int pos,string file){
   //Open SimFile,
-  ifstream SimFile(SRunPara::NameSimFile.c_str());
+  ifstream SimFile(SRunPara::NameSimFile.c_str(),ios::binary);
   if (!SimFile.good()) {cerr<<("error opening SimFile");exit(3); }
   cout<<"SimFile: "<<SRunPara::NameSimFile<<endl;
   int lpos=pos;
   if (pos==0){  //read header
     string line,file_id; //file_id not used here
-    getline(SimFile,line);
+    getline(SimFile,line,'\n');SimFile.unget();
+  cout<<line<<endl;
     lpos=SimFile.tellg();
   }
   SimFile.seekg(lpos);
@@ -159,16 +162,22 @@ int CEnvir::GetSim(const int pos,string file){
   // int version, acomp, bcomp;
     //RunNr=0; int dummi;
     //for (int i=0; i<SimNrMax; ++i)
-
-       SimFile>>SimNr
-             >>SRunPara::RunPara.meanBRes
-             >>SRunPara::RunPara.Migration
-              >>SRunPara::RunPara.GrazProb
-              >>SRunPara::RunPara.AreaEvent
-              >>SRunPara::RunPara.NCut
-              >>SRunPara::RunPara.WaterLevel
-              >>SRunPara::RunPara.salt
-               ;
+       SimFile>>SimNr;
+       cout<<"SimNr:"<<SimNr;
+       SimFile>>SRunPara::RunPara.meanBRes;
+       cout<<" BRes:"<<SRunPara::RunPara.meanBRes;
+       SimFile>>SRunPara::RunPara.Migration;
+       cout<<" Migr:"<<SRunPara::RunPara.Migration;
+       SimFile>>SRunPara::RunPara.GrazProb;
+       cout<<" GrazProb:"<<SRunPara::RunPara.GrazProb;
+       SimFile>>SRunPara::RunPara.AreaEvent;
+       cout<<" Trmpl:"<<SRunPara::RunPara.AreaEvent;
+       SimFile>>SRunPara::RunPara.NCut;
+       cout<<" NCut:"<<SRunPara::RunPara.NCut;
+       SimFile>>SRunPara::RunPara.WaterLevel;
+       cout<<" WL:"<<SRunPara::RunPara.WaterLevel;
+       SimFile>>SRunPara::RunPara.salt;
+       cout<<" Sal:"<<SRunPara::RunPara.salt<<endl<<flush;
 
        //---------standard parameter:
        //aboveground resources

@@ -48,7 +48,7 @@ CGrid::CGrid(const CGrid& base):cutted_BM(0),grazed_BM(0) {
 	for (int x=0; x<SideCells; x++){
 	      for (int y=0; y<SideCells; y++){
 	         index= x *SideCells+y;
-	         CCELL* cell = new CCELL(base.CellList[index]);
+	         CCELL* cell = new CCELL(*base.CellList[index]);
 	         CellList.push_back(cell);
 	}}
     //init LDD seeds
@@ -58,16 +58,16 @@ CGrid::CGrid(const CGrid& base):cutted_BM(0),grazed_BM(0) {
           (*LDDSeeds)[it->first].NSeeds[d] = (*base.LDDSeeds)[it->first].NSeeds[d];
     }
 	//plants...
-	for (plant_iter iplant=base.PlantList.begin(); iplant<base.PlantList.end(); ++iplant){
-	         CPlant* plant=new CPlant(iplant);
+	for (vector<CPlant*>::const_iterator iplant=base.PlantList.begin(); iplant<base.PlantList.end(); ++iplant){
+	         CPlant* plant=new CPlant(**iplant);
 	         //set Genet
 	         CGenet* genet=NULL;
 	         for (unsigned int i=0; i<GenetList.size();i++){
-	           if (GenetList[i]->number==(*iplant)->genet->number)genet=GenetList[i];
+	           if (GenetList[i]->number==(*iplant)->getGenet()->getNumber())genet=GenetList[i];
 	         }
 	         if (!genet) {
-	           CGenet::setStaticId(max(CGenet::getStaticId(),(*iplant)->genet->number));
-	           genet=new CGenet();genet->number=(*iplant)->genet->number;
+	           CGenet::setStaticId(max(CGenet::getStaticId(),(*iplant)->getGenet()->getNumber()));
+	           genet=new CGenet();genet->number=(*iplant)->getGenet()->getNumber();
 	           GenetList.push_back(genet);
 	         }
 	         plant->setGenet(genet);
@@ -108,7 +108,7 @@ CGrid& CGrid::operator =(const CGrid& base) {
 			for (int x=0; x<SideCells; x++){
 			      for (int y=0; y<SideCells; y++){
 			         index= x *SideCells+y;
-			         CCELL* cell = new CCELL(base.CellList[index]);
+			         CCELL* cell = new CCELL(*base.CellList[index]);
 			         CellList.push_back(cell);
 			}}
 		    //init LDD seeds
@@ -118,18 +118,18 @@ CGrid& CGrid::operator =(const CGrid& base) {
 		          (*LDDSeeds)[it->first].NSeeds[d] = (*base.LDDSeeds)[it->first].NSeeds[d];
 		    }
 			//plants...
-			for (plant_iter iplant=base.PlantList.begin(); iplant<base.PlantList.end(); ++iplant){
-			         CPlant* plant=new CPlant(iplant);
+			for (vector<CPlant*>::const_iterator iplant=base.PlantList.begin(); iplant<base.PlantList.end(); ++iplant){
+			         CPlant* plant=new CPlant(**iplant);
 			  	   //establish this plant on cell
 			  	   plant->setCell(CellList[ plant->xcoord *SideCells+plant->ycoord]);
 			         //set Genet
 			         CGenet* genet=NULL;
 			         for (unsigned int i=0; i<GenetList.size();i++){
-			           if (GenetList[i]->number==(*iplant)->genet->number)genet=GenetList[i];
+			           if (GenetList[i]->number==(*iplant)->getGenet()->getNumber()) genet=GenetList[i];
 			         }
 			         if (!genet) {
-			           CGenet::setStaticId(max(CGenet::getStaticId(),(*iplant)->genet->number));
-			           genet=new CGenet();genet->number=(*iplant)->genet->number;
+			           CGenet::setStaticId(max(CGenet::getStaticId(),(*iplant)->getGenet()->getNumber()));
+			           genet=new CGenet();genet->number=(*iplant)->getGenet()->getNumber();
 			           GenetList.push_back(genet);
 			         }
 			         plant->setGenet(genet);
@@ -137,7 +137,7 @@ CGrid& CGrid::operator =(const CGrid& base) {
 			}
 			//Genet list..see above
 	  }
-	  return this;
+	  return *this;
 }//operator=
 //-----------------------------------------------------------------------------
 /**

@@ -1,3 +1,49 @@
+2014-08-29  KatrinK  <KatrinK@VEGLAP-01>
+writing copy constructors and assignment operators..for blockdesign
+	* Cell.cpp (CCell): 
+	(CCell::CCell): 
+	(operator =): 
+	(CCell::operator =): 
+	(CWaterCell::operator =): 
+	* CEnvir.cpp (CEnvir): 
+	(operator =): 
+	(CEnvir::CEnvir): 
+	(CEnvir::operator =): 
+	* CGrid.cpp (CGrid): 
+	(CGrid::CGrid): 
+	(operator =): 
+	(CGrid::operator =): 
+	* CGridEnvir.cpp (operator =): 
+	(CGridEnvir::operator =): 
+	* CSeed.cpp (CSeed): 
+	(CSeed::CSeed): 
+	(CSeed::operator =): 
+	* CSeed.h (CSeed): 
+	(~CSeed): 
+	* CWaterGridEnvir.cpp (CWaterGridEnvir): 
+	(operator =): 
+	(CWaterGridEnvir::CWaterGridEnvir): 
+	(CWaterGridEnvir::operator =): 
+	* CWaterPlant.cpp (operator =): 
+	(CWaterPlant::operator =): 
+	(type): 
+	(CWaterSeed::CWaterSeed): 
+	(CWaterSeed::operator =): 
+	* CWaterPlant.h (~CWaterSeed): 
+	(CWaterSeed): 
+	(CWaterSeed.~CWaterSeed): 
+	* IBCgrass-coast_lookup.cpp (main): 
+	* OutStructs.cpp (~SPftOut): 
+	(SPftOut::SPftOut): 
+	(SPftOut::operator =): 
+	(SGridOut): 
+	(SGridOut::SGridOut): 
+	* OutStructs.h: 
+	* pft_test_1.txt: 
+	* Plant.cpp (CPlant): 
+	(CPlant::CPlant): 
+	(operator =): 
+	(CPlant::operator =): 
 2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
 import changed salinity rules from singleinds branch
 	* CWaterGridEnvir.cpp (saltTolCosts): 

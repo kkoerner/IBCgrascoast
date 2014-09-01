@@ -158,8 +158,8 @@ int main(int argc, char* argv[])
  //   SRunPara::NamePftFile="Input\\comtessKoerner_131114.txt";
 //  bool endsim=false;
 //  SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=50;//Init 200;//100;250//Laufzeit
-  int tmax=200;
+  SRunPara::RunPara.Tmax=5;//50;//Init time
+  int tmax=20;//200;//time to run
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
  // SRunPara::RunPara.CutLeave=15;
 //  int nruns=1;//3//10
@@ -174,24 +174,25 @@ int main(int argc, char* argv[])
 //    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
 //    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
   //      //change gridsize
-     SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=100;//default: 100
+     SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50;//default: 100
      bool endsim=false;
       if (argc>=2) {
          string file = argv[1];
-         SRunPara::NameSimFile="Input\\"+file;
+         SRunPara::NameSimFile=file;
          file=argv[2];
          SRunPara::NamePftFile=file;
       }//else CEnvir::NameSimFile="Input\\comtest.txt";
       int maxRun=1; if (argc>3) {maxRun = atoi(argv[3]);}
       //fill PftLinkList
-    SPftTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
+    SWaterTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
 
     //hier: loop verschiedener Grids
      for (CEnvir::RunNr=1;CEnvir::RunNr<=maxRun;CEnvir::RunNr++){
        //erstes Grid und Kontrolle
        cout<<"start master Environment...\n";
        Envir=new CWaterGridEnvir();  //erstelle neues Grid
-       int lpos=Envir->GetSim();int startID=CEnvir::SimNr;
+       int lpos=Envir->GetSim();
+       int startID=CEnvir::SimNr;
              Init();
        CEnvir::ResetT();
        //-----------------
@@ -213,7 +214,7 @@ int main(int argc, char* argv[])
         //   SRunPara::RunPara.print();
         //-----------------
            Run();//until end of init time
-           CWaterGridEnvir* Envir_base=Envir;  //copy as master environment
+           const CWaterGridEnvir* Envir_base=new CWaterGridEnvir(*Envir);  //copy as master environment
  int bweek=CEnvir::week, byear=CEnvir::year;
            SRunPara::RunPara.Tmax=tmax; //set max time
                //do simulations specified in input-file
@@ -225,7 +226,7 @@ int main(int argc, char* argv[])
 //          stringstream v; v<<"B"<<startID<<setw(2)<<setfill('0')<<CEnvir::RunNr;
 //          delete Envir; Envir=new CWaterGridEnvir(v.str());
 // temporally saved object
-          Envir=Envir_base;
+          *Envir=*Envir_base;
           //reset year and week
           CEnvir::year=byear;CEnvir::week=bweek;
           lpos=Envir->GetSim(lpos);

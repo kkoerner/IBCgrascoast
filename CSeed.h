@@ -14,7 +14,7 @@ protected:
    CCell* cell;
 
 public:
-   SPftTraits* Traits;
+   SPftTraits* Traits;///<link to global pft definition
    double mass;    //!< seed mass
    double estab;   ///< estab-probability (may differ from type-specific value)
    double xcoord;  //!< x position on the grid
@@ -29,7 +29,8 @@ public:
    CSeed(CPlant* plant, CCell* cell);
    CSeed(double x, double y,double estab, SPftTraits* traits);
    CSeed(double estab, SPftTraits* traits, CCell* cell);
-   CSeed(CSeed& seed);///<copy-constructor
+   CSeed(const CSeed&);///<construct via copy object
+   CSeed& operator=(const CSeed&);///<copy object
    virtual ~CSeed(){};
 
    void setCell(CCell* cell);       ///<define cell (only if none defined yet)

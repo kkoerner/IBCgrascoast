@@ -79,6 +79,8 @@ CWaterSeed(double estab,// SPftTraits* traits,
       SWaterTraits* waterTraits, CCell* cell);
 ///seed set
 CWaterSeed(CWaterPlant* plant,CCell* cell);
+CWaterSeed(const CWaterSeed&);///<construct via copy object
+CWaterSeed& operator=(const CWaterSeed&);///<copy object
 virtual ~CWaterSeed(){};//destructor
 
 virtual string type(); ///<say what you are

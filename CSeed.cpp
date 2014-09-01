@@ -23,13 +23,36 @@ CSeed::CSeed(double x, double y, int ID, double m, double estab, int maxage)
 */
 
 //---------------------------------------------------------------------------
-///not used
-///
-CSeed::CSeed(CSeed& seed)
-  :xcoord(seed.xcoord),ycoord(seed.ycoord),Age(seed.Age),cell(seed.cell),
-  remove(seed.remove),Traits(seed.Traits),estab(seed.estab),mass(seed.mass)
+/**
+ * copy constructor
+ *
+ * cell must be set from outside
+ * @param base seed to copy
+ */
+CSeed::CSeed(const CSeed& base)
+	  :xcoord(base.xcoord),ycoord(base.ycoord),Age(base.Age),cell(NULL),
+	  remove(base.remove),Traits(base.Traits),estab(base.estab),mass(base.mass)
 {
-}//end copy-constructor
+}
+
+/**
+ * assignment operator
+ *
+ * cell must be set from outside
+ * @param base seed to copy
+ * @return changed object
+ */
+CSeed& CSeed::operator =(const CSeed& base) {
+	  if(this!=&base){
+//delete old content
+// define new content
+		  xcoord=(base.xcoord);ycoord=(base.ycoord);Age=(base.Age);
+		  cell=(NULL);remove=(base.remove);Traits=(base.Traits);
+		  estab=(base.estab);mass=(base.mass);
+	  }
+	  return *this;
+}
+
 //---------------------------------------------------------------------------
 ///not used
 ///

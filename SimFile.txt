@@ -1,4 +1,5 @@
 SimNr Bres Migr GrazProb AreaEvent NCut WL Sal
 1001 100 5 0 0 0 -60 0
+1005 100 5 0 0 0 -60 0
 1002 100 5 0 0 0 -45 0
 1004 100 5 0 0 0 -30 0

@@ -48,9 +48,10 @@ CCell::CCell(const CCell& base):
 	   AbovePlantList.clear();
 	   BelowPlantList.clear();
 	   SeedBankList.clear();
-	   for (unsigned int i=0; i<base.SeedBankList.size();i++)
-		   SeedBankList.push_back(new CSeed(base.SeedBankList[i]));
-
+	   for (unsigned int i=0; i<base.SeedBankList.size();i++){
+		   SeedBankList.push_back(new CSeed(*base.SeedBankList[i]));
+		   SeedBankList.back()->setCell(this);
+	   }
 	   SeedlingList.clear();
 
 	   PftNIndA.clear();
@@ -79,11 +80,12 @@ CCell& CCell::operator =(const CCell& base) {
 			NPftA=base.NPftA;NPftB=base.NPftB;
 			occupied=false;PlantInCell=NULL;//plant set elswhere
 
-		   for (unsigned int i=0; i<base.SeedBankList.size();i++)
-			   SeedBankList.push_back(new CSeed(base.SeedBankList[i]));
-
+		   for (unsigned int i=0; i<base.SeedBankList.size();i++){
+			   SeedBankList.push_back(new CSeed(*base.SeedBankList[i]));
+		       SeedBankList.back()->setCell(this);
+		   }
 	  }
-	  return this;
+	  return *this;
 
 }
 
@@ -438,8 +440,27 @@ CWaterCell& CWaterCell::operator =(const CWaterCell& base) {
   if(this!=&base){
 	this->CCell::operator=(base);
 	WaterLevel=base.WaterLevel;
+	  //for CWaterSeed
+
+//	   for (unsigned int i=0; i<base.SeedBankList.size();i++)
+//		   SeedBankList.push_back(new CWaterSeed(*base.SeedBankList[i]));
+
+/*
+	vector<CSeed*> dummilist;
+		for (vector<CSeed*>::const_iterator iseed=SeedBankList.begin(); iseed<SeedBankList.end(); ++iseed){
+		         CSeed* seed=*iseed;
+	  CWaterSeed* wseed = new CWaterSeed(seed);
+	  wseed->setCell(seed->getCell());
+	  delete (seed); //erase and delete old clonal plant
+	   dummilist.push_back(wseed);           //append water plant
+
+		}
+		this->SeedBankList.clear();
+		for (vector<CSeed*>::const_iterator iseed=dummilist.begin(); iseed<dummilist.end(); ++iseed)
+		  SeedBankList.push_back(*iseed);
+*/
   }
-  return this;
+  return *this;
 
 }
 //-----------------------------------------------------------------------------

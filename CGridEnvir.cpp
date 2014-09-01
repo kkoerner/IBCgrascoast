@@ -100,13 +100,13 @@ CGridEnvir::CGridEnvir(const CGridEnvir& base):CEnvir(base),CGrid(base) {
 CGridEnvir& CGridEnvir::operator =(const CGridEnvir& base) {
 // no own variables
 	if(this!=&base){
-		  this=CEnvir::operator=(base);
-		  this=CGrid::operator=(base);
+		  CEnvir::operator=(base);
+		  CGrid::operator=(base);
 		  //delete old object
 		  //generate new object
 
 	  }
-	  return this;
+	  return *this;
 
 }
 //------------------------------------------------------------------------------

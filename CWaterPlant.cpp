@@ -81,7 +81,7 @@ CWaterPlant& CWaterPlant::operator =(const CWaterPlant& base) {
 	  if(this!=&base){
 		this->CPlant::operator=(base);
 	  }
-	  return this;
+	  return *this;
 }
 
 //--SAVE-----------------------------------------------------------------------
@@ -329,6 +329,24 @@ CWaterSeed::CWaterSeed(CWaterPlant* plant,CCell* cell)
 //,  waterTraits((SWaterTraits*)plant->Traits)
 {}
 
+/**
+ * copy constructor
+ * @param base
+ */
+CWaterSeed::CWaterSeed(const CWaterSeed& base):CSeed(base) {
+}
+
+/**
+ * assignment operator
+ * @param base seed to copy
+ * @return changed object
+ */
+CWaterSeed& CWaterSeed::operator =(const CWaterSeed& base) {
+	  if(this!=&base){
+		this->CSeed::operator=(base);
+	  }
+	  return *this;
+}
 //---------------------------------------------------------------------------
 string CWaterSeed::type()
 {
