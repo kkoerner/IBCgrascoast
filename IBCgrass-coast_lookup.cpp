@@ -115,14 +115,14 @@ using namespace std;
 
 void Init();
 void Run();
-double GrazProb2=0;      ///<2nd grazing probability
-double DistAreaYear2=0;  ///<2nd trampling intensity
-int NCut2 =0;            ///<2nd mowing management
+const int Tinit=100;//100;
+const int Tmax=200;//200;
+const int nruns=3;//3//10
 //-----------------------
 /**
   Design of the main trunk version of the IBC-grass_coast model:
 
-  On an 1.28 by 1.28cm square grid 10 for each of 28 PFTs
+  On an 1 by 1m square grid 10 for each of x PFTs
   (parameterized according to real species) are initiated.
   One environmental setting is tested for 100 years (1 repitition).
   Salinity is zero/constant.
@@ -130,85 +130,89 @@ int NCut2 =0;            ///<2nd mowing management
 
   \par Parameters
   facultative program parameters are:
-   -# belowground resource supply <100>
-   -# Migration (amount of annual seed rain) <0>
-   -# grazing probability = Dist Area Year (Trampling) <0>
-   -# NCut (cutting) <0>
-   -# WaterLevel <-60>
+   -# file name of sim file
+   -# file name of pft definition file (regional species pool)
+
 
   \par Input
    -species definitions
-   -no sim file
+   -sim file with definition of 'init' and 'effect' environmental settings
+     -# belowground resource supply <100>
+     -# Migration (amount of annual seed rain) <0>
+     -# grazing probability = Dist Area Year (Trampling) <0>
+     -# NCut (cutting) <0>
+     -# WaterLevel <-60>
+     -# salinity
 
   \par Output
    -annual grid information
    -annual type information
 
   \author KK
-  \date 13/05/29
+  \date 14/09/03
   */
 int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 is chosen randomly
-//RSpec59WP3_131114.txt
-    SRunPara::NamePftFile="Input\\comtessKoerner_131114.txt";
-//  bool endsim=false;
-  SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
-  SRunPara::RunPara.Tmax=100;//100;250//Laufzeit
+  SRunPara::RunPara.Tmax=50;//50;//Init time
+  int tmax=150;//200;//time to run
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
- // SRunPara::RunPara.CutLeave=15;
-  int nruns=1;//3//10
-  /// 0-abandoned; 1-grazing; 2-mowing
   CEnvir::SimNr=0;
-  //sim-loop
-  if (argc>1){
-    SRunPara::RunPara.meanBRes=atoi(argv[1]); //belowground resources
-    SRunPara::RunPara.Migration=atoi(argv[2]);  //init types
-    SRunPara::RunPara.GrazProb=atof(argv[3]); //grazing
-//    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
-    SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
-    SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
-    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
-  }
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=100;//default: 100
+//     bool endsim=false;
+      if (argc>=2) {
+         string file = argv[1];
+         SRunPara::NameSimFile=file;
+         file=argv[2];
+         SRunPara::NamePftFile=file;
+      }//else CEnvir::NameSimFile="Input\\comtest.txt";
+      int maxRun=1; if (argc>3) {maxRun = atoi(argv[3]);}
+      //fill PftLinkList
+    SWaterTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
 
-    //Run-loop
-    for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
-//      cout<<"new Environment...\n";
-      Envir=new CWaterGridEnvir();
-      Init();
-//-----------------
-    //filenames
-    string idstr= SRunPara::RunPara.getRunID();
-    stringstream strd;
-    strd<<"Output\\Mix_Grid_log_"<<idstr
-      <<".txt";
-    Envir->NameLogFile=strd.str();     // clear stream
-    strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
-      <<".txt";
-    Envir->NameGridOutFile=strd.str();
-    strd.str("");strd<<"Output\\Mix_survO_"<<idstr
-      <<".txt";
-    Envir->NameSurvOutFile= strd.str();
-    strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
-      <<".txt";
-    Envir->NamePftOutFile= strd.str();
- //   SRunPara::RunPara.print();
- //-----------------
-      Run();
-
-      //Application output:
-      cout<<Envir->year
-    		  <<"\t"<<Envir->GridOutData.back()->PftCount
-    		  <<"\t"<<Envir->GridOutData.back()->shannon
-    		  <<"\t"<<Envir->GridOutData.back()->above_mass<<endl<<flush;
-
-      delete Envir;
-
-    Envir->SimNr++;
-    }//end run
+    //hier: loop verschiedener Grids
+     for (CEnvir::RunNr=1;CEnvir::RunNr<=maxRun;CEnvir::RunNr++){
+       //erstes Grid und Kontrolle
+       cout<<"start init Environment...\n";
+       Envir=new CWaterGridEnvir();  //erstelle neues Grid
+       int lpos=Envir->GetSim();
+       int startID=CEnvir::SimNr;
+             Init();
+       CEnvir::ResetT();
+       //-----------------
+           //filenames
+           string idstr= SRunPara::RunPara.getRunID();
+           stringstream strd;
+           strd<<"Output\\Mix_Grid_log_"<<idstr
+             <<".txt";
+           Envir->NameLogFile=strd.str();     // clear stream
+           strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
+             <<".txt";
+           Envir->NameGridOutFile=strd.str();
+           strd.str("");strd<<"Output\\Mix_survO_"<<idstr
+             <<".txt";
+           Envir->NameSurvOutFile= strd.str();
+           strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
+             <<".txt";
+           Envir->NamePftOutFile= strd.str();
+        //   SRunPara::RunPara.print();
+        //-----------------
+           Run();//until end of init time
+           SRunPara::RunPara.Tmax=tmax; //set max time
+               //do simulations specified in input-file
+           lpos=Envir->GetSim(lpos);
+           int controlID=CEnvir::SimNr;CEnvir::SimNr=startID;
+              Run();//until end
+          cout<<"control Environment...\n";
+          // start control run
+          delete Envir; Envir=new CWaterGridEnvir();
+          //reset year and week
+          CEnvir::ResetT();CEnvir::SimNr=controlID;
+          Init();//init
+          Run(); //control run
+     delete Envir;
+     }//end for x master grids
 
     //delete static pointer vectors
     for (map<string,SPftTraits*>::iterator i=SPftTraits::PftLinkList.begin();

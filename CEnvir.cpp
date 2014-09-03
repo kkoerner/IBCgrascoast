@@ -117,22 +117,15 @@ void CEnvir::ReadLandscape(){
 */
 int CEnvir::GetSim(const int pos,string file){
   //Open SimFile,
-  ifstream SimFile(SRunPara::NameSimFile.c_str());
+  ifstream SimFile(SRunPara::NameSimFile.c_str(),ios::binary);
   if (!SimFile.good()) {cerr<<("error opening SimFile");exit(3); }
   cout<<"SimFile: "<<SRunPara::NameSimFile<<endl;
   int lpos=pos;
   if (pos==0){  //read header
-    string line,file_id; //file_id not used here
-    getline(SimFile,line);
-    int tmax;//dummi
-    SimFile>>tmax>>file_id;
-    SRunPara::RunPara.Tmax=tmax;
-//    file_id.erase (file_id.begin(), file_id.begin()+1);
-//    file_id.erase (file_id.end()-1, file_id.end());
-
-    getline(SimFile,line);
-    getline(SimFile,line);
-    lpos=SimFile.tellg();
+	    string line,file_id; //file_id not used here
+	    getline(SimFile,line,'\n');SimFile.unget();
+//	  cout<<line<<endl;
+	    lpos=SimFile.tellg();
   }
   SimFile.seekg(lpos);
   //ist position gültig?, wenn nicht -- Abbruch
@@ -142,13 +135,22 @@ int CEnvir::GetSim(const int pos,string file){
     //RunNr=0; int dummi;
     //for (int i=0; i<SimNrMax; ++i)
 
-       SimFile>>SimNr
-             >>SRunPara::RunPara.meanBRes
-              >>SRunPara::RunPara.GrazProb
-              >>SRunPara::RunPara.NCut
-              >>SRunPara::RunPara.WaterLevel
-              >>SRunPara::RunPara.salt
-               ;
+  SimFile>>SimNr;
+  cout<<"SimNr:"<<SimNr;
+  SimFile>>SRunPara::RunPara.meanBRes;
+  cout<<" BRes:"<<SRunPara::RunPara.meanBRes;
+  SimFile>>SRunPara::RunPara.Migration;
+  cout<<" Migr:"<<SRunPara::RunPara.Migration;
+  SimFile>>SRunPara::RunPara.GrazProb;
+  cout<<" GrazProb:"<<SRunPara::RunPara.GrazProb;
+  SimFile>>SRunPara::RunPara.AreaEvent;
+  cout<<" Trmpl:"<<SRunPara::RunPara.AreaEvent;
+  SimFile>>SRunPara::RunPara.NCut;
+  cout<<" NCut:"<<SRunPara::RunPara.NCut;
+  SimFile>>SRunPara::RunPara.WaterLevel;
+  cout<<" WL:"<<SRunPara::RunPara.WaterLevel;
+  SimFile>>SRunPara::RunPara.salt;
+  cout<<" Sal:"<<SRunPara::RunPara.salt<<endl<<flush;
 
        //---------standard parameter:
        //aboveground resources
@@ -157,28 +159,10 @@ int CEnvir::GetSim(const int pos,string file){
        //grazing intensity
        SRunPara::RunPara.PropRemove=0.5;
        //trampling equals grazing
-       SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb;
+//       SRunPara::RunPara.DistAreaYear=SRunPara::RunPara.GrazProb;
        //above- and belowground competition
   //     acomp=1;bcomp=0;
       //--------------------------------
-      // set version and competition  modes - in this way because of enum types!
-       //filenames
-     string idstr= SRunPara::RunPara.getRunID();
-     stringstream strd;
-     strd<<"Output\\Mix_Grid_log_"<<idstr
-       <<".txt";
-     NameLogFile=strd.str();     // clear stream
-     strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
-       <<".txt";
-     NameGridOutFile=strd.str();
-     strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
-       <<".txt";
-     NameSurvOutFile= strd.str();
-
-     //Open InitFile,
-   	SPftTraits::ReadPFTDef(SRunPara::NamePftFile);
-
-  //     SRunPara::RunPara.print();
    return SimFile.tellg();
 }//end  CEnvir::GetSim
 //------------------------------------------------------------------------------

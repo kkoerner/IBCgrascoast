@@ -1,3 +1,11 @@
+2014-09-03  KatrinK  <KatrinK@VEGLAP-01>
+
+	* IBCgrass-coast_base.cpp: Removed.
+	* Output\test.txt: Removed.
+	* IBCgrass-coast_lookup.cpp: New file.
+	change base *.cpp for lookup-table runs
+	* CEnvir.cpp (GetSim): 
+	(CEnvir::GetSim): adaptation to lookup runs
 2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
 import changed salinity rules from singleinds branch
 	* CWaterGridEnvir.cpp (saltTolCosts): 
