@@ -609,7 +609,7 @@ void CGridEnvir::Save(string ID){
   //open file(s)
   string fname="Save\\E_"+ID+".sav";
   ofstream SaveFile(fname.c_str());
-  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen SaveFile (GridEnvir)");exit(3); }
   cout<<"SaveFile: "<<fname<<endl;
 
 //environmental parameters CEnvir, CClonalGridEnvir

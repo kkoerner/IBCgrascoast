@@ -182,19 +182,19 @@ int main(int argc, char* argv[])
        CEnvir::ResetT();
        //-----------------
            //filenames
-           string idstr= SRunPara::RunPara.getRunID();
+           string idstr= SRunPara::NameSimFile;SRunPara::RunPara.getRunID();
            stringstream strd;
-           strd<<"Output\\Mix_Grid_log_"<<idstr
-             <<".txt";
+           strd<<"Output\\Mix_Grid_log_"<<idstr;
+//             <<".txt";
            Envir->NameLogFile=strd.str();     // clear stream
-           strd.str("");strd<<"Output\\Mix_gridO_"<<idstr
-             <<".txt";
+           strd.str("");strd<<"Output\\Mix_gridO_"<<idstr;
+//             <<".txt";
            Envir->NameGridOutFile=strd.str();
-           strd.str("");strd<<"Output\\Mix_survO_"<<idstr
-             <<".txt";
+           strd.str("");strd<<"Output\\Mix_survO_"<<idstr;
+//             <<".txt";
            Envir->NameSurvOutFile= strd.str();
-           strd.str("");strd<<"Output\\Mix_typeO_"<<idstr
-             <<".txt";
+           strd.str("");strd<<"Output\\Mix_typeO_"<<idstr;
+//             <<".txt";
            Envir->NamePftOutFile= strd.str();
         //   SRunPara::RunPara.print();
         //-----------------

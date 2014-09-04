@@ -1,0 +1,3 @@
+"SimNr" "BRes" "Mig" "graz" "trmpl" "cut" "WL" "Sal"
+5 80 5 0 0 0 20 0
+1005 80 5 0 0 0 20 0

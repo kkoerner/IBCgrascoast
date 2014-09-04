@@ -122,7 +122,7 @@ CGrid::~CGrid()
 void CGrid::Save(string fname){
 //open file..
    ofstream SaveFile(fname.c_str());
-  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen SaveFile (Grid)");exit(3); }
   cout<<"SaveFile: "<<fname<<endl;
 //write..
 

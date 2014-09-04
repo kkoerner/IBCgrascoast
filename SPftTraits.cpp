@@ -61,7 +61,7 @@ void SPftTraits::ReadPFTDef(const string& file, int n) {
 	//Open InitFile,
 	ifstream InitFile(file.c_str());
 	if (!InitFile.good()) {
-		cerr << ("Fehler beim Öffnen InitFile");
+		cerr << ("Fehler beim Öffnen InitFile (PFTs)");
 		exit(3);
 	}
 	cout << "InitFile: " << file << endl;

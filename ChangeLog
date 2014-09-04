@@ -1,3 +1,19 @@
+2014-09-04  KatrinK  <KatrinK@VEGLAP-01>
+some debugging
+	* Output\test.txt: Removed.
+	* pft_test_38.txt: New file.
+	* SimFile5x5.txt: New file.
+	* CGrid.cpp (Save): 
+	(CGrid::Save): 
+	* CGridEnvir.cpp (Save): 
+	(CGridEnvir::Save): 
+	* CWaterGridEnvir.cpp (InitInds): 
+	(CWaterGridEnvir::InitInds): 
+	(ReadPFTDef): debug last line's double reading
+	(SWaterTraits::ReadPFTDef): 
+	* IBCgrass-coast_lookup.cpp (main): new output file names
+	* SPftTraits.cpp (ReadPFTDef): 
+	(SPftTraits::ReadPFTDef): 
 2014-09-03  KatrinK  <KatrinK@VEGLAP-01>
 
 	* IBCgrass-coast_base.cpp: Removed.

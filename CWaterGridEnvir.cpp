@@ -574,7 +574,7 @@ void CWaterGridEnvir::InitInds(int n){
   const int no_init_seeds=10;//10;
 
   //PFT Traits are read in GetSim() or here:
-	SWaterTraits::ReadPFTDef(SRunPara::NamePftFile);
+	//SWaterTraits::ReadPFTDef(SRunPara::NamePftFile);
 
   	// initialization
   	for (map<string,SPftTraits*>::iterator var = SPftTraits::PftLinkList.begin();
@@ -616,7 +616,7 @@ void SWaterTraits::print(){
 void SWaterTraits::ReadPFTDef(const string& file, int n) {
 	  //Open InitFile,
 	  ifstream InitFile(file.c_str());
-	  if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
+	  if (!InitFile.good()) {cerr<<("Fehler beim Öffnen InitFile (WaterPFT)");exit(3); }
 	//  cout<<"InitFile: "<<file<<endl;
 	  string line;
 	  getline(InitFile,line);//skip header line
@@ -652,7 +652,8 @@ void SWaterTraits::ReadPFTDef(const string& file, int n) {
 	    traits->name=dummi2;
 	    traits->TypeID=dummi1;
 		//append to list..
-		SPftTraits::addPftLink(dummi2, traits);
+		if(traits->MaxMass>0) SPftTraits::addPftLink(dummi2, traits);
+	    if(!InitFile.good()||n>-1) { return;}
 
 	  }while(!InitFile.eof());
 
