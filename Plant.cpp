@@ -396,16 +396,23 @@ bool CPlant::stressed(){
 }
 //-----------------------------------------------------------------------------
 /**
- * Kill plant depending on stress level and base mortality. Stochastic process.
- */
+ * Calculate weekly individual mortality.
+ * We assume an base mortality of 0.007 and add a stress dependent mortality.
+ * This is a stochastic process (mortality rate is interpreted as probability here).
+ * If the Plant is killed, it gets the status dead=true.
+ * Subsequently the litter gets decomposed weekly.
+ *
+ * \sa DecomposeDead()
+ * */
 void CPlant::Kill()
 {
 //   double pmort;//,rnumber;
 
    //resource deficiency mortality  ; pmin->random background mortality
    //use this->mort_base for bayer-style base mortality
-   const double pmin=SRunPara::RunPara.mort_base;//0.007;
-   double pmort= (double)stress/Traits->memory  + pmin;  //stress mortality + random background mortality
+//   const double pmin=SRunPara::RunPara.mort_base;//0.007;
+	const double pmin=this->mort_base;
+	double pmort= (double)stress/Traits->memory  + pmin;  //stress mortality + random background mortality
 //   rnumber = CEnvir::rand01();//(double )rand()/(RAND_MAX+1);
    if (CEnvir::rand01()<pmort) dead=true;
 }

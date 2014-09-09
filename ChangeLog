@@ -1,3 +1,7 @@
+2014-09-09  KatrinK  <KatrinK@VEGLAP-01>
+
+	* Plant.cpp (Kill): 
+	(CPlant::Kill): enable density dependent base mortality
 2014-09-04  KatrinK  <KatrinK@VEGLAP-01>
 some debugging
 	* Output\test.txt: Removed.
