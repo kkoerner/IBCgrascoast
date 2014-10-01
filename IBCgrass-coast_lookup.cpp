@@ -115,8 +115,8 @@ using namespace std;
 
 void Init();
 void Run();
-const int Tinit=100;//100;
-const int Tmax=200;//200;
+const int Tinit=50;//100;
+const int Tmax=150;//200;
 const int nruns=3;//3//10
 //-----------------------
 /**
@@ -154,8 +154,9 @@ const int nruns=3;//3//10
 int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 is chosen randomly
-  SRunPara::RunPara.Tmax=50;//50;//Init time
-  int tmax=150;//200;//time to run
+//  int tinit=5;//50;
+    SRunPara::RunPara.Tmax=Tinit;//50;//50;//Init time
+//  int tmax=10;//150;//200;//time to run
   SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   CEnvir::SimNr=0;
   //      //change gridsize
@@ -178,6 +179,7 @@ int main(int argc, char* argv[])
        Envir=new CWaterGridEnvir();  //erstelle neues Grid
        int lpos=Envir->GetSim();
        int startID=CEnvir::SimNr;
+       SRunPara::RunPara.Tmax=Tinit; //set max time
              Init();
        CEnvir::ResetT();
        //-----------------
@@ -199,7 +201,7 @@ int main(int argc, char* argv[])
         //   SRunPara::RunPara.print();
         //-----------------
            Run();//until end of init time
-           SRunPara::RunPara.Tmax=tmax; //set max time
+           SRunPara::RunPara.Tmax=Tmax; //set max time
                //do simulations specified in input-file
            lpos=Envir->GetSim(lpos);
            int controlID=CEnvir::SimNr;CEnvir::SimNr=startID;
