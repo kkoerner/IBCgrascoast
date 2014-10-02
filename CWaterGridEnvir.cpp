@@ -390,6 +390,32 @@ int CWaterGridEnvir::exitConditions()
      return 0;
 }//end CClonalGridEnvir::exitConditions()
 //---------------------------------------------------------
+
+//COMTESS version of seed migration
+void CWaterGridEnvir::SeedRain(){
+
+   string PFT_ID, PFTtype, Cltype;
+   //size_t posc;
+   SPftTraits *pfttraits;
+//   SclonalTraits *cltraits;
+   double nseeds =SRunPara::RunPara.Migration;
+   //for all plant types..
+   for (map<string, long>::const_iterator it = PftInitList.begin();
+          it!= PftInitList.end(); ++it){
+
+      PFT_ID = it->first;
+
+//      cltraits=getClLink(PFT_ID);
+      pfttraits=SPftTraits::getPftLink(PFT_ID);
+
+
+      int nseeds2 = poissonLCG(nseeds);  //random number from poisson distribution
+       //int nseeds2 = Round(nseeds);
+       CGrid::InitClonalSeeds(pfttraits,nseeds2,pfttraits->pEstab);//,cltraits
+//      if(pfttraits->clonal)
+//       CGrid::InitClonalPlants(pfttraits,ceil(nseeds/10.0));
+   }
+}
 void CWaterGridEnvir::GetOutput(){
    CGridEnvir::GetOutput();
    this->GridOutData.back()->WaterLevel=this->GetMeanWaterLevel(); //oder:

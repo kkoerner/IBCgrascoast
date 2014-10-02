@@ -143,6 +143,7 @@ double getWL(); ///<get current water level
   void OneRun();    ///< runs one simulation run in default mode
 
   virtual int exitConditions(); ///< get exit conditions
+  virtual void SeedRain();
   virtual void GetOutput();    //run in 20th week of year
   void WriteWaterOutput();   ///< write water-experiment result output
 

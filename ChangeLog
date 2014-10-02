@@ -1,3 +1,18 @@
+2014-10-02  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CGridEnvir.h (CGridEnvir): 
+	* CWaterGridEnvir.cpp (GetOutput): 
+	(CWaterGridEnvir::SeedRain): enable Migration as before but in week 21
+	(CWaterGridEnvir::GetOutput): 
+	* CWaterGridEnvir.h (CWaterGridEnvir): own seed rain function
+	* LCG.cpp (poissonLCG): some doc
+	* RunPara.cpp (SRunPara): 
+	(SRunPara::SRunPara): 
+	* SimFile5x5.txt: change in environment
+2014-10-01  KatrinK  <KatrinK@VEGLAP-01>
+    * main.cpp
+debug design; bug was that successive treatments do not change after init time
+
 2014-09-09  KatrinK  <KatrinK@VEGLAP-01>
 
 	* Plant.cpp (Kill): 
