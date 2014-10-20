@@ -157,7 +157,8 @@ int main(int argc, char* argv[])
 //  int tinit=5;//50;
     SRunPara::RunPara.Tmax=Tinit;//50;//50;//Init time
 //  int tmax=10;//150;//200;//time to run
-  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
+    SRunPara::RunPara.WLseason="file";//file - changing weather conditions
+//  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   CEnvir::SimNr=0;
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=100;//default: 100

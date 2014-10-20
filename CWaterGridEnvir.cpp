@@ -7,9 +7,10 @@
 
 
    //map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=map<string,SWaterTraits*>();
-   vector<double> CWaterGridEnvir::weeklyWL=vector<double>();
-   vector<double> CWaterGridEnvir::weeklySAL=vector<double>();
-   vector<double> CWaterGridEnvir::weeklySAT=vector<double>();
+   vector<CWaterGridEnvir::SweeklyEnv> CWaterGridEnvir::weeklyENV=vector<CWaterGridEnvir::SweeklyEnv>();
+//   vector<double> CWaterGridEnvir::weeklyWL=vector<double>();
+//   vector<double> CWaterGridEnvir::weeklySAL=vector<double>();
+//   vector<double> CWaterGridEnvir::weeklySAT=vector<double>();
 // double CWaterGridEnvir::salinity=0;
 //---------------------------------------------------------------------------
 void CWaterGridEnvir::CellsInit(){
@@ -242,7 +243,9 @@ void CWaterGridEnvir::Winter(){
   //effected types: all non adapted to water and the other to smaller extend
    //mass removal and mortality in case of Disturbance
    for (int i=0; i<PlantList.size(); ++i){
-      ((CWaterPlant*)PlantList[i])->winterDisturbance(winterInundation);
+//	      ((CWaterPlant*)PlantList[i])->winterDisturbance(winterInundation);
+      ((CWaterPlant*)PlantList[i])->winterDisturbance(getWI());
+//      cout<<" WI "<<getWI()<<endl;
    }
   CGrid::Winter(); //remove dead plants and calc winter dieback
 }//end winter() - winter mortality
@@ -251,7 +254,7 @@ void CWaterGridEnvir::Winter(){
     \param file file name of source file
 */
 void CWaterGridEnvir::getEnvirCond(string file){
-  weeklyWL.clear();weeklySAL.clear();weeklySAT.clear();
+  weeklyENV.clear();//weeklyWL.clear();weeklySAL.clear();weeklySAT.clear();
    ifstream EnvFile;
    //open parameter file
      EnvFile.open(file.c_str());
@@ -261,44 +264,59 @@ void CWaterGridEnvir::getEnvirCond(string file){
    getline(EnvFile,line1); //ignore header
    //*******************
     //loop for all weeks
-   for (int lweek=0; lweek<30; ++lweek){
-      int wl,sal,sat;
+//   for (int lweek=0; lweek<30; ++lweek){
+	 do{
+      SweeklyEnv thisWeek;
+	   int d0,wl,sal,sat,wi;
       //read plant parameter from inputfile
-      EnvFile>>wl>>sat>>sal;
-      weeklyWL.push_back(wl);
-      weeklySAL.push_back(sal);
-      weeklySAT.push_back(sat);
-   }
-  EnvFile>>winterInundation;//get winter inundation weeks in last line
+      EnvFile>>d0>>wl>>sat>>sal>>wi;
+      thisWeek.WL=wl;
+      thisWeek.Sal=sal;
+      thisWeek.Sat=sat;
+      thisWeek.WI=wi;
+//      weeklyWL.push_back(wl);
+//      weeklySAL.push_back(sal);
+//      weeklySAT.push_back(sat);
+      weeklyENV.push_back(thisWeek);
+   }while(EnvFile.good());
+	 cout<<"Read in "<<weeklyENV.size()<<" lines of Environmental data.\n";
+//  EnvFile>>winterInundation;//get winter inundation weeks in last line
 }
 double CWaterGridEnvir::getSAL(){
-  return weeklySAL.at(week-1);
+	int time=CEnvir::GetT();
+	  return weeklyENV.at(time-1).Sal;
 }//<get current salinity
 double CWaterGridEnvir::getSAT(){
-  return weeklySAT.at(week-1);
+	int time=CEnvir::GetT();
+	  return weeklyENV.at(time-1).Sat;
 }//<get current soil saturation
 double CWaterGridEnvir::getWL(){
-  return weeklyWL.at(week-1);
+	int time=CEnvir::GetT();
+  return weeklyENV.at(time-1).WL;
 }//<get current water level
+double CWaterGridEnvir::getWI(){
+	int time=CEnvir::GetT();
+  return weeklyENV.at(time-1).WI;
+}//<get current water inundation
 
 /**
   \warning this work only with 30 weeks a year
 */
 void CWaterGridEnvir::genAutokorrWL(double hurst)
 {
-  weeklyWL.clear();weeklyWL.assign(33,0);
+  weeklyENV.clear();weeklyENV.assign(33,CWaterGridEnvir::SweeklyEnv());
   double mean=SRunPara::RunPara.WaterLevel;
   double sigma=SRunPara::RunPara.WLsigma;//5;
   int D=32,N=32, d=D/2;
   //first values
-  weeklyWL.at(0)=CEnvir::rand01()*2*sigma+(mean-sigma);
-  weeklyWL.at(32)=CEnvir::rand01()*2*sigma+(mean-sigma);
+  weeklyENV.at(0).WL=CEnvir::rand01()*2*sigma+(mean-sigma);
+  weeklyENV.at(32).WL=CEnvir::rand01()*2*sigma+(mean-sigma);
   double delta=sigma;
   //generate between
   for (int step=1;step<=5;step++){
     delta*= pow(0.5,0.5*hurst);
     for(int x=d;x<=N-d;x+=D){
-    	weeklyWL.at(x)=(weeklyWL.at(x-d)+weeklyWL.at(x+d))/2.0
+    	weeklyENV.at(x).WL=(weeklyENV.at(x-d).WL+weeklyENV.at(x+d).WL)/2.0
                   +delta*(2.0*rand01()-1);
     }
     D/=2;d/=2;
@@ -309,11 +327,11 @@ void CWaterGridEnvir::genAutokorrWL(double hurst)
 */
 void CWaterGridEnvir::genSeasonWL()
 {
-  weeklyWL.clear();weeklyWL.assign(30,0);
+	  weeklyENV.clear();weeklyENV.assign(30,CWaterGridEnvir::SweeklyEnv());
   double mean=SRunPara::RunPara.WaterLevel;
   double sigma=SRunPara::RunPara.WLsigma; //5;//
   for (unsigned int i=0; i<30; i++)
-    weeklyWL[i]=mean+sigma*cos(i/2.0/Pi);
+    weeklyENV[i].WL=mean+sigma*cos(i/2.0/Pi);
 }
 /**
   \warning this work only with 30 weeks a year
@@ -321,9 +339,15 @@ void CWaterGridEnvir::genSeasonWL()
 void CWaterGridEnvir::genConstWL()
 {
 //   weeklyWL.clear();weeklyWL.assign(30,0);
-   weeklyWL.clear();weeklyWL.assign(30,SRunPara::RunPara.WaterLevel);
-   weeklySAL.clear();weeklySAL.assign(30,SRunPara::RunPara.salt);
-   weeklySAT.clear();weeklySAT.assign(30,1);
+	CWaterGridEnvir::SweeklyEnv oneWeek=CWaterGridEnvir::SweeklyEnv();
+	oneWeek.WL=SRunPara::RunPara.WaterLevel;
+	oneWeek.Sal=SRunPara::RunPara.salt;
+	oneWeek.Sat=0.5;
+
+	weeklyENV.clear();weeklyENV.assign(30,oneWeek);
+//   weeklyWL.clear();weeklyWL.assign(30,SRunPara::RunPara.WaterLevel);
+//   weeklySAL.clear();weeklySAL.assign(30,SRunPara::RunPara.salt);
+//   weeklySAT.clear();weeklySAT.assign(30,1);
 
 //  for (unsigned int i=0; i<30; i++) {
 //	  weeklyWL[i]=SRunPara::RunPara.WaterLevel;
@@ -341,7 +365,8 @@ void CWaterGridEnvir::genConstWL()
 void CWaterGridEnvir::SetCellResource(){
   CGrid::SetCellResource();
   //  ChangeMeanWaterLevel(5);
-  if (week==1)//generate new year's WaterLevels
+  if (year==1 && week==1)//generate new year's WaterLevels
+//  if (week==1)//generate new year's WaterLevels
   {
     if(SRunPara::RunPara.WLseason=="random")
     // generate autocorrelated Wl-series
@@ -359,7 +384,7 @@ void CWaterGridEnvir::SetCellResource(){
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   this->SetMeanWaterLevel(getWL());
-
+cout<<" WL "<<getWL()<<endl;
   //salinity
 //  salinity=SRunPara::SRunPara::RunPara.salt;
 //  if (week==1) cout<<"\n";

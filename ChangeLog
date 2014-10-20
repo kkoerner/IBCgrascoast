@@ -1,3 +1,31 @@
+2014-10-20  KatrinK  <KatrinK@VEGLAP-01>
+Cange on Weather input data: file input of 5040 weeks (i.e. 150+ years) at once
+new weather Strukt
+	* Input\env_con.txt: New file. New struct on weather input
+	* CGrid.cpp (EstabLottery): 
+	(CGrid::EstabLottery): 
+	* CWaterGridEnvir.cpp (Winter): 
+	(CWaterGridEnvir::Winter): 
+	(getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): 
+	(getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAL): 
+	(getWL): 
+	(CWaterGridEnvir::getSAT): 
+	(genAutokorrWL): 
+	(CWaterGridEnvir::getWL): 
+	(CWaterGridEnvir::getWI): 
+	(CWaterGridEnvir::genAutokorrWL): 
+	(genSeasonWL): 
+	(CWaterGridEnvir::genSeasonWL): 
+	(genConstWL): 
+	(CWaterGridEnvir::genConstWL): 
+	(SetCellResource): 
+	(CWaterGridEnvir::SetCellResource): 
+	* CWaterGridEnvir.h (CWaterGridEnvir): new weather struct SweeklyEnv
+	(CWaterGridEnvir.CWaterGridEnvir): 
+	* IBCgrass-coast_lookup.cpp (main): weather input data set to 'file'
 2014-10-02  KatrinK  <KatrinK@VEGLAP-01>
 
 	* CGridEnvir.h (CGridEnvir): 
