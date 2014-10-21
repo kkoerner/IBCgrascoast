@@ -511,7 +511,7 @@ void CGrid::EstabLottery()
    map<string,int> PftNSeedling;
    int gweek=CEnvir::week;
 
-   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))
+   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))// 7 weeks
    { //establishment only between week 1-4 and 21-25
      double sum=0;
 

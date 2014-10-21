@@ -156,7 +156,8 @@ int main(int argc, char* argv[])
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=3;//100;250//Laufzeit
-  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
+//  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
+  SRunPara::RunPara.WLseason="file";//file - changing weather conditions
  // SRunPara::RunPara.CutLeave=15;
   int nruns=5;//3//10
   /// 0-abandoned; 1-grazing; 2-mowing
@@ -173,6 +174,8 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.c_growth=atof(argv[6]); //corrfac growth parameter
     SRunPara::RunPara.c_anox=atof(argv[7]); //corrfac oxygen depletion adaptation
     SRunPara::RunPara.c_saladapt=atof(argv[8]); //corrfac salinity adaptation
+    string file=argv[9];
+    SRunPara::NameEnvFile=file;
   }
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50;//default: 100

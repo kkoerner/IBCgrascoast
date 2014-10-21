@@ -13,6 +13,7 @@
 //Input Files
    std::string SRunPara::NamePftFile="Input\\PftTraits.experiment.txt"; // trait file for experiment species
    std::string SRunPara::NameSimFile = "Input\\SimFile.txt";  //file with simulation scenarios
+   std::string SRunPara::NameEnvFile="Input\\env-con.txt"; // trait file for experiment species
 
 SRunPara SRunPara::RunPara=SRunPara();
 //-------------------------------------------------------------------
@@ -22,8 +23,8 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   c_growth(1),c_anox(1),c_saladapt(1),
-  DistAreaYear(0),AreaEvent(0.1),mort_seeds(0.5),meanARes(100),meanBRes(100),
-  PftFile("Input/RSpec59WP3_131114.txt"),SeedInput(0),SeedRainType(0),
+  DistAreaYear(0),AreaEvent(0),mort_seeds(0.5),meanARes(100),meanBRes(100),
+  PftFile("Input/RSpec59WP3_131114.txt"),SeedInput(0),SeedRainType(1),
   species("M"),WaterLevel(0),WLsigma(0),changeVal(0),
   Migration(0),Aampl(0),Bampl(0),//cv_res(0),
   WLseason("file"){}
