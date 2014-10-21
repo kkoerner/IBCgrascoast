@@ -292,7 +292,10 @@ double CWaterGridEnvir::getSAT(){
 }//<get current soil saturation
 double CWaterGridEnvir::getWL(){
 	int time=CEnvir::GetT();
-  return weeklyENV.at(time-1).WL;
+	double toadd=0;
+	if (SRunPara::RunPara.WLseason=="file")
+		toadd==SRunPara::RunPara.changeVal;
+  return weeklyENV.at(time-1).WL + toadd;
 }//<get current water level
 double CWaterGridEnvir::getWI(){
 	int time=CEnvir::GetT();
@@ -376,7 +379,8 @@ void CWaterGridEnvir::SetCellResource(){
     genSeasonWL();
     else if(SRunPara::RunPara.WLseason=="file")
     // generate seasonal Wl-series
-    getEnvirCond((string)"Input\\env_con.txt");
+//        getEnvirCond((string)"Input\\env_con.txt");
+    getEnvirCond(SRunPara::RunPara.NameEnvFile);
     else
 //if(SRunPara::RunPara.WLseason=="const")
     // generate const Wl-series

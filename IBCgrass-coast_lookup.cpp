@@ -168,8 +168,10 @@ int main(int argc, char* argv[])
          SRunPara::NameSimFile=file;
          file=argv[2];
          SRunPara::NamePftFile=file;
+         file=argv[3];
+         SRunPara::NameEnvFile=file;
       }//else CEnvir::NameSimFile="Input\\comtest.txt";
-      int maxRun=1; if (argc>3) {maxRun = atoi(argv[3]);}
+      int maxRun=1; if (argc>4) {maxRun = atoi(argv[4]);}
       //fill PftLinkList
     SWaterTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
 

@@ -1,3 +1,13 @@
+2014-10-21  KatrinK  <KatrinK@VEGLAP-01>
+new global variable for envir-data filename; added to app-parameters
+	* CWaterGridEnvir.cpp (getWL): 
+	(CWaterGridEnvir::getWL): add ChangeVal to mean/each value of file data (for resilience runs)
+	(SetCellResource): take new parameter as filename
+	(CWaterGridEnvir::SetCellResource): 
+	* IBCgrass-coast_lookup.cpp (main): Env-filename as app-argument
+	* RunPara.cpp: 
+	* RunPara.h: new variable NameEnvFile
+
 2014-10-20  KatrinK  <KatrinK@VEGLAP-01>
 Cange on Weather input data: file input of 5040 weeks (i.e. 150+ years) at once
 new weather Strukt

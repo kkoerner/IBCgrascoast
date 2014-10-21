@@ -13,6 +13,7 @@
 //Input Files
    std::string SRunPara::NamePftFile="Input\\PftTraits.experiment.txt"; // trait file for experiment species
    std::string SRunPara::NameSimFile = "Input\\SimFile.txt";  //file with simulation scenarios
+   std::string SRunPara::NameEnvFile="Input\\env-con.txt"; // trait file for experiment species
 
 SRunPara SRunPara::RunPara=SRunPara();
 //-------------------------------------------------------------------
