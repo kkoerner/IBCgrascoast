@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 //RSpec59WP3_131114.txt
     SRunPara::NamePftFile="Input\\comtessKoerner_131114.txt";
 //  bool endsim=false;
-  SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
+//  SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=3;//100;250//Laufzeit
 //  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   SRunPara::RunPara.WLseason="file";//file - changing weather conditions
@@ -169,13 +169,13 @@ int main(int argc, char* argv[])
     SRunPara::RunPara.GrazProb=atof(argv[2]); //grazing
     SRunPara::RunPara.AreaEvent=SRunPara::RunPara.GrazProb/30.0;//atof(argv[4]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[3]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[4]); //number of cuttings
-    SRunPara::RunPara.salt=atof(argv[5]); //soil salinity
-    SRunPara::RunPara.c_growth=atof(argv[6]); //corrfac growth parameter
-    SRunPara::RunPara.c_anox=atof(argv[7]); //corrfac oxygen depletion adaptation
-    SRunPara::RunPara.c_saladapt=atof(argv[8]); //corrfac salinity adaptation
-    string file=argv[9];
-    SRunPara::NameEnvFile=file;
+//    SRunPara::RunPara.WaterLevel=atoi(argv[4]); //number of cuttings
+    SRunPara::RunPara.salt=atof(argv[4]); //soil salinity
+    SRunPara::RunPara.c_growth=atof(argv[5]); //corrfac growth parameter
+    SRunPara::RunPara.c_anox=atof(argv[6]); //corrfac oxygen depletion adaptation
+    SRunPara::RunPara.c_saladapt=atof(argv[7]); //corrfac salinity adaptation
+    string file=argv[8];
+    SRunPara::NameEnvFile="Input/"+file;
   }
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=50;//default: 100

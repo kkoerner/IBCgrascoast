@@ -115,21 +115,26 @@ void SRunPara::print(){
 ///
 string SRunPara::getRunID(){
       stringstream dummi;
+      string envname=((string)this->NameEnvFile);
+      string envid=envname.substr(envname.find('.')+1);
+      unsigned int pos=envid.find('.');
       dummi<<"_R"<<this->meanBRes<<"_"<<Migration//species
 //           <<"_"<<this->WLseason
            <<"_"<<this->GrazProb
 //          <<"_"<<this->AreaEvent
  //          <<"_"<<this->DistAreaYear
            <<"_"<<this->NCut
-           <<"_WL"<<this->WaterLevel
+//           <<"_WL"<<this->WaterLevel
            <<"_S"<<this->salt
            <<"_"<<this->c_growth
            <<"_"<<this->c_anox
            <<"_"<<this->c_saladapt
+           <<"_"<<envid.substr(0,pos)
 
  //          <<"_"<<this->changeVal
 //           <<"_WLc"<<WLsigma
            ;
+      cout<< dummi.str()<<endl;
       return dummi.str();
 }// string for file name generation
 
