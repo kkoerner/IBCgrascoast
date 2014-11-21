@@ -81,9 +81,15 @@ class CWaterGridEnvir: public CGridEnvir{
  /**2^5 for generating autocorellation
  \sa genAutokorrWL()
  */
- static vector<double> weeklyWL;
- static vector<double> weeklySAL;///< weekly salinity levels
- static vector<double> weeklySAT;///< weekly soil saturation levels
+ struct SweeklyEnv{
+	 double WL; ///<water level
+	 double Sal;///<salinity
+	 double Sat;///<Saturation (for NS plots)
+	 double WI;///<nb. weeks with winter inundation
+ };
+ static vector<SweeklyEnv> weeklyENV;
+// static vector<double> weeklySAL;///< weekly salinity levels
+// static vector<double> weeklySAT;///< weekly soil saturation levels
  /// generate autocorrelated Wl-series
  void genAutokorrWL(double hurst);
  /// generate seasonal Wl-series
@@ -92,8 +98,8 @@ class CWaterGridEnvir: public CGridEnvir{
  void genConstWL();
  /// read annual environmental conditions from file
  void getEnvirCond(string file);
- /// inundation time in winter season \[weeks\] 0..12
- int winterInundation;
+ // / inundation time in winter season \[weeks\] 0..12
+// / int winterInundation;
 protected:
  void DistribResource();    ///<water impact on ressource allocation
  void SetCellResource();     ///< set amount of resources the cells serve
@@ -111,9 +117,11 @@ public:
 static double getSAL();///<get current salinity
 // static double salinity;
 static double getSAT();///<get current soil saturation
-double getWL(); ///<get current water level
+static double getWL(); ///<get current water level
+static double getWI(); ///<get current water level
 
-  CWaterGridEnvir():winterInundation(0){CellsInit();//WaterFlow(no),
+  CWaterGridEnvir()
+{CellsInit();//WaterFlow(no),
 // cout<<"\nCWaterGrid() ";
   };
   CWaterGridEnvir(string id); ///< load from file(s)
@@ -143,6 +151,7 @@ double getWL(); ///<get current water level
   void OneRun();    ///< runs one simulation run in default mode
 
   virtual int exitConditions(); ///< get exit conditions
+  virtual void SeedRain();
   virtual void GetOutput();    //run in 20th week of year
   void WriteWaterOutput();   ///< write water-experiment result output
 

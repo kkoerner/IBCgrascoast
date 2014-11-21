@@ -149,7 +149,7 @@ void CGrid::Save(string fname){
 */
 void CGrid::PlantLoop()
 {
-   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); iplant++)
    {
       CPlant* plant = *iplant;
       if (!plant->dead)
@@ -261,10 +261,16 @@ int CGrid::DispersSeeds(CPlant* plant)
 		}
 
          CCELL* cell = CellList[x*SideCells+y];
-         new CSeed(plant,cell);
+         DispSeeds_help(plant,cell);
+         //new CSeed(plant,cell);
    }//for NSeeds
    return nb_LDDseeds;
 }//end DispersSeeds
+void CGrid::DispSeeds_help(CPlant* plant,CCell* cell)
+{
+            new CSeed(plant,cell);
+}    //
+
 //---------------------------------------------------------------------------
 void CGrid::DispersRamets(CPlant* plant)
 {
@@ -511,7 +517,7 @@ void CGrid::EstabLottery()
    map<string,int> PftNSeedling;
    int gweek=CEnvir::week;
 
-   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))
+   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))// 7 weeks
    { //establishment only between week 1-4 and 21-25
      double sum=0;
 
@@ -1021,10 +1027,10 @@ void CGrid::RemovePlants()
 {
    plant_iter irem = partition(PlantList.begin(),PlantList.end(),
      mem_fun(&CPlant::GetPlantRemove));
-   for (plant_iter iplant=irem; iplant<PlantList.end(); ++iplant)
+   for (plant_iter iplant=irem; iplant!=PlantList.end(); ++iplant)
    {
       CPlant* plant = *iplant;
-      DeletePlant(plant);
+      DeletePlant(plant); plant=NULL;
    }
    PlantList.erase(irem,PlantList.end());
 }

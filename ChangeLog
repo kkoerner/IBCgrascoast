@@ -1,3 +1,131 @@
+2014-11-21  KatrinK  <KatrinK@VEGLAP-01>
+
+	* Input\env_con_hist_point.10_-199.txt: New file.
+	* Input\env_con_hist_point.11_-217.txt: New file.
+	* Input\env_con_hist_point.12_-192.txt: New file.
+	* Input\env_con_hist_point.13_-205.txt: New file.
+	* Input\env_con_hist_point.14_-242.txt: New file.
+	* Input\env_con_hist_point.15_-108.txt: New file.
+	* Input\env_con_hist_point.16_-369.txt: New file.
+	* Input\env_con_hist_point.17_-360.txt: New file.
+	* Input\env_con_hist_point.18_-220.txt: New file.
+	* Input\env_con_hist_point.19_-106.txt: New file.
+	* Input\env_con_hist_point.1_-60.txt: New file.
+	* Input\env_con_hist_point.22_-46.txt: New file.
+	* Output\Mix_gridO__R200_5_0.5_3_S0_pft_test_16_22_-46.txt: New file.
+	* Output\Mix_typeO__R200_5_0.5_3_S0_pft_test_16_22_-46.txt: New file.
+	* pft_test_16.txt: New file.
+	* RunPara.h: New file.
+	* CGrid.cpp (PlantLoop): 
+	(CGrid::PlantLoop): 
+	(DispersSeeds): 
+	(CGrid::DispersSeeds): 
+	(DispersRamets): 
+	(CGrid::DispSeeds_help): 
+	(EstabLottery): 
+	(CGrid::EstabLottery): 
+	(RemovePlants): 
+	(CGrid::RemovePlants): 
+	* CGrid.h (CGrid): 
+	* CGridEnvir.h (CGridEnvir): 
+	* CWaterGridEnvir.cpp (InitSeeds): 
+	(Winter): 
+	(CWaterGridEnvir::Winter): 
+	(getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): 
+	(getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAL): 
+	(getWL): 
+	(CWaterGridEnvir::getSAT): 
+	(genAutokorrWL): 
+	(CWaterGridEnvir::getWL): 
+	(CWaterGridEnvir::getWI): 
+	(CWaterGridEnvir::genAutokorrWL): 
+	(genSeasonWL): 
+	(CWaterGridEnvir::genSeasonWL): 
+	(genConstWL): 
+	(CWaterGridEnvir::genConstWL): 
+	(SetCellResource): 
+	(CWaterGridEnvir::SetCellResource): 
+	(GetOutput): 
+	(CWaterGridEnvir::SeedRain): 
+	(CWaterGridEnvir::GetOutput): 
+	* CWaterGridEnvir.h (CWaterGridEnvir): 
+	(CWaterGridEnvir.CWaterGridEnvir): 
+	* CWaterPlant.cpp (winterDisturbance): 
+	(CWaterPlant::winterDisturbance): 
+	* IBCgrass-coast_vali.cpp (main): 
+	* Input\env_con.txt: 
+	* LCG.cpp (poissonLCG): 
+	* Plant.cpp (Grow2): 
+	(ShootGrow): 
+	(CPlant::Grow2): 
+	(CPlant::GetBMSpacer): 
+	* Plant.h (CPlant): 
+	* RunPara.cpp (SRunPara): 
+	(SRunPara::SRunPara): 
+	(getRunID): 
+	(SRunPara::getRunID): 
+2014-10-29  KatrinK  <KatrinK@VEGLAP-01>
+variable weather conditions imported from lookup version via singleinds
+new default param argv set: 100 0 0 0 pft_test_16.txt env_con_hist_point.1_-60.txt
+
+!!seed rain still has to be validated
+	* Input\env_con_hist_point.10_-199.txt: New file.
+	* Input\env_con_hist_point.11_-217.txt: New file.
+	* Input\env_con_hist_point.12_-192.txt: New file.
+	* Input\env_con_hist_point.13_-205.txt: New file.
+	* Input\env_con_hist_point.14_-242.txt: New file.
+	* Input\env_con_hist_point.15_-108.txt: New file.
+	* Input\env_con_hist_point.16_-369.txt: New file.
+	* Input\env_con_hist_point.17_-360.txt: New file.
+	* Input\env_con_hist_point.18_-220.txt: New file.
+	* Input\env_con_hist_point.19_-106.txt: New file.
+	* Input\env_con_hist_point.1_-60.txt: New file.
+	* Input\env_con_hist_point.22_-46.txt: New file.
+	* pft_test_16.txt: New file.
+	* RunPara.h: New file.
+	* CGrid.cpp (PlantLoop): 
+	(CGrid::PlantLoop): 
+	(EstabLottery): 
+	(CGrid::EstabLottery): 
+	* CGridEnvir.h (CGridEnvir): 
+	* CWaterGridEnvir.cpp (Winter): 
+	(CWaterGridEnvir::Winter): 
+	(getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): 
+	(getSAL): 
+	(CWaterGridEnvir::getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAT): 
+	(getWL): 
+	(CWaterGridEnvir::getWL): 
+	(genAutokorrWL): 
+	(CWaterGridEnvir::getWI): 
+	(CWaterGridEnvir::genAutokorrWL): 
+	(genSeasonWL): 
+	(CWaterGridEnvir::genSeasonWL): 
+	(genConstWL): 
+	(CWaterGridEnvir::genConstWL): 
+	(SetCellResource): 
+	(CWaterGridEnvir::SetCellResource): 
+	(GetOutput): 
+	(CWaterGridEnvir::SeedRain): 
+	* CWaterGridEnvir.h (CWaterGridEnvir): 
+	(CWaterGridEnvir.CWaterGridEnvir): 
+	* IBCgrass-coast_vali.cpp (main): 
+	* Input\env_con.txt: 
+	* LCG.cpp (poissonLCG): 
+	* Plant.cpp (Grow2): 
+	(ShootGrow): 
+	(CPlant::Grow2): 
+	(CPlant::GetBMSpacer): 
+	* Plant.h (CPlant): 
+	* RunPara.cpp (SRunPara): 
+	(SRunPara::SRunPara): 
+	(getRunID): 
+	(SRunPara::getRunID): 
 2014-09-09  KatrinK  <KatrinK@VEGLAP-01>
 
 	* Plant.cpp (Kill): 

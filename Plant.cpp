@@ -193,7 +193,7 @@ double CPlant::ReproGrow(double uptake){
        (mRepro<=Traits->AllocSeed*mshoot)){
    //test for hapaxantic type
    //fruit only, if biomass-threshold (80%) is crossed
-      if(Traits->MaxAge<5 & this->mshoot<Traits->MaxMass*0.5*0.8)
+      if((Traits->MaxAge<5) & (this->mshoot<Traits->MaxMass*0.5*0.8))
         return uptake;
       SeedRes =uptake*Traits->AllocSeed;
       VegRes  =uptake*(1-Traits->AllocSeed);
@@ -339,6 +339,8 @@ void CPlant::Grow2()         //grow plant one timestep
    mroot+=dm_root;
 
    if (stressed())++stress;
+//new stress definition
+//   if (AU*BU==0)++stress;//Maintanance exceeds Uptake
    else if (stress>0) --stress;
 }
 /**
@@ -472,6 +474,18 @@ int CPlant::GetNRamets()
          &&(growingSpacerList.size()==0))
          return 1;
    return 0;
+}
+//-----------------------------------------------------------------------------
+double CPlant::GetBMSpacer(){
+   int SpacerListSize=this->growingSpacerList.size();
+  if (SpacerListSize==0)return 0.0;
+  double mSpacer=0;
+  for (int g=0; g<(SpacerListSize); g++)
+    {  //loop for all growing Spacer of one plant
+       CPlant* Spacer = this->growingSpacerList[g];
+       mSpacer+=(Spacer->Spacerlength-Spacer->SpacerlengthToGrow)* Traits->mSpacer;
+  }
+  return this->mReproRamets+ mSpacer;
 }
 
 //-----------------------------------------------------------------------------

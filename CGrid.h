@@ -37,6 +37,7 @@ class CGrid
    //clonal..
    void RametEstab(CPlant* plant);///< establish ramets
    virtual void EstabLott_help(CSeed* seed);
+   virtual void DispSeeds_help(CPlant* plant,CCell* cell);    ///<clonal version
 
 protected:
    ///List of Genets on Grid

@@ -13,6 +13,7 @@
 //Input Files
    std::string SRunPara::NamePftFile="Input\\PftTraits.experiment.txt"; // trait file for experiment species
    std::string SRunPara::NameSimFile = "Input\\SimFile.txt";  //file with simulation scenarios
+   std::string SRunPara::NameEnvFile="Input\\env-con.txt"; // trait file for experiment species
 
 SRunPara SRunPara::RunPara=SRunPara();
 //-------------------------------------------------------------------
@@ -22,7 +23,7 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0),mort_seeds(0.5),meanARes(100),meanBRes(100),
-  PftFile("Input/RSpec59WP3_131114.txt"),SeedInput(0),SeedRainType(0),
+  PftFile("Input/RSpec59WP3_131114.txt"),SeedInput(0),SeedRainType(1),
   species("M"),WaterLevel(0),WLsigma(0),changeVal(0),
   Migration(0),Aampl(0),Bampl(0),//cv_res(0),
   WLseason("file"){}
@@ -113,6 +114,9 @@ void SRunPara::print(){
 ///
 string SRunPara::getRunID(){
       stringstream dummi;
+      string envname=((string)this->NameEnvFile);
+      string envid=envname.substr(envname.find('.')+1);
+      std::size_t pos=envid.find('.');
       std::size_t length = NamePftFile.size();
       std::size_t pos1 = min(length,NamePftFile.find("/"))+1;
       std::size_t pos2 = NamePftFile.find(".");
@@ -124,12 +128,15 @@ string SRunPara::getRunID(){
  //         <<"_"<<this->AreaEvent
  //          <<"_"<<this->DistAreaYear
            <<"_"<<this->NCut
-           <<"_WL"<<this->WaterLevel
+//           <<"_WL"<<this->WaterLevel
            <<"_S"<<this->salt
            <<"_"<<name
+           <<"_"<<envid.substr(0,pos)
+
  //          <<"_"<<this->changeVal
 //           <<"_WLc"<<WLsigma
            ;
+      cout<< dummi.str()<<endl;
       return dummi.str();
 }// string for file name generation
 
