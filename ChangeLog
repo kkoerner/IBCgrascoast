@@ -1,3 +1,9 @@
+2014-11-26  KatrinK  <KatrinK@VEGLAP-01>
+tried to debug mysterious runtime errors - partly successful; 
+still dont know the cause
+	* CGrid.cpp (CGrid::PlantLoop): 
+	* Plant.cpp (DecomposeDead): 
+	(CPlant::DecomposeDead): 
 2014-11-21  KatrinK  <KatrinK@VEGLAP-01>
 
 	* Input\env_con_hist_point.10_-199.txt: New file.

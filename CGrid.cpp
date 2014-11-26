@@ -168,7 +168,7 @@ void CGrid::PlantLoop()
          plant->Kill();
       }
       plant->DecomposeDead();
-   }
+   }//for all plants
 }//plant loop
 //-----------------------------------------------------------------------------
 /**

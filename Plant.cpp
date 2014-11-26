@@ -432,7 +432,7 @@ void CPlant::DecomposeDead()
       mRepro=0;
       mshoot*=rate;
       mroot*=rate;
-      if (CPlant::GetMass() < minmass) remove=true;
+      if (CPlant::GetMass() < minmass) this->remove=true;
    }
 }//end DecomposeDead
 //-----------------------------------------------------------------------------
