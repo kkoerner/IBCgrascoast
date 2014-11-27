@@ -1,5 +1,9 @@
 2014-11-27  KatrinK  <KatrinK@VEGLAP-01>
 
+	* .cproject: change exe name
+	* IBCgrass-coast_singleinds.cpp (main): repair test version to general
+2014-11-27  KatrinK  <KatrinK@VEGLAP-01>
+
 	* CGrid.cpp (DispersRamets): 
 	(CGrid::DispersRamets): to prevent endless loops
 	* Input\comtessKoerner_131114.txt: version currently used in ValiMon runs

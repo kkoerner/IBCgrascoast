@@ -188,8 +188,8 @@ while(!end_of_runs){
 		std::cout<<Envir->SimNr<<endl;
 //  		InitClonalSeeds(traits, no_init_seeds); //cltraits,
 	     //Open InitFile,
-//	   	end_of_runs=!SWaterTraits::ReadWPFTDef(SRunPara::NamePftFile,Envir->SimNr++);
-		Envir->SimNr=6;end_of_runs=!SWaterTraits::ReadWPFTDef(SRunPara::NamePftFile,5);//Arrhenatherun
+	   	end_of_runs=!SWaterTraits::ReadWPFTDef(SRunPara::NamePftFile,Envir->SimNr++);
+//		Envir->SimNr=6;end_of_runs=!SWaterTraits::ReadWPFTDef(SRunPara::NamePftFile,5);//Arrhenatherun
 //Envir->SimNr++;
     //Run-loop
     for(Envir->RunNr=1;Envir->RunNr<=nruns;Envir->RunNr++){
