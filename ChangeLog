@@ -1,3 +1,20 @@
+2014-11-27  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CGrid.cpp (DispersRamets): 
+	(CGrid::DispersRamets): to prevent endless loops
+	* Input\comtessKoerner_131114.txt: version currently used in ValiMon runs
+2014-11-26  KatrinK  <KatrinK@VEGLAP-01>
+enable salinity in env-files
+	* Input\env_con_hist_point.24_3.94_-49.txt: New file.
+	* Input\env_con_hist_point.2_0.14_-127.txt: New file.
+	* Input\env_con_hist_point.44_4.63_-68.txt: New file.
+	* Input\env_con_hist_point.66_3.21_-25.txt: New file.
+	* Input\env_con_hist_point.70_1.31_-27.txt: New file.
+	* CWaterGridEnvir.cpp (getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): make double sal-values possible, wl still int
+	(getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAL): 
 2014-10-21  KatrinK  <KatrinK@VEGLAP-01>
 imported changing weather conditions
 	* Input\env_con_hist_point.22_-46.txt: New file.

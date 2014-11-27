@@ -266,6 +266,15 @@ int CGrid::DispersSeeds(CPlant* plant)
    return nb_LDDseeds;
 }//end DispersSeeds
 //---------------------------------------------------------------------------
+/***
+ * Initialize new ramets of a clonal mother plant.
+ * New Spacer's target cell is calculated depending on PFT definition.
+ *
+ * \note In case a clonal plant has mean spacerlength of zero, nothing happens to prevent endless loops.
+ * PFT definition has to be corrected to prevent resource allocation to spacermass too.
+ *
+ * @param plant mother plant, the ramets are starting from
+ */
 void CGrid::DispersRamets(CPlant* plant)
 {
    double CmToCell=1.0/SRunPara::RunPara.CellScale();
@@ -277,13 +286,14 @@ void CGrid::DispersRamets(CPlant* plant)
         for (int j=0; j<plant->GetNRamets(); ++j)
         {
          double dist=0, direction;//, rdist;
-         double mean, sd, mu, sigma; //parameters for lognormal dispersal kernel
+         double mean, sd; //parameters for lognormal dispersal kernel
 
          //normal distribution for spacer length
          mean=plant->Traits->meanSpacerlength;   //cm
          sd  =plant->Traits->sdSpacerlength;     //mean = std (simple assumption)
-
-         while (dist<=0) dist=CEnvir::normrand(mean,sd);
+         //break to prevent infinite loops; !however, spacermass is allocated elsewhere !bug in PFT definition
+         if(mean>0 && sd>0) while (dist<=0) dist=CEnvir::normrand(mean,sd);
+         else {cerr<<"Warning: erroneous PFT definition"<<endl;return;};
          //direction uniformly distributed
          direction=2*Pi*CEnvir::rand01();
          int x=CEnvir::Round(plant->getCell()->x+cos(direction)*dist*CmToCell);

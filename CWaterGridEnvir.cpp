@@ -269,7 +269,8 @@ void CWaterGridEnvir::getEnvirCond(string file){
 //   for (int lweek=0; lweek<30; ++lweek){
 	 do{
       SweeklyEnv thisWeek;
-	   int d0,wl,sal,sat,wi;
+	   int d0,wl=0,wi=0;
+	   double sal=0,sat=0;
       //read plant parameter from inputfile
       EnvFile>>d0>>wl>>sat>>sal>>wi;
       thisWeek.WL=wl;
@@ -286,7 +287,8 @@ void CWaterGridEnvir::getEnvirCond(string file){
 }
 double CWaterGridEnvir::getSAL(){
 	int time=CEnvir::GetT();
-	  return weeklyENV.at(time-1).Sal;
+//    double dummi=weeklyENV.at(time-1).Sal;
+	return weeklyENV.at(time-1).Sal;
 }//<get current salinity
 double CWaterGridEnvir::getSAT(){
 	int time=CEnvir::GetT();
