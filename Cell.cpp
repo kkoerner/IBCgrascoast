@@ -236,12 +236,14 @@ void CCell::AboveComp()
    }
    int symm=1; if (SRunPara::RunPara.AboveCompMode==asympart) symm=2;
    double comp_tot=0, comp_c=0;
-
+//  cout<<"\nC"<<this->x<<";"<<this->y<<": ";
    //1. sum of resource requirement
    for (plant_iter iter=AbovePlantList.begin(); iter!=AbovePlantList.end(); ++iter){
       CPlant* plant=*iter;
       comp_tot+=plant->comp_coef(1,symm)
                *prop_res(plant->pft(),1,SRunPara::RunPara.Version);
+      //for debugging: cout list of competitors
+//      cout<<plant->getGenet()->number<<"+"<<flush;
    }
    //2. distribute resources
    for (plant_iter iter=AbovePlantList.begin(); iter!=AbovePlantList.end(); ++iter){

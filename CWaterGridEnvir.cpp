@@ -298,7 +298,7 @@ double CWaterGridEnvir::getWL(){
 	int time=CEnvir::GetT();
 	double toadd=0;
 	if (SRunPara::RunPara.WLseason=="file")
-		toadd==SRunPara::RunPara.changeVal;
+		toadd=SRunPara::RunPara.changeVal;
   return weeklyENV.at(time-1).WL + toadd;
 }//<get current water level
 double CWaterGridEnvir::getWI(){
@@ -726,6 +726,8 @@ bool SWaterTraits::ReadWPFTDef(const string& file, int n) {
 	//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
 	     //\todo test reduced RAR (moderate root efficiency)
 	      traits->RAR=0.5;
+	      traits->sdSpacerlength/=2.0;//lower the noise
+	      traits->mThres=0.1;
 
 	      //correction for singleinds validation
 	      traits->growth*=SRunPara::RunPara.c_growth;

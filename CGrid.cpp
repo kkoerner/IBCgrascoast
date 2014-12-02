@@ -166,6 +166,35 @@ void CGrid::PlantLoop()
          if (CEnvir::week>plant->Traits->DispWeek)
               DispersSeeds(plant);
          plant->Kill();
+      }else{
+    	  if (true)
+    	  {
+    	   string filename=CEnvir::NameLogFile;
+    	   CEnvir::AddLogEntry(CEnvir::SimNr,filename);
+    	   CEnvir::AddLogEntry(CEnvir::RunNr,filename);
+    	   CEnvir::AddLogEntry(CEnvir::year,filename);
+    	   CEnvir::AddLogEntry(CEnvir::week,filename);
+    	   CEnvir::AddLogEntry(0.0,filename);
+    	   CEnvir::AddLogEntry(0.0,filename);
+//    	   CEnvir::AddLogEntry(CWaterGridEnvir::getWL(),filename);
+//    	   CEnvir::AddLogEntry(CWaterGridEnvir::getSAL(),filename);
+    	   CEnvir::AddLogEntry(plant->xcoord,filename);
+    	   CEnvir::AddLogEntry(plant->ycoord,filename);
+    	   CEnvir::AddLogEntry(((CPlant*)plant)->GetMass(),filename);    //biomass
+    	   CEnvir::AddLogEntry(plant->GetBMSpacer(),filename);    //biomass
+    	  // CEnvir::AddLogEntry(GetMass()-oldmass,filename);
+    	   CEnvir::AddLogEntry(plant->mRepro,filename); //growing seed mass
+
+    	    CEnvir::AddLogEntry(plant->stress,filename);
+    	  // CEnvir::AddLogEntry(this->Area_shoot(),filename);
+    	   CEnvir::AddLogEntry(plant->getHeight(),filename);
+    	  // CEnvir::AddLogEntry(this->getDepth(),filename);
+    	   CEnvir::AddLogEntry(0.0,filename);
+    	   CEnvir::AddLogEntry(plant->getGenet()->number,filename);
+    	   string dummi=" "+plant->pft()+"\n";
+    	   CEnvir::AddLogEntry(dummi,filename);
+    	  }
+
       }
       plant->DecomposeDead();
    }
@@ -436,6 +465,8 @@ void CGrid::ResetWeeklyVariables()
       //reset weekly variables
       plant->Auptake=0;plant->Buptake=0;
       plant->Ash_disc=0;plant->Art_disc=0;
+      //ageing..
+      plant->Age++;
    }
 }
 
@@ -635,7 +666,8 @@ void CGrid::RametEstab(CPlant* plant)
            //delete from list but not the element itself
            plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f);
            //establishment success
-           if(CEnvir::rand01()<(1.0-SRunPara::RunPara.EstabRamet)) Ramet->dead=true; //tag:SA
+           if(CEnvir::rand01()<(1.0-SRunPara::RunPara.EstabRamet))
+        	   Ramet->dead=true; //tag:SA
         }//if cell ist not occupied
         else //find another random cell in the area around
         {
@@ -947,7 +979,8 @@ void CGrid::GrazingBelGr(const int mode)
          if (CEnvir::rand01()<grazprob){
            MassRemoved+=lplant->RemoveRootMass();
              //grazing induced additional mortality
-           if (CEnvir::rand01()<SRunPara::RunPara.BGThres) lplant->dead=true;
+           if (CEnvir::rand01()<SRunPara::RunPara.BGThres)
+        	   lplant->dead=true;
          }
          ++i;
       }

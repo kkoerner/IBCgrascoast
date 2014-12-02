@@ -92,11 +92,13 @@ CPlant::CPlant(CSeed* seed):
   cell has to be set and plant has to be added to genet list
   when ramet establishes.
 
+initial plant size is 10 times seed m0 of seedlings
+
   \since revision
 */
 CPlant::CPlant(double x, double y, CPlant* plant):
   xcoord(x),ycoord(y),Traits(plant->Traits),Age(0),
-  mshoot(plant->Traits->m0),mroot(plant->Traits->m0),
+  mshoot(plant->Traits->m0*10),mroot(plant->Traits->m0*10),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
   Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
   mReproRamets(0),Spacerlength(0),Spacerdirection(0),mort_base(0.007),
@@ -348,7 +350,8 @@ void CPlant::Grow2()         //grow plant one timestep
 //   CEnvir::AddLogEntry(dm_shoot,filename);
 //   CEnvir::AddLogEntry(dm_root,filename);
 
-   if (stressed())++stress;
+   if (stressed())
+	   ++stress;
 //new stress definition
 //   if (AU*BU==0)++stress;//Maintanance exceeds Uptake
    else if (stress>0) --stress;
@@ -424,9 +427,11 @@ void CPlant::Kill()
    //use this->mort_base for bayer-style base mortality
 //   const double pmin=SRunPara::RunPara.mort_base;//0.007;
 	const double pmin=this->mort_base;
+//	if(pmin>0.007) cout<<"\npmin: "<<pmin<<"\tgenerally: "<<SRunPara::RunPara.mort_base<<endl;
 	double pmort= (double)stress/Traits->memory  + pmin;  //stress mortality + random background mortality
 //   rnumber = CEnvir::rand01();//(double )rand()/(RAND_MAX+1);
-   if (CEnvir::rand01()<pmort) dead=true;
+   if (CEnvir::rand01()<pmort)
+	   dead=true;
 }
 //-----------------------------------------------------------------------------
 /**
@@ -442,7 +447,8 @@ void CPlant::DecomposeDead()
       mRepro=0;
       mshoot*=rate;
       mroot*=rate;
-      if (CPlant::GetMass() < minmass) remove=true;
+      if (CPlant::GetMass() < minmass)
+    	  this->remove=true;
    }
 }//end DecomposeDead
 //-----------------------------------------------------------------------------
@@ -463,7 +469,7 @@ int CPlant::GetNSeeds()
          NSeeds=floor(mRepro*prop_seed/Traits->SeedMass);
          mRepro=0;
          //kill annual or biennial plant
-         if (Age>Traits->MaxAge-1)
+         if (Age>(Traits->MaxAge*CEnvir::WeeksPerYear)-1)
          this->dead=true;
       }
    }
@@ -543,8 +549,8 @@ void CPlant::WinterLoss()
    double prop_remove=SRunPara::RunPara.DiebackWinter;//0.5;
    mshoot*=1-prop_remove;
    mRepro=0;
-   //ageing
-   Age++;
+   //ageing - moved to weekly process: reset_weekly_variables
+   //Age++;
 }//end WinterLoss
 
 //-----------------------------------------------------------------------------

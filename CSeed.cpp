@@ -67,7 +67,7 @@ CSeed::CSeed(double x, double y,double estab, SPftTraits* traits)
    Traits=traits;
    mass=Traits->SeedMass;
    Age=1;
-   remove=false;
+   this->remove=false;
    cell=NULL;
 }
 //-----------------------------------------------------------------------------

@@ -1,3 +1,47 @@
+2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
+repair problem in growth of some pfts: intraspecific mortality 
+was too high when considering population size; now cover is measured
+	* Cell.cpp (AboveComp): 
+	(CCell::AboveComp): doc in debug case
+	* CEnvir.cpp (CEnvir::WriteGridComplete): 
+	(WritePftComplete): 
+	(CEnvir::WritePftComplete): 
+	(WriteSurvival): new variable: Juveniles (i.e. inds <=6 weeks old)
+	(CEnvir::WriteSurvival): 
+	(GetCurrPopSize): Nind+Njuv
+	(CEnvir::GetCurrPopSize): 
+	(GetMeanPopSize): see above
+	(CEnvir::GetMeanPopSize): 
+	* CGrid.cpp (PlantLoop): 
+	(CGrid::PlantLoop): doc
+	(CGrid::ResetWeeklyVariables): plant ageing now is weekly
+	(RametEstab): 
+	(CGrid::RametEstab): 
+	* CGridEnvir.cpp (GetOutput): 
+	(CGridEnvir::GetOutput): base mortality now based on PFT's cover
+	* CSeed.cpp (CSeed): 
+	(CSeed::CSeed): 
+	* CWaterGridEnvir.cpp (getWL): 
+	(CWaterGridEnvir::getWL): 
+	(ReadWPFTDef): changes: sdSpacerLength*=0.5; mThresh=0.1
+	(SWaterTraits::ReadWPFTDef): 
+	* CWaterPlant.cpp (Grow2): 
+	(CWaterPlant::Grow2): doc
+	(winterDisturbance): ageing now weekly
+	(CWaterPlant::winterDisturbance): 
+	* IBCgrass-coast_singleinds.cpp (main): test case disabled
+	* Input\comtessKoerner_131114.txt: Phragmites has LMR 0.25
+	* OutStructs.cpp (SPftSingle): new variable: Njuv
+	(SGridOut): 
+	(SPftOut::SPftSingle::SPftSingle): 
+	* OutStructs.h: see above
+	* Plant.cpp (CPlant): 
+	(CPlant::CPlant): clonal growth: init Ramet with 10 times BM a seedling 
+	(Grow2): doc
+	(CPlant::Grow2): 
+	(GetNSeeds): 
+	(CPlant::GetNSeeds): 
+	* Plant.h: 
 2014-11-27  KatrinK  <KatrinK@VEGLAP-01>
 
 	* .cproject: change exe name

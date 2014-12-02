@@ -118,6 +118,7 @@ if (false)
  CEnvir::AddLogEntry(CEnvir::RunNr,filename);
  CEnvir::AddLogEntry(CEnvir::year,filename);
  CEnvir::AddLogEntry(CEnvir::week,filename);
+ CEnvir::AddLogEntry(CWaterGridEnvir::getWL(),filename);
  CEnvir::AddLogEntry(CWaterGridEnvir::getSAL(),filename);
  CEnvir::AddLogEntry(xcoord,filename);
  CEnvir::AddLogEntry(ycoord,filename);
@@ -224,7 +225,8 @@ void CWaterPlant::winterDisturbance(int weeks_of_dist){
   int aThresh=2; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0) aThresh=8;
   if (!dead){
     mortality=min(0.95, max(0,weeks_of_dist-aThresh)/4.0);
-    if (CEnvir::rand01()<mortality) dead=true;
+    if (CEnvir::rand01()<mortality)
+    	dead=true;
   }
 } //end CWaterPlant::winterDisturbance
 //-------------------------------------------------------------
