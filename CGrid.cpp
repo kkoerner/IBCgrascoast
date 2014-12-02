@@ -167,7 +167,7 @@ void CGrid::PlantLoop()
               DispersSeeds(plant);
          plant->Kill();
       }else{
-    	  if (true)
+    	  if (false)
     	  {
     	   string filename=CEnvir::NameLogFile;
     	   CEnvir::AddLogEntry(CEnvir::SimNr,filename);
