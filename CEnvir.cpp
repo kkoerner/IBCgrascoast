@@ -284,7 +284,7 @@ void CEnvir::WritePftComplete(bool allYears)
    long size=PftOutFile.tellp();
    if (size==0){
      PftOutFile<<"Sim\tRun\tTime";
-     PftOutFile<<"\tInds\tseeds\tshootmass\trootmass\tPFT";
+     PftOutFile<<"\tInds\tJuv\tseeds\tcover\tshootmass\tPFT";
      PftOutFile<<"\n";
    }
 
@@ -298,6 +298,7 @@ void CEnvir::WritePftComplete(bool allYears)
      {
          PftOutFile<<SimNr<<'\t'<<RunNr<<'\t'<<i;
          PftOutFile<<'\t'<<it->second->Nind;
+         PftOutFile<<'\t'<<it->second->Njuv;
          PftOutFile<<'\t'<<it->second->Nseeds;
          PftOutFile<<'\t'<<it->second->cover;
          PftOutFile<<'\t'<<it->second->shootmass;
@@ -339,7 +340,7 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
    long size=SurvOutFile.tellp();
    if (size==0){
      SurvOutFile<<"Sim\tRun\tT\t";
-     SurvOutFile<<"BM\tcPop\tcover\tPFT";
+     SurvOutFile<<"BM\tPopAd\tPopJuv\tcover\tPFT";
      SurvOutFile<<"\n";
    }
 
@@ -355,7 +356,8 @@ void CEnvir::WriteSurvival(int runnr, int simnr)
 
    SurvOutFile<<simnr<<'\t'<<runnr<<'\t'<<year;
    SurvOutFile<<'\t'<<Pft->shootmass;//type's AGbiomass
-   SurvOutFile<<'\t'<<Pft->Nind;//number ramets
+   SurvOutFile<<'\t'<<Pft->Nind;//number adult ramets (older than 6 weeks)
+   SurvOutFile<<'\t'<<Pft->Njuv;//number juvenile ramets
    SurvOutFile<<'\t'<<Pft->cover;//cover of type
 
 //     SurvOutFile<<'\t'<<GetMeanPopSize(it->first,10);//mean of 10years
@@ -675,7 +677,7 @@ double CEnvir::GetCurrPopSize(string pft){
      return 0;
    SPftOut::SPftSingle* entry
       =PftOutData.back()->PFT.find(pft)->second;
-   return entry->Nind;
+   return entry->Nind + entry->Njuv;
 }
 //-------------------------------------------------------
 /**
@@ -693,7 +695,7 @@ double CEnvir::GetMeanPopSize(string pft,int x){
     {
      SPftOut::SPftSingle* entry
        =PftOutData[i]->PFT.find(pft)->second;
-     sum+= entry->Nind;
+     sum+= entry->Nind +entry->Njuv;
      }
     return (sum/x);
 }

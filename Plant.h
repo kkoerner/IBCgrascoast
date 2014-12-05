@@ -63,7 +63,7 @@ public:
    bool remove;    //!< trampled or not - should the plant be removed?
 
    int stress;     //!< counter for weeks with resource stress exposure
-   int Age;        ///< age of (established) plant in years (ageing in winter)
+   int Age;        ///< age of (established) plant in weeks (ageing at beginning of each week)
 //--clonal..
    vector<CPlant*> growingSpacerList;     ///<List of growing Spacer
    double Spacerlength;                         ///<real spacer length
@@ -179,11 +179,11 @@ public:
    bool GetPlantRemove(){return (!this->remove);};
 
    /// sort plant individuals descending after shoot size * palatability
-   static bool ComparePalat(const CPlant* plant1, const CPlant* plant2)
-   {
-      return ((plant1->mshoot*plant1->Traits->GrazFac())
-         > (plant2->mshoot*plant2->Traits->GrazFac()));
-   };
+   static bool ComparePalat(const CPlant* plant1, const CPlant* plant2);
+//   {
+//	   return ((plant1->mshoot*plant1->Traits->GrazFac())
+//         > (plant2->mshoot*plant2->Traits->GrazFac()));
+//   };
    //-----------------------------------------------------------------------------
    /// sort plants descending after shoot size (mass*1/LMR)
    /**\bug '*' in secound line solved 100202*/

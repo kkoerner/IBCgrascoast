@@ -92,11 +92,13 @@ CPlant::CPlant(CSeed* seed):
   cell has to be set and plant has to be added to genet list
   when ramet establishes.
 
+initial plant size is 10 times seed m0 of seedlings
+
   \since revision
 */
 CPlant::CPlant(double x, double y, CPlant* plant):
   xcoord(x),ycoord(y),Traits(plant->Traits),Age(0),
-  mshoot(plant->Traits->m0),mroot(plant->Traits->m0),
+  mshoot(plant->Traits->m0*10),mroot(plant->Traits->m0*10),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
   Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
   mReproRamets(0),Spacerlength(0),Spacerdirection(0),mort_base(0.007),
@@ -451,7 +453,7 @@ int CPlant::GetNSeeds()
          NSeeds=floor(mRepro*prop_seed/Traits->SeedMass);
          mRepro=0;
          //kill annual or biennial plant
-         if (Age>Traits->MaxAge-1)
+         if (Age>(Traits->MaxAge*CEnvir::WeeksPerYear)-1)
          this->dead=true;
       }
    }
@@ -519,8 +521,8 @@ void CPlant::WinterLoss()
    double prop_remove=SRunPara::RunPara.DiebackWinter;//0.5;
    mshoot*=1-prop_remove;
    mRepro=0;
-   //ageing
-   Age++;
+   //ageing - moved to weekly process: reset_weekly_variables
+   //Age++;
 }//end WinterLoss
 
 //-----------------------------------------------------------------------------
@@ -578,6 +580,16 @@ double CPlant::comp_coef(const int layer, const int symmetry)const{
    }
    return -1;  //should not be reached
 }//end comp_coef
+/// sort plant individuals descending after shoot size * palatability
+bool CPlant::ComparePalat(const CPlant* plant1, const CPlant* plant2)
+{
+	double m1= plant1->mshoot;
+	double m2= plant2->mshoot;
+	double g1=plant1->Traits->GrazFac();
+	double g2=plant2->Traits->GrazFac();
+	return ((m1*g1) > (m2*g2));
+};
+
 //-eof----------------------------------------------------------------------------
 
 

@@ -1,3 +1,62 @@
+2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
+merge to R618 from Vali_mcmc R629 branch:
+move body to cpp
+	(CPlant::ComparePalat): 
+	* Plant.h (CPlant): 
+	(ComparePalat): 
+2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
+merge to R618 from Vali_mcmc R629 branch:
+merge from singleinds branch:
+repair problem in growth of some pfts: intraspecific mortality 
+was too high when considering population size; now cover is measured
+	* Cell.cpp (AboveComp): 
+	(CCell::AboveComp): doc in debug case
+	* CEnvir.cpp (CEnvir::WriteGridComplete): 
+	(WritePftComplete): 
+	(CEnvir::WritePftComplete): 
+	(WriteSurvival): new variable: Juveniles (i.e. inds <=6 weeks old)
+	(CEnvir::WriteSurvival): 
+	(GetCurrPopSize): Nind+Njuv
+	(CEnvir::GetCurrPopSize): 
+	(GetMeanPopSize): see above
+	(CEnvir::GetMeanPopSize): 
+	(CGrid::ResetWeeklyVariables): plant ageing now is weekly
+	(RametEstab): 
+	(CGrid::RametEstab): 
+	* CGridEnvir.cpp (GetOutput): 
+	(CGridEnvir::GetOutput): base mortality now based on PFT's cover
+	* CWaterGridEnvir.cpp (getWL): 
+	(CWaterGridEnvir::getWL): 
+	(ReadWPFTDef): changes: sdSpacerLength*=0.5; mThresh=0.1
+	(SWaterTraits::ReadWPFTDef): 
+	(winterDisturbance): ageing now weekly
+	(CWaterPlant::winterDisturbance): 
+	* IBCgrass-coast_singleinds.cpp (main): test case disabled
+	* Input\comtessKoerner_131114.txt: Phragmites has LMR 0.25
+	* OutStructs.cpp (SPftSingle): new variable: Njuv
+	(SGridOut): 
+	(SPftOut::SPftSingle::SPftSingle): 
+	* OutStructs.h: see above
+	* Plant.cpp (CPlant): 
+	(CPlant::CPlant): clonal growth: init Ramet with 10 times BM a seedling 
+2014-11-27  KatrinK  <KatrinK@VEGLAP-01>
+merge to R618 from Vali_mcmc R629 branch:
+	* CGrid.cpp (DispersRamets): 
+	(CGrid::DispersRamets): to prevent endless loops
+	* Input\comtessKoerner_131114.txt: version currently used in ValiMon runs
+2014-11-26  KatrinK  <KatrinK@VEGLAP-01>
+merge to R618 from Vali_mcmc R629 branch:
+enable salinity in env-files
+	* Input\env_con_hist_point.24_3.94_-49.txt: New file.
+	* Input\env_con_hist_point.2_0.14_-127.txt: New file.
+	* Input\env_con_hist_point.44_4.63_-68.txt: New file.
+	* Input\env_con_hist_point.66_3.21_-25.txt: New file.
+	* Input\env_con_hist_point.70_1.31_-27.txt: New file.
+	* CWaterGridEnvir.cpp (getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): make double sal-values possible, wl still int
+	(getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAL): 
 2014-10-21  KatrinK  <KatrinK@VEGLAP-01>
 new global variable for envir-data filename; added to app-parameters
 	* CWaterGridEnvir.cpp (getWL): 

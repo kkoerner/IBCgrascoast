@@ -267,7 +267,8 @@ void CWaterGridEnvir::getEnvirCond(string file){
 //   for (int lweek=0; lweek<30; ++lweek){
 	 do{
       SweeklyEnv thisWeek;
-	   int d0,wl,sal,sat,wi;
+	   int d0,wl=0,wi=0;
+	   double sal=0,sat=0;
       //read plant parameter from inputfile
       EnvFile>>d0>>wl>>sat>>sal>>wi;
       thisWeek.WL=wl;
@@ -388,7 +389,7 @@ void CWaterGridEnvir::SetCellResource(){
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   this->SetMeanWaterLevel(getWL());
-cout<<" WL "<<getWL()<<endl;
+cout<<" WL "<<this->getWL()<<"\tSal "<<this->getSAL()<<endl;
   //salinity
 //  salinity=SRunPara::SRunPara::RunPara.salt;
 //  if (week==1) cout<<"\n";

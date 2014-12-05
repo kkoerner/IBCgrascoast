@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
          file=argv[2];
          SRunPara::NamePftFile=file;
          file=argv[3];
-         SRunPara::NameEnvFile=file;
+         SRunPara::NameEnvFile="Input/"+file;
       }//else CEnvir::NameSimFile="Input\\comtest.txt";
       int maxRun=1; if (argc>4) {maxRun = atoi(argv[4]);}
       //fill PftLinkList
