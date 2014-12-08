@@ -147,10 +147,15 @@ int CEnvir::GetSim(const int pos,string file){
   cout<<" Trmpl:"<<SRunPara::RunPara.AreaEvent;
   SimFile>>SRunPara::RunPara.NCut;
   cout<<" NCut:"<<SRunPara::RunPara.NCut;
-  SimFile>>SRunPara::RunPara.WaterLevel;
-  cout<<" WL:"<<SRunPara::RunPara.WaterLevel;
-  SimFile>>SRunPara::RunPara.salt;
-  cout<<" Sal:"<<SRunPara::RunPara.salt<<endl<<flush;
+  string envfile;
+  SimFile>>envfile;
+  SRunPara::NameEnvFile="Input/"+envfile;
+  cout<<" EnvFile:"<<SRunPara::NameEnvFile;
+
+//  SimFile>>SRunPara::RunPara.WaterLevel;
+//  cout<<" WL:"<<SRunPara::RunPara.WaterLevel;
+//  SimFile>>SRunPara::RunPara.salt;
+//  cout<<" Sal:"<<SRunPara::RunPara.salt<<endl<<flush;
 
        //---------standard parameter:
        //aboveground resources

@@ -94,7 +94,7 @@ SSR SeedRainGr;
    //! read in fractal below-ground resource distribution (not used)
    static void ReadLandscape();
    ///reads simulation environment from file
-   int GetSim(const int pos=0,string file=SRunPara::NameSimFile);
+   virtual int GetSim(const int pos=0,string file=SRunPara::NameSimFile);
    /// returns absolute time horizon
    static int GetT(){return (year-1)*WeeksPerYear+week;};
    /// reset time

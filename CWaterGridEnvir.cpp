@@ -283,24 +283,46 @@ void CWaterGridEnvir::getEnvirCond(string file){
 	 cout<<"Read in "<<weeklyENV.size()<<" lines of Environmental data.\n";
 //  EnvFile>>winterInundation;//get winter inundation weeks in last line
 }
+
+/**
+ * get current salinity
+ *
+ * in case salChange is set,
+ * this value is added to the input file's value
+ * @return current salinity in ppm
+ */
 double CWaterGridEnvir::getSAL(){
 	int time=CEnvir::GetT();
-	  return weeklyENV.at(time-1).Sal;
-}//<get current salinity
-double CWaterGridEnvir::getSAT(){
-	int time=CEnvir::GetT();
-	  return weeklyENV.at(time-1).Sat;
-}//<get current soil saturation
-double CWaterGridEnvir::getWL(){
-	int time=CEnvir::GetT();
+	int size=weeklyENV.size();
 	double toadd=0;
 	if (SRunPara::RunPara.WLseason=="file")
-		toadd==SRunPara::RunPara.changeVal;
-  return weeklyENV.at(time-1).WL + toadd;
+		toadd=SRunPara::RunPara.changeSal;
+	  return weeklyENV.at((time-1)%size).Sal + toadd;
+}//<get current salinity
+double CWaterGridEnvir::getSAT(){
+	int size=weeklyENV.size();
+	int time=CEnvir::GetT();
+	  return weeklyENV.at((time-1)%size).Sat;
+}//<get current soil saturation
+/**
+ * get current water level
+ *
+ * in case WLChange is set,
+ * this value is added to the input file's value
+ * @return current water level in cm above ground
+ */
+double CWaterGridEnvir::getWL(){
+	int time=CEnvir::GetT();
+	int size=weeklyENV.size();
+	double toadd=0;
+	if (SRunPara::RunPara.WLseason=="file")
+		toadd=SRunPara::RunPara.changeWL;
+  return weeklyENV.at((time-1)%size).WL + toadd;
 }//<get current water level
 double CWaterGridEnvir::getWI(){
+	int size=weeklyENV.size();
 	int time=CEnvir::GetT();
-  return weeklyENV.at(time-1).WI;
+  return weeklyENV.at((time-1)%size).WI;
 }//<get current water inundation
 
 /**
@@ -369,7 +391,8 @@ void CWaterGridEnvir::genConstWL()
 void CWaterGridEnvir::SetCellResource(){
   CGrid::SetCellResource();
   //  ChangeMeanWaterLevel(5);
-  if (year==1 && week==1)//generate new year's WaterLevels
+  if (false)//file input elsewhere
+	  //(year==1 && week==1)//generate new year's WaterLevels
 //  if (week==1)//generate new year's WaterLevels
   {
     if(SRunPara::RunPara.WLseason=="random")

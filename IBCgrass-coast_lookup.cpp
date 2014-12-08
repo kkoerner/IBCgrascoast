@@ -115,8 +115,8 @@ using namespace std;
 
 void Init();
 void Run();
-const int Tinit=50;//100;
-const int Tmax=150;//200;
+const int Tinit=5;//50;//100;
+const int Tmax=10;//150;//200;
 const int nruns=3;//3//10
 //-----------------------
 /**
@@ -125,7 +125,7 @@ const int nruns=3;//3//10
   On an 1 by 1m square grid 10 for each of x PFTs
   (parameterized according to real species) are initiated.
   One environmental setting is tested for 100 years (1 repitition).
-  Salinity is zero/constant.
+  Water level and salinity are read from file.
   No block design.
 
   \par Parameters
@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
        //erstes Grid und Kontrolle
        cout<<"start init Environment...\n";
        Envir=new CWaterGridEnvir();  //erstelle neues Grid
-       int lpos=Envir->GetSim();
+       int lpos=Envir->GetSim();//read first setting
        int startID=CEnvir::SimNr;
        SRunPara::RunPara.Tmax=Tinit; //set max time
              Init();
@@ -204,11 +204,15 @@ int main(int argc, char* argv[])
         //   SRunPara::RunPara.print();
         //-----------------
            Run();//until end of init time
-           SRunPara::RunPara.Tmax=Tmax; //set max time
+           SRunPara::RunPara.Tmax+=1;//Tmax; //do following for one year
                //do simulations specified in input-file
-           lpos=Envir->GetSim(lpos);
+           lpos=Envir->GetSim(lpos);//read second setting
            int controlID=CEnvir::SimNr;CEnvir::SimNr=startID;
-              Run();//until end
+              Run();//for one year
+           lpos=Envir->GetSim(0);//read first setting again
+           SRunPara::RunPara.Tmax=Tmax; //set max time
+           Run();//until end
+
           cout<<"control Environment...\n";
           // start control run
           delete Envir; Envir=new CWaterGridEnvir();

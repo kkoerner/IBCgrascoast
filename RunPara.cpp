@@ -24,7 +24,8 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0),mort_seeds(0.5),meanARes(100),meanBRes(100),
   PftFile("Input/RSpec59WP3_131114.txt"),SeedInput(0),SeedRainType(1),
-  species("M"),WaterLevel(0),WLsigma(0),changeVal(0),
+  species("M"),WaterLevel(0),WLsigma(0),//changeVal(0),
+  changeWL(0),changeSal(0),
   Migration(0),Aampl(0),Bampl(0),//cv_res(0),
   WLseason("file"){}
 
@@ -104,7 +105,10 @@ void SRunPara::print(){
 //      <<"\nMort_Seeds:"<<mort_seeds
       <<"\nSpecInit: "<<species<<"\tWLmean: "<<WaterLevel
       <<"\tWL mode: "<<WLseason<<"\tWL change"<<WLsigma
-      <<"\n change Param by "<<changeVal<<"\n Migration: "<<Migration
+//      <<"\n change Param by "<<changeVal
+      <<"\n change WL by "<<changeWL
+      <<"\n change Sal by "<<changeSal
+      <<"\n Migration: "<<Migration
       <<"\n Salinity: "<<salt
       <<"\nPFTFile:"<<PftFile<<std::endl;
 }//end print

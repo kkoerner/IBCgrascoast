@@ -110,7 +110,9 @@ public:
    double WLsigma; ///<grid water level change 
    static std::string NameEnvFile;   ///< Filename of environmental-data-File
    string WLseason;  ///<modus of seasonal WL change [const season random comb file]
-   double changeVal; ///<value of the parameter to change (add to) after 20 years
+//   double changeVal; ///<value of the parameter to change (add to) after 20 years
+   double changeWL; ///<WaterLevel to change (add to) after init time
+   double changeSal; ///<salinity level to change (add to) after init time
    double salt; ///<salt level on plot
    ///@}
    string species;   ///<which species should be initialized [G M R]

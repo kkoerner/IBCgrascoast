@@ -96,8 +96,6 @@ class CWaterGridEnvir: public CGridEnvir{
  void genSeasonWL();
  /// generate const Wl-series
  void genConstWL();
- /// read annual environmental conditions from file
- void getEnvirCond(string file);
  // / inundation time in winter season \[weeks\] 0..12
 // / int winterInundation;
 protected:
@@ -107,6 +105,15 @@ protected:
  virtual void Winter();
 
 public:
+ ///reads simulation environment from file
+ int GetSim(const int pos=0,string file=SRunPara::NameSimFile){
+	int retval=CEnvir::GetSim(pos,file);
+	getEnvirCond(SRunPara::RunPara.NameEnvFile);
+    return retval;
+ };
+
+ /// read annual environmental conditions from file
+ void getEnvirCond(string file);
  /// plot's salinity level
  /**
    Global salinity value for the whole grid. Function CWaterPlant::rootEfficiency
