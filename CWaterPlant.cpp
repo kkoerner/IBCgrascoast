@@ -127,12 +127,17 @@ if (false)
  CEnvir::AddLogEntry(this->mRepro,filename); //growing seed mass
 
   CEnvir::AddLogEntry(this->stress,filename);
+  CEnvir::AddLogEntry(this->mort_base,filename);
+
 // CEnvir::AddLogEntry(this->Area_shoot(),filename);
  CEnvir::AddLogEntry(this->getHeight(),filename);
 // CEnvir::AddLogEntry(this->getDepth(),filename);
  if (this->growingSpacerList.size()>0)
- CEnvir::AddLogEntry(this->growingSpacerList.front()->Spacerlength
- - this->growingSpacerList.front()->SpacerlengthToGrow ,filename);
+ CEnvir::AddLogEntry(
+		 (this->growingSpacerList.front()->Spacerlength -
+		  this->growingSpacerList.front()->SpacerlengthToGrow ) *
+		  this->Traits->mSpacer,
+		  filename);
  else
  CEnvir::AddLogEntry(0.0,filename);
  CEnvir::AddLogEntry(this->getGenet()->number,filename);
@@ -220,9 +225,10 @@ no additional dieback at the moment
 */
 void CWaterPlant::winterDisturbance(int weeks_of_dist){
   double mortality=0;
-  int aThresh=2; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0) aThresh=8;
+  int aThresh=0; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0) aThresh=14;
+  aThresh+=this->Traits->memory;//2
   if (!dead){
-    mortality=min(0.95, max(0,weeks_of_dist-aThresh)/4.0);
+    mortality=min(0.95, max(0,weeks_of_dist-aThresh)/22.0);
     if (CEnvir::rand01()<mortality)
     	dead=true;
   }

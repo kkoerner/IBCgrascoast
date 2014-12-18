@@ -1,3 +1,13 @@
+2014-12-18  KatrinK  <KatrinK@VEGLAP-01>
+new allocSpacer definitions and winter mortality due to 
+inundation relaxed for adapted PFTs
+	* Input\env_con_*: changed env files to new versions
+	* Input\RSpecWP3-141217_all.txt: New file. new alloc Spacer PFT defs
+	* Input\RSpecWP3-141217_B.txt: New file.
+	* Input\RSpecWP3-141217_N.txt: New file.
+	* pft_test_*.txt: New pft def files. (old allocSpacer)
+	(winterDisturbance): mortality relaxed for adapted PFTs
+	(CWaterPlant::winterDisturbance): 
 2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
 move body to cpp
 	(CPlant::ComparePalat): 

@@ -324,7 +324,7 @@ void CPlant::Grow2()         //grow plant one timestep
    //which resource is limiting growth ?
    LimRes=min(Buptake,Auptake);   //two layers
    VegRes=ReproGrow(LimRes);
-
+//   double diff=LimRes-VegRes;
    //allocation to shoot and root growth
    alloc_shoot= Buptake/(Buptake+Auptake); //allocation coefficient
 
