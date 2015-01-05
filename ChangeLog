@@ -1,3 +1,34 @@
+2015-01-05  KatrinK  <KatrinK@VEGLAP-01>
+
+	* Input\env_con_1-3\ N.txt: Removed.* remove old input files
+	* Input\env_con_hist_point.44_4.63_-109.txt: New file. * add some new input files
+	* Input\RSpecWP3-141217_all.txt: New file.* new calculation of allocSpacer
+	* Input\RSpecWP3-141217_B.txt: New file.
+	* Input\RSpecWP3-141217_N.txt: New file.
+	* CWaterGridEnvir.cpp (saltTolEffect): 
+	(SWaterTraits::saltTolEffect): 
+	* CWaterPlant.cpp (Grow2): add inundation dieback
+	(CWaterPlant::Grow2): 
+	(RootGrow): 
+	(CWaterPlant::RootGrow): 
+	(winterDisturbance): strengthen SaltTol costs
+	(CWaterPlant::winterDisturbance): 
+	* Input\comtessKoerner_131114.txt: * P. austr. is more competitive and has shorter spacer
+	* Plant.cpp (CPlant): 
+	(CPlant::CPlant): new ramet is 5% of mother plant's biomass
+	(Grow2): 
+	(CPlant::Grow2): 
+	* Plant.h (CPlant): doc
+2014-12-18  KatrinK  <KatrinK@VEGLAP-01>
+new allocSpacer definitions and winter mortality due to 
+inundation relaxed for adapted PFTs
+	* Input\env_con_*: changed env files to new versions
+	* Input\RSpecWP3-141217_all.txt: New file. new alloc Spacer PFT defs
+	* Input\RSpecWP3-141217_B.txt: New file.
+	* Input\RSpecWP3-141217_N.txt: New file.
+	* pft_test_*.txt: New pft def files. (old allocSpacer)
+	(winterDisturbance): mortality relaxed for adapted PFTs
+	(CWaterPlant::winterDisturbance): 
 2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
 repair problem in growth of some pfts: intraspecific mortality 
 was too high when considering population size; now cover is measured
