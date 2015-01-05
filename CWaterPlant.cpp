@@ -101,6 +101,12 @@ Overload CPlant::Grow2() for additional Effect of WaterLevel.
 void CWaterPlant::Grow2()
 {
 double oldmass=this->GetMass();
+//anoxia dieback (80% of inundated biomass is lost)
+if (((SWaterTraits*)this->Traits)->assimAnoxWL==0) {
+	double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
+	double depth=this->getDepth();
+	this->mroot-=mroot*(1-min(1.0,wl/depth))*0.2;
+}
  //standard growth
  CPlant::Grow2();
  //detailed output - for grid plots
@@ -108,10 +114,10 @@ double oldmass=this->GetMass();
 // if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
-if (false)
+//if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 //if (CEnvir::year==21&CEnvir::week<10)
-//if (true)
+if (true)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);
@@ -157,6 +163,9 @@ if (false)
 
     with respect of rooting depth (Gmax now represents resources per 50cm rooting depth)
 
+non adapted plants' roots suffer from 80% dieback in anoxic zone
+
+
     \since 27/04/2012
 
     \since 05/03/2013 NEW:dieback of roots due to salinity; negative output possible
@@ -172,6 +181,8 @@ double CWaterPlant::RootGrow(double rres){
    //salinity dieback -source?
  //  if (((SWaterTraits*)this->Traits)->saltTolEffect(CWaterGridEnvir::getSAL())<0.75)
  //    grow -=0.1*this->mroot;
+   //anoxia dieback
+
    return grow;
 }
 
@@ -225,10 +236,11 @@ no additional dieback at the moment
 */
 void CWaterPlant::winterDisturbance(int weeks_of_dist){
   double mortality=0;
-  int aThresh=0; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0) aThresh=14;
+  int aThresh=0; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0.0) aThresh=14;
   aThresh+=this->Traits->memory;//2
   if (!dead){
-    mortality=min(0.95, max(0,weeks_of_dist-aThresh)/22.0);
+    mortality=std::min(0.95, std::max(0,weeks_of_dist-aThresh)/11.0);
+//   cout<<this->Traits->name<<endl<<flush;
     if (CEnvir::rand01()<mortality)
     	dead=true;
   }

@@ -92,19 +92,24 @@ CPlant::CPlant(CSeed* seed):
   cell has to be set and plant has to be added to genet list
   when ramet establishes.
 
-initial plant size is 10 times seed m0 of seedlings
+initial plant size is 1% of mother plant
+\obs initial plant size is 10 times seed m0 of seedlings
 
   \since revision
 */
 CPlant::CPlant(double x, double y, CPlant* plant):
   xcoord(x),ycoord(y),Traits(plant->Traits),Age(0),
-  mshoot(plant->Traits->m0*10),mroot(plant->Traits->m0*10),
+//  mshoot(plant->Traits->m0*10),mroot(plant->Traits->m0*10),
+  mshoot(plant->mshoot*0.05),mroot(plant->mroot*0.05),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
   Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
   mReproRamets(0),Spacerlength(0),Spacerdirection(0),mort_base(0.007),
   Generation(plant->Generation+1),SpacerlengthToGrow(0),genet(plant->genet)
 {
    growingSpacerList.clear();
+   //substract biomass from mother plant
+   plant->mroot*=0.95;
+   plant->mshoot*=0.95;
 //  this->Generation=plant->Generation+1;
 }//<clonal growth constructor
 //---------------------------------------------------------------------------
