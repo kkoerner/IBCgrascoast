@@ -724,6 +724,7 @@ bool SWaterTraits::ReadWPFTDef(const string& file, int n) {
 				traits->AllocSpacer >> traits->mSpacer;
 		InitFile>> traits->assimAnoxWL
 	            >> traits->saltTol;
+
 	//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
 	     //\todo test reduced RAR (moderate root efficiency)
 	      traits->RAR=0.5;
