@@ -103,9 +103,10 @@ void CWaterPlant::Grow2()
 double oldmass=this->GetMass();
 //anoxia dieback (80% of inundated biomass is lost)
 if (((SWaterTraits*)this->Traits)->assimAnoxWL==0) {
-	double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
+	double wl= -((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
 	double depth=this->getDepth();
-	this->mroot-=mroot*(1-min(1.0,wl/depth))*0.2;
+	double died =mroot*(1-min(1.0,wl/depth))*0.8;
+	this->mroot-=died;//mroot*(1-min(1.0,wl/depth))*0.2;
 }
  //standard growth
  CPlant::Grow2();
@@ -114,10 +115,10 @@ if (((SWaterTraits*)this->Traits)->assimAnoxWL==0) {
 // if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
-//if (false)
+if (false)
 //if (CEnvir::week==20&&CEnvir::year==SRunPara::RunPara.Tmax)
 //if (CEnvir::year==21&CEnvir::week<10)
-if (true)
+//if (true)
 {
  string filename=CEnvir::NameLogFile;
  CEnvir::AddLogEntry(CEnvir::SimNr,filename);
@@ -140,9 +141,9 @@ if (true)
 // CEnvir::AddLogEntry(this->getDepth(),filename);
  if (this->growingSpacerList.size()>0)
  CEnvir::AddLogEntry(
-		 (this->growingSpacerList.front()->Spacerlength -
-		  this->growingSpacerList.front()->SpacerlengthToGrow ) *
-		  this->Traits->mSpacer,
+		 (//this->growingSpacerList.front()->Spacerlength -
+		  this->growingSpacerList.front()->SpacerlengthToGrow ),// *
+		  //this->Traits->mSpacer,
 		  filename);
  else
  CEnvir::AddLogEntry(0.0,filename);
@@ -206,6 +207,8 @@ Reduce Plant's root efficiency in case of salt stress.
 */
 double CWaterPlant::rootEfficiency(){
  double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
+ //capillary rise by 5 cm in case of sandy baltic sea scenario:
+ wl+=5;
  double depth=this->getDepth();
  //a) logistic formula
 // ...

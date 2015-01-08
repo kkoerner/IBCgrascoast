@@ -1,3 +1,9 @@
+2015-01-06  KatrinK  <KatrinK@VEGLAP-01>
+
+	* Input\comtessKoerner_131114.txt: New file.
+	* CWaterPlant.cpp(rootEfficiency): 
+	(CWaterPlant::rootEfficiency): add capillary rise of 5cm
+	* Input\RSpecWP3-141217_all.txt: 
 2014-12-18  KatrinK  <KatrinK@VEGLAP-01>
 new allocSpacer definitions and winter mortality due to 
 inundation relaxed for adapted PFTs
