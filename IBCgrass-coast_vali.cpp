@@ -169,6 +169,7 @@ int main(int argc, char* argv[])
 //    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
     SRunPara::RunPara.AreaEvent=atof(argv[2])*0.2; //trampling
     SRunPara::RunPara.NCut=atoi(argv[3]); //number of cuttings
+    SRunPara::RunPara.CutLeave=5;//default:(10cm)
 //    SRunPara::RunPara.WaterLevel=atoi(argv[4]); //number of cuttings
     SRunPara::RunPara.salt=atof(argv[4]); //soil salinity
     SRunPara::NamePftFile=argv[5];

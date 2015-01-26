@@ -116,7 +116,7 @@ string SRunPara::getRunID(){
       stringstream dummi;
       string envname=((string)this->NameEnvFile);
       string envid=envname.substr(envname.find('.')+1);
-      std::size_t pos=envid.find('.');
+      std::size_t pos=envid.find('t');
       std::size_t length = NamePftFile.size();
       std::size_t pos1 = min(length,NamePftFile.find("/"))+1;
       std::size_t pos2 = NamePftFile.find(".");
@@ -131,7 +131,7 @@ string SRunPara::getRunID(){
 //           <<"_WL"<<this->WaterLevel
            <<"_S"<<this->salt
            <<"_"<<name
-           <<"_"<<envid.substr(0,pos)
+           <<"_"<<envid.substr(0,pos-1)
 
  //          <<"_"<<this->changeVal
 //           <<"_WLc"<<WLsigma

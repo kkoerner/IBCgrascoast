@@ -413,6 +413,8 @@ void CWaterCell::BelowComp()
               *dTre
               *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
       plant->Buptake+=BResConc/50.0* max_depth_eff
+              //correction by respiration costs for sal tolerance
+    	            *((SWaterTraits*) plant->Traits)->saltTolCosts();
                         * comp_c /comp_tot;
    }
 }//end below_comp
