@@ -357,6 +357,7 @@ return dummi.str();
 
 //---------------------------------------------------------------------------
 #include "CWaterPlant.h"
+#include "CWaterGridEnvir.h"
 //! Konstruktor
 CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy):
   CCell(xx,yy),WaterLevel(0){
@@ -391,7 +392,7 @@ void CWaterCell::BelowComp()
          <<"no total asymetric belowground competition allowed"; exit(3);
    }
    int symm=1; if (SRunPara::RunPara.BelowCompMode==asympart) symm=2;
-   double comp_tot=0, comp_c=0, max_depth_eff=0;
+   double comp_tot=0, comp_c=0, max_depth_eff=0, max_saltTol_eff=0;
 //   cout<<"Cell "<<this->x<<":"<<this->y<<" - "<<BelowPlantList.size()<<" Inds\n"<<flush;
 
    //1. sum of resource requirement
@@ -399,23 +400,27 @@ void CWaterCell::BelowComp()
       CWaterPlant* plant= (CWaterPlant*)*iter;
  //cout<<plant->type()<<endl;
       double dTre=plant->getDepth() * plant->rootEfficiency();
+      double dTse=((SWaterTraits*) plant->Traits)->saltTolEffect(CWaterGridEnvir::getSAL());
       comp_tot+=plant->comp_coef(2,symm)
-               *dTre
+               *dTre*dTse
                *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
        max_depth_eff=max( max_depth_eff,dTre);
+       max_saltTol_eff=max( max_saltTol_eff,dTse);
    }
    //2. distribute resources
    for (plant_iter iter=BelowPlantList.begin(); iter!=BelowPlantList.end(); ++iter){
 	      CWaterPlant* plant= (CWaterPlant*)*iter;
 	 //cout<<plant->type()<<endl;
-	      double dTre=plant->getDepth() * plant->rootEfficiency();
+	  double dTre=plant->getDepth()* plant->rootEfficiency();
+	  double dTse=((SWaterTraits*) plant->Traits)->saltTolEffect(CWaterGridEnvir::getSAL());
       comp_c=plant->comp_coef(2,symm)
-              *dTre
+              *dTre*dTse
               *prop_res(plant->pft(),2,SRunPara::RunPara.Version);
-      plant->Buptake+=BResConc/50.0* max_depth_eff
+
+      plant->Buptake+=BResConc/50.0 * max_depth_eff
               //correction by respiration costs for sal tolerance
-    	            *((SWaterTraits*) plant->Traits)->saltTolCosts();
-                        * comp_c /comp_tot;
+    		  * max_saltTol_eff
+              * comp_c /comp_tot;
    }
 }//end below_comp
 /**
