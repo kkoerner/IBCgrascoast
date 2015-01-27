@@ -5,7 +5,7 @@
 #ifndef GridBaseH
 #define GridBaseH
 //---------------------------------------------------------------------------
-#include "Cell.h"
+#include "CWaterCell.h"//"Cell.h"
 #include "Plant.h"
 #include "RunPara.h"
 #define CCELL CWaterCell //CCell for old version
