@@ -1,3 +1,7 @@
+2015-01-30  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CWaterGridEnvir.cpp (saltTolEffect): change equation
+	(SWaterTraits::saltTolEffect): 
 2015-01-27  KatrinK  <KatrinK@VEGLAP-01>
 move CWaterCell to own pair of header/source file
 	* CWaterCell.cpp: New file.
