@@ -224,8 +224,8 @@ double CWaterPlant::rootEfficiency(){
  else retval=  max(min(depth,-wl)/depth,1e-10); //0.0
 
 //salt stress
- retval*=((SWaterTraits*) this->Traits)->saltTolEffect(CWaterGridEnvir::getSAL())
-     * ((SWaterTraits*) this->Traits)->saltTolCosts();
+// retval*=((SWaterTraits*) this->Traits)->saltTolEffect(CWaterGridEnvir::getSAL());
+//     * ((SWaterTraits*) this->Traits)->saltTolCosts();
  return retval;
 }
 //-------------------------------------------------------------

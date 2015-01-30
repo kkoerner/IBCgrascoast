@@ -117,7 +117,13 @@ string SRunPara::getRunID(){
       stringstream dummi;
       string envname=((string)this->NameEnvFile);
       string envid=envname.substr(envname.find('.')+1);
-      unsigned int pos=envid.find('.');
+      //unsigned int pos=envid.find('.');
+      std::size_t pos=envid.find('t');
+      std::size_t length = NamePftFile.size();
+      std::size_t pos1 = min(length,NamePftFile.find("/"))+1;
+      std::size_t pos2 = NamePftFile.find(".");
+      if (pos1>=length) pos1=0;
+      string name=NamePftFile.substr(pos1,pos2-pos1);
       dummi<<"_R"<<this->meanBRes<<"_"<<Migration//species
 //           <<"_"<<this->WLseason
            <<"_"<<this->GrazProb
