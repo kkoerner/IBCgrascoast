@@ -1,2 +1,0 @@
-Sim	Run	Time	totMass	NInd	abovemass	belowmass	BareGround	pcBare	pcBareSoil	mean_WL	mean_bres	shannon	NPFT	Cutted	Grazed	aLitter	bLitterNNonClonal	NClonal	NGenets
-0	1	0	1.1045e+006	314	360575	382735	0.271	0.1413	-40	107	3.29639	48	0	0	13022	11629.9	81	233	230
