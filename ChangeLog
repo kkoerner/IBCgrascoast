@@ -1,3 +1,13 @@
+2015-02-10  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CEnvir.cpp (WriteOFiles): 
+	(CEnvir::WriteOFiles): annual report
+	* CGrid.cpp (DispersRamets): 
+	(CGrid::DispersRamets): comment
+	* CWaterPlant.cpp (winterDisturbance): 
+	(CWaterPlant::winterDisturbance): adapted species without additional mort
+	* Plant.cpp (GetNRamets): 
+	(CPlant::GetNRamets): new clonal rule - new spacer if MaxMass/2 reached
 2015-01-30  KatrinK  <KatrinK@VEGLAP-01>
 
 	* CWaterGridEnvir.cpp (saltTolEffect): change equation

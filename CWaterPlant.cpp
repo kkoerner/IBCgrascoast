@@ -112,7 +112,7 @@ if (((SWaterTraits*)this->Traits)->assimAnoxWL==0) {
  CPlant::Grow2();
  //detailed output - for grid plots
 // if (this->genetID%%4==1)   //nur jeder 4. Genet
-// if (CEnvir::week==21) //Samen fertig, aber noch nicht released
+//if (CEnvir::week==21) //Samen fertig, aber noch nicht released
 // if (CEnvir::week==2||CEnvir::week==22||CEnvir::week==29)
 //enable again for more detailed spatial information
 if (false)
@@ -241,7 +241,7 @@ no additional dieback at the moment
 */
 void CWaterPlant::winterDisturbance(int weeks_of_dist){
   double mortality=0;
-  int aThresh=0; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0.0) aThresh=14;
+  int aThresh=0; if (((SWaterTraits*) this->Traits)->assimAnoxWL>0.0) aThresh=20;
   aThresh+=this->Traits->memory;//2
   if (!dead){
     mortality=std::min(0.95, std::max(0,weeks_of_dist-aThresh)/11.0);

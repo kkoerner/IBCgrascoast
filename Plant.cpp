@@ -483,16 +483,20 @@ int CPlant::GetNSeeds()
 //------------------------------------------------
 /**
 returns the number of new spacer to set: currently
- - 1 if there are clonal-growth-resources and spacer-lisdt is empty, and
+ - 1 if there are clonal-growth-resources and spacer-list is empty, and
+   plant is alive
  - 0 otherwise
+
+ \date 151002 add condition of minimum adult size (KK)
 \return the number of new spacer to set
-Unlike CPlant::GetNSeeds() no resources are reset due to ongoing growth
+\note Unlike CPlant::GetNSeeds() no resources are reset due to ongoing growth
 */
 int CPlant::GetNRamets()
 {
    if ((mReproRamets>0)
          &&(!dead)
-         &&(growingSpacerList.size()==0))
+         &&(growingSpacerList.size()==0)
+         &&(this->GetMass() > (this->Traits->MaxMass/2.0) ))
          return 1;
    return 0;
 }

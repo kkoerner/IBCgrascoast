@@ -312,7 +312,7 @@ void CGrid::DispersRamets(CPlant* plant)
    if (plant->Traits->clonal)//type() == "CclonalPlant")//only if its a clonal plant
    {
         //dispersal
-        for (int j=0; j<plant->GetNRamets(); ++j)
+        for (int j=0; j<plant->GetNRamets(); ++j)///\warning this is not secure
         {
          double dist=0, direction;//, rdist;
          double mean, sd; //parameters for lognormal dispersal kernel
