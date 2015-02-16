@@ -628,7 +628,7 @@ void CWaterGridEnvir::InitRun(){
   \param n initiate only n'th species for monoculture exps
 */
 void CWaterGridEnvir::InitInds(int n){
-  const int no_init_seeds=10;//10;
+  const int no_init_seeds=100;//10;
 
   //PFT Traits are read in GetSim() or here:
 	SWaterTraits::ReadPFTDef(SRunPara::NamePftFile);
