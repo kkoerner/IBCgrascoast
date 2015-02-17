@@ -1,3 +1,14 @@
+2015-02-17  KatrinK  <KatrinK@VEGLAP-01>
+correct base mortality for clonals: new factor Ngenet/Nramet 
+	* CGenet.cpp (CGenet::GetMass): 
+	(CGenet::GetNRamets): count individual genet's ramets
+	* CGenet.h (CGenet): new function GetNRamet
+	* CGridEnvir.cpp (GetOutput): 
+	(CGridEnvir::GetOutput): change calculation of pmort
+	* OutStructs.cpp (SPftSingle): 
+	(SGridOut): 
+	(SPftOut::SPftSingle::SPftSingle): new variable Ngenet
+	* OutStructs.h: 
 2015-02-10  KatrinK  <KatrinK@VEGLAP-01>
 
 	* CEnvir.cpp (WriteOFiles): 
