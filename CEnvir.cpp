@@ -204,15 +204,17 @@ void CEnvir::InitRun(){
  * At end of Run all data or only last year's data can be written
  */
 void CEnvir::WriteOFiles() {
-	// if (year%10==1){// modulo... output every n time steps
+ if (true){
+//	if (year%10==1){// modulo... output every n time steps
 	// if (year==11||year==31){//output in discrete time steps
 	WriteGridComplete(false);
 	WritePftComplete(false);
-//	WriteclonalOutput();
-	if (year == SRunPara::RunPara.Tmax){//output at end of run
-		WriteSurvival();
-		this->WritePftSeedOutput();//write all year's output at once
-	}
+}
+	//	WriteclonalOutput();
+//	if (year == SRunPara::RunPara.Tmax){//output at end of run
+//		WriteSurvival();
+//		this->WritePftSeedOutput();//write all year's output at once
+//	}
 }
 //------------------------------------------------------------------------------
 /**

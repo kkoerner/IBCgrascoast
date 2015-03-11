@@ -5,7 +5,7 @@
 #ifndef GridBaseH
 #define GridBaseH
 //---------------------------------------------------------------------------
-#include "Cell.h"
+#include "CWaterCell.h"//"Cell.h"
 #include "Plant.h"
 #include "RunPara.h"
 #define CCELL CWaterCell //CCell for old version
@@ -37,6 +37,7 @@ class CGrid
    //clonal..
    void RametEstab(CPlant* plant);///< establish ramets
    virtual void EstabLott_help(CSeed* seed);
+   virtual void DispSeeds_help(CPlant* plant,CCell* cell);    ///<clonal version
 
 protected:
    ///List of Genets on Grid

@@ -139,9 +139,8 @@ void CWaterGridEnvir::InitSeeds(const string PftName,const int n,double estab)
 /**
  randomly distribute seeds of a given plant type (CWaterPlant)
 
- \param traits   link to basic PFT
  \param wtraits  link to water traits
- \param n        number of seeds to disperse
+ \param n        number of seeds to disperse (not working; always one seed is created)
  \param estab    establishment (default is 1 for initial conditions)
 */
 void CWaterGridEnvir::InitSeeds(//SPftTraits* traits,//SclonalTraits* cltraits,
@@ -436,12 +435,13 @@ void CWaterGridEnvir::SeedRain(){
       PFT_ID = it->first;
 
 //      cltraits=getClLink(PFT_ID);
-      pfttraits=SPftTraits::getPftLink(PFT_ID);
+//      pfttraits=SPftTraits::getPftLink(PFT_ID);
 
 
       int nseeds2 = poissonLCG(nseeds);  //random number from poisson distribution
        //int nseeds2 = Round(nseeds);
-       CGrid::InitClonalSeeds(pfttraits,nseeds2,pfttraits->pEstab);//,cltraits
+      InitSeeds(it->first,nseeds2,0.5);
+//       CGrid::InitClonalSeeds(pfttraits,nseeds2,pfttraits->pEstab);//,cltraits
 //      if(pfttraits->clonal)
 //       CGrid::InitClonalPlants(pfttraits,ceil(nseeds/10.0));
    }
@@ -593,7 +593,8 @@ double SWaterTraits::saltTolEffect(double salinity){
 //  if (saltTol<=5) {if(salinity<7.0) return 1.0;else return min_lim;}
 //  if (saltTol>5)  {return 1.0;}
 //  return min_lim;  //should not be reached
-double dummi=1.0/(0.05*saltTol+1)-1.0/(5*saltTol+2)*salinity;
+//	double dummi=1.0/(0.05*saltTol+1)-1.0/(5*saltTol+2)*salinity;
+double dummi=1.0/(0.1*saltTol+1)-1.0/(10*saltTol+2)*(salinity-0.5);
 	return dummi;
 
 } // salt tolerance effect
@@ -627,7 +628,7 @@ void CWaterGridEnvir::InitRun(){
   \param n initiate only n'th species for monoculture exps
 */
 void CWaterGridEnvir::InitInds(int n){
-  const int no_init_seeds=10;//10;
+  const int no_init_seeds=100;//10;
 
   //PFT Traits are read in GetSim() or here:
 	//SWaterTraits::ReadPFTDef(SRunPara::NamePftFile);
@@ -669,6 +670,45 @@ void SWaterTraits::print(){
    <<endl;
 } //print water traits
 
+/**
+ *
+ * @param InitFile file stream with pft definition
+ * @return false if process failed
+ */
+bool SWaterTraits::ReadPFTDef_help(ifstream& InitFile) {
+	int dummi1; string dummi2;
+	//erstelle neue traits
+
+	// file structure
+	// [1] "ID"      "Species" "alSeed"   "LMR"     "maxMass" "mSeed" "Dist"
+	// [8] "pEstab"  "Gmax"    "SLA1"     "palat"   "memo"    "RAR"   "respAnox"
+	//[15] "PropSex" "meanSpacerLength" "Resshare" "mSpacer"
+	//get type definitions from file
+	InitFile >> dummi1;
+	InitFile >> dummi2;
+	InitFile >> MaxAge >> AllocSeed >> LMR >> m0
+			>> MaxMass >> SeedMass >> Dist
+			>> pEstab >> Gmax >> SLA >> palat
+			>> memory >> RAR >> growth >> mThres
+			>> clonal >> PropSex >> meanSpacerlength
+			>> sdSpacerlength >> Resshare >> // >> cltraits->mSpacer
+			AllocSpacer >> mSpacer;
+	InitFile >> assimAnoxWL >> saltTol;
+	//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
+	//\todo test reduced RAR (moderate root efficiency)
+	RAR = 0.5;
+	//namen und IDs
+	name = dummi2;
+	TypeID = dummi1;
+	if (dummi1<9999) return true;//if valid PFT
+	return false;
+}
+
+/**
+ *
+ * @param file
+ * @param n
+ */
 void SWaterTraits::ReadPFTDef(const string& file, int n) {
 	  //Open InitFile,
 	  ifstream InitFile(file.c_str());
@@ -678,37 +718,13 @@ void SWaterTraits::ReadPFTDef(const string& file, int n) {
 	  getline(InitFile,line);//skip header line
 	  //skip first lines if only one Types should be initiated
 	  if (n>-1) for (int x=0;x<n;x++)getline(InitFile,line);
-	  int dummi1; string dummi2; int PFTtype; string Cltype;
+	  // int PFTtype; string Cltype;
 	  do{
 	  //erstelle neue traits
-	    SWaterTraits* traits=new SWaterTraits();
-
-	// file structure
-	// [1] "ID"      "Species" "alSeed"   "LMR"     "maxMass" "mSeed" "Dist"
-	// [8] "pEstab"  "Gmax"    "SLA1"     "palat"   "memo"    "RAR"   "respAnox"
-	//[15] "PropSex" "meanSpacerLength" "Resshare" "mSpacer"
-	    //get type definitions from file
-	    InitFile>> dummi1;
-	    InitFile>>dummi2;
-		InitFile >> traits->MaxAge >> traits->AllocSeed >> traits->LMR
-				>> traits->m0 >> traits->MaxMass >> traits->SeedMass
-				>> traits->Dist >> traits->pEstab >> traits->Gmax >> traits->SLA
-				>> traits->palat >> traits->memory >> traits->RAR
-				>> traits->growth >> traits->mThres >> traits->clonal
-				>> traits->PropSex >> traits->meanSpacerlength
-				>> traits->sdSpacerlength >> traits->Resshare >> // >> cltraits->mSpacer
-				traits->AllocSpacer >> traits->mSpacer;
-		InitFile>> traits->assimAnoxWL
-	            >> traits->saltTol;
-	//     if (traits->AllocSeed>0.1)traits->MaxAge=2; //Bienne
-	     //\todo test reduced RAR (moderate root efficiency)
-	      traits->RAR=0.5;
-
-	    //namen und IDs
-	    traits->name=dummi2;
-	    traits->TypeID=dummi1;
+		  SWaterTraits* traits = new SWaterTraits();
+		  if(!traits->ReadPFTDef_help(InitFile)) continue;
 		//append to list..
-		if(traits->MaxMass>0) SPftTraits::addPftLink(dummi2, traits);
+		if(traits->MaxMass>0) SPftTraits::addPftLink(traits->name, traits);
 	    if(!InitFile.good()||n>-1) { return;}
 
 	  }while(!InitFile.eof());
