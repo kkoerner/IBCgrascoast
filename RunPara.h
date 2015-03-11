@@ -28,6 +28,7 @@ public:
    //Input Files
    static std::string NamePftFile;   ///< Filename of PftTrait-File
    static std::string NameSimFile;  ///< Filename of Simulation-File
+   static std::string NameEnvFile;///< Filename of environmental definitions-File
 
 	static SRunPara RunPara;  //!> scenario parameters
 

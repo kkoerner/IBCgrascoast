@@ -149,7 +149,7 @@ void CGrid::Save(string fname){
 */
 void CGrid::PlantLoop()
 {
-   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); iplant++)
    {
       CPlant* plant = *iplant;
       if (!plant->dead)
@@ -168,7 +168,7 @@ void CGrid::PlantLoop()
          plant->Kill();
       }
       plant->DecomposeDead();
-   }
+   }//for all plants
 }//plant loop
 //-----------------------------------------------------------------------------
 /**
@@ -261,11 +261,26 @@ int CGrid::DispersSeeds(CPlant* plant)
 		}
 
          CCELL* cell = CellList[x*SideCells+y];
-         new CSeed(plant,cell);
+         DispSeeds_help(plant,cell);
+         //new CSeed(plant,cell);
    }//for NSeeds
    return nb_LDDseeds;
 }//end DispersSeeds
+void CGrid::DispSeeds_help(CPlant* plant,CCell* cell)
+{
+            new CSeed(plant,cell);
+}    //
+
 //---------------------------------------------------------------------------
+/***
+ * Initialize new ramets of a clonal mother plant.
+ * New Spacer's target cell is calculated depending on PFT definition.
+ *
+ * \note In case a clonal plant has mean spacerlength of zero, nothing happens to prevent endless loops.
+ * PFT definition has to be corrected to prevent resource allocation to spacermass too.
+ *
+ * @param plant mother plant, the ramets are starting from
+ */
 void CGrid::DispersRamets(CPlant* plant)
 {
    double CmToCell=1.0/SRunPara::RunPara.CellScale();
@@ -274,16 +289,17 @@ void CGrid::DispersRamets(CPlant* plant)
    if (plant->Traits->clonal)//type() == "CclonalPlant")//only if its a clonal plant
    {
         //dispersal
-        for (int j=0; j<plant->GetNRamets(); ++j)
+        for (int j=0; j<plant->GetNRamets(); ++j)///\warning this is not secure
         {
          double dist=0, direction;//, rdist;
-         double mean, sd, mu, sigma; //parameters for lognormal dispersal kernel
+         double mean, sd; //parameters for lognormal dispersal kernel
 
          //normal distribution for spacer length
          mean=plant->Traits->meanSpacerlength;   //cm
          sd  =plant->Traits->sdSpacerlength;     //mean = std (simple assumption)
-
-         while (dist<=0) dist=CEnvir::normrand(mean,sd);
+         //break to prevent infinite loops; !however, spacermass is allocated elsewhere !bug in PFT definition
+         if(mean>0 && sd>0) while (dist<=0) dist=CEnvir::normrand(mean,sd);
+         else {cerr<<"Warning: erroneous PFT definition"<<endl;return;};
          //direction uniformly distributed
          direction=2*Pi*CEnvir::rand01();
          int x=CEnvir::Round(plant->getCell()->x+cos(direction)*dist*CmToCell);
@@ -426,6 +442,8 @@ void CGrid::ResetWeeklyVariables()
       //reset weekly variables
       plant->Auptake=0;plant->Buptake=0;
       plant->Ash_disc=0;plant->Art_disc=0;
+      //ageing..
+      plant->Age++;
    }
 }
 
@@ -511,7 +529,7 @@ void CGrid::EstabLottery()
    map<string,int> PftNSeedling;
    int gweek=CEnvir::week;
 
-   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))
+   if (((gweek>=1) && (gweek<4)) || ((gweek>21)&&(gweek<=25)))// 7 weeks
    { //establishment only between week 1-4 and 21-25
      double sum=0;
 
@@ -625,7 +643,8 @@ void CGrid::RametEstab(CPlant* plant)
            //delete from list but not the element itself
            plant->growingSpacerList.erase(plant->growingSpacerList.begin()+f);
            //establishment success
-           if(CEnvir::rand01()<(1.0-SRunPara::RunPara.EstabRamet)) Ramet->dead=true; //tag:SA
+           if(CEnvir::rand01()<(1.0-SRunPara::RunPara.EstabRamet))
+        	   Ramet->dead=true; //tag:SA
         }//if cell ist not occupied
         else //find another random cell in the area around
         {
@@ -937,7 +956,8 @@ void CGrid::GrazingBelGr(const int mode)
          if (CEnvir::rand01()<grazprob){
            MassRemoved+=lplant->RemoveRootMass();
              //grazing induced additional mortality
-           if (CEnvir::rand01()<SRunPara::RunPara.BGThres) lplant->dead=true;
+           if (CEnvir::rand01()<SRunPara::RunPara.BGThres)
+        	   lplant->dead=true;
          }
          ++i;
       }
@@ -1021,10 +1041,10 @@ void CGrid::RemovePlants()
 {
    plant_iter irem = partition(PlantList.begin(),PlantList.end(),
      mem_fun(&CPlant::GetPlantRemove));
-   for (plant_iter iplant=irem; iplant<PlantList.end(); ++iplant)
+   for (plant_iter iplant=irem; iplant!=PlantList.end(); ++iplant)
    {
       CPlant* plant = *iplant;
-      DeletePlant(plant);
+      DeletePlant(plant); plant=NULL;
    }
    PlantList.erase(irem,PlantList.end());
 }
@@ -1329,6 +1349,7 @@ double CGrid::GetTotalAboveMass()
    for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
       CPlant* plant = *iplant;
       above_mass+=plant->mshoot+plant->mRepro;
+      double dummi=plant->Traits->GrazFac();
    }
    return above_mass;
 }

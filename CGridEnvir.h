@@ -52,11 +52,11 @@ public:
   bool InitInd(string def);///<init of one ind based on saved data
   void InitSeeds(int); ///<Initialization of seeds on grid
   void InitSeeds(string, int);
-  void SeedRain(); //!< distribute seeds on the grid each year
+  virtual void SeedRain(); //!< distribute seeds on the grid each year
   ///@}
 
 
-  int exitConditions(); ///< get exit conditions //first implemented by Ines
+  virtual int exitConditions(); ///< get exit conditions //first implemented by Ines
    ///\name Functions to get Acover and Bcover of cells.
    /** It is assumed that coordinates/indices match grid size.
        Functions have to be called after function CGrid::CoverCells and before

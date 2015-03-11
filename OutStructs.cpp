@@ -25,8 +25,8 @@ SPftOut::~SPftOut(){
 /**
  * constructor
  */
-SPftOut::SPftSingle::SPftSingle():cover(0),Nind(0),Nseeds(0),
- rootmass(0),shootmass(0),totmass(0){}//end SPftSingle constructor
+SPftOut::SPftSingle::SPftSingle():totmass(0),shootmass(0), rootmass(0),cover(0),
+		Nind(0),Nclon(0),Njuv(0),Nseeds(0){}//end SPftSingle constructor
 //-------------------------------------------------------
 /**
  * constructor

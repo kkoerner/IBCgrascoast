@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
 //  bool endsim=false;
   SRunPara::RunPara.WaterLevel=-60; //default, unless set otherwise
   SRunPara::RunPara.Tmax=100;//100;250//Laufzeit
-  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
+  SRunPara::RunPara.WLseason="file";//"const";//const - constant weather conditions
  // SRunPara::RunPara.CutLeave=15;
   int nruns=1;//3//10
   /// 0-abandoned; 1-grazing; 2-mowing
@@ -168,8 +168,12 @@ int main(int argc, char* argv[])
 //    SRunPara::RunPara.DistAreaYear=atof(argv[4]); //trampling
     SRunPara::RunPara.AreaEvent=atof(argv[4]); //trampling
     SRunPara::RunPara.NCut=atoi(argv[5]); //number of cuttings
-    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings
-    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity
+//    SRunPara::RunPara.WaterLevel=atoi(argv[6]); //number of cuttings -for const weather conditions
+//    SRunPara::RunPara.salt=atof(argv[7]); //soil salinity            -for const weather conditions
+    SRunPara::NamePftFile=argv[6];
+    string envfile=argv[7];
+    SRunPara::NameEnvFile="Input/"+envfile;
+
   }
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=100;//default: 100

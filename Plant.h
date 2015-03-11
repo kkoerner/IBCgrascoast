@@ -63,7 +63,7 @@ public:
    bool remove;    //!< trampled or not - should the plant be removed?
 
    int stress;     //!< counter for weeks with resource stress exposure
-   int Age;        ///< age of (established) plant in years (ageing in winter)
+   int Age;        ///< age of (established) plant in weeks (ageing at beginning of each week)
 //--clonal..
    vector<CPlant*> growingSpacerList;     ///<List of growing Spacer
    double Spacerlength;                         ///<real spacer length
@@ -122,6 +122,7 @@ public:
     return pow(mshoot/(Traits->LMR),1/3.0)*cheight;};
 /// \brief get plant's depth
 /// \param cdepth mg vegetative root mass per cm ground layer  (root density)
+/// \param value 'adjust'(default) and 'real' for real rooting depth
 /// \return depth of root cylinder in cm
 /// calculation: devide root mass by ZOI-area
 /// (calibrated: 2500mg DWroot beeing 50cm)
@@ -170,6 +171,7 @@ public:
    CGenet* getGenet(){return genet;};
    void SpacerGrow();                  ///<spacer growth
    virtual int GetNRamets();           ///<return number of ramets
+   virtual double GetBMSpacer();  ///<returns clonal mass
 
 
    //-----------------------------------------------------------------------------
@@ -179,11 +181,11 @@ public:
    bool GetPlantRemove(){return (!this->remove);};
 
    /// sort plant individuals descending after shoot size * palatability
-   static bool ComparePalat(const CPlant* plant1, const CPlant* plant2)
-   {
-      return ((plant1->mshoot*plant1->Traits->GrazFac())
-         > (plant2->mshoot*plant2->Traits->GrazFac()));
-   };
+   static bool ComparePalat(const CPlant* plant1, const CPlant* plant2);
+//   {
+//	   return ((plant1->mshoot*plant1->Traits->GrazFac())
+//         > (plant2->mshoot*plant2->Traits->GrazFac()));
+//   };
    //-----------------------------------------------------------------------------
    /// sort plants descending after shoot size (mass*1/LMR)
    /**\bug '*' in secound line solved 100202*/

@@ -92,17 +92,24 @@ CPlant::CPlant(CSeed* seed):
   cell has to be set and plant has to be added to genet list
   when ramet establishes.
 
+initial plant size is 1% of mother plant
+\obs initial plant size is 10 times seed m0 of seedlings
+
   \since revision
 */
 CPlant::CPlant(double x, double y, CPlant* plant):
   xcoord(x),ycoord(y),Traits(plant->Traits),Age(0),
-  mshoot(plant->Traits->m0),mroot(plant->Traits->m0),
+//  mshoot(plant->Traits->m0*10),mroot(plant->Traits->m0*10),
+  mshoot(plant->mshoot*0.05),mroot(plant->mroot*0.05),
   Aroots_all(0),Aroots_type(0),mRepro(0),Ash_disc(0),Art_disc(0),
   Auptake(0),Buptake(0),dead(false),remove(false),stress(0),cell(NULL),
   mReproRamets(0),Spacerlength(0),Spacerdirection(0),mort_base(0.007),
   Generation(plant->Generation+1),SpacerlengthToGrow(0),genet(plant->genet)
 {
    growingSpacerList.clear();
+   //substract biomass from mother plant
+   plant->mroot*=0.95;
+   plant->mshoot*=0.95;
 //  this->Generation=plant->Generation+1;
 }//<clonal growth constructor
 //---------------------------------------------------------------------------
@@ -193,7 +200,7 @@ double CPlant::ReproGrow(double uptake){
        (mRepro<=Traits->AllocSeed*mshoot)){
    //test for hapaxantic type
    //fruit only, if biomass-threshold (80%) is crossed
-      if(Traits->MaxAge<5 & this->mshoot<Traits->MaxMass*0.5*0.8)
+      if((Traits->MaxAge<5) & (this->mshoot<Traits->MaxMass*0.5*0.8))
         return uptake;
       SeedRes =uptake*Traits->AllocSeed;
       VegRes  =uptake*(1-Traits->AllocSeed);
@@ -322,7 +329,7 @@ void CPlant::Grow2()         //grow plant one timestep
    //which resource is limiting growth ?
    LimRes=min(Buptake,Auptake);   //two layers
    VegRes=ReproGrow(LimRes);
-
+//   double diff=LimRes-VegRes;
    //allocation to shoot and root growth
    alloc_shoot= Buptake/(Buptake+Auptake); //allocation coefficient
 
@@ -339,6 +346,8 @@ void CPlant::Grow2()         //grow plant one timestep
    mroot+=dm_root;
 
    if (stressed())++stress;
+//new stress definition
+//   if (AU*BU==0)++stress;//Maintanance exceeds Uptake
    else if (stress>0) --stress;
 }
 /**
@@ -396,15 +405,22 @@ bool CPlant::stressed(){
 }
 //-----------------------------------------------------------------------------
 /**
- * Kill plant depending on stress level and base mortality. Stochastic process.
- */
+ * Calculate weekly individual mortality.
+ * We assume an base mortality of 0.007 and add a stress dependent mortality.
+ * This is a stochastic process (mortality rate is interpreted as probability here).
+ * If the Plant is killed, it gets the status dead=true.
+ * Subsequently the litter gets decomposed weekly.
+ *
+ * \sa DecomposeDead()
+ * */
 void CPlant::Kill()
 {
 //   double pmort;//,rnumber;
 
    //resource deficiency mortality  ; pmin->random background mortality
    //use this->mort_base for bayer-style base mortality
-   const double pmin=SRunPara::RunPara.mort_base;//0.007;
+//	const double pmin=SRunPara::RunPara.mort_base;//0.007;
+   const double pmin=this->mort_base;//annually recalculated in GetOutput()
    double pmort= (double)stress/Traits->memory  + pmin;  //stress mortality + random background mortality
 //   rnumber = CEnvir::rand01();//(double )rand()/(RAND_MAX+1);
    if (CEnvir::rand01()<pmort) dead=true;
@@ -423,7 +439,7 @@ void CPlant::DecomposeDead()
       mRepro=0;
       mshoot*=rate;
       mroot*=rate;
-      if (CPlant::GetMass() < minmass) remove=true;
+      if (CPlant::GetMass() < minmass) this->remove=true;
    }
 }//end DecomposeDead
 //-----------------------------------------------------------------------------
@@ -444,7 +460,7 @@ int CPlant::GetNSeeds()
          NSeeds=floor(mRepro*prop_seed/Traits->SeedMass);
          mRepro=0;
          //kill annual or biennial plant
-         if (Age>Traits->MaxAge-1)
+         if (Age>(Traits->MaxAge*CEnvir::WeeksPerYear)-1)
          this->dead=true;
       }
    }
@@ -453,18 +469,34 @@ int CPlant::GetNSeeds()
 //------------------------------------------------
 /**
 returns the number of new spacer to set: currently
- - 1 if there are clonal-growth-resources and spacer-lisdt is empty, and
+ - 1 if there are clonal-growth-resources and spacer-list is empty, and
+   plant is alive
  - 0 otherwise
+
+ \date 151002 add condition of minimum adult size (KK)
 \return the number of new spacer to set
-Unlike CPlant::GetNSeeds() no resources are reset due to ongoing growth
+\note Unlike CPlant::GetNSeeds() no resources are reset due to ongoing growth
 */
 int CPlant::GetNRamets()
 {
    if ((mReproRamets>0)
          &&(!dead)
-         &&(growingSpacerList.size()==0))
+         &&(growingSpacerList.size()==0)
+         &&(this->GetMass() > (this->Traits->MaxMass/2.0) ))
          return 1;
    return 0;
+}
+//-----------------------------------------------------------------------------
+double CPlant::GetBMSpacer(){
+   int SpacerListSize=this->growingSpacerList.size();
+  if (SpacerListSize==0)return 0.0;
+  double mSpacer=0;
+  for (int g=0; g<(SpacerListSize); g++)
+    {  //loop for all growing Spacer of one plant
+       CPlant* Spacer = this->growingSpacerList[g];
+       mSpacer+=(Spacer->Spacerlength-Spacer->SpacerlengthToGrow)* Traits->mSpacer;
+  }
+  return this->mReproRamets+ mSpacer;
 }
 
 //-----------------------------------------------------------------------------
@@ -512,8 +544,8 @@ void CPlant::WinterLoss()
    double prop_remove=SRunPara::RunPara.DiebackWinter;//0.5;
    mshoot*=1-prop_remove;
    mRepro=0;
-   //ageing
-   Age++;
+   //ageing - moved to weekly process: reset_weekly_variables
+   //Age++;
 }//end WinterLoss
 
 //-----------------------------------------------------------------------------
@@ -571,6 +603,16 @@ double CPlant::comp_coef(const int layer, const int symmetry)const{
    }
    return -1;  //should not be reached
 }//end comp_coef
+/// sort plant individuals descending after shoot size * palatability
+bool CPlant::ComparePalat(const CPlant* plant1, const CPlant* plant2)
+{
+	double m1= plant1->mshoot;
+	double m2= plant2->mshoot;
+	double g1=plant1->Traits->GrazFac();
+	double g2=plant2->Traits->GrazFac();
+	return ((m1*g1) > (m2*g2));
+};
+
 //-eof----------------------------------------------------------------------------
 
 

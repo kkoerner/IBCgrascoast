@@ -337,13 +337,17 @@ int CGridEnvir::exitConditions()
 /**
   calculate Output-variables and store in intern 'database'
 
+  Juveniles and adults (>6weeks) are counted separately
+
+  base mortality is computed based on pft cover (100% cover increases base mortality of 0.007 up to 0.056)
+
   changed in Version 100715 - for  type-flexible Output
 */
 void CGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
 {
-   int pft, df;
+ //  int pft, df;
    string pft_name;
-   double mean, prop_PFT;
+   double  prop_PFT;//mean,
    double aLitter=0, bLitter=0;
 
    SPftOut*  PftWeek =new SPftOut();
@@ -364,60 +368,38 @@ void CGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
            PftWeek->PFT[pft_name] = new SPftOut::SPftSingle();
         mi =PftWeek->PFT.find(pft_name)->second;
         mi->totmass+=plant->GetMass();
-        ++mi->Nind;
+        if(plant->Age > 6) ++mi->Nind; else ++mi->Njuv;
         mi->shootmass+=plant->mshoot;
         mi->rootmass+=plant->mroot;
       }//plant alive
       else{
     	  aLitter+=plant->mshoot+plant->mRepro;
     	  bLitter+=plant->mroot;
-      }
-   }
+      }//plant dead
+   }//for each plant
    GridWeek->above_litter=aLitter;
    GridWeek->below_litter=bLitter;
 
    //calculate mean values
    typedef map<string, SPftOut::SPftSingle*> mapType;
 
+//count genet composition
+   typedef vector<CGenet*>::iterator genet_iter;
+   for (genet_iter igenet=GenetList.begin(); igenet<GenetList.end(); ++igenet){
+       CGenet* genet = *igenet;
+       if(genet->GetNRamets()==0)continue;//Genet not counted if empty or no non-dead
+       pft_name=genet->AllRametList.at(0)->pft();
+       PftWeek->PFT.find(pft_name)->second->Nclon++;
+   }//for each genet
    for(mapType::const_iterator it = PftWeek->PFT.begin();
           it != PftWeek->PFT.end(); ++it)
     {
-      if (it->second->Nind>=1){
+      if ((it->second->Nind + it->second->Njuv) >=1){
 
          //calculate shannon index and proportion of each PFT
-         prop_PFT=(double) it->second->Nind/PlantList.size();
+         prop_PFT=(double) (it->second->Nind + it->second->Njuv)/PlantList.size();
          GridWeek->shannon+=(-1)*prop_PFT*log(prop_PFT);
       }
-		//update plants' mort_base value
-		for (plant_iter iplant = PlantList.begin(); iplant < PlantList.end();
-				++iplant) {
-			CPlant* plant = *iplant;
-			if (plant->dead == false) {
-				pft_name = plant->pft();
-				if (PftWeek->PFT.find(pft_name) == PftWeek->PFT.end()) {
-					cerr << "wrong pft: " << pft_name;
-					exit(3);
-				}
-				//based on Abundance.. 1+(NInd(PFT)/maxnIndPFT)
-				//0.007*0.5*([1-2]) meanly resulting in 0.007
-				double abundance = PftWeek->PFT.find(pft_name)->second->Nind;
-				double m_area_root = plant->Traits->RAR
-						* pow(plant->Traits->MaxMass * 0.25, 2.0 / 3.0);
-				double m_area_shoot = plant->Traits->SLA
-						* pow(
-								plant->Traits->LMR * plant->Traits->MaxMass
-										* 0.25, 2.0 / 3.0);   //mean shoot area;
-
-				double max_abundance = (double) SRunPara::RunPara.GridSize
-						* SRunPara::RunPara.GridSize /
-				//area per medium plant (min of above-and belowground)
-						min(m_area_root,         //mean root area
-								m_area_shoot);
-				plant->mort_base = 0.007
-						* pow(1 + (abundance / (double) max_abundance), 2);
-				//     cout<<plant->mort_base<<" ";
-			}
-		}
 
       // cover mit Funktion find()  füllen -- da sonst evtl adressierungsfehler
       string type=it->first;
@@ -427,15 +409,55 @@ void CGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
       GridWeek->totmass+=it->second->totmass;
       GridWeek->above_mass+=it->second->shootmass;
       GridWeek->below_mass+=it->second->rootmass;
-      GridWeek->Nind+=it->second->Nind;
+      GridWeek->Nind+=it->second->Nind+it->second->Njuv;//all individuals
 
       //add LDDSeeds to PftWeek
       for (int d=0; d<NDistClass; ++d){
          PftWeek->PFT[it->first]->LDDseeds[d] = (*LDDSeeds)[it->first].NSeeds[d];
          (*LDDSeeds)[it->first].NSeeds[d] = 0;
       }
+   }//for each pft in outstruct
+	//update plants' mort_base value
+	for (plant_iter iplant = PlantList.begin(); iplant < PlantList.end();
+			++iplant) {
+		CPlant* plant = *iplant;
+		if (plant->dead == false) {
+			pft_name = plant->pft();
+			if (PftWeek->PFT.find(pft_name) == PftWeek->PFT.end()) {
+				cerr << "wrong pft: " << pft_name;
+				exit(3);
+			}
+			//based on Abundance.. 1+(NInd(PFT)/maxnIndPFT)
+			//0.007*0.5*([1-2]) meanly resulting in 0.007
+//				double abundance = PftWeek->PFT.find(pft_name)->second->Nind;
+			double pgenet=1.0;                     //proportion of genets
+			int nram=PftWeek->PFT.find(pft_name)->second->Nind+PftWeek->PFT.find(pft_name)->second->Njuv;
+			int ngen=PftWeek->PFT.find(pft_name)->second->Nclon;
+			if (nram>0) pgenet=ngen/(double) nram;
+//			std::cout<<pft_name<<" "<<ngen<<":"<<nram<<"="<<pgenet<<'\t'<<flush;
+			//		(double) PftWeek->PFT.find(pft_name)->second->Nclon/
+			//		PftWeek->PFT.find(pft_name)->second->Nind;
+			double cover = PftWeek->PFT.find(pft_name)->second->cover;
+//				double m_area_root = plant->Traits->RAR
+//						* pow(plant->Traits->MaxMass * 0.25, 2.0 / 3.0);
+//				double m_area_shoot = plant->Traits->SLA
+//						* pow(
+//								plant->Traits->LMR * plant->Traits->MaxMass
+//										* 0.25, 2.0 / 3.0);   //mean shoot area;
 
-   }
+//				double max_abundance = (double) SRunPara::RunPara.GridSize
+//						* SRunPara::RunPara.GridSize /
+			//area per medium plant (min of above-and belowground)
+//						min(m_area_root,         //mean root area
+//								m_area_shoot);
+			plant->mort_base = 0.007
+//						* pow(1 + (abundance / (double) max_abundance), 2);
+					* pow(1 + (cover/1.0*pgenet), 2);
+			//maximum should be <1
+			plant->mort_base = min(0.95,plant->mort_base);
+			//     cout<<plant->mort_base<<" ";
+		}//if plant alive
+	}//for each plant
 
    //summarize seeds on grid...
    int sumcells=SRunPara::RunPara.GetSumCells();

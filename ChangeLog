@@ -1,3 +1,416 @@
+2015-03-11  KatrinK  <KatrinK@VEGLAP-01>
+merge in changes from Vali_mcmc branch (since Rev590)
+	* Input\env_con_1-3\ N.txt: Removed.
+	* CWaterCell.cpp: New file.
+	* CWaterCell.h: New file.
+	* Input\env_con_hist_2point.22_0.06_-7.txt: New file.
+	* Input\env_con_hist_2point.36_0.37_1.txt: New file.
+	* Input\env_con_hist_2point.38_0.1_-15.txt: New file.
+	* Input\env_con_hist_2point.65_0.5_3.txt: New file.
+	* Input\env_con_hist_2point.70_1.31_-30.txt: New file.
+	* Input\env_con_hist_point.13_-205.txt: New file.
+	* Input\env_con_hist_point.44_4.63_-109.txt: New file.
+	* Input\env_con_hist_point.59_2.94_-59.txt: New file.
+	* Input\env_con_hist_point.65_0.5_-37.txt: New file.
+	* Input\env_con_hist_point.69_4.63_-42.txt: New file.
+	* Input\env_con_hist_point.72_0.19_-170.txt: New file.
+	* Input\RSpecWP3-141217_all.txt: New file.
+	* Input\RSpecWP3-141217_B.txt: New file.
+	* Input\RSpecWP3-141217_N.txt: New file.
+	* Input\RSpecWP3-150106_all.txt: New file.
+	* Input\RSpecWP3-150106_B.txt: New file.
+	* Input\RSpecWP3-150106_N.txt: New file.
+	* pft_test_115368.txt: New file.
+	* pft_test_125230.txt: New file.
+	* pft_test_126551.txt: New file.
+	* pft_test_133129.txt: New file.
+	* pft_test_197709.txt: New file.
+	* Cell.cpp (CWaterCell): 
+	(BelowComp): 
+	(asString): 
+	* Cell.h (~CWaterCell): 
+	(GetWaterLevel): 
+	(SetWaterLevel): 
+	* CEnvir.cpp (WriteOFiles): 
+	(CEnvir::WriteOFiles): 
+	(WritePftComplete): 
+	(CEnvir::WritePftComplete): 
+	(WriteSurvival): 
+	(CEnvir::WriteSurvival): 
+	(GetCurrPopSize): 
+	(CEnvir::GetCurrPopSize): 
+	(GetMeanPopSize): 
+	(CEnvir::GetMeanPopSize): 
+	* CGenet.cpp (CGenet::GetMass): 
+	(CGenet::GetNRamets): 
+	* CGenet.h (CGenet): 
+	* CGrid.cpp (PlantLoop): 
+	(CGrid::PlantLoop): 
+	(DispersSeeds): 
+	(CGrid::DispersSeeds): 
+	(DispersRamets): 
+	(CGrid::DispSeeds_help): 
+	(CGrid::DispersRamets): 
+	(CGrid::ResetWeeklyVariables): 
+	(EstabLottery): 
+	(CGrid::EstabLottery): 
+	(RametEstab): 
+	(CGrid::RametEstab): 
+	(GrazingBelGr): 
+	(CGrid::GrazingBelGr): 
+	(RemovePlants): 
+	(CGrid::RemovePlants): 
+	(GetTotalAboveMass): 
+	(CGrid::GetTotalAboveMass): 
+	* CGrid.h (CGrid): 
+	* CGridEnvir.cpp (GetOutput): 
+	(CGridEnvir::GetOutput): 
+	* CGridEnvir.h (CGridEnvir): 
+	* CSeed.cpp (CSeed): 
+	(CSeed::CSeed): 
+	* CWaterGridEnvir.cpp (InitSeeds): 
+	(Winter): 
+	(CWaterGridEnvir::Winter): 
+	(getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): 
+	(getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAL): 
+	(getWL): 
+	(CWaterGridEnvir::getSAT): 
+	(genAutokorrWL): 
+	(CWaterGridEnvir::getWL): 
+	(CWaterGridEnvir::getWI): 
+	(CWaterGridEnvir::genAutokorrWL): 
+	(genSeasonWL): 
+	(CWaterGridEnvir::genSeasonWL): 
+	(genConstWL): 
+	(CWaterGridEnvir::genConstWL): 
+	(SetCellResource): 
+	(CWaterGridEnvir::SetCellResource): 
+	(GetOutput): 
+	(CWaterGridEnvir::SeedRain): 
+	(CWaterGridEnvir::GetOutput): 
+	(saltTolEffect): 
+	(SWaterTraits::saltTolEffect): 
+	(InitInds): 
+	(CWaterGridEnvir::InitInds): 
+	(ReadPFTDef): 
+	(SWaterTraits::ReadPFTDef_help): 
+	(SWaterTraits::ReadPFTDef): 
+	* CWaterGridEnvir.h (CWaterGridEnvir): 
+	(CWaterGridEnvir.CWaterGridEnvir): 
+	* CWaterPlant.cpp (Grow2): 
+	(CWaterPlant::Grow2): 
+	(RootGrow): 
+	(CWaterPlant::RootGrow): 
+	(rootEfficiency): 
+	(CWaterPlant::rootEfficiency): 
+	(winterDisturbance): 
+	(CWaterPlant::winterDisturbance): 
+	* IBCgrass-coast_base.cpp (main): 
+	* Input\comtessKoerner_131114.txt: 
+	* Input\env_con.txt: 
+	* LCG.cpp (poissonLCG): 
+	* OutStructs.cpp (SPftSingle): 
+	(SGridOut): 
+	(SPftOut::SPftSingle::SPftSingle): 
+	* OutStructs.h: 
+	* Plant.cpp (CPlant): 
+	(CPlant::CPlant): 
+	(Grow2): 
+	(CPlant::Grow2): 
+	(ShootGrow): 
+	(Kill): 
+	(CPlant::Kill): 
+	(DecomposeDead): 
+	(CPlant::DecomposeDead): 
+	(GetNSeeds): 
+	(CPlant::GetNSeeds): 
+	(GetNRamets): 
+	(CPlant::GetNRamets): 
+	(CPlant::GetBMSpacer): 
+	(WinterLoss): 
+	(CPlant::WinterLoss): 
+	(CPlant::ComparePalat): 
+	* Plant.h (CPlant): 
+	(ComparePalat): 
+	* RunPara.cpp (SRunPara): 
+	(SRunPara::SRunPara): 
+	(getRunID): 
+	(SRunPara::getRunID): 
+	* RunPara.h: 
+2015-03-11  KatrinK  <KatrinK@VEGLAP-01>
+commit last changes..
+2015-02-17  KatrinK  <KatrinK@VEGLAP-01>
+correct base mortality for clonals: new factor Ngenet/Nramet 
+	* CGenet.cpp (CGenet::GetMass): 
+	(CGenet::GetNRamets): count individual genet's ramets
+	* CGenet.h (CGenet): new function GetNRamet
+	* CGridEnvir.cpp (GetOutput): 
+	(CGridEnvir::GetOutput): change calculation of pmort
+	* OutStructs.cpp (SPftSingle): 
+	(SGridOut): 
+	(SPftOut::SPftSingle::SPftSingle): new variable Ngenet
+	* OutStructs.h: 
+2015-02-10  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CEnvir.cpp (WriteOFiles): 
+	(CEnvir::WriteOFiles): annual report
+	* CGrid.cpp (DispersRamets): 
+	(CGrid::DispersRamets): comment
+	* CWaterPlant.cpp (winterDisturbance): 
+	(CWaterPlant::winterDisturbance): adapted species without additional mort
+	* Plant.cpp (GetNRamets): 
+	(CPlant::GetNRamets): new clonal rule - new spacer if MaxMass/2 reached
+2015-01-30  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CWaterGridEnvir.cpp (saltTolEffect): change equation
+	(SWaterTraits::saltTolEffect): 
+2015-01-27  KatrinK  <KatrinK@VEGLAP-01>
+move CWaterCell to own pair of header/source file
+	* CWaterCell.cpp: New file.
+	* CWaterCell.h: New file.
+	* Cell.cpp (CWaterCell): 
+	(BelowComp): review wl and salinity rules
+	(asString): 
+	* Cell.h (~CWaterCell): 
+	(GetWaterLevel): 
+	(SetWaterLevel): 
+2015-01-06  KatrinK  <KatrinK@VEGLAP-01>
+
+	* Input\comtessKoerner_131114.txt: New file.
+	* CWaterPlant.cpp(rootEfficiency): 
+	(CWaterPlant::rootEfficiency): add capillary rise of 5cm
+	* Input\RSpecWP3-141217_all.txt: 
+2014-12-18  KatrinK  <KatrinK@VEGLAP-01>
+new allocSpacer definitions and winter mortality due to 
+inundation relaxed for adapted PFTs
+	* Input\env_con_*: changed env files to new versions
+	* Input\RSpecWP3-141217_all.txt: New file. new alloc Spacer PFT defs
+	* Input\RSpecWP3-141217_B.txt: New file.
+	* Input\RSpecWP3-141217_N.txt: New file.
+	* pft_test_*.txt: New pft def files. (old allocSpacer)
+	(winterDisturbance): mortality relaxed for adapted PFTs
+	(CWaterPlant::winterDisturbance): 
+2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
+move body to cpp
+	(CPlant::ComparePalat): 
+	* Plant.h (CPlant): 
+	(ComparePalat): 
+2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
+merge from singleinds branch:
+repair problem in growth of some pfts: intraspecific mortality 
+was too high when considering population size; now cover is measured
+	* Cell.cpp (AboveComp): 
+	(CCell::AboveComp): doc in debug case
+	* CEnvir.cpp (CEnvir::WriteGridComplete): 
+	(WritePftComplete): 
+	(CEnvir::WritePftComplete): 
+	(WriteSurvival): new variable: Juveniles (i.e. inds <=6 weeks old)
+	(CEnvir::WriteSurvival): 
+	(GetCurrPopSize): Nind+Njuv
+	(CEnvir::GetCurrPopSize): 
+	(GetMeanPopSize): see above
+	(CEnvir::GetMeanPopSize): 
+	(CGrid::ResetWeeklyVariables): plant ageing now is weekly
+	(RametEstab): 
+	(CGrid::RametEstab): 
+	* CGridEnvir.cpp (GetOutput): 
+	(CGridEnvir::GetOutput): base mortality now based on PFT's cover
+	* CWaterGridEnvir.cpp (getWL): 
+	(CWaterGridEnvir::getWL): 
+	(ReadWPFTDef): changes: sdSpacerLength*=0.5; mThresh=0.1
+	(SWaterTraits::ReadWPFTDef): 
+	(winterDisturbance): ageing now weekly
+	(CWaterPlant::winterDisturbance): 
+	* IBCgrass-coast_singleinds.cpp (main): test case disabled
+	* Input\comtessKoerner_131114.txt: Phragmites has LMR 0.25
+	* OutStructs.cpp (SPftSingle): new variable: Njuv
+	(SGridOut): 
+	(SPftOut::SPftSingle::SPftSingle): 
+	* OutStructs.h: see above
+	* Plant.cpp (CPlant): 
+	(CPlant::CPlant): clonal growth: init Ramet with 10 times BM a seedling 
+2014-11-27  KatrinK  <KatrinK@VEGLAP-01>
+
+	* .cproject: change exe name
+	* IBCgrass-coast_singleinds.cpp (main): repair test version to general
+2014-11-27  KatrinK  <KatrinK@VEGLAP-01>
+
+	* CGrid.cpp (DispersRamets): 
+	(CGrid::DispersRamets): to prevent endless loops
+	* Input\comtessKoerner_131114.txt: version currently used in ValiMon runs
+2014-11-26  KatrinK  <KatrinK@VEGLAP-01>
+enable salinity in env-files
+	* Input\env_con_hist_point.24_3.94_-49.txt: New file.
+	* Input\env_con_hist_point.2_0.14_-127.txt: New file.
+	* Input\env_con_hist_point.44_4.63_-68.txt: New file.
+	* Input\env_con_hist_point.66_3.21_-25.txt: New file.
+	* Input\env_con_hist_point.70_1.31_-27.txt: New file.
+	* CWaterGridEnvir.cpp (getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): make double sal-values possible, wl still int
+	(getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAL): 
+2014-11-26  KatrinK  <KatrinK@VEGLAP-01>
+tried to debug mysterious runtime errors - partly successful; 
+still dont know the cause
+	* CGrid.cpp (CGrid::PlantLoop): 
+	* Plant.cpp (DecomposeDead): 
+	(CPlant::DecomposeDead): 
+2014-11-21  KatrinK  <KatrinK@VEGLAP-01>
+
+	* Input\env_con_hist_point.10_-199.txt: New file.
+	* Input\env_con_hist_point.11_-217.txt: New file.
+	* Input\env_con_hist_point.12_-192.txt: New file.
+	* Input\env_con_hist_point.13_-205.txt: New file.
+	* Input\env_con_hist_point.14_-242.txt: New file.
+	* Input\env_con_hist_point.15_-108.txt: New file.
+	* Input\env_con_hist_point.16_-369.txt: New file.
+	* Input\env_con_hist_point.17_-360.txt: New file.
+	* Input\env_con_hist_point.18_-220.txt: New file.
+	* Input\env_con_hist_point.19_-106.txt: New file.
+	* Input\env_con_hist_point.1_-60.txt: New file.
+	* Input\env_con_hist_point.22_-46.txt: New file.
+	* Output\Mix_gridO__R200_5_0.5_3_S0_pft_test_16_22_-46.txt: New file.
+	* Output\Mix_typeO__R200_5_0.5_3_S0_pft_test_16_22_-46.txt: New file.
+	* pft_test_16.txt: New file.
+	* RunPara.h: New file.
+	* CGrid.cpp (PlantLoop): 
+	(CGrid::PlantLoop): 
+	(DispersSeeds): 
+	(CGrid::DispersSeeds): 
+	(DispersRamets): 
+	(CGrid::DispSeeds_help): 
+	(EstabLottery): 
+	(CGrid::EstabLottery): 
+	(RemovePlants): 
+	(CGrid::RemovePlants): 
+	* CGrid.h (CGrid): 
+	* CGridEnvir.h (CGridEnvir): 
+	* CWaterGridEnvir.cpp (InitSeeds): 
+	(Winter): 
+	(CWaterGridEnvir::Winter): 
+	(getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): 
+	(getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAL): 
+	(getWL): 
+	(CWaterGridEnvir::getSAT): 
+	(genAutokorrWL): 
+	(CWaterGridEnvir::getWL): 
+	(CWaterGridEnvir::getWI): 
+	(CWaterGridEnvir::genAutokorrWL): 
+	(genSeasonWL): 
+	(CWaterGridEnvir::genSeasonWL): 
+	(genConstWL): 
+	(CWaterGridEnvir::genConstWL): 
+	(SetCellResource): 
+	(CWaterGridEnvir::SetCellResource): 
+	(GetOutput): 
+	(CWaterGridEnvir::SeedRain): 
+	(CWaterGridEnvir::GetOutput): 
+	* CWaterGridEnvir.h (CWaterGridEnvir): 
+	(CWaterGridEnvir.CWaterGridEnvir): 
+	* CWaterPlant.cpp (winterDisturbance): 
+	(CWaterPlant::winterDisturbance): 
+	* IBCgrass-coast_vali.cpp (main): 
+	* Input\env_con.txt: 
+	* LCG.cpp (poissonLCG): 
+	* Plant.cpp (Grow2): 
+	(ShootGrow): 
+	(CPlant::Grow2): 
+	(CPlant::GetBMSpacer): 
+	* Plant.h (CPlant): 
+	* RunPara.cpp (SRunPara): 
+	(SRunPara::SRunPara): 
+	(getRunID): 
+	(SRunPara::getRunID): 
+2014-10-29  KatrinK  <KatrinK@VEGLAP-01>
+variable weather conditions imported from lookup version via singleinds
+new default param argv set: 100 0 0 0 pft_test_16.txt env_con_hist_point.1_-60.txt
+
+!!seed rain still has to be validated
+	* Input\env_con_hist_point.10_-199.txt: New file.
+	* Input\env_con_hist_point.11_-217.txt: New file.
+	* Input\env_con_hist_point.12_-192.txt: New file.
+	* Input\env_con_hist_point.13_-205.txt: New file.
+	* Input\env_con_hist_point.14_-242.txt: New file.
+	* Input\env_con_hist_point.15_-108.txt: New file.
+	* Input\env_con_hist_point.16_-369.txt: New file.
+	* Input\env_con_hist_point.17_-360.txt: New file.
+	* Input\env_con_hist_point.18_-220.txt: New file.
+	* Input\env_con_hist_point.19_-106.txt: New file.
+	* Input\env_con_hist_point.1_-60.txt: New file.
+	* Input\env_con_hist_point.22_-46.txt: New file.
+	* pft_test_16.txt: New file.
+	* RunPara.h: New file.
+	* CGrid.cpp (PlantLoop): 
+	(CGrid::PlantLoop): 
+	(EstabLottery): 
+	(CGrid::EstabLottery): 
+	* CGridEnvir.h (CGridEnvir): 
+	* CWaterGridEnvir.cpp (Winter): 
+	(CWaterGridEnvir::Winter): 
+	(getEnvirCond): 
+	(CWaterGridEnvir::getEnvirCond): 
+	(getSAL): 
+	(CWaterGridEnvir::getSAL): 
+	(getSAT): 
+	(CWaterGridEnvir::getSAT): 
+	(getWL): 
+	(CWaterGridEnvir::getWL): 
+	(genAutokorrWL): 
+	(CWaterGridEnvir::getWI): 
+	(CWaterGridEnvir::genAutokorrWL): 
+	(genSeasonWL): 
+	(CWaterGridEnvir::genSeasonWL): 
+	(genConstWL): 
+	(CWaterGridEnvir::genConstWL): 
+	(SetCellResource): 
+	(CWaterGridEnvir::SetCellResource): 
+	(GetOutput): 
+	(CWaterGridEnvir::SeedRain): 
+	* CWaterGridEnvir.h (CWaterGridEnvir): 
+	(CWaterGridEnvir.CWaterGridEnvir): 
+	* IBCgrass-coast_vali.cpp (main): 
+	* Input\env_con.txt: 
+	* LCG.cpp (poissonLCG): 
+	* Plant.cpp (Grow2): 
+	(ShootGrow): 
+	(CPlant::Grow2): 
+	(CPlant::GetBMSpacer): 
+	* Plant.h (CPlant): 
+	* RunPara.cpp (SRunPara): 
+	(SRunPara::SRunPara): 
+	(getRunID): 
+	(SRunPara::getRunID): 
+2014-09-09  KatrinK  <KatrinK@VEGLAP-01>
+
+	* Plant.cpp (Kill): 
+	(CPlant::Kill): enable density dependent base mortality
+2014-07-21  KatrinK  <KatrinK@VEGLAP-01>
+some debugging (PFT file ending)
+	* CWaterGridEnvir.cpp (ReadPFTDef): 
+	(SWaterTraits::ReadPFTDef_help): 
+	(SWaterTraits::ReadPFTDef): 
+	* CWaterGridEnvir.h: 
+2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
+some debugging (o-file naming)
+	* IBCgrass-coast_vali.cpp (main): 
+	* RunPara.cpp (getRunID): 
+	(SRunPara::getRunID): 
+2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
+apply changes for mcmc validation; 
+	* IBCgrass-coast_base.cpp: Removed.
+	* IBCgrass-coast_vali.cpp: New file.
+	setting: 1by1m 1run 51years migr5
+	* CEnvir.cpp (WriteOFiles): 
+	(CEnvir::WriteOFiles): output every 10 years
+	* RunPara.cpp (getRunID): 
+	(SRunPara::getRunID): filenames include pft parameter file name
 2014-07-15  KatrinK  <KatrinK@VEGLAP-01>
 import changed salinity rules from singleinds branch
 	* CWaterGridEnvir.cpp (saltTolCosts): 
