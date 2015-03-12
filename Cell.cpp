@@ -131,7 +131,7 @@ void CCell::RemoveSeeds()
 
    for (seed_iter iter=irem; iter!=SeedBankList.end(); ++iter){
       CSeed* seed = *iter;
-      delete seed;
+      delete seed; seed=NULL;
    }
    SeedBankList.erase(irem,SeedBankList.end());
 }//end removeSeeds

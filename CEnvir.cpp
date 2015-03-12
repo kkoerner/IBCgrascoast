@@ -131,6 +131,7 @@ int CEnvir::GetSim(const int pos,string file){
   //ist position gültig?, wenn nicht -- Abbruch
   if (!SimFile.good()) return -1;
 
+  string envfile;
   // int version, acomp, bcomp;
     //RunNr=0; int dummi;
     //for (int i=0; i<SimNrMax; ++i)
@@ -147,10 +148,12 @@ int CEnvir::GetSim(const int pos,string file){
   cout<<" Trmpl:"<<SRunPara::RunPara.AreaEvent;
   SimFile>>SRunPara::RunPara.NCut;
   cout<<" NCut:"<<SRunPara::RunPara.NCut;
-  SimFile>>SRunPara::RunPara.WaterLevel;
-  cout<<" WL:"<<SRunPara::RunPara.WaterLevel;
-  SimFile>>SRunPara::RunPara.salt;
-  cout<<" Sal:"<<SRunPara::RunPara.salt<<endl<<flush;
+//  SimFile>>SRunPara::RunPara.WaterLevel;
+//  cout<<" WL:"<<SRunPara::RunPara.WaterLevel;
+//  SimFile>>SRunPara::RunPara.salt;
+ // cout<<" Sal:"<<SRunPara::RunPara.salt<<endl<<flush;
+  SimFile>>envfile;SRunPara::NameEnvFile="Input/"+envfile;
+  cout<<" Env:"<<SRunPara::NameEnvFile<<endl<<flush;
 
        //---------standard parameter:
        //aboveground resources

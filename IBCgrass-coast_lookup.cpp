@@ -115,9 +115,9 @@ using namespace std;
 
 void Init();
 void Run();
-const int Tinit=50;//100;
-const int Tmax=150;//200;
-const int nruns=3;//3//10
+const int Tinit=3;//50;//100;
+const int Tmax=8;//150;//200;
+//const int nruns=3;//3//10
 //-----------------------
 /**
   Design of the main trunk version of the IBC-grass_coast model:
@@ -154,9 +154,7 @@ const int nruns=3;//3//10
 int main(int argc, char* argv[])
 {
     initLCG(time(NULL), 3487234); // 3487234 is chosen randomly
-//  int tinit=5;//50;
     SRunPara::RunPara.Tmax=Tinit;//50;//50;//Init time
-//  int tmax=10;//150;//200;//time to run
     SRunPara::RunPara.WLseason="file";//file - changing weather conditions
 //  SRunPara::RunPara.WLseason="const";//const - constant weather conditions
   CEnvir::SimNr=0;
@@ -168,8 +166,9 @@ int main(int argc, char* argv[])
          SRunPara::NameSimFile=file;
          file=argv[2];
          SRunPara::NamePftFile=file;
-         file=argv[3];
-         SRunPara::NameEnvFile="Input/"+file;
+//Env file integrated in SimFile
+//         file=argv[3];
+//         SRunPara::NameEnvFile="Input/"+file;
       }//else CEnvir::NameSimFile="Input\\comtest.txt";
       int maxRun=1; if (argc>4) {maxRun = atoi(argv[4]);}
       //fill PftLinkList

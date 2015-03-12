@@ -101,7 +101,7 @@ public:
 //   double cv_res;     //!< coefficient of resource variation between years (not used)
    double Aampl;      //!< within year above-ground resource amplitude (not used)
    double Bampl;      //!<  within year above-ground resource amplitude (not used)
-   std::string PftFile;     //!< File with PFT trait parameter in Folder "Input"
+//   std::string PftFile;     //!< File with PFT trait parameter in Folder "Input"
    //reed mix exps
    /** @name COMTESSParam
     *  parameters related to oxygen and salt stress

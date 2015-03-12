@@ -203,7 +203,10 @@ void CWaterGridEnvir::InitWaterInds(//SPftTraits* traits,//SclonalTraits* cltrai
 */
 void CWaterGridEnvir::OneRun(){
  //  int year_of_change=50;
-   double WLstart=SRunPara::RunPara.WaterLevel;
+//   double WLstart=SRunPara::RunPara.WaterLevel;
+   // generate seasonal Wl-series
+   if(SRunPara::RunPara.WLseason=="file")
+       getEnvirCond(SRunPara::RunPara.NameEnvFile);
    //run simulation until YearsMax
 //   for (year=1; year<=5; ++year){
 //   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
@@ -228,7 +231,7 @@ void CWaterGridEnvir::OneRun(){
    }//years
 //WL zurücksetzen
 //    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
-     SRunPara::RunPara.WaterLevel=WLstart;
+//     SRunPara::RunPara.WaterLevel=WLstart;
 }  // end OneSim
 //------------------------------------------------------------------------------
 /**
@@ -377,14 +380,14 @@ void CWaterGridEnvir::SetCellResource(){
     else if(SRunPara::RunPara.WLseason=="season")
     // generate seasonal Wl-series
     genSeasonWL();
-    else if(SRunPara::RunPara.WLseason=="file")
+//    else if(SRunPara::RunPara.WLseason=="file")
     // generate seasonal Wl-series
-//        getEnvirCond((string)"Input\\env_con.txt");
-    getEnvirCond(SRunPara::RunPara.NameEnvFile);
+//    getEnvirCond(SRunPara::RunPara.NameEnvFile);
     else
-//if(SRunPara::RunPara.WLseason=="const")
+   if(SRunPara::RunPara.WLseason=="const")
     // generate const Wl-series
     genConstWL(); //default
+//if "file" do nothing ; call 'getEnvirCond(SRunPara::RunPara.NameEnvFile)' elsewhere
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   this->SetMeanWaterLevel(getWL());

@@ -1,3 +1,124 @@
+2015-03-12  KatrinK  <KatrinK@VEGLAP-01>
+-Adapt main and Simfiel to new cahnges and demands
+-remove obsolete files
+	* Input\clonalTraits.explodat.txt: Removed.
+	* Input\comtest.txt: Removed.
+	* Input\comtest1.txt: Removed.
+	* Input\env_con.txt: Removed.
+	* Input\env_con_hist_point.10_-199.txt: Removed.
+	* Input\env_con_hist_point.11_-217.txt: Removed.
+	* Input\env_con_hist_point.12_-192.txt: Removed.
+	* Input\env_con_hist_point.13_-205.txt: Removed.
+	* Input\env_con_hist_point.14_-242.txt: Removed.
+	* Input\env_con_hist_point.15_-108.txt: Removed.
+	* Input\env_con_hist_point.16_-369.txt: Removed.
+	* Input\env_con_hist_point.17_-360.txt: Removed.
+	* Input\env_con_hist_point.18_-220.txt: Removed.
+	* Input\env_con_hist_point.19_-106.txt: Removed.
+	* Input\env_con_hist_point.1_-60.txt: Removed.
+	* Input\env_con_hist_point.20_-204.txt: Removed.
+	* Input\env_con_hist_point.21_-73.txt: Removed.
+	* Input\env_con_hist_point.22_-46.txt: Removed.
+	* Input\env_con_hist_point.23_-236.txt: Removed.
+	* Input\env_con_hist_point.24_-89.txt: Removed.
+	* Input\env_con_hist_point.25_-91.txt: Removed.
+	* Input\env_con_hist_point.26_-261.txt: Removed.
+	* Input\env_con_hist_point.27_-152.txt: Removed.
+	* Input\env_con_hist_point.28_-50.txt: Removed.
+	* Input\env_con_hist_point.29_-92.txt: Removed.
+	* Input\env_con_hist_point.2_-201.txt: Removed.
+	* Input\env_con_hist_point.30_-142.txt: Removed.
+	* Input\env_con_hist_point.31_-115.txt: Removed.
+	* Input\env_con_hist_point.32_-94.txt: Removed.
+	* Input\env_con_hist_point.33_-116.txt: Removed.
+	* Input\env_con_hist_point.34_-142.txt: Removed.
+	* Input\env_con_hist_point.35_-153.txt: Removed.
+	* Input\env_con_hist_point.36_-38.txt: Removed.
+	* Input\env_con_hist_point.37_-91.txt: Removed.
+	* Input\env_con_hist_point.38_-55.txt: Removed.
+	* Input\env_con_hist_point.39_-72.txt: Removed.
+	* Input\env_con_hist_point.3_-133.txt: Removed.
+	* Input\env_con_hist_point.40_-76.txt: Removed.
+	* Input\env_con_hist_point.41_-80.txt: Removed.
+	* Input\env_con_hist_point.42_-39.txt: Removed.
+	* Input\env_con_hist_point.43_-59.txt: Removed.
+	* Input\env_con_hist_point.44_-109.txt: Removed.
+	* Input\env_con_hist_point.45_-42.txt: Removed.
+	* Input\env_con_hist_point.46_-87.txt: Removed.
+	* Input\env_con_hist_point.47_-93.txt: Removed.
+	* Input\env_con_hist_point.48_-94.txt: Removed.
+	* Input\env_con_hist_point.49_-48.txt: Removed.
+	* Input\env_con_hist_point.4_-102.txt: Removed.
+	* Input\env_con_hist_point.50_-87.txt: Removed.
+	* Input\env_con_hist_point.51_-77.txt: Removed.
+	* Input\env_con_hist_point.52_-43.txt: Removed.
+	* Input\env_con_hist_point.53_-102.txt: Removed.
+	* Input\env_con_hist_point.54_-79.txt: Removed.
+	* Input\env_con_hist_point.55_-82.txt: Removed.
+	* Input\env_con_hist_point.56_-61.txt: Removed.
+	* Input\env_con_hist_point.57_-88.txt: Removed.
+	* Input\env_con_hist_point.58_-91.txt: Removed.
+	* Input\env_con_hist_point.59_-59.txt: Removed.
+	* Input\env_con_hist_point.5_-75.txt: Removed.
+	* Input\env_con_hist_point.60_-103.txt: Removed.
+	* Input\env_con_hist_point.61_-69.txt: Removed.
+	* Input\env_con_hist_point.62_-63.txt: Removed.
+	* Input\env_con_hist_point.63_-194.txt: Removed.
+	* Input\env_con_hist_point.64_-86.txt: Removed.
+	* Input\env_con_hist_point.65_-36.txt: Removed.
+	* Input\env_con_hist_point.66_-71.txt: Removed.
+	* Input\env_con_hist_point.67_-51.txt: Removed.
+	* Input\env_con_hist_point.68_-71.txt: Removed.
+	* Input\env_con_hist_point.69_-42.txt: Removed.
+	* Input\env_con_hist_point.6_-46.txt: Removed.
+	* Input\env_con_hist_point.70_-69.txt: Removed.
+	* Input\env_con_hist_point.71_-66.txt: Removed.
+	* Input\env_con_hist_point.72_-166.txt: Removed.
+	* Input\env_con_hist_point.73_-91.txt: Removed.
+	* Input\env_con_hist_point.74_-85.txt: Removed.
+	* Input\env_con_hist_point.7_-192.txt: Removed.
+	* Input\env_con_hist_point.8_-191.txt: Removed.
+	* Input\env_con_hist_point.9_-123.txt: Removed.
+	* Input\masterWeiss.txt: Removed.
+	* Input\PftTraits2304.txt: Removed.
+	* Input\rootherbPfestorf.txt: Removed.
+	* Input\RSpec28.txt: Removed.
+	* Input\RSpec28S.txt: Removed.
+	* pft_test_115368.txt: Removed.
+	* pft_test_125230.txt: Removed.
+	* pft_test_126551.txt: Removed.
+	* pft_test_133129.txt: Removed.
+	* pft_test_197709.txt: Removed.
+	* pft_test_38.txt: Removed.
+	* Output\Mix_gridO_SimFile5x5.txt: New file.
+	* Output\Mix_typeO_SimFile5x5.txt: New file.
+	* pft_test_126009.txt: New file.
+	* pft_test_141016.txt: New file.
+	* pft_test_162543.txt: New file.
+	* pft_test_166320.txt: New file.
+	* pft_test_167345.txt: New file.
+	* pft_test_167754.txt: New file.
+	* pft_test_175711.txt: New file.
+	* pft_test_178656.txt: New file.
+	* pft_test_197399.txt: New file.
+	* Cell.cpp (RemoveSeeds): 
+	(CCell::RemoveSeeds): minor
+	* CEnvir.cpp (GetSim): 
+	(CEnvir::GetSim): changed struct of input file
+	* CWaterGridEnvir.cpp (OneRun): 
+	(CWaterGridEnvir::OneRun): read env-file once a Run-call
+	(SetCellResource): reading env file in OneRun Function
+	(CWaterGridEnvir::SetCellResource): 
+	* IBCgrass-coast_lookup.cpp (main): adapt application paramewters
+	* RunPara.cpp (SRunPara): 
+	(SRunPara::SRunPara): delete pftfile
+	(setRunPara): 
+	(print): s above
+	(SRunPara::setRunPara): 
+	(getRunID): s above
+	(SRunPara::print): 
+	* RunPara.h: s above
+	* SimFile5x5.txt: change to new strukt
 2014-12-02  KatrinK  <KatrinK@VEGLAP-01>
 merge to R618 from Vali_mcmc R629 branch:
 move body to cpp
