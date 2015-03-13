@@ -177,6 +177,7 @@ int main(int argc, char* argv[])
     SRunPara::NameEnvFile="Input/"+envfile;
 
 }
+  if(argc>7) nruns=atoi(argv[7]);//add argument: number of reps
   //      //change gridsize
      SRunPara::RunPara.GridSize=SRunPara::RunPara.CellNum=100;//default: 100
 
