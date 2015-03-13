@@ -1,3 +1,3 @@
-"SimNr" "BRes" "Mig" "graz" "trmpl" "cut" "WL" "Sal" "Env"
-5 80 5 0 0 0 env_con_hist_point.69_4.63_-42.txt
-1005 80 5 0 0 0 env_con_hist_point.65_0.5_-37.txt
+"SimNr" "BRes" "Mig" "graz" "trmpl" "cut" "WL" "Sal"
+5 80 5 0 0 0 20 0
+1005 80 5 0 0 0 -40 3

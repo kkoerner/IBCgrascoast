@@ -166,9 +166,8 @@ int main(int argc, char* argv[])
          SRunPara::NameSimFile=file;
          file=argv[2];
          SRunPara::NamePftFile=file;
-//Env file integrated in SimFile
-//         file=argv[3];
-//         SRunPara::NameEnvFile="Input/"+file;
+         file=argv[3];
+         SRunPara::NameEnvFile="Input/"+file;
       }//else CEnvir::NameSimFile="Input\\comtest.txt";
       int maxRun=1; if (argc>4) {maxRun = atoi(argv[4]);}
       //fill PftLinkList

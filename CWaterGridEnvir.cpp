@@ -203,10 +203,7 @@ void CWaterGridEnvir::InitWaterInds(//SPftTraits* traits,//SclonalTraits* cltrai
 */
 void CWaterGridEnvir::OneRun(){
  //  int year_of_change=50;
-//   double WLstart=SRunPara::RunPara.WaterLevel;
-   // generate seasonal Wl-series
-   if(SRunPara::RunPara.WLseason=="file")
-       getEnvirCond(SRunPara::RunPara.NameEnvFile);
+   double WLstart=SRunPara::RunPara.WaterLevel;
    //run simulation until YearsMax
 //   for (year=1; year<=5; ++year){
 //   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
@@ -231,7 +228,7 @@ void CWaterGridEnvir::OneRun(){
    }//years
 //WL zurücksetzen
 //    if (year>=year_of_change)SRunPara::RunPara.WaterLevel-=SRunPara::RunPara.changeVal;//5cm weniger für nächste Sim
-//     SRunPara::RunPara.WaterLevel=WLstart;
+     SRunPara::RunPara.WaterLevel=WLstart;
 }  // end OneSim
 //------------------------------------------------------------------------------
 /**
@@ -285,19 +282,34 @@ void CWaterGridEnvir::getEnvirCond(string file){
 	 cout<<"Read in "<<weeklyENV.size()<<" lines of Environmental data.\n";
 //  EnvFile>>winterInundation;//get winter inundation weeks in last line
 }
+/**
+ * get current salinity in ppt
+ *
+ * \date 13.3.15 KK:add constant difference to plot value (salt) if season='file'
+ * @return grid salinity value in ppt
+ */
 double CWaterGridEnvir::getSAL(){
 	int time=CEnvir::GetT();
-	  return weeklyENV.at(time-1).Sal;
+	double toadd=0;
+	if (SRunPara::RunPara.WLseason=="file")
+		toadd=SRunPara::RunPara.salt;
+	  return weeklyENV.at(time-1).Sal + toadd;
 }//<get current salinity
 double CWaterGridEnvir::getSAT(){
 	int time=CEnvir::GetT();
 	  return weeklyENV.at(time-1).Sat;
 }//<get current soil saturation
+/**
+ * get current water level in cm above surface
+ *
+ * \date 13.3.15 KK:add constant difference to plot value (WL) if season='file'
+ * @return grid water level in cm
+ */
 double CWaterGridEnvir::getWL(){
 	int time=CEnvir::GetT();
 	double toadd=0;
 	if (SRunPara::RunPara.WLseason=="file")
-		toadd==SRunPara::RunPara.changeVal;
+		toadd=SRunPara::RunPara.WaterLevel;//changeVal;
   return weeklyENV.at(time-1).WL + toadd;
 }//<get current water level
 double CWaterGridEnvir::getWI(){
@@ -380,14 +392,14 @@ void CWaterGridEnvir::SetCellResource(){
     else if(SRunPara::RunPara.WLseason=="season")
     // generate seasonal Wl-series
     genSeasonWL();
-//    else if(SRunPara::RunPara.WLseason=="file")
+    else if(SRunPara::RunPara.WLseason=="file")
     // generate seasonal Wl-series
-//    getEnvirCond(SRunPara::RunPara.NameEnvFile);
+//        getEnvirCond((string)"Input\\env_con.txt");
+    getEnvirCond(SRunPara::RunPara.NameEnvFile);
     else
-   if(SRunPara::RunPara.WLseason=="const")
+//if(SRunPara::RunPara.WLseason=="const")
     // generate const Wl-series
     genConstWL(); //default
-//if "file" do nothing ; call 'getEnvirCond(SRunPara::RunPara.NameEnvFile)' elsewhere
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   this->SetMeanWaterLevel(getWL());
