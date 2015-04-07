@@ -122,7 +122,7 @@ CGrid::~CGrid()
 void CGrid::Save(string fname){
 //open file..
    ofstream SaveFile(fname.c_str());
-  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen SaveFile (Grid)");exit(3); }
+  if (!SaveFile.good()) {cerr<<("Fehler beim Öffnen InitFile");exit(3); }
   cout<<"SaveFile: "<<fname<<endl;
 //write..
 
@@ -149,7 +149,7 @@ void CGrid::Save(string fname){
 */
 void CGrid::PlantLoop()
 {
-   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant)
+   for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); iplant++)
    {
       CPlant* plant = *iplant;
       if (!plant->dead)
@@ -168,7 +168,7 @@ void CGrid::PlantLoop()
          plant->Kill();
       }
       plant->DecomposeDead();
-   }
+   }//for all plants
 }//plant loop
 //-----------------------------------------------------------------------------
 /**
@@ -261,10 +261,16 @@ int CGrid::DispersSeeds(CPlant* plant)
 		}
 
          CCELL* cell = CellList[x*SideCells+y];
-         new CSeed(plant,cell);
+         DispSeeds_help(plant,cell);
+         //new CSeed(plant,cell);
    }//for NSeeds
    return nb_LDDseeds;
 }//end DispersSeeds
+void CGrid::DispSeeds_help(CPlant* plant,CCell* cell)
+{
+            new CSeed(plant,cell);
+}    //
+
 //---------------------------------------------------------------------------
 /***
  * Initialize new ramets of a clonal mother plant.
@@ -283,7 +289,7 @@ void CGrid::DispersRamets(CPlant* plant)
    if (plant->Traits->clonal)//type() == "CclonalPlant")//only if its a clonal plant
    {
         //dispersal
-        for (int j=0; j<plant->GetNRamets(); ++j)
+        for (int j=0; j<plant->GetNRamets(); ++j)///\warning this is not secure
         {
          double dist=0, direction;//, rdist;
          double mean, sd; //parameters for lognormal dispersal kernel
@@ -1035,10 +1041,10 @@ void CGrid::RemovePlants()
 {
    plant_iter irem = partition(PlantList.begin(),PlantList.end(),
      mem_fun(&CPlant::GetPlantRemove));
-   for (plant_iter iplant=irem; iplant<PlantList.end(); ++iplant)
+   for (plant_iter iplant=irem; iplant!=PlantList.end(); ++iplant)
    {
       CPlant* plant = *iplant;
-      DeletePlant(plant);
+      DeletePlant(plant); plant=NULL;
    }
    PlantList.erase(irem,PlantList.end());
 }
@@ -1343,7 +1349,7 @@ double CGrid::GetTotalAboveMass()
    for (plant_iter iplant=PlantList.begin(); iplant<PlantList.end(); ++iplant){
       CPlant* plant = *iplant;
       above_mass+=plant->mshoot+plant->mRepro;
-//      double dummi=plant->Traits->GrazFac();
+      double dummi=plant->Traits->GrazFac();
    }
    return above_mass;
 }

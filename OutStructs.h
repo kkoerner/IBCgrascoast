@@ -19,6 +19,7 @@ struct SPftOut
      double cover;
      int Nind;        //!< population size
      int Njuv;        //!< number of subadult; def:
+     int Nclon;        //!< number of genets
      int Nseeds;       //!< number of seeds
      long LDDseeds[5]; //!< number of outside the grid in distance classes
 

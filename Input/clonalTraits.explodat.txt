@@ -1,9 +1,0 @@
-number	name	PropSex	meanSpacerlength	sdSpacerlength	Resshare
-1	clonal1	1	2.5	2.5	1
-2	clonal2	1	2.5	2.5	0
-3	clonal3	1	17.5	12.5	1
-4	clonal4	1	17.5	12.5	0
-5	clonal5	0.1	2.5	2.5	1
-6	clonal6	0.1	2.5	2.5	0
-7	clonal7	0.1	17.5	12.5	1
-8	clonal8	0.1	17.5	12.5	0

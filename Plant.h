@@ -122,6 +122,7 @@ public:
     return pow(mshoot/(Traits->LMR),1/3.0)*cheight;};
 /// \brief get plant's depth
 /// \param cdepth mg vegetative root mass per cm ground layer  (root density)
+/// \param value 'adjust'(default) and 'real' for real rooting depth
 /// \return depth of root cylinder in cm
 /// calculation: devide root mass by ZOI-area
 /// (calibrated: 2500mg DWroot beeing 50cm)
@@ -170,6 +171,7 @@ public:
    CGenet* getGenet(){return genet;};
    void SpacerGrow();                  ///<spacer growth
    virtual int GetNRamets();           ///<return number of ramets
+   virtual double GetBMSpacer();  ///<returns clonal mass
 
 
    //-----------------------------------------------------------------------------

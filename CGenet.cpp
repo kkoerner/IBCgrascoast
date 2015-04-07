@@ -73,8 +73,19 @@ double CGenet::GetMass(){
   for (unsigned int m=0; m<AllRametList.size();m++)
      mGenet+=AllRametList[m]->GetMass();
   return mGenet;
-}// return BM of Genet
+} // return BM of Genet
 
+/**
+ * number of living ramets
+ * @return number of alive ramets
+ */
+unsigned int CGenet::GetNRamets() {
+	unsigned int nb=0;
+	if (this->AllRametList.size()==0) return 0;
+	for (int i=0;i<this->AllRametList.size();i++)
+		if(AllRametList[i]->dead==false) nb++;
+	return nb;
+}
 //eof---------------------------------------------------------------------
 
 

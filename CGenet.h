@@ -24,6 +24,7 @@ public:
    CGenet():number(++staticID){};
    virtual ~CGenet(){};
    virtual double GetMass();///< return BM of Genet
+   virtual unsigned int GetNRamets();///< return number of alive Ramets
    void ResshareA();     ///< share above-ground resources
    void ResshareB();     ///< share below-ground resources
 
@@ -38,6 +39,8 @@ public:
 	static void setStaticId(int staticId=0) {
 		staticID = staticId;
 	}
+
+//	string getPFT(){return allRametList.begin->pft()};
 };
 //---------------------------------------------------------------------------
 #endif

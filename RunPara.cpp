@@ -23,7 +23,8 @@ SRunPara::SRunPara():Version(version2),AboveCompMode(asympart),BelowCompMode(sym
   BelGrazProb(0),BelPropRemove(0),BelGrazMode(0),BGThres(1),HetBG(false),
   CutLeave(10),NCut(0),torus(true),salt(0),//CutMass(5000),
   DistAreaYear(0),AreaEvent(0),mort_seeds(0.5),meanARes(100),meanBRes(100),
-  PftFile("Input/RSpec59WP3_131114.txt"),SeedInput(0),SeedRainType(1),
+  //PftFile("Input/RSpec59WP3_131114.txt"),
+  SeedInput(0),SeedRainType(1),
   species("M"),WaterLevel(0),WLsigma(0),//changeVal(0),
   changeWL(0),changeSal(0),
   Migration(0),Aampl(0),Bampl(0),//cv_res(0),
@@ -88,7 +89,7 @@ void SRunPara::setRunPara(std::string def){
   dummi>>mort_seeds>> EstabRamet>>mort_base>>LitterDecomp>>DiebackWinter;
   dummi>> GrazProb>> PropRemove>>BitSize>> BelGrazProb >>BelPropRemove>> BelGrazMode
        >> BGThres>> HetBG>> NCut>> CutLeave>> meanARes>> meanBRes>>DistAreaYear
-       >> AreaEvent  >>PftFile;
+       >> AreaEvent  >>this->NamePftFile;
 }
 void SRunPara::print(){
   std::cout<<"\n  Parameter setting:\n";
@@ -110,7 +111,7 @@ void SRunPara::print(){
       <<"\n change Sal by "<<changeSal
       <<"\n Migration: "<<Migration
       <<"\n Salinity: "<<salt
-      <<"\nPFTFile:"<<PftFile<<std::endl;
+      <<"\nPFTFile:"<<this->NamePftFile<<std::endl;
 }//end print
 ///
 /// currently for Reed-Mix experiments
@@ -118,17 +119,29 @@ void SRunPara::print(){
 ///
 string SRunPara::getRunID(){
       stringstream dummi;
+      string envname=((string)this->NameEnvFile);
+      string envid=envname.substr(envname.find('.')+1);
+      std::size_t pos=envid.find('t');
+      std::size_t length = NamePftFile.size();
+      std::size_t pos1 = min(length,NamePftFile.find("/"))+1;
+      std::size_t pos2 = NamePftFile.find(".");
+      if (pos1>=length) pos1=0;
+      string name=NamePftFile.substr(pos1,pos2-pos1);
       dummi<<"_R"<<this->meanBRes<<"_"<<Migration//species
 //           <<"_"<<this->WLseason
            <<"_"<<this->GrazProb
  //         <<"_"<<this->AreaEvent
  //          <<"_"<<this->DistAreaYear
            <<"_"<<this->NCut
-           <<"_WL"<<this->WaterLevel
+//           <<"_WL"<<this->WaterLevel
            <<"_S"<<this->salt
+           <<"_"<<name
+           <<"_"<<envid.substr(0,pos-1)
+
  //          <<"_"<<this->changeVal
 //           <<"_WLc"<<WLsigma
            ;
+      cout<< dummi.str()<<endl;
       return dummi.str();
 }// string for file name generation
 
