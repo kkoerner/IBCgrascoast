@@ -1,3 +1,7 @@
+2015-08-05  KatrinK  <KatrinK@VEGLAP-01>
+
+	* IBCgrass-coast_lookup.cpp (main): 
+changed input parameters
 
 2015-03-12  KatrinK  <KatrinK@VEGLAP-01>
 -Adapt main and Simfiel to new cahnges and demands
