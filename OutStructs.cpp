@@ -2,6 +2,9 @@
 
 #include "OutStructs.h"
 #include "CEnvir.h"
+
+#include <iostream>
+//#include <sstream>
 //---------------------------------------------------------------------------
 
 //-result structs - constructors...----------------------------------------
@@ -38,6 +41,28 @@ SGridOut::SGridOut():week(CEnvir::week),//GetT()),
   grazed(0),WaterLevel(0),bareGround(0),bareSoil(0),
   above_litter(0),below_litter(0),
   MclonalPlants(0),MeanGeneration(0),MeanGenetsize(0),
-  MPlants(0),NclonalPlants(0),NGenets(0),NPlants(0){}// end SGridOut constructor
+  MPlants(0), NclonalPlants(
+				0), NGenets(0), NPlants(0) {
+} // end SGridOut constructor
+
+/**
+ * single PFTs summary
+ * @return stream of summarizing values
+ */
+void SPftOut::SPftSingle::print() {
+	//stringstream dummi;
+	std::cout<<totmass<<" "<<shootmass<<" "<<rootmass<<" "<<cover<<" "<<Nind<<" "
+			<<Nclon<<" "<<Njuv<<" "<<Nseeds<<"\n";
+	//return dummi;
+}
+
+void SPftOut::print() {
+	//stringstream dummi;
+	//for all pfts..
+	for(map<string, SPftSingle* >::const_iterator it = PFT.begin();it!=PFT.end();++it)
+		{std::cout<<it->first<<" ";it->second->print();}
+	//return dummi;
+
+}
 //-------------------------------------------------------
 //eof----------------------------------------------------------------

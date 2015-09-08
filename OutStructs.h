@@ -44,12 +44,14 @@ struct SPftOut
      //   double MeanGeneration;         ///< mean number of generations
     SPftSingle();
      ~SPftSingle(){};
+    void print();
    };
 
    int week;                  //!< week of the year (1-30)
    map<string,SPftSingle*> PFT;                 //!< list of active PFTs
    SPftOut();
    ~SPftOut();
+   void print();
 };
 //---------------------------------------------------------------------------
 

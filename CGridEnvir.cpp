@@ -297,7 +297,7 @@ void CGridEnvir::OneWeek(){
       SeedMortWinter();    //winter seed mortality
    }
 
-   if (week==20){        //general output
+   if (week==20 ){        //general output || week==21 || week==19
       GetOutput();   //calculate output variables
    }
    if (week==30){
@@ -493,7 +493,7 @@ void CGridEnvir::GetOutput()//PftOut& PftData, SGridOut& GridData)
     GridWeek->bareSoil=1.0- (double(this->GetRootedSoilarea())/
        (SRunPara::RunPara.GetSumCells()));//bare ground
 
-
+//   PftWeek->print();
    PftOutData.push_back(PftWeek);
    GridWeek->PftCount=PftSurvival(); //get PFT results
    GridOutData.push_back(GridWeek);

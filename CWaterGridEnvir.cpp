@@ -209,7 +209,7 @@ void CWaterGridEnvir::OneRun(){
 //   for (year=1; year<=SRunPara::RunPara.Tmax; ++year){
    while(year<SRunPara::RunPara.Tmax){
       this->NewWeek();
-//      cout<<" y"<<year;
+      cout<<" y"<<year;
 
   //drift of little individuals -anually- (see OneWeek)
 //--------------------
@@ -413,7 +413,7 @@ void CWaterGridEnvir::SetCellResource(){
   }
 //  this->SetMeanWaterLevel(SRunPara::RunPara.WaterLevel);
   this->SetMeanWaterLevel(getWL());
-cout<<" WL "<<this->getWL()<<"\tSal "<<this->getSAL()<<endl;
+//cout<<" WL "<<this->getWL()<<"\tSal "<<this->getSAL()<<endl;
   //salinity
 //  salinity=SRunPara::SRunPara::RunPara.salt;
 //  if (week==1) cout<<"\n";

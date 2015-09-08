@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
     SWaterTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
 
     //hier: loop verschiedener Grids
-     for (CEnvir::RunNr=currRun;CEnvir::RunNr<=currRun+maxRun;CEnvir::RunNr++){
+     for (CEnvir::RunNr=currRun;CEnvir::RunNr<currRun+maxRun;CEnvir::RunNr++){
        //erstes Grid und Kontrolle
        cout<<"start init Environment...\n";
        Envir=new CWaterGridEnvir();  //erstelle neues Grid
