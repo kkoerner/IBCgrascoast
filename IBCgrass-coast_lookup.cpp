@@ -132,6 +132,9 @@ const int Tmax=8;//150;//200;
   facultative program parameters are:
    -# file name of sim file
    -# file name of pft definition file (regional species pool)
+   -# file name of env time series file
+   -# first number of reps (opt)
+   -# number of reps (opt)
 
 
   \par Input
@@ -169,12 +172,13 @@ int main(int argc, char* argv[])
          file=argv[3];
          SRunPara::NameEnvFile="Input/"+file;
       }//else CEnvir::NameSimFile="Input\\comtest.txt";
-      int maxRun=1; if (argc>4) {maxRun = atoi(argv[4]);}
+      int currRun=1; if (argc>4) {currRun = atoi(argv[4]);}
+      int maxRun=1; if (argc>5) {maxRun = atoi(argv[5]);}
       //fill PftLinkList
     SWaterTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
 
     //hier: loop verschiedener Grids
-     for (CEnvir::RunNr=1;CEnvir::RunNr<=maxRun;CEnvir::RunNr++){
+     for (CEnvir::RunNr=currRun;CEnvir::RunNr<currRun+maxRun;CEnvir::RunNr++){
        //erstes Grid und Kontrolle
        cout<<"start init Environment...\n";
        Envir=new CWaterGridEnvir();  //erstelle neues Grid

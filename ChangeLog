@@ -1,3 +1,20 @@
+2015-09-08  KatrinK  <KatrinK@VEGLAP-01> 
+tempCh branch
+small debug (nrep where 2*nrep)
+	* CWaterGridEnvir.cpp (OneRun): 
+	(CWaterGridEnvir::OneRun): 
+	(SetCellResource): 
+	(CWaterGridEnvir::SetCellResource): uncomment weekly environment
+	* IBCgrass-coast_lookup.cpp (main): bebug design
+	* OutStructs.cpp (SGridOut): 
+	(SGridOut::SGridOut): 
+	(SPftOut::SPftSingle::print): 
+	(SPftOut::print): 
+	* OutStructs.h: new fkt 'print'
+2015-08-05  KatrinK  <KatrinK@VEGLAP-01>
+
+	* IBCgrass-coast_lookup.cpp (main): 
+changed input parameters
 2015-03-12  KatrinK  <KatrinK@VEGLAP-01>
 -Adapt main and Simfiel to new cahnges and demands
 -remove obsolete files

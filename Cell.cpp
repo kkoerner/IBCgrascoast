@@ -128,6 +128,8 @@ void CCell::RemoveSeedlings()
 void CCell::RemoveSeeds()
 {
    seed_iter irem = partition(SeedBankList.begin(),SeedBankList.end(),GetSeedRemove);
+//   int nb_to_rem=SeedBankList.end()-irem
+//   cout<<"seeds to remove: "<<nb_to_rem<<" von "<<SeedBankList.size()<<" in cell "<<this->x<<":"<<this->y<<endl
 
    for (seed_iter iter=irem; iter!=SeedBankList.end(); ++iter){
       CSeed* seed = *iter;
