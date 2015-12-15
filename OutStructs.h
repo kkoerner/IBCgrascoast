@@ -7,6 +7,7 @@
 #include <map>
 #include <string>
 using namespace std;
+namespace ibc{
 //---------------------------------------------------------------------------
 //! Structure with output data for each PFT
 struct SPftOut
@@ -82,5 +83,5 @@ struct SGridOut
    double MeanGeneration;         ///< mean number of generations
    SGridOut();
 };
-
+}//namespace ibc
 #endif

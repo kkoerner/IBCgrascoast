@@ -9,6 +9,8 @@
 #include <sstream>
 #include <iostream>
 using namespace std;
+namespace ibc{
+//using namespace ibc;
 //------------------------------------------------------------------------------
 /** \page loadsave Loading and Saving environments
 Since initalization phase on grid takes a lot of simulation time,
@@ -42,9 +44,9 @@ belonging to one task.
 /**
  * constructor
  */
-CGridEnvir::CGridEnvir():CEnvir(),CGrid()
+CGridEnvir::CGridEnvir(): CEnvir(),CGrid()
 {
-   ReadLandscape();
+   CEnvir::ReadLandscape();
 }
 /**
    Constructor - load a previously saved environment.
@@ -55,7 +57,7 @@ CGridEnvir::CGridEnvir():CEnvir(),CGrid()
    \date  120905
    \todo not yet updated after 'Update2.0'
 */
-CGridEnvir::CGridEnvir(string id):CGrid(id),CEnvir(id)
+CGridEnvir::CGridEnvir(string id): CEnvir(id),CGrid(id)
 {
   //here re-eval clonal PFTFile
   string dummi=(string)"Save/E_"+id+".sav";
@@ -90,7 +92,7 @@ SPftTraits::ReadPFTDef(SRunPara::NamePftFile,-1);
  loadf>>d>>d>>d>>num;getline(loadf,d);
  cout<<"lade "<<num<<"plant individuals.."<<endl;
  do {getline(loadf,d);}while(InitInd(d));
-  ReadLandscape();
+  ibc::CEnvir::ReadLandscape();
 }
 //------------------------------------------------------------------------------
 /**
@@ -707,5 +709,5 @@ void CGridEnvir::SeedRain(){
    }
 }
 
-
+}//namespace ibc
 //eof

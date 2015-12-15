@@ -7,7 +7,7 @@
 
 //#pragma package(smart_init)
 
-
+namespace ibc{
 //---------------------------------------------------------------------------
 /*
 CSeed::CSeed(double x, double y, int ID, double m, double estab, int maxage)
@@ -117,5 +117,5 @@ std::string CSeed::type(){
 std::string CSeed::pft(){
         return this->Traits->name;
 }   //say what a pft you are
-
+}//namespace ibc
 //-eof----------------------------------------------------------------------------

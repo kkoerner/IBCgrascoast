@@ -17,6 +17,7 @@
 #include <sstream>
 
 using namespace std;
+namespace ibc{
 //-CEnvir: Init static variables--------------------------------------------------------------------------
    int CEnvir::week=0;
    int CEnvir::year=1;
@@ -444,7 +445,7 @@ void CEnvir::WritePftSeedOutput()
    typedef map<string, SPftTraits*> mapType;
    map<string, SPftOut::SPftSingle*>::const_iterator pos;
 
-   for (vector<PftOut>::size_type i=0; i<PftOutData.size();++i){
+   for (vector<SPftOut>::size_type i=0; i<PftOutData.size();++i){
 
      LDDFile1<<SimNr<<'\t'<<RunNr<<'\t'<<i+1;
 
@@ -482,7 +483,7 @@ void CEnvir::WritePftSeedOutput()
      LDDFile2<<"\n";
    }
 
-   for (vector<PftOut>::size_type i=0; i<PftOutData.size();++i){
+   for (vector<SPftOut>::size_type i=0; i<PftOutData.size();++i){
 
      LDDFile2<<SimNr<<'\t'<<RunNr<<'\t'<<i+1;
 
@@ -520,7 +521,7 @@ void CEnvir::WritePftSeedOutput()
      LDDFile3<<"\n";
    }
 
-   for (vector<PftOut>::size_type i=0; i<PftOutData.size();++i){
+   for (vector<SPftOut>::size_type i=0; i<PftOutData.size();++i){
 
      LDDFile3<<SimNr<<'\t'<<RunNr<<'\t'<<i+1;
 
@@ -558,7 +559,7 @@ void CEnvir::WritePftSeedOutput()
      LDDFile4<<"\n";
    }
 
-   for (vector<PftOut>::size_type i=0; i<PftOutData.size();++i){
+   for (vector<SPftOut>::size_type i=0; i<PftOutData.size();++i){
 
      LDDFile4<<SimNr<<'\t'<<RunNr<<'\t'<<i+1;
 
@@ -596,7 +597,7 @@ void CEnvir::WritePftSeedOutput()
      LDDFile5<<"\n";
    }
 
-   for (vector<PftOut>::size_type i=0; i<PftOutData.size();++i){
+   for (vector<SPftOut>::size_type i=0; i<PftOutData.size();++i){
 
      LDDFile5<<SimNr<<'\t'<<RunNr<<'\t'<<i+1;
 
@@ -766,6 +767,6 @@ void SSR::GetNPftSeedClonal(){
       else NPftClonal[1]++;                 //clonal
    }
 }
-
+}//namespace ibc
 
 //eof

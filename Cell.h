@@ -11,6 +11,7 @@
 
 using namespace std;
 
+namespace ibc{
 //! iterator type for seed list
 typedef vector<CSeed*>::iterator seed_iter;
 
@@ -89,6 +90,6 @@ public:
    std::string asString();///<return content for file saving
 };
 
-
+}//namespace ibc
 //---------------------------------------------------------------------------
 #endif

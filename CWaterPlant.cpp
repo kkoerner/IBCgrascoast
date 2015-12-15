@@ -8,6 +8,8 @@
 #include "CWaterGridEnvir.h"
 #include <sstream>
 //---------------------------------------------------------------------------
+namespace ibc_coast{
+using namespace ibc;
 string CWaterPlant::type()
 {
         return "CWaterPlant";
@@ -15,6 +17,7 @@ string CWaterPlant::type()
 
 /// print traits
 void CWaterPlant::print_type(){
+	using namespace ibc;
    cout<<"\nCoordinates "<<xcoord<<";"<<ycoord<<endl;
    this->Traits->print();
 //   this->clonalTraits->print();
@@ -268,54 +271,8 @@ void CWaterPlant::DistrRes_help(){
     this->Auptake*=min(1.0,max(0.0,1-(wl )/getHeight()));
  }
 
- //.. belowground
-// double diff=wl-this->waterTraits->WL_Optimum;
-// double sigma=this->waterTraits->WL_Tolerance;
- //Ressourcennutzung nach Normalverteilung
-// this->Buptake*=min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
-// schon in CWaterCell::BelowComp() enthalten ...
-// this->Buptake*=rootEfficiency();
+}//Distr_help
 
-}
-/* *
-  CWater - version of competion strength of a plant.
-  Belowground strength varies with distance to WL-Optimum of plant type.
-  \bugnot sure for returning zero
-  \todo this function line3 to comment out for (not)using rule 3
-* /
-double CWaterPlant::comp_coef(const int layer, const int symmetry)const{
-  bool rule3=true;  //true
-  double cplantval=CPlant::comp_coef(layer,symmetry);
-  if (!rule3 || layer==1) //comment out to disable changed competitive power
-    return cplantval;
-  //korrekturwert durch WaterLevel
-  else {   //comment out here too
-//    double wl= ((CWaterCell*) cell)->GetWaterLevel(); ///<plant's water level
-//    double diff=wl-this->waterTraits->WL_Optimum;
-//    double sigma=this->waterTraits->WL_Tolerance;
-//    return cplantval* min(1.0,max(0.0,exp(-0.5*(diff/sigma)*(diff/sigma))));
-    return cplantval* rootEfficiency();
-  }        //comment out here too
-}
-*/
-//---------------------------------------------------------------------------
-/**
-  Reimplemented from CCell::Germinate(). Prior to germination a seed mortality due to
-  salinity is calculated. Survival responds to saltTolEffect() of seed's PFT.
-*/
-double CWaterCell::Germinate(){
-   //seed mortality due to salinity
-   unsigned int sbsize=SeedBankList.size();
-   for (unsigned int i =0; i<sbsize;i++)
-   {
-     CSeed* seed = SeedBankList[i];// *iter;
-     if (CEnvir::rand01()>
-       ((SWaterTraits*)((CWaterSeed*)seed)->Traits)->saltTolEffect(CWaterGridEnvir::getSAL()))
-       seed->remove=true;
-   }
-   this->RemoveSeeds();
-   return CCell::Germinate();
-}//end Germinate
 //---------------------------------------------------------------------------
 /**
  * constructor
@@ -348,4 +305,5 @@ string CWaterSeed::type()
         return "CWaterSeed";
 }
 //---------------------------------------------------------------------------
-
+}//namespace ibc_coast
+//eof

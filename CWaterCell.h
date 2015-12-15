@@ -9,11 +9,12 @@
 #define CWATERCELL_H_
 
 #include "Cell.h"
+namespace ibc_coast{
 /**\brief Water-Cell class inherits from CCell
 
    \since COMTESS version
 */
-class CWaterCell : public CCell
+class CWaterCell : public ibc::CCell
 {
  double WaterLevel;
 public:
@@ -36,5 +37,5 @@ public:
    std::string asString();///<return content for file saving
 };//end CWaterCell
 
-
+}//namespace ibc_coast
 #endif /* CWATERCELL_H_ */

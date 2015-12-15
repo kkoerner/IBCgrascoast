@@ -5,8 +5,11 @@
 
 #include "CObject.h"
 #include "Plant.h" //for struct CPftTraits
+
+namespace ibc{
 //---------------------------------------------------------------------------
 //struct CPftTraits;
+
 //! class of seed individuals
 class CSeed: public CObject
 {
@@ -46,5 +49,5 @@ bool GetSeedRemove(const CSeed* seed1);
 //!< sort seeds ascending after PFT ID
 int CompareTypeID(const CSeed* seed1, const CSeed* seed2);
 //-----------------------------------------------------------------------------
-
+}//namespace ibc
 #endif

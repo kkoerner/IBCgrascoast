@@ -7,6 +7,7 @@
 //---------------------------------------------------------------------------
 #include "CWaterPlant.h"
 #include "CWaterGridEnvir.h"
+namespace ibc_coast{
 //! Konstruktor
 CWaterCell::CWaterCell(const unsigned int xx,const unsigned int yy):
   CCell(xx,yy),WaterLevel(0){
@@ -90,7 +91,29 @@ return CCell::asString();
 CWaterCell::CWaterCell():
 		  CCell(0,0),WaterLevel(0) {
 }
+
+//---------------------------------------------------------------------------
+/**
+  Reimplemented from CCell::Germinate(). Prior to germination a seed mortality due to
+  salinity is calculated. Survival responds to saltTolEffect() of seed's PFT.
+*/
+double CWaterCell::Germinate(){
+   //seed mortality due to salinity
+   unsigned int sbsize=SeedBankList.size();
+   for (unsigned int i =0; i<sbsize;i++)
+   {
+     CSeed* seed = SeedBankList[i];// *iter;
+     if (CEnvir::rand01()>
+       ((SWaterTraits*)((CWaterSeed*)seed)->Traits)->saltTolEffect(CWaterGridEnvir::getSAL()))
+       seed->remove=true;
+   }
+   this->RemoveSeeds();
+   return CCell::Germinate();
+}//end Germinate
+
+}//namespace ibc_coast
 //eof
+
 
 
 

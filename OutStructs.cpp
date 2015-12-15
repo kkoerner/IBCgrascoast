@@ -3,7 +3,7 @@
 #include "OutStructs.h"
 #include "CEnvir.h"
 //---------------------------------------------------------------------------
-
+namespace ibc{
 //-result structs - constructors...----------------------------------------
 /**
  * constructor
@@ -40,4 +40,5 @@ SGridOut::SGridOut():week(CEnvir::week),//GetT()),
   MclonalPlants(0),MeanGeneration(0),MeanGenetsize(0),
   MPlants(0),NclonalPlants(0),NGenets(0),NPlants(0){}// end SGridOut constructor
 //-------------------------------------------------------
+}//namespace ibc
 //eof----------------------------------------------------------------

@@ -16,6 +16,7 @@ using namespace std;
 const double Pi=3.14159265358979323846;
 
 //---------------------------------------------------------------------------
+namespace ibc{
 //! Structure to store all PFT Parameters
 
 class CSeed;class CCell;class CGenet;
@@ -210,5 +211,6 @@ public:
 //   return (plant1->xcoord < SRunPara::RunPara.CellNum/2);
 //}
 //-----------------------------------------------------------------------------
+}//namespace ibc
 //---------------------------------------------------------------------------
 #endif

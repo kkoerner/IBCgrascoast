@@ -9,6 +9,7 @@
 //#include "Plant.h"
 using namespace std;
 
+namespace ibc{
 class CPlant;
 //---------------------------------------------------------------------------
 /**
@@ -42,6 +43,7 @@ public:
 
 //	string getPFT(){return allRametList.begin->pft()};
 };
+}//namespace ibc
 //---------------------------------------------------------------------------
 #endif
 

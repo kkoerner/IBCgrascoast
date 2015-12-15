@@ -11,6 +11,7 @@
 #include "CEnvir.h"
 #include <vector>
 using namespace std;
+namespace ibc{
 //---------------------------------------------------------------------------
 /// simulation service class including grid-, result- and environmental information
 /**
@@ -18,7 +19,7 @@ using namespace std;
    CGridclonal and CEnvir are connected, and some Clonal-specific
    result-variables added.
 */
-class CGridEnvir: public CEnvir, public CGrid{
+class CGridEnvir: public ibc::CEnvir, public ibc::CGrid{
 protected:
 public:
 
@@ -79,5 +80,5 @@ private:
    ///@}
 
 };
-
+}//namespace ibc
 #endif /* CGRIDENVIR_H_ */

@@ -6,7 +6,7 @@
 #include "Plant.h"
 #include "CEnvir.h"
 //---------------------------------------------------------------------------
-
+namespace ibc{
 /**
  * constructor - without specific properties
  *
@@ -612,7 +612,7 @@ bool CPlant::ComparePalat(const CPlant* plant1, const CPlant* plant2)
 	double g2=plant2->Traits->GrazFac();
 	return ((m1*g1) > (m2*g2));
 };
-
+}//namespace ibc
 //-eof----------------------------------------------------------------------------
 
 

@@ -12,6 +12,7 @@
 #include <fstream>
 #include "LCG.h"
 
+namespace ibc{
 struct SSR {
 	   static map<string,double> PftSeedRainList; ///<seed rain list
 	      static string NameLDDFile1;   ///< Filename of Seed-Output
@@ -172,5 +173,6 @@ SSR SeedRainGr;
    double GetCurrPopSize(string pft);
 
 };
+}//namespace ibc
 //---------------------------------------------------------------------------
 #endif

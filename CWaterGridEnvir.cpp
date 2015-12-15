@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <sstream>
 
-
+namespace ibc_coast{
    //map<string,SWaterTraits*> CWaterGridEnvir::WLinkList=map<string,SWaterTraits*>();
    vector<CWaterGridEnvir::SweeklyEnv> CWaterGridEnvir::weeklyENV=vector<CWaterGridEnvir::SweeklyEnv>();
 //   vector<double> CWaterGridEnvir::weeklyWL=vector<double>();
@@ -729,6 +729,7 @@ void SWaterTraits::ReadPFTDef(const string& file, int n) {
 	  }while(!InitFile.eof());
 
 }
+}//namespace ibc_coast
 //---------------------------------------------------------------------------
 
 //#pragma package(smart_init)

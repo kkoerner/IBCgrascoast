@@ -8,10 +8,11 @@
 #include "CWaterCell.h"//"Cell.h"
 #include "Plant.h"
 #include "RunPara.h"
-#define CCELL CWaterCell //CCell for old version
+#define CCELL ibc_coast::CWaterCell //CCell for old version
 
-struct PftOut;
-struct GridOut;
+namespace ibc{
+struct SPftOut;
+struct SGridOut;
 
 //!iterator type for plant list
 typedef vector<CPlant*>::iterator plant_iter;
@@ -158,6 +159,6 @@ double Distance(const double& xx, const double& yy,
                     const double& x=0, const double& y=0);
   ///compare two index-values in their distance to the center of grid
 bool CompareIndexRel(int i1, int i2);
-
+}//namespace ibc
 //---------------------------------------------------------------------------
 #endif

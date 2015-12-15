@@ -6,6 +6,8 @@
 #include "CGenet.h"
 #include "Plant.h"
 #include "cmath"
+
+namespace ibc{
 //---------------------------------------------------------------------------
 int CGenet::staticID=0;
 /// Calculate the mean of the uptakes of one genet and save this
@@ -86,6 +88,7 @@ unsigned int CGenet::GetNRamets() {
 		if(AllRametList[i]->dead==false) nb++;
 	return nb;
 }
+}//namespace ibc
 //eof---------------------------------------------------------------------
 
 

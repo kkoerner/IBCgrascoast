@@ -9,6 +9,7 @@
 //#include "CGrid.h"
 #include "CEnvir.h"
 
+namespace ibc{
 //-----------------------------------------------------------------------------
 /**
  * constructor
@@ -354,7 +355,7 @@ dummi<<"\n"<<(x)<<"\t"<<(y);
 dummi<<"\nCE";
 return dummi.str();
 }//return content for file saving
-
+}//namespace ibc
 
 //-eof---------------------------------------------------------------------
 

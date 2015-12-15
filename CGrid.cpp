@@ -10,6 +10,7 @@
 #include <map>
 #include <algorithm>
 //---------------------------------------------------------------------------
+namespace ibc{
 /**
  * constructor
  */
@@ -1500,6 +1501,6 @@ double CGrid::GetNGeneration()
    }
    return MeanGeneration;
 }//end CGridclonal::GetNGeneration()
-
+}//namespace ibc
 //-eof--------------------------------------------------------------------------
 
