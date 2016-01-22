@@ -235,8 +235,8 @@ calc effect of winter disturbance on plant
 depending on water-related traits
 
 \verbatim
- mort=min(0.95, max(0,MonthsInundation-Thresh_by_adapt )/4)
- Thresh_by_adapt(no,yes)=(2,8)
+ mort=min(0.95, max(0,MonthsInundation-Thresh_by_adapt )/11)
+ Thresh_by_adapt(no,yes)=(0,20)
 \endverbatim
 no additional dieback at the moment
 */

@@ -157,11 +157,11 @@ public:
 	//  void OneRun();    ///< runs one simulation run in default mode
 	//  void OneWeek();   //!< calls all weekly processes
 	//  int PftSurvival();    ///< from CEnvir
-	/// from CEnvir: collect and write general results
+	// / from CEnvir: collect and write general results
 	//  void GetOutput();
 	//@}
 	//new...
-	///reads simulation environment from file
+	// /reads simulation environment from file
 	//  int GetSim(const int pos=0,string file=NameSimFile);
 	//  void InitInds();///<Initialization of individuals on grid
 

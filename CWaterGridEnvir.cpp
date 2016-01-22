@@ -192,8 +192,8 @@ void CWaterGridEnvir::InitWaterInds(//SPftTraits* traits,//SclonalTraits* cltrai
  Runs once for the Water Grid Environment. After an init phase of x years
  environmental conditions (WaterLevel) is changed.
 
- Migration, additional Winter mortality and salt-toxidity are implemented.
-\todo add additional Winter mortality and salt-toxidity
+ Migration, additional Winter mortality and salt-toxicity are implemented.
+\todo add additional Winter mortality and salt-toxicity
 
  To allow a type to reestablish, once a year a specific number of Individuals
  of each type is addad to
@@ -233,7 +233,7 @@ void CWaterGridEnvir::OneRun(){
 //------------------------------------------------------------------------------
 /**
 winter dieback and additional mortality due to prolonged inundation
-as external disurbance
+as external disturbance
 
 interpretes winterInundation as disturbance signal
 **/
